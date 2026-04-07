@@ -13,16 +13,13 @@ async function generateAIAgentResponse(request) {
   logger.info("AI Agent invoked with tool capabilities", { prompt, has_tool_outputs: !!tool_outputs });
 
   try {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) throw new HttpsError("internal", "API Key not configured.");
-
     const sdkLoaded = await loadGeminiSDK();
     const { GoogleGenAI } = getGeminiSDK();
     if (!sdkLoaded || !GoogleGenAI) {
       throw new HttpsError("internal", "Core AI SDK failed to load");
     }
 
-    const genAI = new GoogleGenAI({ apiKey });
+    const genAI = new GoogleGenAI({ vertexai: { project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' } });
 
     // Tools definition
     const tools = {
@@ -137,16 +134,13 @@ async function getFinnhubStockData({ data }) {
     const stockData = await Promise.all(promises);
 
     if (includeAnalysis) {
-      const geminiKey = process.env.GEMINI_API_KEY;
-      if (!geminiKey) throw new HttpsError("internal", "Gemini API Key needed for analysis.");
-
       const sdkLoadedForAnalysis = await loadGeminiSDK();
       const { GoogleGenAI } = getGeminiSDK();
       if (!sdkLoadedForAnalysis || !GoogleGenAI) {
         throw new HttpsError("internal", "Core AI SDK failed to load");
       }
 
-      const genAI = new GoogleGenAI({ apiKey: geminiKey });
+      const genAI = new GoogleGenAI({ vertexai: { project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' } });
 
       const analysisPrompt = `Analyze the following stock data and provide a brief summary of market sentiment and key trends:\n\n${JSON.stringify(stockData, null, 2)}`;
       const analysisResult = await genAI.models.generateContent(

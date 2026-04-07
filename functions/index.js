@@ -13,7 +13,6 @@ exports.api = onRequest(
     region: "us-central1",
     // Grant the 'api' function access to all secrets its routes might need
     secrets: [
-      "GEMINI_API_KEY",
       "NEWS_API_KEY",
       "GNEWS_API_KEY",
       "FINNHUB_API_KEY",
@@ -60,8 +59,8 @@ exports.yahooFinance = onRequest({ cors: true }, legacyProxies.yahooFinance);
 
 // Export search callable functions
 exports.searchArticles = onCall({ region: 'us-central1' }, searchCallables.searchArticles);
-exports.getSearchSuggestions = onCall({ secrets: ["GEMINI_API_KEY"], region: 'us-central1' }, searchCallables.getSearchSuggestions);
-exports.enhancedSearch = onCall({ secrets: ["GEMINI_API_KEY", "GROK_API_KEY"], region: 'us-central1', timeoutSeconds: 60 }, searchCallables.enhancedSearch);
+exports.getSearchSuggestions = onCall({ secrets: [], region: 'us-central1' }, searchCallables.getSearchSuggestions);
+exports.enhancedSearch = onCall({ secrets: ["GROK_API_KEY"], region: 'us-central1', timeoutSeconds: 60 }, searchCallables.enhancedSearch);
 
 // === Callable Functions ===
 const aiCallables = require("./callable/ai");
@@ -71,13 +70,13 @@ const toolCallables = require("./callable/tools");
 const { getTechPodcastsHandler } = require("./services/spotifyService");
 
 // AI Callables
-exports.generateArticleContent = onCall({ secrets: ["GEMINI_API_KEY"], timeoutSeconds: 180, region: "us-central1" }, aiCallables.generateArticleContent);
-exports.rephraseText = onCall({ secrets: ["GEMINI_API_KEY"], region: "us-central1" }, aiCallables.rephraseText);
+exports.generateArticleContent = onCall({ secrets: [], timeoutSeconds: 180, region: "us-central1" }, aiCallables.generateArticleContent);
+exports.rephraseText = onCall({ secrets: [], region: "us-central1" }, aiCallables.rephraseText);
 exports.suggestArticleTopic = onCall({ secrets: ["GROK_API_KEY"], region: "us-central1" }, aiCallables.suggestArticleTopic);
-exports.generateArticleImage = onCall({ secrets: ["GEMINI_API_KEY", "UNSPLASH_ACCESS_KEY"], region: "us-central1", timeoutSeconds: 60 }, aiCallables.generateArticleImage);
+exports.generateArticleImage = onCall({ secrets: ["UNSPLASH_ACCESS_KEY"], region: "us-central1", timeoutSeconds: 60 }, aiCallables.generateArticleImage);
 
 exports.generateTopTenArticle = onRequest({
-  secrets: ["GEMINI_API_KEY", "UNSPLASH_ACCESS_KEY"],
+  secrets: ["UNSPLASH_ACCESS_KEY"],
   region: "us-central1",
   timeoutSeconds: 300,
   cors: ["https://trendingtech-daily.web.app"],
@@ -107,7 +106,7 @@ exports.generateTopTenArticle = onRequest({
 });
 
 exports.generateHowToArticle = onRequest({
-  secrets: ["GEMINI_API_KEY", "UNSPLASH_ACCESS_KEY"],
+  secrets: ["UNSPLASH_ACCESS_KEY"],
   region: "us-central1",
   timeoutSeconds: 300,
   cors: ["https://trendingtech-daily.web.app"],
@@ -136,8 +135,8 @@ exports.generateHowToArticle = onRequest({
 });
 
 exports.getStockDataForCompanies = onCall({ secrets: ["FINNHUB_API_KEY"], region: "us-central1" }, aiCallables.getStockDataForCompanies);
-exports.readArticleAloud = onCall({ secrets: ["GEMINI_API_KEY"], region: "us-central1", timeoutSeconds: 60 }, aiCallables.readArticleAloud);
-exports.generateAIAgentResponse = onCall({ secrets: ["GEMINI_API_KEY"], region: "us-central1", timeoutSeconds: 120 }, toolCallables.generateAIAgentResponse);
+exports.readArticleAloud = onCall({ secrets: [], region: "us-central1", timeoutSeconds: 60 }, aiCallables.readArticleAloud);
+exports.generateAIAgentResponse = onCall({ secrets: [], region: "us-central1", timeoutSeconds: 120 }, toolCallables.generateAIAgentResponse);
 
 // Admin Callables
 exports.createAdmin = onCall(adminCallables.createAdmin);
@@ -149,8 +148,8 @@ exports.getRecommendedVideos = onCall({ secrets: ["YOUTUBE_API_KEY"], region: "u
 exports.getTechPodcasts = onCall({ secrets: ["SPOTIFY_CLIENT_ID", "SPOTIFY_CLIENT_SECRET"], region: "us-central1" }, getTechPodcastsHandler);
 
 // Tool Callables
-exports.searchWeb = onCall({ secrets: ["GEMINI_API_KEY"], region: "us-central1" }, toolCallables.searchWeb);
-exports.getFinnhubStockData = onCall({ secrets: ["FINNHUB_API_KEY", "GEMINI_API_KEY"], region: "us-central1" }, toolCallables.getFinnhubStockData);
+exports.searchWeb = onCall({ secrets: [], region: "us-central1" }, toolCallables.searchWeb);
+exports.getFinnhubStockData = onCall({ secrets: ["FINNHUB_API_KEY", ], region: "us-central1" }, toolCallables.getFinnhubStockData);
 
 // === Scheduled Functions ===
 const { fetchAllNews } = require("./services/newsService");
@@ -165,7 +164,7 @@ exports.scheduledNewsFetch = onSchedule({ schedule: "every 4 hours", region: "us
   }
 });
 
-exports.autoGenerateArticle = onSchedule({ schedule: "every 1 hours", region: "us-central1", secrets: ["NEWS_API_KEY", "GEMINI_API_KEY", "GROK_API_KEY", "SMTP_USER", "SMTP_PASS", "SMTP_HOST", "SMTP_PORT", "ARTICLE_NOTIFY_EMAIL"] }, async () => {
+exports.autoGenerateArticle = onSchedule({ schedule: "every 1 hours", region: "us-central1", secrets: ["NEWS_API_KEY", "GROK_API_KEY", "SMTP_USER", "SMTP_PASS", "SMTP_HOST", "SMTP_PORT", "ARTICLE_NOTIFY_EMAIL"] }, async () => {
   try {
     const freqEnv = parseInt(process.env.AUTO_ARTICLE_FREQUENCY, 10);
     const frequency = isNaN(freqEnv) ? 3 : Math.min(Math.max(freqEnv, 1), 3);
@@ -180,7 +179,7 @@ exports.autoGenerateArticle = onSchedule({ schedule: "every 1 hours", region: "u
   }
 });
 
-exports.testGenerateArticle = onCall({ secrets: ["NEWS_API_KEY", "GEMINI_API_KEY", "GROK_API_KEY", "SMTP_USER", "SMTP_PASS", "SMTP_HOST", "SMTP_PORT", "ARTICLE_NOTIFY_EMAIL"], region: "us-central1" }, async (request) => {
+exports.testGenerateArticle = onCall({ secrets: ["NEWS_API_KEY", "GROK_API_KEY", "SMTP_USER", "SMTP_PASS", "SMTP_HOST", "SMTP_PORT", "ARTICLE_NOTIFY_EMAIL"], region: "us-central1" }, async (request) => {
   if (!request.auth || request.auth.token.admin !== true) {
     throw new HttpsError('permission-denied', 'Admin privileges required');
   }

@@ -12,13 +12,7 @@ router.post('/generateAIAgentResponse', async (req, res) => {
   try {
     logger.info('AI Agent HTTP endpoint (/generateAIAgentResponse) called');
     
-    // Use environment variables populated by the 'secrets' option in index.js
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-      logger.error("AI Agent HTTP: API Key not configured.");
-      return res.status(500).json({ error: "API Key not configured.", success: false });
-    }
-
+    // Using Vertex AI credentials via Application Default Credentials
     const sdkLoaded = await loadGeminiSDK();
     const { GoogleGenAI } = getGeminiSDK(); // Destructure the loaded SDK
 
@@ -33,7 +27,7 @@ router.post('/generateAIAgentResponse', async (req, res) => {
       return res.status(400).json({ error: "A non-empty prompt is required.", success: false });
     }
 
-    const genAI = new GoogleGenAI({ apiKey });
+    const genAI = new GoogleGenAI({ vertexai: { project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' } });
 
     // --- DYNAMIC PROMPT CONSTRUCTION ---
     let fullPrompt = `You are a helpful and highly context-aware AI assistant for TrendingTechDaily.com, a tech news website.\n`;

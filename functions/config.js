@@ -4,11 +4,7 @@ const admin = require("firebase-admin");
 const { getFirestore } = require("firebase-admin/firestore");
 const logger = require("firebase-functions/logger");
 
-// Provide a default Gemini API key when none has been supplied via environment variables.
-// This allows local development and deployment environments to function without additional setup.
-if (!process.env.GEMINI_API_KEY) {
-  process.env.GEMINI_API_KEY = "AIzaSyAw2xLXIroAn67axk8S7dwC42hy1jSP0Uc";
-}
+// Legacy GEMINI_API_KEY fallback removed. Using Vertex AI ADC.
 
 // Initialize Firebase Admin SDK only once.
 if (admin.apps.length === 0) {

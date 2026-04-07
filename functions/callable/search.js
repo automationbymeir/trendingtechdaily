@@ -145,18 +145,13 @@ async function getSearchSuggestions(request) {
     }
 
     try {
-        const apiKey = process.env.GEMINI_API_KEY;
-        if (!apiKey) {
-            throw new HttpsError("internal", "AI service not configured");
-        }
-
         const sdkLoaded = await loadGeminiSDK();
         const { GoogleGenAI } = getGeminiSDK();
         if (!sdkLoaded || !GoogleGenAI) {
             throw new HttpsError("internal", "AI service not available");
         }
 
-        const genAI = new GoogleGenAI({ apiKey });
+        const genAI = new GoogleGenAI({ vertexai: { project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' } });
 
         // Create context from previous results
         const context = previousResults.length > 0 
@@ -261,16 +256,13 @@ async function enhancedSearch(request) {
  */
 async function getGeminiInsights(query, results) {
     try {
-        const apiKey = process.env.GEMINI_API_KEY;
-        if (!apiKey) return null;
-
         const sdkLoaded = await loadGeminiSDK();
         const { GoogleGenAI } = getGeminiSDK();
         if (!sdkLoaded || !GoogleGenAI) {
             return null;
         }
 
-        const genAI = new GoogleGenAI({ apiKey });
+        const genAI = new GoogleGenAI({ vertexai: { project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' } });
 
         const resultsContext = results.slice(0, 5).map(r => `- ${r.title}: ${r.excerpt}`).join('\n');
 

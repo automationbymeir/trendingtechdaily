@@ -1,0 +1,113 @@
+/* Podcast Page Styles with Directly Applied Fonts */
+
+.podcast-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: none;
+    border-radius: 0.5rem;
+  }
+  
+  .podcast-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  }
+  
+  .podcast-card .card-img-top {
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+  }
+  
+  .podcast-card .card-body {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .podcast-card .card-title {
+    font-family: 'Orbitron', sans-serif; /* ADJUSTED */
+    font-weight: 700;
+  }
+  
+  .podcast-card .podcast-description {
+    font-family: 'IBM Plex Sans', sans-serif; /* ADJUSTED */
+    font-size: 0.875rem;
+    color: #555;
+    flex-grow: 1;
+    overflow-y: auto;
+    max-height: 100px;
+    margin-bottom: 1rem;
+  }
+  
+  .podcast-card .btn-spotify {
+    background-color: #1DB954;
+    border-color: #1DB954;
+    color: white;
+    font-weight: bold;
+    font-family: 'IBM Plex Sans', sans-serif; /* ADJUSTED */
+  }
+  
+  .podcast-card .btn-spotify:hover {
+    background-color: #1AA34A;
+    border-color: #1AA34A;
+  }
+  
+  .spinner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+  }
+  
+  /* Masthead styling matching index page */
+  .masthead {
+    padding: 4rem 0;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    margin-bottom: 2rem;
+    position: relative;
+  }
+  
+  .masthead::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #4CAF50, #2196F3, #FFC107);
+  }
+  
+  .masthead h1 {
+    font-family: 'Orbitron', sans-serif; /* ADJUSTED */
+    font-weight: 900;
+    font-size: 2.5rem;
+    color: #121212;
+    margin-bottom: 1rem;
+  }
+  
+  .masthead .lead {
+    font-family: 'IBM Plex Sans', sans-serif; /* ADJUSTED */
+    font-size: 1.2rem;
+    color: #666;
+    font-weight: 400;
+  }
+  
+  /* Section title styling to match index */
+  .section-title {
+    font-family: 'Orbitron', sans-serif; /* ADJUSTED */
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #007bff;
+    display: inline-block;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .masthead h1 {
+      font-size: 2rem;
+    }
+    .masthead .lead {
+      font-size: 1.1rem;
+    }
+  }

@@ -1,0 +1,44 @@
+.code-block-wrapper {
+    position: relative;
+    margin-bottom: 1.5rem;
+    border: 1px solid #333;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.code-block-header {
+    background-color: #2d2d2d;
+    color: #f8f8f2;
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+    font-family: 'IBM Plex Sans', sans-serif;
+}
+
+.language-label {
+    font-weight: bold;
+    font-size: 0.85em;
+}
+
+.code-block-buttons .btn {
+    font-size: 0.75em;
+    padding: 0.25rem 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Adjust Prism.js default styles to fit the new wrapper */
+pre[class*="language-"] {
+    margin: 0 !important; /* Remove default margin to fit wrapper */
+    border-radius: 0 !important; /* Remove default border-radius */
+    padding-top: 1rem; /* Add padding to top for header space */
+    padding-bottom: 1rem;
+}
+
+/* Ensure line numbers are styled correctly if Prism Line Numbers plugin is used */
+.line-numbers .line-numbers-rows {
+    padding-top: 1rem !important;
+} 

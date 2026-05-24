@@ -1,0 +1,39 @@
+# .github/workflows/deploy.yml
+
+# Name of the workflow
+name: Deploy to Firebase Hosting
+
+# 1. TRIGGER: This workflow runs on every push to the 'main' branch
+on:
+  push:
+    branches:
+      - main
+
+# 2. JOBS: A sequence of tasks to be executed
+jobs:
+  deploy:
+    # Use the latest version of Ubuntu for the virtual machine
+    runs-on: ubuntu-latest
+
+    # 3. STEPS: The individual commands to run
+    steps:
+      # Step 1: Check out your repository code
+      # This downloads your code into the virtual machine so it can be used.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Deploy to Firebase Hosting
+      # This is the core step that sends your code to Firebase.
+      # The build and install steps were removed as they are not needed for your project.
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          # This secret contains the JSON key for a Google Service Account
+          # with the "Firebase Hosting Admin" role.
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_TRENDINGTECH_DAILY }}'
+          
+          # This is your Firebase Project ID.
+          projectId: 'trendingtech-daily'
+          
+          # This line tells Firebase to deploy directly to your live site.
+          channelId: live

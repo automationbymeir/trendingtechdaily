@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stock Market Data - TrendingTech Daily</title>
+    <link rel="canonical" href="https://trendingtechdaily.com/stock-data" />
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Sans:wght@400;600&family=Fira+Code&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/ai-agent.css">
+    <link rel="stylesheet" href="css/stock-styles.css">
+    <link rel="stylesheet" href="css/sidebar-podcasts.css">
+    
+    <style>
+        /* Additional styles for search functionality */
+        .search-container {
+            position: relative;
+        }
+        
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 1000;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .suggestions-container {
+            padding: 0;
+        }
+        
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .suggestion-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .suggestion-logo {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            border-radius: 2px;
+        }
+        
+        .suggestion-logo-placeholder {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            background-color: #f0f0f0;
+            border-radius: 2px;
+        }
+        
+        .suggestion-text {
+            flex: 1;
+        }
+        
+        .suggestion-text strong {
+            display: block;
+            font-weight: 600;
+        }
+        
+        .suggestion-name {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .suggestion-more {
+            padding: 10px 15px;
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            background-color: #f8f9fa;
+        }
+        
+        .suggestion-no-results {
+            padding: 15px;
+            text-align: center;
+            color: #666;
+        }
+        
+        mark {
+            background-color: #fff3cd;
+            padding: 1px 2px;
+            border-radius: 2px;
+        }
+        
+        /* Ensure footer stays at bottom */
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        main {
+            flex: 1;
+        }
+        
+        /* Stock card clickable styles */
+        .stock-card {
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .stock-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1) !important;
+        }
+    </style>
+</head>
+<body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
+
+    <main class="container mt-5 mb-5">
+        <div class="row">
+            <div class="col-lg-8">
+                <section id="search-section">
+                    <div class="container">
+                        <h2>Search Stocks</h2>
+                        <div class="search-container">
+                            <input type="text" id="stock-search" placeholder="Enter stock symbol (e.g., AAPL)">
+                            <button id="search-btn">Search</button>
+                            <div id="search-suggestions" class="search-suggestions" style="display: none;"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Premarket drawer section -->
+                <section id="premarket-drawer" class="mb-4">
+                    <div class="container">
+                        <button class="premarket-toggle-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#premarketContent" aria-expanded="false" aria-controls="premarketContent">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h2 class="mb-0">Premarket Data</h2>
+                                    <p class="text-muted mb-0 small">Click to view premarket trading activity</p>
+                                </div>
+                                <div class="toggle-icon">
+                                    <i class="bi bi-chevron-down"></i>
+                                </div>
+                            </div>
+                        </button>
+
+                        <div class="collapse" id="premarketContent">
+                            <div class="premarket-content-wrapper">
+                                <div class="loader" id="premarket-loader"></div>
+                                <div class="error-message" id="premarket-error"></div>
+                                <div class="stock-container" id="premarket-data">
+                                    <!-- Premarket stock data will be inserted here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="market">
+                    <div class="container">
+                        <h2>Market Data</h2>
+                        <div class="loader" id="market-loader"></div>
+                        <div class="error-message" id="market-error"></div>
+                        <div class="stock-container" id="market-data">
+                            <!-- Market stock data will be inserted here -->
+                        </div>
+                    </div>
+                </section>
+
+                <section id="crypto">
+                    <div class="container">
+                        <h2>Cryptocurrency Prices</h2>
+                        <div class="loader" id="crypto-loader"></div>
+                        <div class="error-message" id="crypto-error"></div>
+                        <div class="stock-container" id="crypto-data"></div>
+                    </div>
+                </section>
+
+                <section id="watchlist">
+                    <div class="container">
+                        <h2>Your Watchlist</h2>
+                        <div id="watchlist-stocks">
+                            <!-- Watchlist will be inserted here -->
+                        </div>
+                        <p class="info-text">Add stocks to your watchlist by clicking the star icon next to any stock.</p>
+                    </div>
+                </section>
+
+                <section id="stock-news" class="mt-5">
+                    <div class="container">
+                        <h2>Latest Stock News</h2>
+                        <div id="stock-news-loading" class="text-center my-3">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                        <div id="stock-news-error" class="text-danger mb-3"></div>
+                        <div class="row" id="stock-news-articles"></div>
+                    </div>
+                </section>
+            </div>
+
+            <aside class="col-lg-4 mt-4 mt-lg-0">
+                <div class="card mb-4">
+                    <div class="card-header">Market Podcasts</div>
+                    <div class="card-body">
+                        <div id="market-podcasts-loader" class="text-center my-3">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                        <div id="market-podcasts-error" class="text-danger small"></div>
+                        <div id="market-podcasts-list"></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">Stock Market Articles</div>
+                    <div class="card-body">
+                        <div id="stock-articles-list" class="list-unstyled"></div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Stock Detail Modal -->
+    <div class="modal fade" id="stockDetailModal" tabindex="-1" aria-labelledby="stockDetailModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="stockDetailModalLabel">
+                        <img id="detail-logo" src="" alt="" class="detail-logo me-2" style="display: none;">
+                        <span id="detail-symbol">SYMBOL</span> - <span id="detail-name">Company Name</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="detail-loading" class="text-center py-3" style="display: none;">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                    <div id="detail-error" class="alert alert-danger" style="display: none;"></div>
+                    
+                    <div class="stock-detail-content">
+                        <div class="stock-detail-price mb-3">
+                            <h2 class="mb-0">$<span id="detail-price">--</span></h2>
+                            <span id="detail-change" class="h5">--</span>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-6 col-md-3 mb-2">
+                                <div class="stat-item">
+                                    <div class="stat-label">Open</div>
+                                    <div class="stat-value" id="detail-open">--</div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3 mb-2">
+                                <div class="stat-item">
+                                    <div class="stat-label">High</div>
+                                    <div class="stat-value" id="detail-high">--</div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3 mb-2">
+                                <div class="stat-item">
+                                    <div class="stat-label">Low</div>
+                                    <div class="stat-value" id="detail-low">--</div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3 mb-2">
+                                <div class="stat-item">
+                                    <div class="stat-label">Volume</div>
+                                    <div class="stat-value" id="detail-volume">--</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="stock-chart" class="stock-chart-container mb-3" style="height: 300px;">
+                            <canvas id="stockChart"></canvas>
+                        </div>
+                        
+                        <div id="company-description" class="mb-3" style="display: none;">
+                            <h6>About</h6>
+                            <p id="company-desc-text" class="text-muted small"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="watchlist-toggle-btn">
+                        <i class="bi bi-star"></i>
+                        <span>Add to Watchlist</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Load scripts in correct order -->
+    <script src="/js/config.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/nav-loader.js"></script>
+    
+    <!-- Inline script with your original functionality -->
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAMMvOPS6fczzI_2CTOcc_NlGGFO4qDydg",
+            authDomain: "trendingtech-daily.firebaseapp.com",
+            projectId: "trendingtech-daily",
+            storageBucket: "trendingtech-daily.firebasestorage.app",
+            messagingSenderId: "343812872871",
+            appId: "1:343812872871:web:5bd68bd7d6140d83551982"
+        };
+
+        // Global Firebase variables
+        let db, auth;
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        db = firebase.firestore();
+        auth = firebase.auth();
+        const functions = firebase.functions();
+        
+        // Trigger firebase-ready event for nav-loader
+        document.dispatchEvent(new Event('firebase-ready'));
+        
+        // Continue with your original code...
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Bootstrap modal
+            const modalElement = document.getElementById('stockDetailModal');
+            if (modalElement) {
+                window.stockDetailModal = new bootstrap.Modal(modalElement);
+            }
+            
+            // Your original stock functionality continues here...
+        });
+    </script>
+    
+    <!-- Then load stock-data.js which may depend on the above -->
+    <script src="/js/stock-data.js"></script>
+</body>
+</html>

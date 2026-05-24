@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommended Tech Podcasts - TrendingTech Daily</title>
+    <link rel="canonical" href="https://trendingtechdaily.com/podcasts" />
+    
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
+    
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    
+    <!-- Simple module loader -->
+    <script>
+        window.loadModule = function(url) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.type = 'text/javascript';
+                script.src = url;
+                script.onload = () => resolve();
+                script.onerror = () => reject(new Error(`Failed to load module: ${url}`));
+                document.head.appendChild(script);
+            });
+        };
+    </script>
+
+    <!-- Stylesheets -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Sans:wght@400;600&family=Fira+Code&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8142734137865758" crossorigin="anonymous"></script>
+
+    <!-- Favicons -->
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    <link rel="stylesheet" href="css/podcasts.css" />
+
+</head>
+
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Header/Masthead (matching index page styling) -->
+    <header class="masthead">
+        <div class="container text-center">
+            <h1 id="masthead-title">Recommended Tech Podcasts</h1>
+            <p id="masthead-description" class="lead">Discover engaging podcasts about the latest in technology, AI, startups, and innovation.</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container my-5">
+        <div class="row">
+            <div class="col-lg-12">
+                <!-- Loading spinner -->
+                <div id="podcasts-loading-spinner" class="spinner-container text-center py-5">
+                    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-3 fs-5">Loading podcasts, please wait...</p>
+                </div>
+                
+                <!-- Error message -->
+                <div id="podcasts-error-message" class="alert alert-danger d-none" role="alert"></div>
+                
+                <!-- Podcasts container -->
+                <div id="podcasts-container" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/app-base.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/nav-loader.js"></script>
+
+    <script>
+        // Helper function to safely get properties
+        function getSafe(fn, defaultValue = '') {
+            try {
+                const value = fn();
+                return (value !== null && value !== undefined) ? value : defaultValue;
+            } catch {
+                return defaultValue;
+            }
+        }
+
+        // Set current year in footer
+        const currentYearSpan = document.getElementById('current-year');
+        if (currentYearSpan) {
+            currentYearSpan.textContent = new Date().getFullYear();
+        }
+
+        // Initialize page when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            function attemptInitialLoad() {
+                // Check if Firebase and its services are available
+                if (typeof firebase !== 'undefined' && firebase.app && typeof functions !== 'undefined') {
+                    console.log("Podcasts page: Firebase ready, loading podcasts...");
+                    loadPodcasts();
+                } else {
+                    console.error("Podcasts page: Firebase services not ready, retrying...");
+                    setTimeout(attemptInitialLoad, 500);
+                }
+            }
+            attemptInitialLoad();
+        });
+
+        function loadPodcasts() {
+            const podcastsContainer = document.getElementById('podcasts-container');
+            const loadingSpinner = document.getElementById('podcasts-loading-spinner');
+            const errorMessageContainer = document.getElementById('podcasts-error-message');
+
+            if (!podcastsContainer || !loadingSpinner || !errorMessageContainer) {
+                console.error("Required HTML elements not found.");
+                return;
+            }
+
+            loadingSpinner.style.display = 'flex';
+            errorMessageContainer.classList.add('d-none');
+
+            const getTechPodcastsFn = functions.httpsCallable('getTechPodcasts');
+
+            getTechPodcastsFn({ query: "latest technology trends podcast", limit: 16 })
+                .then(result => {
+                    loadingSpinner.style.display = 'none';
+                    const podcasts = getSafe(() => result.data.podcasts, []);
+
+                    if (podcasts && podcasts.length > 0) {
+                        renderPodcasts(podcasts);
+                    } else {
+                        errorMessageContainer.textContent = 'No tech podcasts found at the moment. Please check back later!';
+                        errorMessageContainer.classList.remove('d-none');
+                        podcastsContainer.innerHTML = '';
+                    }
+                })
+                .catch(error => {
+                    loadingSpinner.style.display = 'none';
+                    console.error("Error calling getTechPodcasts function:", error);
+                    let displayError = "Could not load podcasts due to an unexpected error.";
+                    if (error.message) {
+                        displayError = `Could not load podcasts: ${error.message}`;
+                    }
+                    if (error.code === 'unavailable') {
+                        displayError = "The podcast service seems to be temporarily unavailable. Please try again later.";
+                    }
+                    errorMessageContainer.textContent = displayError;
+                    errorMessageContainer.classList.remove('d-none');
+                    podcastsContainer.innerHTML = '';
+                });
+        }
+
+        function renderPodcasts(podcasts) {
+            const container = document.getElementById('podcasts-container');
+            if (!container) return;
+
+            let htmlContent = '';
+            podcasts.forEach(podcast => {
+                const imageUrl = getSafe(() => podcast.imageUrl, '');
+                const podcastName = getSafe(() => podcast.name, 'Untitled Podcast');
+                const publisher = getSafe(() => podcast.publisher, 'N/A');
+                let description = getSafe(() => podcast.html_description);
+                if (!description) description = getSafe(() => podcast.description, 'No description available.');
+
+                const maxDescLength = 120;
+                const truncatedDescription = description.length > maxDescLength ?
+                    description.substring(0, maxDescLength) + "..." :
+                    description;
+
+                const spotifyUrl = getSafe(() => podcast.spotifyUrl, '#');
+                const totalEpisodes = getSafe(() => podcast.total_episodes);
+
+                htmlContent += `
+                    <div class="col">
+                        <div class="card h-100 podcast-card shadow-sm">
+                            <img src="${imageUrl}" class="card-img-top" alt="${podcastName}">
+                            <div class="card-body">
+                                <h5 class="card-title">${podcastName}</h5>
+                                <p class="card-text small text-muted mb-2">By: ${publisher}</p>
+                                <div class="podcast-description mb-3">${truncatedDescription}</div>
+                                <div class="mt-auto">
+                                    <a href="${spotifyUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-spotify w-100">
+                                        <i class="bi bi-spotify me-2"></i>Listen on Spotify
+                                    </a>
+                                </div>
+                            </div>
+                            ${totalEpisodes ? `<div class="card-footer text-muted small">${totalEpisodes} episodes</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = htmlContent;
+        }
+    </script>
+</body>
+</html>

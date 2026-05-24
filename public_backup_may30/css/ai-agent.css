@@ -1,0 +1,638 @@
+/* AI Tech News Agent Styles - ai-agent.css */
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Sans:wght@400;600&family=Fira+Code&display=swap");
+
+/* Main container */
+.ai-agent-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999 !important; /* Ensure it's above all other elements */
+    font-family: 'IBM Plex Sans', sans-serif;
+    pointer-events: auto !important; /* Ensure container can receive clicks */
+}
+
+/* Floating action button */
+.ai-agent-button {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #2196F3, #4CAF50);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(33, 150, 243, 0.4);
+    transition: all 0.3s ease;
+    border: none;
+    position: relative;
+    overflow: hidden;
+    pointer-events: auto !important; /* Ensure button is clickable */
+    z-index: 10000 !important; /* Higher than container */
+}
+
+.ai-agent-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 30px rgba(33, 150, 243, 0.6);
+}
+
+/* Rotating border effect */
+.ai-agent-button::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #2196F3, #4CAF50, #2196F3);
+    border-radius: 50%;
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.3s ease;
+    animation: rotate 3s linear infinite;
+}
+
+.ai-agent-button.active::before {
+    opacity: 1;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.ai-agent-icon {
+    width: 30px;
+    height: 30px;
+    color: white;
+    z-index: 1; /* Above the pseudo-element */
+    pointer-events: none; /* Icon doesn't need to capture clicks */
+}
+
+/* Pulse animation */
+.ai-agent-pulse {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(33, 150, 243, 0.4);
+    animation: pulse-ring 2s infinite;
+    pointer-events: none; /* Pulse doesn't capture clicks */
+}
+
+@keyframes pulse-ring {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* Chat window */
+.ai-agent-chat {
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    width: 380px;
+    max-width: 90vw;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 9998; /* Below the button when closed */
+}
+
+.ai-agent-chat.open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: all;
+    z-index: 10001; /* Above the button when open */
+}
+
+/* Chat header */
+.ai-chat-header {
+    background: linear-gradient(135deg, #2196F3, #4CAF50);
+    color: white;
+    padding: 20px;
+    position: relative;
+}
+
+.ai-chat-header h3 {
+    margin: 0;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+}
+
+/* Status indicator */
+.ai-status-indicator {
+    width: 8px;
+    height: 8px;
+    background: #4CAF50;
+    border-radius: 50%;
+    display: inline-block;
+    animation: blink 2s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* Close button */
+.ai-chat-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 5px;
+    transition: opacity 0.2s;
+}
+
+.ai-chat-close:hover {
+    opacity: 0.7;
+}
+
+/* Chat content area */
+.ai-chat-content {
+    height: 400px;
+    overflow-y: auto;
+    padding: 20px;
+    background: #f8f9fa;
+}
+
+/* Custom scrollbar */
+.ai-chat-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.ai-chat-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.ai-chat-content::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+.ai-chat-content::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
+/* Messages container */
+.ai-chat-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Individual messages */
+.ai-message {
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.ai-message.bot {
+    align-self: flex-start;
+}
+
+.ai-message.user {
+    align-self: flex-end;
+}
+
+/* Message bubbles */
+.ai-message-bubble {
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    font-family: 'IBM Plex Sans', sans-serif;
+}
+
+.ai-message.bot .ai-message-bubble {
+    background: white;
+    color: #333;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.ai-message.user .ai-message-bubble {
+    background: linear-gradient(135deg, #2196F3, #4CAF50);
+    color: white;
+}
+
+/* Typing indicator */
+.ai-typing-indicator {
+    display: flex;
+    gap: 4px;
+    padding: 15px;
+    background: white;
+    border-radius: 12px;
+    width: fit-content;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.ai-typing-dot {
+    width: 8px;
+    height: 8px;
+    background: #999;
+    border-radius: 50%;
+    animation: typing 1.4s infinite;
+}
+
+.ai-typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.ai-typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+    0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.7;
+    }
+    30% {
+        transform: translateY(-10px);
+        opacity: 1;
+    }
+}
+
+/* Chat input area */
+.ai-chat-input {
+    padding: 20px;
+    background: white;
+    border-top: 1px solid #e9ecef;
+}
+
+/* Quick action buttons */
+.ai-quick-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.ai-quick-action {
+    padding: 6px 12px;
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    font-family: 'IBM Plex Sans', sans-serif;
+}
+
+.ai-quick-action:hover {
+    background: #f8f9fa;
+    border-color: #2196F3;
+    color: #2196F3;
+}
+
+/* Input form */
+.ai-input-form {
+    display: flex;
+    gap: 10px;
+}
+
+.ai-input-field {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #e9ecef;
+    border-radius: 25px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: 'IBM Plex Sans', sans-serif;
+}
+
+.ai-input-field:focus {
+    border-color: #2196F3;
+}
+
+/* Send button */
+.ai-send-button {
+    background: linear-gradient(135deg, #2196F3, #4CAF50);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.ai-send-button:hover {
+    transform: scale(1.1);
+}
+
+.ai-send-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* News item cards in chat */
+.ai-news-item {
+    background: white;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.ai-news-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.ai-news-title {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 4px;
+    color: #121212;
+}
+
+.ai-news-meta {
+    font-size: 12px;
+    color: #666;
+    font-family: 'IBM Plex Sans', sans-serif;
+}
+
+/* Message content styling */
+.ai-message-bubble ul {
+    margin: 10px 0 0 20px;
+    padding: 0;
+}
+
+.ai-message-bubble ul li {
+    margin-bottom: 5px;
+}
+
+.ai-message-bubble strong {
+    font-weight: 600;
+    color: #121212;
+}
+
+.ai-message-bubble small {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.ai-message-bubble code {
+    font-family: 'Fira Code', monospace;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .ai-agent-container {
+        bottom: 10px;
+        right: 10px;
+    }
+    
+    .ai-agent-button {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .ai-agent-icon {
+        width: 24px;
+        height: 24px;
+    }
+    
+    .ai-agent-chat {
+        width: calc(100vw - 20px);
+        right: -10px;
+        bottom: 70px;
+        max-height: 80vh;
+    }
+    
+    .ai-chat-content {
+        height: 350px;
+    }
+    
+    .ai-chat-header {
+        padding: 15px;
+    }
+    
+    .ai-chat-header h3 {
+        font-size: 18px;
+    }
+    
+    .ai-chat-input {
+        padding: 15px;
+    }
+    
+    .ai-quick-actions {
+        gap: 6px;
+    }
+    
+    .ai-quick-action {
+        padding: 5px 10px;
+        font-size: 11px;
+    }
+}
+
+/* Tablet adjustments */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .ai-agent-chat {
+        width: 350px;
+    }
+}
+
+/* Animation for chat opening */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.ai-agent-chat.open {
+    animation: slideInUp 0.3s ease forwards;
+}
+
+/* Loading state for messages */
+.ai-message-loading {
+    opacity: 0.6;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+/* Error state styling */
+.ai-message-error {
+    background-color: #fee;
+    border-left: 3px solid #f44336;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #d32f2f;
+}
+
+/* Success state styling */
+.ai-message-success {
+    background-color: #efe;
+    border-left: 3px solid #4CAF50;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #2e7d32;
+}
+
+/* ================================================================= */
+/* AI Agent Banner Styles (Positioned Near Icon & Refined Close Button) */
+/* ================================================================= */
+
+/* Main banner container */
+.ai-agent-banner-pointer {
+    position: fixed;
+    z-index: 9998; /* Below the main button */
+    display: none;
+    opacity: 0;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+}
+
+/* State when the banner is visible */
+.ai-agent-banner-pointer.show {
+    opacity: 1;
+    transform: translateX(-5px) translateY(0px);
+}
+
+/* The actual banner styling */
+.ai-agent-banner {
+    background: linear-gradient(135deg, #2196F3, #4CAF50);
+    box-shadow: 0 5px 25px rgba(33, 150, 243, 0.45);
+    border-radius: 12px;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 0.6rem 1rem;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Refined Close Button Style (Top Right) */
+.ai-agent-banner .dismiss-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.8);
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease-in-out;
+    flex-shrink: 0;
+    padding: 0;
+    margin: 0;
+}
+
+.ai-agent-banner .dismiss-btn:hover {
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    transform: scale(1.1);
+}
+
+.ai-agent-banner .dismiss-btn i {
+    font-size: 0.8rem;
+}
+
+/* Text Content Styling */
+.banner-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+    padding-right: 2rem;
+}
+
+.banner-title h2 {
+    font-family: 'Orbitron', sans-serif;
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: white;
+    line-height: 1.3;
+    white-space: nowrap;
+}
+
+.subtitle {
+    display: block;
+    margin: 0;
+    opacity: 0.85;
+    font-size: 0.85rem;
+    font-family: 'IBM Plex Sans', sans-serif;
+    line-height: 1.2;
+    white-space: nowrap;
+    padding-left: 0;
+    border-left: none;
+}
+
+/* Right-pointing arrow styling */
+.banner-arrow-container {
+    position: absolute;
+    right: -11px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 18px;
+}
+
+.banner-arrow::before {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid transparent;
+    border-left: 12px solid #4CAF50;
+}
+
+/* Hide elements not needed */
+.new-badge,
+.features-list,
+.right-section,
+.cta-button {
+    display: none;
+}

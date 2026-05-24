@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Check Admin Status</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+  <h1>Admin Status Check</h1>
+  <div id="status">Checking...</div>
+  <button id="refreshBtn">Refresh Token</button>
+  <button id="signOutBtn">Sign Out</button>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAMMvOPS6fczzI_2CTOcc_NlGGFO4qDydg",
+      authDomain: "trendingtech-daily.firebaseapp.com",
+      projectId: "trendingtech-daily",
+      storageBucket: "trendingtech-daily.appspot.com",
+      messagingSenderId: "343812872871",
+      appId: "1:343812872871:web:5bd68bd7d6140d83551982"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    
+    function checkAdmin() {
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          document.getElementById('status').textContent = `Logged in as: ${user.email}`;
+          
+          user.getIdTokenResult(true).then(idTokenResult => {
+            const adminClaim = idTokenResult.claims.admin;
+            document.getElementById('status').textContent += 
+              `\nAdmin claim: ${adminClaim ? "YES" : "NO"}`;
+            console.log('All claims:', idTokenResult.claims);
+          });
+        } else {
+          document.getElementById('status').textContent = 'Not logged in';
+        }
+      });
+    }
+    
+    document.getElementById('refreshBtn').addEventListener('click', () => {
+      firebase.auth().currentUser.getIdToken(true).then(() => {
+        checkAdmin();
+      });
+    });
+    
+    document.getElementById('signOutBtn').addEventListener('click', () => {
+      firebase.auth().signOut().then(() => {
+        document.getElementById('status').textContent = 'Signed out';
+      });
+    });
+    
+    checkAdmin();
+  </script>
+</body>
+</html>

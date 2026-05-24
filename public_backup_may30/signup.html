@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up - TrendingTech Daily</title>
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Sans:wght@400;600&family=Fira+Code&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/signup-styles.css">
+
+    <link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+<link rel="stylesheet" href="css/signup-styles.css">
+
+</head>
+<body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    
+   <!-- Navbar Placeholder -->
+  <div id="navbar-placeholder"></div>
+    <main class="signup-page-main-content">
+        <div class="signup-outer-container">
+            <div class="signup-inner-container">
+                <div class="signup-banner-column">
+                    <div class="animated-bg"></div>
+                    <div class="banner-logo-text">TrendingTech Daily</div>
+                    <div class="banner-main-content">
+                        <div class="banner-tagline">
+                            Join our community of tech enthusiasts
+                        </div>
+                    </div>
+                    <hr class="banner-content-separator">
+                    <div class="banner-benefits-list">
+                        <div class="banner-benefit-item">
+                            <i class="bi bi-check-circle-fill benefit-icon"></i> Join the conversation
+                        </div>
+                        <div class="banner-benefit-item">
+                            <i class="bi bi-check-circle-fill benefit-icon"></i> Save articles for later
+                        </div>
+                        <div class="banner-benefit-item">
+                            <i class="bi bi-check-circle-fill benefit-icon"></i> Get personalized recommendations
+                        </div>
+                        <div class="banner-benefit-item">
+                            <i class="bi bi-check-circle-fill benefit-icon"></i> Access exclusive content
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="signup-form-column">
+                    <h2 class="form-title-main">Create Account</h2>
+                    <form id="signup-form" novalidate>
+                        <div class="form-group">
+                            <label for="signup-name">Display Name</label>
+                            <input type="text" id="signup-name" class="form-input" placeholder="Display Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-email">Email address</label>
+                            <input type="email" id="signup-email" class="form-input" placeholder="name@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-password">Password (min. 6 characters)</label>
+                            <input type="password" id="signup-password" class="form-input" placeholder="Password" required minlength="6">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full-width">Sign Up</button>
+                        <div id="signup-error" class="form-message-error"></div>
+                    </form>
+
+                    <hr class="form-section-divider">
+
+                    <p class="form-alternative-action-text">Or sign up with:</p>
+                    <button id="google-signup-btn" class="btn btn-outline btn-full-width">
+                        <i class="bi bi-google"></i>Sign Up with Google
+                    </button>
+
+                    <p class="form-footer-prompt">
+                        Already have an account? <a href="/login.html">Log In</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+         <div class="container">
+              <div class="footer-grid">
+                  <div class="footer-column">
+                      <h5 id="footer-site-title">TrendingTech Daily</h5>
+                      <p id="footer-description" class="text-muted-small">Stay informed...</p>
+                  </div>
+                  <div class="footer-column">
+                      <h5>Quick Links</h5>
+                      <ul class="footer-links">
+                          <li><a href="/">Home</a></li>
+                          <li><a href="/about.html">About Us</a></li>
+                          <li><a href="/privacy.html">Privacy Policy</a></li>
+                          <li><a href="/terms.html">Terms of Service</a></li>
+                      </ul>
+                  </div>
+                  <div class="footer-column">
+                      <h5>Categories</h5>
+                      <ul class="footer-links" id="footer-categories-list">
+                          <li class="text-muted-small fst-italic">Loading...</li>
+                      </ul>
+                  </div>
+                  <div class="footer-column">
+                      <h5>Contact Us</h5>
+                      <p class="text-muted-small">
+                          <i class="bi bi-envelope-fill"></i><span id="contact-email">loading...</span><br>
+                          <i class="bi bi-geo-alt-fill"></i><span id="contact-address">loading...</span>
+                      </p>
+                      <div id="footer-social-links" class="footer-socials"></div>
+                  </div>
+              </div>
+              <div class="copyright">
+                  &copy; <span id="footer-text">2025 TrendingTech Daily. All rights reserved.</span>
+              </div>
+          </div>
+     </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script src="js/signup-scripts.js" defer></script>
+
+</body>
+</html>

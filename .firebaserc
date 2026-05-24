@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "trendingtech-daily"
+  },
+  "targets": {
+    "trendingtech-daily": {
+      "hosting": {
+        "custom": [
+          "trendingtechdaily"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

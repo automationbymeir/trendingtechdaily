@@ -1,0 +1,429 @@
+/* =================================================================== */
+/* UNIFIED DESIGN SYSTEM STYLESHEET - MODERN UI V2                    */
+/* Refactored for Consistency, Layout Correction & Alignment         */
+/* =================================================================== */
+
+/* --- 1. Design System & Global Styles --- */
+:root {
+    /* Color Palette */
+    --color-primary: #2196F3;
+    --color-secondary: #4CAF50;
+    --color-accent: #FFC107;
+    --color-text-dark: #121212;
+    --color-text-body: #333333;
+    --color-text-muted: #6C757D;
+    --color-bg-main: #F8F9FA;
+    --color-bg-card: #FFFFFF;
+    --color-border: #E9ECEF;
+  
+    /* Typography */
+    --font-heading: 'Orbitron', sans-serif;
+    --font-body: 'IBM Plex Sans', sans-serif;
+    --font-code: 'Fira Code', monospace;
+  
+    /* Spacing & Sizing */
+    --spacing-xs: 0.25rem;  /* 4px */
+    --spacing-sm: 0.5rem;   /* 8px */
+    --spacing-md: 1rem;     /* 16px */
+    --spacing-lg: 1.5rem;   /* 24px */
+    --spacing-xl: 2.5rem;   /* 40px */
+  
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 16px;
+  
+    /* Shadows & Transitions */
+    --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-deep: 0 8px 25px rgba(0, 0, 0, 0.12);
+    --transition-main: all 0.3s ease;
+  }
+  
+  /* --- 2. Base Reset & Core Elements --- */
+  * { box-sizing: border-box; }
+  
+  body {
+    margin: 0;
+    font-family: var(--font-body);
+    background-color: var(--color-bg-main);
+    color: var(--color-text-body);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  main {
+      flex-grow: 1; /* Ensures main content pushes footer down */
+  }
+  
+  
+  h1, h2, h3, h4, h5, h6 {
+    margin-top: 0;
+    margin-bottom: var(--spacing-md);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: var(--color-text-dark);
+  }
+  
+  a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: var(--transition-main);
+  }
+  a:hover { color: var(--color-secondary); }
+  
+  .container {
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
+  }
+  
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    padding: 0.65rem var(--spacing-lg); 
+    border-radius: var(--radius-md);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: var(--transition-main);
+    text-align: center;
+    white-space: nowrap;
+  }
+  
+  .btn-primary {
+    background-color: var(--color-primary);
+    color: #fff;
+    border-color: var(--color-primary);
+  }
+  .btn-primary:hover {
+    background-color: var(--color-secondary);
+    border-color: var(--color-secondary);
+  }
+  
+  .btn-full-width {
+      width: 100%;
+  }
+  
+  /* --- 3. Navigation & Header --- */
+  /* Styles for .navbar, .navbar-brand, .nav-item, .nav-link, .dropdown-menu etc. */
+  /* have been REMOVED from this file. */
+  /* These should now be defined in your main style.css if you want a central stylesheet for the navbar. */
+  /* The Bootstrap classes in your nav.html (like navbar-expand-lg, ms-auto) will still function */
+  /* based on Bootstrap's own CSS if it's linked, or your main style.css if it targets them. */
+  
+  
+  /* --- 4. Section Titles (General Purpose) --- */
+  .section-title {
+    margin-top: var(--spacing-lg);
+    font-size: 1.75rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid var(--color-border);
+    display: inline-block;
+  }
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-secondary), var(--color-primary));
+  }
+  
+  /* --- 7. Footer --- */
+  .footer {
+    background-color: var(--color-bg-card);
+    border-top: 1px solid var(--color-border);
+    padding: var(--spacing-xl) 0; 
+    margin-top: var(--spacing-xl); 
+  }
+  .footer h5 {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-md);
+    color: var(--color-text-dark);
+  }
+  .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--spacing-lg);
+  }
+  
+  .footer-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .footer-links li { margin-bottom: var(--spacing-sm); }
+  .footer-links a {
+    color: var(--color-text-body);
+    transition: var(--transition-main);
+  }
+  .footer-links a:hover { color: var(--color-accent); }
+  
+  .text-muted-small {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+  }
+  .footer-socials {
+      display: flex;
+      gap: var(--spacing-md);
+  }
+  .footer-socials a {
+      color: var(--color-text-muted);
+      font-size: 1.25rem;
+  }
+  .footer-socials a:hover {
+      color: var(--color-primary);
+  }
+  
+  .copyright {
+    text-align: center;
+    color: var(--color-text-muted);
+    padding-top: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+    border-top: 1px solid var(--color-border);
+    font-size: 0.875rem;
+  }
+  
+  
+  /* =================================================================== */
+  /* 10. SIGNUP PAGE - MAIN LAYOUT                                     */
+  /* =================================================================== */
+  .signup-page-main-content {
+      padding-top: var(--spacing-xl);
+      padding-bottom: var(--spacing-xl);
+  }
+  
+  .signup-outer-container {
+      max-width: 1000px; 
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: var(--spacing-md); 
+      padding-right: var(--spacing-md);
+  }
+  
+  .signup-inner-container {
+    display: grid;
+    grid-template-columns: 1fr; 
+    background-color: var(--color-bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-deep);
+    overflow: hidden; 
+  }
+  
+  @media (min-width: 992px) { /* lg breakpoint */
+    .signup-inner-container {
+      grid-template-columns: 40% 60%; 
+    }
+  }
+  
+  /* =================================================================== */
+  /* 11. SIGNUP PAGE - BANNER COLUMN (Left)                            */
+  /* =================================================================== */
+  .signup-banner-column {
+    display: none; 
+    flex-direction: column;
+    justify-content: center;
+    background-color: var(--color-bg-main); 
+    padding: var(--spacing-xl);
+    text-align: center;
+    position: relative;
+    border-right: 1px solid var(--color-border);
+  }
+  
+  @media (min-width: 992px) { /* lg breakpoint */
+    .signup-banner-column {
+      display: flex; 
+    }
+  }
+  
+  .animated-bg {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%; z-index: 0; 
+    opacity: 0.03; 
+    background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='1' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='1'/%3E%3C/g%3E%3C/svg%3E");
+    animation: subtleFade 7s infinite ease-in-out;
+  }
+  
+  @keyframes subtleFade { 
+      0% { opacity: 0.03; }
+      50% { opacity: 0.05; }
+      100% { opacity: 0.03; }
+  }
+  
+  .signup-banner-column > * {
+      position: relative; 
+      z-index: 1;
+  }
+  
+  .banner-logo-text {
+    font-family: var(--font-heading);
+    font-size: 1.75rem; 
+    font-weight: 900;
+    color: var(--color-text-dark);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .banner-tagline {
+    font-size: 1.25rem; 
+    color: var(--color-text-body);
+    line-height: 1.4;
+    margin-bottom: var(--spacing-lg);
+    font-family: var(--font-body); 
+  }
+  
+  .banner-content-separator {
+    border: none;
+    border-top: 1px solid var(--color-border);
+    width: 70%;
+    margin: var(--spacing-lg) auto;
+  }
+  
+  .banner-benefits-list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; 
+    gap: var(--spacing-md);
+    margin: 0 auto; 
+    max-width: 300px; 
+    text-align: left;
+  }
+  
+  .banner-benefit-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+  }
+  .banner-benefit-item .benefit-icon {
+    color: var(--color-secondary);
+    font-size: 1.1rem;
+  }
+  
+  /* =================================================================== */
+  /* 12. SIGNUP PAGE - FORM COLUMN (Right) & FORM ELEMENTS             */
+  /* =================================================================== */
+  .signup-form-column {
+    padding: var(--spacing-xl);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .form-title-main {
+    font-family: var(--font-heading);
+    font-size: 2rem; 
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-text-dark);
+  }
+  
+  .form-group {
+    margin-bottom: var(--spacing-lg);
+  }
+  .form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-text-body);
+    font-size: 0.9rem;
+  }
+  .form-input { 
+    width: 100%;
+    padding: 0.75rem var(--spacing-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-text-body);
+    background-color: #fff;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+  }
+  .form-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 0.2rem rgba(33, 150, 243, 0.25); 
+  }
+  .form-input::placeholder {
+      color: var(--color-text-muted);
+      opacity: 0.7;
+  }
+  
+  .btn-outline {
+    background-color: transparent;
+    border-color: var(--color-border);
+    color: var(--color-text-body);
+  }
+  .btn-outline:hover {
+    background-color: var(--color-bg-main); 
+    border-color: var(--color-text-muted);
+    color: var(--color-primary);
+  }
+  .btn-outline .bi {
+      margin-right: var(--spacing-sm);
+  }
+  
+  .form-section-divider {
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+    border: 0;
+    border-top: 1px solid var(--color-border);
+  }
+  
+  .form-alternative-action-text {
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .form-footer-prompt {
+    text-align: center;
+    margin-top: var(--spacing-lg);
+    font-size: 0.9rem;
+  }
+  .form-footer-prompt a {
+      font-weight: 600;
+  }
+  
+  .form-message-error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      margin-top: var(--spacing-lg);
+      font-size: 0.9rem;
+      text-align: center;
+      display: none; /* Hidden by default, shown by JS */
+  }
+  
+  .critical-error-message { 
+      padding: var(--spacing-lg);
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      border-radius: var(--radius-md);
+      margin: var(--spacing-xl) var(--spacing-md);
+      text-align: center;
+      font-family: var(--font-body);
+  }
+  

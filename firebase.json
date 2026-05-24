@@ -1,0 +1,150 @@
+{
+  "hosting": {
+    "public": "public",
+    "trailingSlash": false,
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "redirects": [
+      { "source": "/about.html", "destination": "/about", "type": 301 },
+      { "source": "/privacy.html", "destination": "/privacy", "type": 301 },
+      { "source": "/terms.html", "destination": "/terms", "type": 301 },
+      { "source": "/login.html", "destination": "/login", "type": 301 },
+      { "source": "/signup.html", "destination": "/signup", "type": 301 },
+      { "source": "/stock-data.html", "destination": "/stock-data", "type": 301 },
+      { "source": "/podcasts.html", "destination": "/podcasts", "type": 301 },
+      { "source": "/forgot-password.html", "destination": "/forgot-password", "type": 301 }
+    ],
+    "rewrites": [
+      {
+        "source": "/admin/components/components/email/**",
+        "destination": "/admin/components/email/**"
+      },
+      {
+        "source": "/sitemap.xml",
+        "function": "serveSitemap"
+      },
+      {
+        "source": "/api/**",
+        "function": "api"
+      },
+      {
+        "source": "/article.html",
+        "function": "handleLegacyRedirects"
+      },
+      {
+        "source": "/category.html",
+        "function": "handleLegacyRedirects"
+      },
+      {
+        "source": "/admin",
+        "destination": "/admin/index.html"
+      },
+      {
+        "source": "/admin/**",
+        "destination": "/admin/index.html"
+      },
+      {
+        "source": "/about",
+        "destination": "/about.html"
+      },
+      {
+        "source": "/privacy",
+        "destination": "/privacy.html"
+      },
+      {
+        "source": "/terms",
+        "destination": "/terms.html"
+      },
+      {
+        "source": "/login",
+        "destination": "/login.html"
+      },
+      {
+        "source": "/signup",
+        "destination": "/signup.html"
+      },
+      {
+        "source": "/stock-data",
+        "destination": "/stock-data.html"
+      },
+      {
+        "source": "/podcasts",
+        "destination": "/podcasts.html"
+      },
+      {
+        "source": "/forgot-password",
+        "destination": "/forgot-password.html"
+      },
+      {
+        "source": "/",
+        "destination": "/index.html"
+      },
+      { "source": "/:category/:article", "function": "handleArticleRouting" },
+      { "source": "/:category", "function": "handleArticleRouting" }
+    ],
+    "headers": [
+      {
+        "source": "**/*.js",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "application/javascript"
+          }
+        ]
+      },
+      {
+        "source": "**/*.css",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "text/css"
+          }
+        ]
+      },
+      {
+        "source": "**/*.html",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=3600"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|ico)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=86400"
+          }
+        ]
+      }
+    ]
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint"
+      ]
+    }
+  ],
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "storage": {
+    "rules": "storage.rules"
+  }
+}

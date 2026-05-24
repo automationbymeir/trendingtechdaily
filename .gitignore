@@ -6,11 +6,31 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+firebase-debug.log*
+firebase-debug.*.log*
 
 node_modules
 dist
 dist-ssr
 *.local
+
+# Firebase cache
+.firebase/
+
+# Dependency directories
+node_modules/
+
+# dotenv environment variables file
+.env
+
+# dataconnect generated files
+.dataconnect
+
+# Credentials & secrets
+functions/service_account.json
+functions/key-one-line.txt
+functions/admin/email/trendingtech-daily-serviceaccountkeys.json
+functions/direct-set-admin.js
 
 # Editor directories and files
 .vscode/*

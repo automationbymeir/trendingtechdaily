@@ -1,0 +1,199 @@
+/* css/profile-styles.css */
+
+/* General Profile Page Container */
+.profile-page-container {
+    padding-top: 2rem; /* Add some space below navbar */
+    padding-bottom: 3rem;
+    background-color: #f8f9fa; /* Light background for the whole page */
+    min-height: calc(100vh - 120px); /* Adjust based on navbar and footer height */
+}
+
+.profile-main-title {
+    font-family: 'Orbitron', sans-serif;
+    color: #333;
+    text-align: center;
+    margin-bottom: 2rem !important; /* Ensure Bootstrap override */
+    font-weight: 700;
+}
+
+/* Profile Card Styling */
+.profile-card {
+    border: none; /* Remove default card border if using shadows */
+    border-radius: 0.75rem; /* Softer radius */
+    background-color: #ffffff; /* White cards */
+}
+
+.profile-card-header {
+    background-color: #e9ecef; /* Light gray header for cards */
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 600;
+    color: #2c3e50; /* Darker header text */
+    border-bottom: 1px solid #dee2e6;
+    padding: 0.75rem 1.25rem;
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+}
+
+/* Profile Header Specifics */
+.profile-header-card .card-body {
+    padding: 1.5rem;
+}
+
+.profile-pic-wrapper {
+    flex-shrink: 0; /* Prevent image from shrinking too much */
+}
+
+.profile-avatar {
+    width: 100px; /* Larger avatar */
+    height: 100px;
+    object-fit: cover;
+    border: 3px solid #ffffff; /* White border around avatar */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.profile-pic-edit-btn {
+    width: 32px;
+    height: 32px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ccc;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.profile-pic-edit-btn i {
+    font-size: 16px;
+    color: #333;
+}
+
+.profile-user-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.75rem;
+    color: #2c3e50;
+}
+
+.profile-user-email,
+.profile-user-joined {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.9rem;
+}
+
+.profile-bio-text {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.6;
+    background-color: #f8f9fa; /* Slight background for bio */
+    padding: 10px 15px;
+    border-radius: 0.5rem;
+    min-height: 50px; /* Ensure it has some height even if empty */
+}
+.profile-bio-text p:empty::before {
+    content: "No bio added yet. Click the pencil icon to add one!";
+    font-style: italic;
+    color: #888;
+}
+
+
+.edit-icon-btn i {
+    font-size: 1.1rem; /* Make pencil icons a bit larger */
+}
+
+/* Profile Activity Lists (Saved, Read, Comments) */
+.profile-activity-list {
+    font-family: 'IBM Plex Sans', sans-serif;
+}
+.profile-activity-list .list-group-item {
+    border-left: none;
+    border-right: none;
+    padding-left: 0;
+    padding-right: 0;
+}
+.profile-activity-list .list-group-item:first-child {
+    border-top: none;
+}
+.profile-activity-list .list-group-item:last-child {
+    border-bottom: none;
+}
+.profile-activity-list a {
+    color: #0d6efd; /* Bootstrap primary blue */
+    font-weight: 500;
+}
+.profile-activity-list a:hover {
+    text-decoration: underline;
+}
+.profile-activity-list .text-muted.small {
+    font-size: 0.8rem;
+}
+
+/* Stock Watchlist Specifics */
+#stock-watchlist-content .card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+#stock-watchlist-content .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1) !important; /* Slightly stronger hover shadow */
+}
+.stock-logo {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    border-radius: 4px;
+    background-color: #f8f9fa; /* Light background for logos */
+}
+#stock-watchlist-content .card-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem;
+}
+#stock-watchlist-content .text-muted {
+    font-size: 0.85rem;
+}
+
+/* Modal Styling (to align with auth-modal if defined in signup-styles.css) */
+.auth-modal-content { /* Assuming this class is used in signup-styles or add it here */
+    border-radius: 0.75rem;
+    border: none;
+}
+.auth-modal-content .modal-header {
+    border-bottom: 1px solid #e9ecef;
+    font-family: 'Orbitron', sans-serif;
+}
+.auth-modal-content .modal-body {
+    font-family: 'IBM Plex Sans', sans-serif;
+}
+.form-message { /* For feedback messages in modals */
+    font-size: 0.875em;
+    margin-top: 0.5rem;
+}
+.form-message .alert {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9em;
+}
+
+
+/* Ensure consistent button styling if auth-submit-btn is from signup-styles */
+.auth-submit-btn {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 600;
+    /* Add other shared button styles if needed */
+}
+
+/* Responsive adjustments */
+@media (max-width: 575.98px) {
+    .profile-header-card .d-flex.flex-sm-row {
+        flex-direction: column !important;
+    }
+    .profile-header-card .me-sm-3 {
+        margin-right: 0 !important;
+        margin-bottom: 1rem !important;
+    }
+    .profile-header-card .text-sm-start {
+        text-align: center !important;
+    }
+    .profile-header-card .justify-content-sm-start {
+        justify-content: center !important;
+    }
+    .profile-main-title {
+        font-size: 1.8rem;
+    }
+}

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>\n
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5VF5QF9ZCJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-5VF5QF9ZCJ");
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>כלי AI Pulse — Claude Skills, MCP, GitHub | TrendingTech Daily</title>
+<meta name="description" content="הספרייה היחידה שמאחדת Claude Skills, מחברי MCP, מאגרי GitHub חמים ומוצרי LLM — כולם מדורגים ונסקרים על ידי AI."/>
+<link rel="canonical" href="https://www.trendingtechdaily.com/he/ai-tools"/>
+<link rel="alternate" hreflang="he" href="https://www.trendingtechdaily.com/he/ai-tools"/>
+<link rel="alternate" hreflang="en" href="https://www.trendingtechdaily.com/ai-tools"/>
+<link rel="alternate" hreflang="x-default" href="https://www.trendingtechdaily.com/ai-tools"/>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/he/styles.css">
+<link rel="stylesheet" href="/css/ai-tools.css?v=4">
+<link rel="stylesheet" href="/css/ai-tools-guide.css?v=4">
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"CollectionPage","name":"כלי AI Pulse","description":"ספריית כלי בינה מלאכותית — Claude Skills, MCP, GitHub, LLMs.","url":"https://www.trendingtechdaily.com/he/ai-tools","inLanguage":"he"}
+</script>
+<script>
+  window.AIP_I18N = {
+    addToStack: 'הוסף למחסנית', added: 'נוסף', view: 'צפייה',
+    noResults: 'לא נמצאו כלים שתואמים לסינון.',
+    loading: 'טוען...',
+    yourStack: 'המחסנית שלי',
+    exportMd: 'ייצוא Markdown', exportJson: 'ייצוא JSON',
+    pricingMix: 'תמהיל תמחור',
+    emptyStack: 'המחסנית ריקה. לחץ "הוסף למחסנית" על כרטיס כלי.',
+    remove: 'הסר',
+  };
+</script>
+</head>
+<body class="aip-page">
+
+<div id="navbar-placeholder"></div>
+
+<header class="aip-hero text-center">
+  <div class="container">
+    <div class="aip-poweredby">
+      <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+        <path fill="#FFC107" d="M12 2 l2.4 6.8 L21 9.6 l-5.4 4.1 1.9 7.1 L12 16.8 6.5 20.8 l1.9-7.1 L3 9.6 l6.6-.8 Z"/>
+      </svg>
+      <span>מופעל על ידי <strong>Claude</strong> · Anthropic × TrendingTech Daily</span>
+    </div>
+    <h1>כלי AI Pulse</h1>
+    <p class="aip-sub">הספרייה היחידה שמאחדת <strong>Claude Skills</strong>, <strong>מחברי MCP</strong>, מאגרי <strong>GitHub</strong> חמים ומוצרי <strong>LLM</strong> — כולם מדורגים ונסקרים על ידי AI.</p>
+    <div id="explainer-video-slot"></div>
+    <div class="aip-searchbar">
+      <i class="bi bi-search"></i>
+      <input id="aip-search" type="search" placeholder="חפש בכלי AI, Skills, מחברים..." aria-label="חיפוש כלי AI">
+    </div>
+    <div class="aip-cta-row">
+      <a class="aip-chip aip-chip-big" href="/he/ai-tools/guide"><i class="bi bi-book"></i> קרא את המדריך</a>
+      <a class="aip-chip aip-chip-big" href="/he/ai-tools/glossary"><i class="bi bi-journal-bookmark"></i> מילון מונחים</a>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="aip-trending" aria-label="חמים השבוע">
+    <h2 style="font-family: var(--font-heading); margin-bottom: .5rem;"><i class="bi bi-fire text-warning"></i> חמים השבוע</h2>
+    <div id="aip-trending-track" class="aip-trending-track"></div>
+  </section>
+
+  <section class="aip-buckets" id="aip-buckets"></section>
+
+  <section class="aip-layout">
+    <aside class="aip-sidebar" aria-label="סינון">
+      <h4>סוג</h4>
+      <label><input type="radio" name="aip-type" value=""> הכל</label>
+      <label><input type="radio" name="aip-type" value="claude-skill"> Claude Skill</label>
+      <label><input type="radio" name="aip-type" value="mcp-connector"> MCP Connector</label>
+      <label><input type="radio" name="aip-type" value="github-repo"> GitHub Repo</label>
+      <label><input type="radio" name="aip-type" value="llm-product"> מוצר LLM</label>
+      <label><input type="radio" name="aip-type" value="agent-framework"> Agent Framework</label>
+
+      <h4>קטגוריה</h4>
+      <label><input type="checkbox" name="aip-category" value="coding"> תכנות</label>
+      <label><input type="checkbox" name="aip-category" value="research"> מחקר</label>
+      <label><input type="checkbox" name="aip-category" value="writing"> כתיבה</label>
+      <label><input type="checkbox" name="aip-category" value="data"> נתונים</label>
+      <label><input type="checkbox" name="aip-category" value="automation"> אוטומציה</label>
+      <label><input type="checkbox" name="aip-category" value="design"> עיצוב</label>
+
+      <h4>מתאים ל</h4>
+      <div class="aip-chips">
+        <span class="aip-chip" data-bestfor="developers">מפתחים</span>
+        <span class="aip-chip" data-bestfor="pms">מנהלי מוצר</span>
+        <span class="aip-chip" data-bestfor="designers">מעצבים</span>
+        <span class="aip-chip" data-bestfor="researchers">חוקרים</span>
+        <span class="aip-chip" data-bestfor="marketers">שיווק</span>
+        <span class="aip-chip" data-bestfor="data-teams">צוותי דאטה</span>
+      </div>
+
+      <h4>תמחור</h4>
+      <label><input type="radio" name="aip-pricing" value=""> הכל</label>
+      <label><input type="radio" name="aip-pricing" value="free"> חינם</label>
+      <label><input type="radio" name="aip-pricing" value="freemium"> פרימיום</label>
+      <label><input type="radio" name="aip-pricing" value="paid"> בתשלום</label>
+      <label><input type="radio" name="aip-pricing" value="open-source"> קוד פתוח</label>
+
+      <h4>שפה</h4>
+      <a href="/ai-tools" class="aip-chip">EN</a>
+      <a href="/he/ai-tools" class="aip-chip active">HE</a>
+    </aside>
+
+    <div>
+      <div class="d-flex justify-content-between align-items-end mb-3">
+        <h2 style="font-family: var(--font-heading); margin: 0;">כל הכלים</h2>
+        <small class="text-muted">מסודר לפי דירוג חמים</small>
+      </div>
+      <div id="aip-grid" class="aip-grid"></div>
+    </div>
+  </section>
+
+  <!-- תוכן לקידום אתרים (SEO) -->
+  <section class="aip-seo-section mt-5 pb-5">
+    <h2>למה להשתמש בספריית כלי ה-AI שלנו?</h2>
+    <p>עולם הבינה המלאכותית מתקדם בקצב חסר תקדים. ב-TrendingTech Daily, אנו אוספים את פתרונות ה-AI הטובים והמשפיעים ביותר כדי לשדרג את תהליכי העבודה שלכם. בין אם אתם מחפשים את ה-<strong>Claude Skills</strong> החדשים ביותר, מחברי <strong>Model Context Protocol (MCP)</strong> מותאמים, מאגרי <strong>GitHub</strong> חמים לפיתוח סוכני AI, או <strong>מוצרי LLM</strong> מתמחים, הספרייה שלנו עוזרת לכם לגלות, להעריך ולשלב את הכלים הנכונים.</p>
+    <p>המאגר שלנו מתעדכן באופן קבוע וכולל כלים לתכנות, ניתוח נתונים, אוטומציה, מחקר ועיצוב. בנו את מחסנית ה-AI המותאמת שלכם, עקבו אחר מודלי תמחור, וגלו אילו כלים חמים השבוע בעולם הבינה המלאכותית.</p>
+  </section>
+
+</main>
+
+<button class="aip-stack-pill" id="aip-stack-pill" aria-label="פתח את מחסנית הכלים שלי">
+  <i class="bi bi-stack"></i> המחסנית שלי
+  <span class="aip-stack-count" id="aip-stack-count">0</span>
+</button>
+
+<div class="aip-modal-backdrop" id="aip-stack-modal" role="dialog" aria-modal="true">
+  <div class="aip-modal">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h3 style="margin:0; font-family: var(--font-heading);">המחסנית שלי</h3>
+      <button id="aip-stack-close" class="btn-close" aria-label="סגור"></button>
+    </div>
+    <div id="aip-stack-body"></div>
+    <div class="d-flex gap-2 mt-3">
+      <button id="aip-export-md" class="btn btn-primary"><i class="bi bi-markdown"></i> ייצוא Markdown</button>
+      <button id="aip-export-json" class="btn btn-outline-primary"><i class="bi bi-filetype-json"></i> ייצוא JSON</button>
+    </div>
+  </div>
+</div>
+
+<footer style="background:#0B1220; color:#fff; padding: 3rem 1rem 2rem; margin-top: 4rem;">
+  <div class="container text-center">
+    <div class="aip-footer-badge mb-3" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.16); color:#fff;">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path fill="#FFC107" d="M12 2 l2.4 6.8 L21 9.6 l-5.4 4.1 1.9 7.1 L12 16.8 6.5 20.8 l1.9-7.1 L3 9.6 l6.6-.8 Z"/>
+      </svg>
+      <span>מופעל על ידי Claude · Anthropic</span>
+    </div>
+    <p style="opacity:.8;">AI Tools Pulse הוא פרויקט של TrendingTech Daily. <a href="/he/" style="color:#FFC107;">← חזרה לעמוד הבית</a></p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+<script src="/he/js/he-app.js" defer></script>
+<script src="/js/ai-tools.js?v=4" defer></script>
+</body>
+</html>

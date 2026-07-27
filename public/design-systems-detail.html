@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<!--
+  Detail page template — content is rewritten server-side by
+  functions/http/designSystems.js#handleDesignSystemDetail. The
+  placeholders in {{ALL_CAPS}} are substituted by the SSR handler.
+-->
+<html lang="en" dir="ltr">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5VF5QF9ZCJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-5VF5QF9ZCJ");
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{TITLE}} — Design Systems Decoded | TrendingTech Daily</title>
+<meta name="description" content="{{DESCRIPTION}}"/>
+<link rel="canonical" href="{{CANONICAL}}"/>
+{{HREFLANG}}
+<meta property="og:type" content="article"/>
+<meta property="og:title" content="{{TITLE}}"/>
+<meta property="og:description" content="{{DESCRIPTION}}"/>
+<meta property="og:url" content="{{CANONICAL}}"/>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=IBM+Plex+Sans:wght@400;600;700&family=Fira+Code&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/css/design-systems.css?v=2">
+
+{{JSONLD}}
+</head>
+<body class="ds-page" data-slug="{{SLUG}}">
+
+<div id="navbar-placeholder"></div>
+
+<main class="container mt-4 mb-5">
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Home</a></li>
+      <li class="breadcrumb-item"><a href="/design-systems">Design Systems</a></li>
+      <li class="breadcrumb-item"><a href="/design-systems?type={{TYPE}}">{{TYPE_LABEL}}</a></li>
+      <li class="breadcrumb-item active">{{NAME}}</li>
+    </ol>
+  </nav>
+
+  <!-- ── Hero ───────────────────────────────────────────────── -->
+  <section class="ds-detail-hero">
+    <div class="ds-square" style="background: {{PRIMARY_COLOR}};">{{ICON_HTML}}</div>
+    <div>
+      <h1>{{NAME}}</h1>
+      <div class="ds-company">{{COMPANY}} · {{YEAR}}</div>
+      <div class="ds-meta-row">
+        <span class="ds-type-pill type-{{TYPE}}">{{TYPE_LABEL}}</span>
+        {{CAPABILITY_CHIPS}}
+      </div>
+    </div>
+    <div style="text-align:center;">
+      <div class="ds-trending-gauge" style="--val: {{TRENDING_SCORE}};"><span>{{TRENDING_SCORE}}</span></div>
+      <small class="text-muted d-block mt-1">Trending score</small>
+    </div>
+  </section>
+
+  <!-- ── Claude's Take ──────────────────────────────────────── -->
+  <aside class="ds-claude-take">
+    <svg class="ds-claude-logo" viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="#FFC107" d="M12 2 l2.4 6.8 L21 9.6 l-5.4 4.1 1.9 7.1 L12 16.8 6.5 20.8 l1.9-7.1 L3 9.6 l6.6-.8 Z"/>
+    </svg>
+    {{CLAUDE_TAKE}}
+    <span class="ds-signoff">— Claude{{CLAUDE_TAKE_BY}}</span>
+  </aside>
+
+  <!-- ── Philosophy ─────────────────────────────────────────── -->
+  <section class="my-4">
+    <h2>Philosophy</h2>
+    <div>{{PHILOSOPHY_HTML}}</div>
+  </section>
+
+  <!-- ── DNA: palette + typography ──────────────────────────── -->
+  <section class="ds-dna-section">
+    <h2>DNA</h2>
+    <div class="ds-dna-grid">
+      <div>
+        <div class="ds-dna-label">Palette</div>
+        <div class="ds-palette-large">{{PALETTE_LARGE}}</div>
+      </div>
+      <div>
+        <div class="ds-dna-label">Typography</div>
+        <div class="ds-type-sample">
+          <div class="ds-type-aa" style="font-family: {{FONT_STACK_CSS}};">Aa</div>
+          <div class="ds-type-pangram" style="font-family: {{FONT_STACK_CSS}};">The quick brown fox jumps over the lazy dog.</div>
+          <div class="ds-type-stack">{{FONT_STACK}}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Best for ───────────────────────────────────────────── -->
+  {{BEST_FOR_BLOCK}}
+
+  <!-- ── Capability checklist ───────────────────────────────── -->
+  <section class="my-4">
+    <h2>Capabilities</h2>
+    <div class="ds-capability-list">{{CAPABILITY_CHECKLIST}}</div>
+  </section>
+
+  <!-- ── Live links ─────────────────────────────────────────── -->
+  <section class="my-4">
+    <h2>Resources</h2>
+    <div class="ds-links-row">{{LINKS_ROW}}</div>
+  </section>
+
+  <!-- ── Reviews ────────────────────────────────────────────── -->
+  <section class="my-4">
+    <h2>Reviews</h2>
+    <div id="ds-reviews-list"></div>
+
+    <p id="ds-review-login-note" class="text-muted small" style="display:none;">
+      <a href="/login.html">Log in</a> to leave a review.
+    </p>
+    <form id="ds-review-form" style="display:none;" class="mt-3">
+      <div class="mb-2">
+        <label for="ds-review-rating">Rating</label>
+        <select id="ds-review-rating" class="form-select form-select-sm" required style="max-width:120px;">
+          <option value="">★</option>
+          <option value="5">★★★★★</option>
+          <option value="4">★★★★</option>
+          <option value="3">★★★</option>
+          <option value="2">★★</option>
+          <option value="1">★</option>
+        </select>
+      </div>
+      <div class="mb-2">
+        <textarea id="ds-review-comment" class="form-control" rows="3" placeholder="What did you think?" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-sm">Submit review</button>
+      <span id="ds-review-msg" class="ms-2 small"></span>
+    </form>
+  </section>
+
+  <!-- ── Related systems ────────────────────────────────────── -->
+  <section id="ds-related" class="my-5"></section>
+
+</main>
+
+<footer style="background:#0B1220; color:#fff; padding: 3rem 1rem 2rem;">
+  <div class="container text-center">
+    <div class="ds-footer-badge mb-3" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.16); color:#fff;">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path fill="#FFC107" d="M12 2 l2.4 6.8 L21 9.6 l-5.4 4.1 1.9 7.1 L12 16.8 6.5 20.8 l1.9-7.1 L3 9.6 l6.6-.8 Z"/>
+      </svg>
+      <span>TrendingTech Daily · Anthropic</span>
+    </div>
+    <p style="opacity:.8;"><a href="/design-systems" style="color:#FFC107;">← Back to Design Systems Decoded</a></p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/app-base.js?v=2"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/nav-loader.js"></script>
+<script src="/js/design-systems-detail.js?v=2"></script>
+</body>
+</html>

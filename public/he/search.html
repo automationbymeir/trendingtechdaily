@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
+  <meta charset="UTF-8" />
+  <meta name="google-site-verification" content="AAJy5uWJtM-PEQ6kOZCAiIQuO3CijcFc6DYM7dNYEVY" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>חיפוש כתבות | TrendingTech Daily</title>
+  <meta name="description" content="חפשו כתבות טכנולוגיה, בינה מלאכותית, סטארטאפים ועוד - TrendingTech Daily בעברית." />
+  <link rel="canonical" href="https://www.trendingtechdaily.com/he/search" />
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js" defer></script>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/he/styles.css" />
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/css/cookie-consent.css">
+</head>
+<body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <div id="navbar-placeholder"></div>
+
+  <main class="container my-5">
+    <!-- Search Header -->
+    <div class="mb-4">
+      <h1 class="section-title">חיפוש כתבות</h1>
+      <form id="he-search-form" class="mb-3">
+        <div class="input-group input-group-lg">
+          <input
+            type="text"
+            id="he-search-input"
+            class="form-control"
+            placeholder="חפשו נושא, מילת מפתח, טכנולוגיה..."
+            autocomplete="off"
+            dir="rtl"
+          />
+          <button type="submit" class="btn btn-primary">
+            <i class="bi bi-search me-1"></i>חיפוש
+          </button>
+        </div>
+      </form>
+      <div id="he-search-meta" style="display:none;" class="text-muted text-center mb-3">
+        נמצאו <strong id="he-result-count">0</strong> תוצאות עבור &ldquo;<strong id="he-search-query-display"></strong>&rdquo;
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Results Column -->
+      <div class="col-lg-8">
+
+        <!-- Initial prompt -->
+        <div id="he-search-prompt" class="text-center py-5">
+          <i class="bi bi-search" style="font-size:3.5rem; color:#adb5bd;"></i>
+          <h3 class="mt-3" style="color:#adb5bd;">הקלידו מילת חיפוש למעלה</h3>
+          <p class="text-muted">חפשו כתבות טכנולוגיה, AI, סטארטאפים, גאדג&apos;טים ועוד</p>
+        </div>
+
+        <!-- Loading -->
+        <div id="he-search-loading" style="display:none;" class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">מחפש...</span>
+          </div>
+          <p class="mt-3">מחפש כתבות...</p>
+        </div>
+
+        <!-- No results -->
+        <div id="he-search-no-results" style="display:none;" class="alert alert-info">
+          <i class="bi bi-info-circle me-2"></i>
+          לא נמצאו כתבות עבור החיפוש שלכם. נסו מילת חיפוש אחרת.
+        </div>
+
+        <!-- Error -->
+        <div id="he-search-error" style="display:none;" class="alert alert-danger">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          <span id="he-search-error-msg">שגיאה בחיפוש. נסו שוב.</span>
+        </div>
+
+        <!-- Results container -->
+        <div id="he-search-results" class="article-grid"></div>
+
+        <!-- Load More -->
+        <div id="he-load-more-container" style="display:none;" class="text-center mt-4 mb-3">
+          <button id="he-load-more-btn" class="btn btn-outline-primary">
+            <i class="bi bi-arrow-down-circle me-1"></i>טען עוד תוצאות
+          </button>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="col-lg-4">
+        <div class="sidebar-section mb-4">
+          <h4>קטגוריות</h4>
+          <ul class="trending-topics-list">
+            <li><a href="/he/ai">בינה מלאכותית <span class="badge bg-primary rounded-pill">→</span></a></li>
+            <li><a href="/he/technology">טכנולוגיה <span class="badge bg-primary rounded-pill">→</span></a></li>
+            <li><a href="/he/startups">סטארטאפים <span class="badge bg-primary rounded-pill">→</span></a></li>
+            <li><a href="/he/gadgets">גאדג&apos;טים <span class="badge bg-primary rounded-pill">→</span></a></li>
+            <li><a href="/he/security">אבטחה <span class="badge bg-primary rounded-pill">→</span></a></li>
+            <li><a href="/he/crypto">קריפטו <span class="badge bg-primary rounded-pill">→</span></a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section automation-banner mb-4">
+          <a href="https://www.automationbymeir.com/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block;">
+            <h4 class="mb-2" style="color:#fff;">Automation by Meir</h4>
+            <p class="small mb-0" style="color:#aaa;">שדרגו את העסק שלכם עם אוטומציה מותאמת אישית</p>
+          </a>
+        </div>
+
+        <!-- Popular searches -->
+        <div class="sidebar-section mb-4">
+          <h4>חיפושים פופולריים</h4>
+          <div id="he-popular-searches" class="d-flex flex-wrap gap-2">
+            <a href="/he/search?q=%D7%91%D7%99%D7%A0%D7%94+%D7%9E%D7%9C%D7%90%D7%9B%D7%95%D7%AA%D7%99%D7%AA" class="badge bg-secondary text-decoration-none fs-6 p-2">בינה מלאכותית</a>
+            <a href="/he/search?q=%D7%A1%D7%98%D7%90%D7%A8%D7%98%D7%90%D7%A4" class="badge bg-secondary text-decoration-none fs-6 p-2">סטארטאפ</a>
+            <a href="/he/search?q=ChatGPT" class="badge bg-secondary text-decoration-none fs-6 p-2">ChatGPT</a>
+            <a href="/he/search?q=%D7%A7%D7%A8%D7%99%D7%A4%D7%98%D7%95" class="badge bg-secondary text-decoration-none fs-6 p-2">קריפטו</a>
+            <a href="/he/search?q=%D7%90%D7%99%D7%A4%D7%95%D7%9F" class="badge bg-secondary text-decoration-none fs-6 p-2">אייפון</a>
+            <a href="/he/search?q=%D7%A1%D7%99%D7%99%D7%91%D7%A8" class="badge bg-secondary text-decoration-none fs-6 p-2">סייבר</a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 mb-4 mb-md-0">
+          <h5>TrendingTech Daily</h5>
+          <p class="small" style="color:#aaa;">הישארו מעודכנים עם חדשות הטכנולוגיה האחרונות בעברית.</p>
+        </div>
+        <div class="col-md-4 mb-4 mb-md-0">
+          <h5>קישורים מהירים</h5>
+          <ul class="footer-links">
+            <li><a href="/he/">ראשי</a></li>
+            <li><a href="/he/podcasts">פודקאסטים</a></li>
+            <li><a href="/he/about">אודות</a></li>
+            <li><a href="/he/privacy">מדיניות פרטיות</a></li>
+            <li><a href="/">גרסה אנגלית</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h5>שפה</h5>
+          <p class="small" style="color:#aaa;"><a href="/" style="color:#FFC107;">🌐 English Version</a></p>
+        </div>
+      </div>
+      <div class="copyright"><p style="margin:0;">© 2025 TrendingTech Daily. כל הזכויות שמורות.</p></div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+  <script src="/he/js/he-app.js" defer></script>
+  <script src="/he/js/he-search.js" defer></script>
+  <script src="/he/js/he-ai-agent.js" defer></script>
+  <script src="/he/js/he-cookie-consent.js" defer></script>
+</body>
+</html>

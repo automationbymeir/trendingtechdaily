@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Links - TrendingTech Daily</title>
+    
+    <!-- Styles -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Design System Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Include the main site stylesheet for CSS variables -->
+    <link rel="stylesheet" href="/styles.css">
+
+    <style>
+        body {
+            background-color: var(--color-bg-main, #F8F9FA);
+            font-family: var(--font-body, 'IBM Plex Sans', sans-serif);
+            color: var(--color-text-body, #333333);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            margin: 0;
+        }
+        
+        .links-container {
+            width: 100%;
+            max-width: 480px;
+            text-align: center;
+            background-color: var(--color-bg-card, #FFFFFF);
+            padding: 3rem 2rem;
+            border-radius: var(--radius-lg, 16px);
+            box-shadow: var(--shadow-deep, 0 8px 25px rgba(0, 0, 0, 0.12));
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Gradient accent line matching navbar */
+        .links-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-secondary, #4CAF50), var(--color-accent, #FFC107), var(--color-primary, #2196F3));
+        }
+
+        .brand-logo-img {
+            max-width: 120px;
+            height: auto;
+            margin-bottom: 1rem;
+            border-radius: 50%; /* Optional: if the logo looks better rounded */
+        }
+
+        .brand-title {
+            font-family: var(--font-heading, 'Orbitron', sans-serif);
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--color-text-dark, #121212);
+            margin-bottom: 0.5rem;
+            text-decoration: none;
+            display: block;
+        }
+
+        .brand-subtitle {
+            color: var(--color-text-muted, #6C757D);
+            font-size: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .link-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: var(--color-bg-card, #FFFFFF);
+            color: var(--color-text-dark, #121212);
+            text-decoration: none;
+            border-radius: var(--radius-md, 8px);
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: var(--transition-main, all 0.3s ease);
+            border: 2px solid var(--color-border, #E9ECEF);
+        }
+
+        .link-btn:hover {
+            border-color: var(--color-primary, #2196F3);
+            color: var(--color-primary, #2196F3);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-soft, 0 4px 12px rgba(0, 0, 0, 0.08));
+        }
+
+        .link-btn i {
+            margin-right: 10px;
+            font-size: 1.3rem;
+        }
+
+        /* ─── Featured cards row (2-up on desktop, stack on mobile) ─── */
+        .featured-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 0.25rem 0 1.25rem;
+        }
+        @media (max-width: 600px) {
+            .featured-row { grid-template-columns: 1fr; }
+        }
+
+        /* ─── Featured AI Tools Pulse hero card ─────────────────────────── */
+        .featured-card {
+            position: relative;
+            background: linear-gradient(135deg, #2196F3 0%, #6A11CB 55%, #FFC107 100%);
+            border-radius: 20px;
+            padding: 1.5rem 1.25rem 1.25rem;
+            color: #fff;
+            box-shadow: 0 18px 50px rgba(33,150,243,0.35), 0 4px 12px rgba(0,0,0,0.12);
+            overflow: hidden;
+            isolation: isolate;
+        }
+        .featured-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(255,255,255,0.18) 0%, transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(255,255,255,0.14) 0%, transparent 45%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .featured-card > * { position: relative; z-index: 1; }
+        .featured-card.ds-variant {
+            background: linear-gradient(135deg, #FF5A5F 0%, #6A11CB 55%, #2196F3 100%);
+        }
+        .featured-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255,255,255,0.18);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: 1px solid rgba(255,255,255,0.35);
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.72rem;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            padding: 5px 12px;
+            border-radius: 999px;
+            margin-bottom: 0.85rem;
+        }
+        .featured-badge .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #FFC107;
+            box-shadow: 0 0 0 0 rgba(255,193,7,0.7);
+            animation: pulseDot 1.8s infinite;
+        }
+        @keyframes pulseDot {
+            0%   { box-shadow: 0 0 0 0 rgba(255,193,7,0.85); }
+            70%  { box-shadow: 0 0 0 10px rgba(255,193,7,0); }
+            100% { box-shadow: 0 0 0 0 rgba(255,193,7,0); }
+        }
+        .featured-title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 1.75rem;
+            line-height: 1.05;
+            margin: 0 0 0.35rem;
+            letter-spacing: 0.5px;
+        }
+        .featured-sub {
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.92rem;
+            line-height: 1.4;
+            opacity: 0.92;
+            margin: 0 0 1rem;
+        }
+        .featured-claude {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.75rem;
+            opacity: 0.92;
+            margin-bottom: 1rem;
+        }
+        .featured-claude svg { width: 16px; height: 16px; }
+        .featured-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .featured-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 0.85rem 0.5rem;
+            border-radius: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .featured-btn.primary {
+            background: #fff;
+            color: #1a1a1a;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+        }
+        .featured-btn.ghost {
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+            border: 1.5px solid rgba(255,255,255,0.55);
+        }
+        .featured-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(0,0,0,0.28);
+        }
+        .featured-btn .arrow {
+            transition: transform 0.2s ease;
+        }
+        .featured-btn:hover .arrow { transform: translateX(3px); }
+
+        .newsletter-section {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--color-border, #E9ECEF);
+        }
+
+        .newsletter-section h3 {
+            font-family: var(--font-heading, 'Orbitron', sans-serif);
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--color-text-dark, #121212);
+        }
+
+        .newsletter-form {
+            margin-top: 1.5rem;
+        }
+
+        .newsletter-input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border-radius: var(--radius-md, 8px);
+            border: 1px solid var(--color-border, #E9ECEF);
+            background-color: var(--color-bg-main, #F8F9FA);
+            color: var(--color-text-body, #333333);
+            outline: none;
+            transition: var(--transition-main, all 0.3s ease);
+            font-family: var(--font-body, 'IBM Plex Sans', sans-serif);
+        }
+
+        .newsletter-input:focus {
+            border-color: var(--color-primary, #2196F3);
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.15);
+        }
+
+        .newsletter-submit {
+            margin-top: 1rem;
+            width: 100%;
+            padding: 0.8rem;
+            border: none;
+            border-radius: var(--radius-md, 8px);
+            background-color: var(--color-primary, #2196F3);
+            color: #FFFFFF;
+            font-weight: 600;
+            font-family: var(--font-body, 'IBM Plex Sans', sans-serif);
+            font-size: 1rem;
+            transition: var(--transition-main, all 0.3s ease);
+            cursor: pointer;
+        }
+
+        .newsletter-submit:hover {
+            background-color: var(--color-secondary, #4CAF50);
+            transform: translateY(-1px);
+        }
+        
+        .social-icons {
+            margin-top: 2.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+        
+        .social-icons a {
+            color: var(--color-text-muted, #6C757D);
+            font-size: 1.5rem;
+            transition: var(--transition-main, all 0.3s ease);
+        }
+        
+        .social-icons a:hover {
+            color: var(--color-primary, #2196F3);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="links-container">
+        <!-- Logo Image -->
+        <img src="/img/logo.png" alt="TrendingTech Daily Logo" class="brand-logo-img">
+        
+        <h1 class="brand-title">TrendingTech Daily</h1>
+        <p class="brand-subtitle">Your source for the latest technology news</p>
+
+        <!-- Featured row: AI Tools Pulse + Design Systems Decoded ─────── -->
+        <div class="featured-row">
+            <div class="featured-card" role="region" aria-label="AI Tools Pulse">
+                <span class="featured-badge"><span class="dot"></span> ✨ AI</span>
+                <h2 class="featured-title">AI Tools Pulse</h2>
+                <p class="featured-sub">
+                    Claude Skills · MCP connectors · trending GitHub repos &amp; LLM products — rated by AI.
+                </p>
+                <span class="featured-claude">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M12 2 L13.6 10.4 L22 12 L13.6 13.6 L12 22 L10.4 13.6 L2 12 L10.4 10.4 Z" fill="#FFC107"/>
+                    </svg>
+                    TrendingTech Daily
+                </span>
+                <div class="featured-actions">
+                    <a href="/ai-tools" class="featured-btn primary" aria-label="Explore AI Tools Pulse">
+                        Explore <span class="arrow">→</span>
+                    </a>
+                    <a href="/he/ai-tools" class="featured-btn ghost" aria-label="גלו את AI Tools Pulse בעברית">
+                        <span class="arrow">←</span> בעברית
+                    </a>
+                </div>
+            </div>
+
+            <div class="featured-card ds-variant" role="region" aria-label="Design Systems Decoded">
+                <span class="featured-badge"><span class="dot"></span> 🎨 New</span>
+                <h2 class="featured-title">Design Systems Decoded</h2>
+                <p class="featured-sub">
+                    Palettes, philosophies &amp; Claude's verdict on every component library shaping the modern web.
+                </p>
+                <span class="featured-claude">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M12 2 L13.6 10.4 L22 12 L13.6 13.6 L12 22 L10.4 13.6 L2 12 L10.4 10.4 Z" fill="#FFC107"/>
+                    </svg>
+                    TrendingTech Daily
+                </span>
+                <div class="featured-actions">
+                    <a href="/design-systems" class="featured-btn primary" aria-label="Explore Design Systems Decoded">
+                        Explore <span class="arrow">→</span>
+                    </a>
+                    <a href="/he/design-systems" class="featured-btn ghost" aria-label="גלו את מערכות עיצוב מפוענחות בעברית">
+                        <span class="arrow">←</span> בעברית
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Links -->
+        <a href="/" class="link-btn">
+            <i class="bi bi-globe-americas text-primary"></i> English Site
+        </a>
+        
+        <a href="/he/" class="link-btn">
+            <i class="bi bi-globe me-1 text-primary" style="margin-left: 8px;"></i> אתר בעברית
+        </a>
+
+        <!-- Newsletter Sign-up -->
+        <div class="newsletter-section">
+            <h3>Subscribe to our Newsletter</h3>
+            <p class="small text-muted mb-3">Get the latest tech updates delivered to your inbox.</p>
+            <form class="newsletter-form" id="links-newsletter-form">
+                <input type="email" class="newsletter-input" id="newsletter-email" placeholder="Enter your email address" required>
+                <button type="submit" class="newsletter-submit">Subscribe Now</button>
+            </form>
+            <div id="newsletter-message" class="mt-2 small" style="display: none;"></div>
+        </div>
+        
+        <!-- Social Icons -->
+        <div class="social-icons">
+            <a href="https://www.youtube.com/channel/UC73gfqq3PphoRm1ANvR05Qw" target="_blank" rel="noopener" title="YouTube" class="text-danger"><i class="bi bi-youtube"></i></a>
+            <a href="https://www.instagram.com/stories/trendingtechdaily2026/" target="_blank" rel="noopener" title="Instagram" style="color: #E1306C;"><i class="bi bi-instagram"></i></a>
+            <a href="https://x.com/TrendingTechD" target="_blank" rel="noopener" title="X (Twitter)" class="text-dark"><i class="bi bi-twitter-x"></i></a>
+            <a href="https://www.facebook.com/profile.php?id=61560799001603" target="_blank" rel="noopener" title="Facebook" class="text-primary"><i class="bi bi-facebook"></i></a>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('links-newsletter-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('newsletter-email').value;
+            const messageEl = document.getElementById('newsletter-message');
+            const submitBtn = this.querySelector('button[type="submit"]');
+            
+            if (!email) return;
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Subscribing...';
+            
+            fetch('https://subscribenewsletter-xa54maubsa-uc.a.run.app?lang=en&email=' + encodeURIComponent(email))
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        messageEl.textContent = 'Thank you for subscribing!';
+                        messageEl.className = 'mt-2 small text-success fw-bold';
+                        messageEl.style.display = 'block';
+                        
+                        document.getElementById('newsletter-email').value = '';
+                        submitBtn.innerHTML = 'Subscribe Now';
+                        submitBtn.disabled = false;
+                        
+                        setTimeout(() => {
+                            messageEl.style.display = 'none';
+                        }, 5000);
+                    } else {
+                        throw new Error('Subscription failed');
+                    }
+                })
+                .catch(err => {
+                    console.error("Subscription error:", err);
+                    messageEl.textContent = 'Error subscribing. Please try again later.';
+                    messageEl.className = 'mt-2 small text-danger fw-bold';
+                    messageEl.style.display = 'block';
+                    
+                    submitBtn.innerHTML = 'Subscribe Now';
+                    submitBtn.disabled = false;
+                    
+                    setTimeout(() => {
+                        messageEl.style.display = 'none';
+                    }, 5000);
+                });
+        });
+    </script>
+</body>
+</html>

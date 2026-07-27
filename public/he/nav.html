@@ -1,0 +1,100 @@
+<nav class="navbar navbar-expand-lg" dir="rtl">
+  <div class="container">
+    <a class="navbar-brand" href="/he/">TrendingTech Daily</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" id="navbar-toggler" aria-controls="navbarMain" aria-expanded="false" aria-label="פתח תפריט">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarMain">
+      <ul class="navbar-nav mb-2 mb-lg-0 align-items-center">
+        <li class="nav-item">
+          <a class="nav-link" href="/he/">ראשי</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/he/shuk-hon"><i class="bi bi-graph-up-arrow me-1"></i>שוק ההון</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/he/compare"><i class="bi bi-columns-gap me-1"></i>השוואות</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/he/ai-tools"><span aria-hidden="true">✨</span> כלי AI</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/he/design-systems"><span aria-hidden="true">🎨</span> מערכות עיצוב</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/he/podcasts"><i class="bi bi-headphones me-1"></i>פודקאסטים</a>
+        </li>
+
+        <!-- More dropdown for overflow categories -->
+        <li class="nav-item dropdown d-none" id="more-dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">עוד</a>
+          <ul class="dropdown-menu" id="more-dropdown-menu"></ul>
+        </li>
+        <li id="category-nav-placeholder"></li>
+
+        <!-- Social links -->
+        <li class="nav-item ms-lg-2">
+          <a class="nav-link" href="https://www.youtube.com/channel/UC73gfqq3PphoRm1ANvR05Qw" target="_blank" rel="noopener" title="יוטיוב" style="color: #ff0000; font-size: 1.2rem;">
+            <i class="bi bi-youtube"></i>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://www.instagram.com/stories/trendingtechdaily2026/" target="_blank" rel="noopener" title="אינסטגרם" style="color: #E1306C; font-size: 1.2rem;">
+            <i class="bi bi-instagram"></i>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://x.com/TrendingTechD" target="_blank" rel="noopener" title="X (טוויטר)" style="color: #000000; font-size: 1.2rem;">
+            <i class="bi bi-twitter-x"></i>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="https://www.facebook.com/profile.php?id=61560799001603" target="_blank" rel="noopener" title="פייסבוק" style="color: #1877F2; font-size: 1.2rem;">
+            <i class="bi bi-facebook"></i>
+          </a>
+        </li>
+        <li class="nav-item me-lg-2">
+          <a class="nav-link" href="https://www.linkedin.com/company/121034249/" target="_blank" rel="noopener" title="לינקדין" style="color: #0A66C2; font-size: 1.2rem;">
+            <i class="bi bi-linkedin"></i>
+          </a>
+        </li>
+
+        <!-- Search bar -->
+        <li class="nav-item">
+          <form class="d-flex" id="nav-search-form" role="search">
+            <input class="form-control" type="search" placeholder="חיפוש..." aria-label="חיפוש" id="nav-search-input">
+          </form>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" id="search-toggle-btn" role="button" aria-label="חיפוש">
+            <i class="bi bi-search"></i>
+          </a>
+        </li>
+
+        <!-- Auth links -->
+        <li class="nav-item" id="auth-login-link">
+          <a class="nav-link" href="/he/login">כניסה</a>
+        </li>
+        <li class="nav-item" id="auth-signup-link">
+          <a class="nav-link" href="/he/signup">הרשמה</a>
+        </li>
+        <li class="nav-item dropdown" id="auth-profile-menu" style="display:none;">
+          <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <img id="user-profile-pic-nav" src="/img/default-avatar.png" alt="משתמש" style="width:25px; height:25px; border-radius:50%; margin-left:8px; background-color:#eee;">
+            <span id="user-display-name-nav">פרופיל</span>
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+            <li><a class="dropdown-item" href="/he/profile"><i class="bi bi-person-circle me-2"></i>הפרופיל שלי</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><button class="dropdown-item" type="button" id="auth-logout-btn"><i class="bi bi-box-arrow-right me-2"></i>התנתקות</button></li>
+          </ul>
+        </li>
+
+        <!-- Language switcher -->
+        <li class="nav-item">
+          <a class="nav-link lang-switch" href="/">🌐 EN</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

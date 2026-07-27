@@ -1,0 +1,319 @@
+/* AI Tools Pulse — Glossary + For Dummies guide styles
+   Scoped under .aig- and tuned to match ai-tools.css palette
+   (primary #2196F3, accent #FFC107, Orbitron headings). */
+
+:root {
+  --aig-primary: #2196F3;
+  --aig-accent: #FFC107;
+  --aig-bg-soft: #F5F8FE;
+  --aig-border: #E4E9F2;
+  --aig-radius: 16px;
+  --aig-shadow: 0 6px 24px rgba(33, 150, 243, 0.08);
+}
+
+/* Slim hero variant for sub-pages */
+.aip-hero.aip-hero-slim {
+  padding: 3rem 1rem 2rem;
+}
+.aip-hero.aip-hero-slim h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-bottom: .5rem;
+}
+
+/* Explainer video placeholder slot — used on landing + guide + glossary */
+#explainer-video-slot { width: 100%; max-width: 720px; margin: 1rem auto; }
+#explainer-video-slot video {
+  display: block;
+  width: 100%;
+  max-width: 720px;
+  aspect-ratio: 16 / 9;
+  border-radius: 16px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+  margin: 0 auto;
+  background: #000;
+}
+
+/* Section titles */
+.aig-h2 {
+  font-family: var(--font-heading, 'Orbitron', sans-serif);
+  font-weight: 800;
+  font-size: clamp(1.4rem, 2.2vw, 1.9rem);
+  margin-bottom: 1.25rem;
+  color: #0B1220;
+}
+
+/* ── Glossary ─────────────────────────────────────────────────────────── */
+.aig-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  justify-content: center;
+  margin-top: 1rem;
+  position: sticky;
+  top: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+  backdrop-filter: blur(8px);
+  z-index: 10;
+  padding: .5rem;
+  border-radius: 999px;
+}
+.aig-chips .aip-chip.active {
+  background: var(--aig-primary);
+  color: #fff;
+  border-color: var(--aig-primary);
+}
+
+.aig-section {
+  margin: 2.5rem 0;
+  scroll-margin-top: 120px;
+}
+.aig-section-title {
+  font-family: var(--font-heading, 'Orbitron', sans-serif);
+  font-weight: 700;
+  font-size: 1.5rem;
+  border-bottom: 2px solid var(--aig-border);
+  padding-bottom: .5rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: baseline;
+  gap: .75rem;
+}
+.aig-count {
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  font-size: .9rem;
+  font-weight: 400;
+  color: #6c757d;
+}
+
+.aig-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.aig-card {
+  background: #fff;
+  border: 1px solid var(--aig-border);
+  border-radius: var(--aig-radius);
+  padding: 1.25rem;
+  box-shadow: var(--aig-shadow);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.aig-card:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(33,150,243,.14); }
+.aig-card .aig-term {
+  font-family: var(--font-heading, 'Orbitron', sans-serif);
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin: 0 0 .5rem;
+  color: var(--aig-primary);
+}
+.aig-card .aig-def {
+  font-size: .95rem;
+  line-height: 1.55;
+  color: #1f2937;
+  margin: 0;
+}
+.aig-card .aig-aliases {
+  display: block;
+  font-size: .75rem;
+  color: #6c757d;
+  margin-top: .35rem;
+}
+.aig-card .aig-related {
+  display: flex;
+  gap: .35rem;
+  flex-wrap: wrap;
+  margin-top: .75rem;
+  padding-top: .75rem;
+  border-top: 1px dashed var(--aig-border);
+}
+.aig-card .aig-related-chip {
+  font-size: .75rem;
+  background: var(--aig-bg-soft);
+  color: var(--aig-primary);
+  padding: 2px 8px;
+  border-radius: 999px;
+  text-decoration: none;
+}
+
+/* ── For Dummies guide ────────────────────────────────────────────────── */
+.aig-intro {
+  background: linear-gradient(135deg, #F5F8FE 0%, #FFFBEB 100%);
+  border: 1px solid var(--aig-border);
+  border-radius: var(--aig-radius);
+  padding: 1.5rem;
+  margin: 1.5rem auto;
+  box-shadow: var(--aig-shadow);
+  max-width: 880px;
+}
+.aig-intro h2 {
+  font-family: var(--font-heading, 'Orbitron', sans-serif);
+  font-size: 1.2rem;
+  margin-bottom: .75rem;
+}
+.aig-intro p { font-size: 1.05rem; line-height: 1.6; margin-bottom: .5rem; }
+
+/* 4 type cards */
+.aig-types-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+.aig-type-card {
+  background: #fff;
+  border: 1px solid var(--aig-border);
+  border-radius: var(--aig-radius);
+  padding: 1.25rem;
+  box-shadow: var(--aig-shadow);
+  position: relative;
+  overflow: hidden;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.aig-type-card::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--aig-primary), var(--aig-accent));
+  opacity: 0; transition: opacity .2s ease;
+  pointer-events: none;
+}
+.aig-type-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(33,150,243,.18); }
+.aig-type-card:hover::before { opacity: .04; }
+.aig-type-card h3 {
+  font-family: var(--font-heading, 'Orbitron', sans-serif);
+  font-size: 1.15rem; margin: .5rem 0; color: #0B1220;
+}
+.aig-type-card p { font-size: .95rem; line-height: 1.5; color: #1f2937; }
+.aig-type-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--aig-primary), #6c5ce7);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+}
+.aig-type-card[data-type="claude-skill"] .aig-type-icon { background: linear-gradient(135deg,#FF6B6B,#FFC107); }
+.aig-type-card[data-type="mcp-connector"] .aig-type-icon { background: linear-gradient(135deg,#4CAF50,#2196F3); }
+.aig-type-card[data-type="agent-framework"] .aig-type-icon { background: linear-gradient(135deg,#FFC107,#FF6B6B); color:#fff; }
+
+.aig-type-cta {
+  display: inline-block;
+  margin-top: .5rem;
+  font-weight: 600;
+  color: var(--aig-primary);
+  text-decoration: none;
+}
+.aig-type-cta:hover { text-decoration: underline; }
+
+/* Decision tree */
+.aig-tree {
+  background: var(--aig-bg-soft);
+  border-radius: var(--aig-radius);
+  padding: 1.5rem;
+  border: 1px solid var(--aig-border);
+}
+.aig-tree-q {
+  font-family: var(--font-heading, 'Orbitron', sans-serif);
+  font-weight: 700;
+  font-size: 1.05rem;
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #0B1220;
+}
+.aig-tree-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: .75rem;
+}
+.aig-tree-branch {
+  background: #fff;
+  border: 1px solid var(--aig-border);
+  border-radius: 12px;
+  padding: 1rem;
+  text-decoration: none;
+  color: #1f2937;
+  display: flex; flex-direction: column; gap: .25rem;
+  transition: transform .12s ease, border-color .12s ease;
+}
+.aig-tree-branch:hover {
+  transform: translateY(-2px);
+  border-color: var(--aig-primary);
+}
+.aig-tree-branch strong { color: var(--aig-primary); }
+
+/* Steps */
+.aig-steps-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: .75rem;
+}
+.aig-steps-list li {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: .85rem;
+  align-items: start;
+  background: #fff;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--aig-border);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(15,23,42,.04);
+}
+.aig-step-num {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--aig-primary), #6c5ce7);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-heading, 'Orbitron', sans-serif);
+  font-weight: 800; font-size: 1.1rem;
+}
+
+/* Callouts */
+.aig-callouts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+.aig-callout {
+  display: flex;
+  gap: .75rem;
+  background: #FFF8E1;
+  border: 1px solid #FFE082;
+  border-radius: 12px;
+  padding: 1rem;
+  align-items: flex-start;
+}
+.aig-callout i { font-size: 1.25rem; color: #B26A00; flex: 0 0 auto; }
+.aig-callout strong { color: #0B1220; display: block; margin-bottom: .15rem; }
+
+/* Where next */
+.aig-where-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: .5rem;
+  margin-top: 1rem;
+}
+.aip-chip.aip-chip-big {
+  font-size: 1rem;
+  padding: .5rem 1rem;
+  background: #fff;
+  border: 1px solid var(--aig-border);
+  color: var(--aig-primary);
+  text-decoration: none;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  transition: transform .12s ease, background .12s ease;
+}
+.aip-chip.aip-chip-big:hover {
+  transform: translateY(-2px);
+  background: var(--aig-bg-soft);
+}
+
+/* RTL nudges — Grid auto-flips columns under `dir="rtl"` so we keep the
+   same column template; the text-align: right keeps the prose readable. */
+html[dir="rtl"] .aig-card .aig-related { justify-content: flex-end; }
+html[dir="rtl"] .aig-steps-list li > div { text-align: right; }

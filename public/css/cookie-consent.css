@@ -1,0 +1,111 @@
+/* ── Cookie Consent Banner ─────────────────────────────────────────── */
+
+#cookie-consent-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 99999;
+  background: #1a1a2e;
+  border-top: 2px solid #6366f1;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
+  animation: cookie-slide-up 0.35s ease-out both;
+}
+
+@keyframes cookie-slide-up {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+@keyframes cookie-slide-down {
+  from { transform: translateY(0);    opacity: 1; }
+  to   { transform: translateY(100%); opacity: 0; }
+}
+
+#cookie-consent-banner .cookie-text {
+  flex: 1 1 280px;
+  font-size: 0.88rem;
+  color: #ccc;
+  line-height: 1.5;
+  margin: 0;
+}
+
+#cookie-consent-banner .cookie-text a {
+  color: #6366f1;
+  text-decoration: underline;
+}
+
+#cookie-consent-banner .cookie-text a:hover {
+  color: #818cf8;
+}
+
+#cookie-consent-banner .cookie-actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+#cookie-btn-accept {
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  white-space: nowrap;
+}
+
+#cookie-btn-accept:hover {
+  background: #4f46e5;
+  transform: translateY(-1px);
+}
+
+#cookie-btn-necessary {
+  background: transparent;
+  color: #aaa;
+  border: 1.5px solid #444;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+
+#cookie-btn-necessary:hover {
+  border-color: #aaa;
+  color: #fff;
+}
+
+/* RTL adjustments for Hebrew */
+[dir="rtl"] #cookie-consent-banner {
+  flex-direction: row-reverse;
+}
+
+@media (max-width: 576px) {
+  #cookie-consent-banner {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1rem;
+  }
+
+  #cookie-consent-banner .cookie-actions {
+    justify-content: stretch;
+  }
+
+  #cookie-btn-accept,
+  #cookie-btn-necessary {
+    flex: 1;
+    text-align: center;
+  }
+}

@@ -747,3 +747,25 @@ main > .container > section {
   color: rgba(200,210,240,0.85);
   animation: ab-slide-up 0.6s 0.12s ease both;
 }
+
+/* ---- Google Auto Ads containment ----
+   Auto Ads may only render inside article body content and sidebars.
+   Placements that break the layout are suppressed:
+   - top-level injections above/between homepage sections (giant unfilled holes)
+   - injections inside article cards in the feed grid
+   - anything inside nav, stories strip, featured hero, or video row */
+body > .google-auto-placed,
+.article-card .google-auto-placed,
+.article-grid .google-auto-placed,
+.stories-contain .google-auto-placed,
+#featured-article-container .google-auto-placed,
+.video-recommend .google-auto-placed,
+nav .google-auto-placed,
+.navbar .google-auto-placed {
+  display: none !important;
+}
+
+/* An unfilled slot should never leave an empty hole */
+ins.adsbygoogle[data-ad-status="unfilled"] {
+  display: none !important;
+}

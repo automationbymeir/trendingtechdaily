@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
+  <meta charset="UTF-8" />
+  <meta name="google-site-verification" content="AAJy5uWJtM-PEQ6kOZCAiIQuO3CijcFc6DYM7dNYEVY" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>קטגוריה | TrendingTech Daily</title>
+  <meta name="description" content="כתבות טכנולוגיה לפי קטגוריה - TrendingTech Daily" />
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js" defer></script>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/he/styles.css">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/cookie-consent.css">
+</head>
+<body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- Navbar Placeholder -->
+  <div id="navbar-placeholder"></div>
+
+  <main class="container my-5">
+    <!-- Loading state -->
+    <div id="category-loading" class="spinner-container text-center py-5">
+      <div class="spinner-border" role="status"><span class="visually-hidden">טוען...</span></div>
+      <p>טוען קטגוריה...</p>
+    </div>
+
+    <!-- Error state -->
+    <div id="category-error" style="display:none;" class="alert alert-danger">
+      <i class="bi bi-exclamation-triangle me-2"></i>
+      <span id="category-error-message">לא ניתן לטעון את הקטגוריה.</span>
+      <div class="mt-3">
+        <a href="/he/" class="btn btn-primary btn-sm">
+          <i class="bi bi-arrow-right me-1"></i>חזרה לעמוד הבית
+        </a>
+      </div>
+    </div>
+
+    <!-- Category content -->
+    <div id="category-content-wrapper" style="display:none;">
+      <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="/he/" style="color:#2196F3;">ראשי</a></li>
+          <li class="breadcrumb-item active" id="breadcrumb-category-name"></li>
+        </ol>
+      </nav>
+
+      <div class="row">
+        <div class="col-lg-8">
+          <h1 class="section-title" id="category-page-title">טוען...</h1>
+          <p id="category-page-description" class="text-muted mb-4"></p>
+
+          <div id="category-articles-container" class="article-grid">
+            <!-- Articles loaded by he-category.js -->
+          </div>
+
+          <div id="category-no-articles" style="display:none;" class="alert alert-info mt-4">
+            <i class="bi bi-info-circle me-2"></i>
+            אין כתבות בקטגוריה זו עדיין.
+          </div>
+        </div>
+
+        <aside class="col-lg-4">
+          <div class="sidebar-section mb-4">
+            <h4>קטגוריות אחרות</h4>
+            <ul class="trending-topics-list" id="categories-list">
+              <li><a href="/he/ai">בינה מלאכותית <span class="badge bg-primary rounded-pill">→</span></a></li>
+              <li><a href="/he/technology">טכנולוגיה <span class="badge bg-primary rounded-pill">→</span></a></li>
+              <li><a href="/he/startups">סטארטאפים <span class="badge bg-primary rounded-pill">→</span></a></li>
+              <li><a href="/he/gadgets">גאדג'טים <span class="badge bg-primary rounded-pill">→</span></a></li>
+              <li><a href="/he/security">אבטחה <span class="badge bg-primary rounded-pill">→</span></a></li>
+              <li><a href="/he/crypto">קריפטו <span class="badge bg-primary rounded-pill">→</span></a></li>
+            </ul>
+          </div>
+          <div class="sidebar-section" style="background:#1A1A2E;">
+            <a href="https://www.automationbymeir.com/" target="_blank" rel="noopener" style="text-decoration:none; color:inherit; display:block;">
+              <h4 class="mb-2" style="color:#fff;">Automation by Meir</h4>
+              <p class="small mb-0" style="color:#aaa;">שדרגו את העסק שלכם עם אוטומציה מותאמת אישית</p>
+            </a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4 mb-4 mb-md-0">
+          <h5>TrendingTech Daily</h5>
+          <p class="small" style="color:#aaa;">הישארו מעודכנים עם חדשות הטכנולוגיה האחרונות בעברית.</p>
+        </div>
+        <div class="col-md-4 mb-4 mb-md-0">
+          <h5>קישורים מהירים</h5>
+          <ul class="footer-links">
+            <li><a href="/he/">ראשי</a></li>
+            <li><a href="/he/podcasts">פודקאסטים</a></li>
+            <li><a href="/he/about">אודות</a></li>
+            <li><a href="/he/privacy">מדיניות פרטיות</a></li>
+            <li><a href="/">גרסה אנגלית</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4">
+          <h5>שפה</h5>
+          <p class="small" style="color:#aaa;"><a href="/" style="color:#FFC107;">🌐 English Version</a></p>
+        </div>
+      </div>
+      <div class="copyright">
+        <p style="margin:0;">© 2025 TrendingTech Daily. כל הזכויות שמורות.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+  <script src="/he/js/he-app.js" defer></script>
+  <script src="/he/js/he-category.js" defer></script>
+  <script src="/he/js/he-cookie-consent.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>\n
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-5VF5QF9ZCJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-5VF5QF9ZCJ");
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מילון מונחי AI — 35 מונחים בעברית פשוטה | AI Tools Pulse</title>
+<meta name="description" content="35 מונחי בינה מלאכותית בעברית פשוטה — AI, LLM, RAG, MCP, סוכנים — בלי ז'רגון."/>
+<link rel="canonical" href="{{CANONICAL}}"/>
+{{HREFLANG}}
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="מילון מונחי AI — בעברית פשוטה"/>
+<meta property="og:description" content="35 מונחי בינה מלאכותית בעברית פשוטה — AI, LLM, RAG, MCP, סוכנים."/>
+<meta property="og:url" content="{{CANONICAL}}"/>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/he/styles.css">
+<link rel="stylesheet" href="/css/ai-tools.css?v=4">
+<link rel="stylesheet" href="/css/ai-tools-guide.css?v=4">
+
+{{JSONLD}}
+</head>
+<body class="aip-page" data-lang="he">
+
+<div id="navbar-placeholder"></div>
+
+<header class="aip-hero aip-hero-slim text-center">
+  <div class="container">
+    <div class="aip-poweredby">
+      <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+        <path fill="#FFC107" d="M12 2 l2.4 6.8 L21 9.6 l-5.4 4.1 1.9 7.1 L12 16.8 6.5 20.8 l1.9-7.1 L3 9.6 l6.6-.8 Z"/>
+      </svg>
+      <span>מופעל על ידי <strong>Claude</strong> · Anthropic × TrendingTech Daily</span>
+    </div>
+    <h1>מילון מונחי AI</h1>
+    <p class="aip-sub">35 הגדרות פשוטות למונחי בינה מלאכותית שבאמת תפגשו — בלי ז'רגון ובלי הרצאות אקדמיות.</p>
+
+    {{EXPLAINER_VIDEO}}
+
+    <div class="aip-searchbar">
+      <i class="bi bi-search"></i>
+      <input id="aig-search" type="search" placeholder="סנן מונחים (לדוגמה LLM, RAG, סוכן)..." aria-label="סינון מונחים">
+    </div>
+
+    <nav class="aig-chips" aria-label="קטגוריות">
+      <a href="#core" class="aip-chip active" data-cat="all">הכל</a>
+      <a href="#core" class="aip-chip" data-cat="core">בסיס</a>
+      <a href="#models" class="aip-chip" data-cat="models">מודלים</a>
+      <a href="#agents" class="aip-chip" data-cat="agents">סוכנים</a>
+      <a href="#developer" class="aip-chip" data-cat="developer">מפתחים</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <p class="aig-empty text-center text-muted my-4" id="aig-empty" style="display:none;">לא נמצאו מונחים שתואמים לסינון.</p>
+
+  <section id="core" class="aig-section" data-cat="core">
+    <h2 class="aig-section-title">מושגי יסוד <span class="aig-count" data-count-cat="core"></span></h2>
+    <div class="aig-grid" data-grid-cat="core"></div>
+  </section>
+
+  <section id="models" class="aig-section" data-cat="models">
+    <h2 class="aig-section-title">מודלים <span class="aig-count" data-count-cat="models"></span></h2>
+    <div class="aig-grid" data-grid-cat="models"></div>
+  </section>
+
+  <section id="agents" class="aig-section" data-cat="agents">
+    <h2 class="aig-section-title">סוכנים וכלים <span class="aig-count" data-count-cat="agents"></span></h2>
+    <div class="aig-grid" data-grid-cat="agents"></div>
+  </section>
+
+  <section id="developer" class="aig-section" data-cat="developer">
+    <h2 class="aig-section-title">תבניות למפתחים <span class="aig-count" data-count-cat="developer"></span></h2>
+    <div class="aig-grid" data-grid-cat="developer"></div>
+  </section>
+
+  <section class="text-center my-5">
+    <h3 style="font-family: var(--font-heading, 'Orbitron', sans-serif);">חדשים בעולם ה-AI?</h3>
+    <p class="text-muted">התחילו עם המדריך של 10 דקות.</p>
+    <a class="btn btn-primary" href="/he/ai-tools/guide"><i class="bi bi-book"></i> קרא את המדריך למתחילים</a>
+    <a class="btn btn-outline-primary ms-2" href="/he/ai-tools"><i class="bi bi-grid"></i> כל הכלים</a>
+  </section>
+</main>
+
+<footer style="background:#0B1220; color:#fff; padding: 3rem 1rem 2rem; margin-top: 4rem;">
+  <div class="container text-center">
+    <div class="aip-footer-badge mb-3" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.16); color:#fff;">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path fill="#FFC107" d="M12 2 l2.4 6.8 L21 9.6 l-5.4 4.1 1.9 7.1 L12 16.8 6.5 20.8 l1.9-7.1 L3 9.6 l6.6-.8 Z"/>
+      </svg>
+      <span>מופעל על ידי Claude · Anthropic</span>
+    </div>
+    <p style="opacity:.8;"><a href="/he/ai-tools" style="color:#FFC107;">← חזרה ל-AI Tools Pulse</a></p>
+  </div>
+</footer>
+
+<script>window.AIG_LANG = 'he';</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+<script src="/he/js/he-app.js" defer></script>
+<script src="/js/ai-tools-glossary.js?v=4" defer></script>
+</body>
+</html>

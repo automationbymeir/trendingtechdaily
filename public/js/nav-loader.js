@@ -195,9 +195,10 @@ function initializeResponsiveCategories() {
 
     // First, remove any existing category items to prevent duplicates
     navbarNav.querySelectorAll('[data-category="true"]').forEach(el => el.remove());
-    
-    // Determine how many categories to show based on screen width
-    const maxVisibleCategories = window.innerWidth >= 992 ? 5 : 3;
+
+    // Start with a generous inline count; fitCategoriesToWidth() below moves
+    // whatever doesn't actually fit into the More dropdown.
+    const maxVisibleCategories = window.innerWidth >= 1200 ? 4 : 3;
     const visibleCategories = categories.slice(0, maxVisibleCategories);
     const hiddenCategories = categories.slice(maxVisibleCategories);
 
@@ -252,33 +253,60 @@ function initializeResponsiveCategories() {
       }
     }
     
-    // Add Stock Data link after categories (only if not already present)
-    const existingStockLink = navbarNav.querySelector('a[href="/stock-data.html"]');
-    if (!existingStockLink) {
-      const stockLi = document.createElement('li');
-      stockLi.className = 'nav-item';
-      stockLi.setAttribute('data-category', 'true');
-      const stockLink = document.createElement('a');
-      stockLink.className = 'nav-link';
-      stockLink.href = '/stock-data.html';
-      stockLink.innerHTML = `<i class="bi bi-graph-up me-1"></i>${stocksLabel}`;
-      stockLi.appendChild(stockLink);
-      
-      // Insert stocks link after categories but before More dropdown
-      if (moreDropdown) {
-        navbarNav.insertBefore(stockLi, moreDropdown);
-      } else if (insertBeforeElement) {
-        navbarNav.insertBefore(stockLi, insertBeforeElement);
-      } else {
-        navbarNav.appendChild(stockLi);
-      }
+    // Stocks lives in the More dropdown only — an inline copy just adds width.
+
+    fitCategoriesToWidth();
+  };
+
+  /**
+   * Moves inline category links into the More dropdown, last-first, until the
+   * expanded navbar no longer overflows its container. Bootstrap's collapse
+   * handles < xl widths, so this only runs when the bar is expanded.
+   */
+  const fitCategoriesToWidth = () => {
+    const collapse = document.getElementById('navbarMain');
+    const moreDropdown = document.getElementById('more-dropdown');
+    const moreDropdownMenu = document.getElementById('more-dropdown-menu');
+    const navbarNav = document.querySelector('#navbarMain .navbar-nav');
+    if (!collapse || !moreDropdown || !moreDropdownMenu || !navbarNav) return;
+    if (window.innerWidth < 1200) return; // collapsed mode stacks vertically
+
+    const overflows = () => {
+      const container = collapse.closest('.container');
+      if (!container) return collapse.scrollWidth > collapse.clientWidth;
+      const limit = container.getBoundingClientRect().right - 12;
+      const last = collapse.lastElementChild;
+      return collapse.scrollWidth > collapse.clientWidth ||
+        (last && last.getBoundingClientRect().right > limit);
+    };
+
+    let guard = 20;
+    while (overflows() && guard-- > 0) {
+      const inlineCats = navbarNav.querySelectorAll('li[data-category="true"]');
+      const lastCat = inlineCats[inlineCats.length - 1];
+      if (!lastCat) break;
+      const link = lastCat.querySelector('a');
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.className = 'dropdown-item';
+      a.href = link.getAttribute('href');
+      a.textContent = link.textContent;
+      li.appendChild(a);
+      moreDropdownMenu.insertBefore(li, moreDropdownMenu.firstChild);
+      lastCat.remove();
+      moreDropdown.classList.remove('d-none');
     }
   };
-  
+
   // Load and render categories
   fetchCategoriesFromDB().then(categories => {
     renderCategories(categories);
-    
+
+    // Font loading can widen links after first render — re-check the fit.
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(fitCategoriesToWidth);
+    }
+
     // Re-render on window resize
     let resizeTimeout;
     window.addEventListener('resize', () => {

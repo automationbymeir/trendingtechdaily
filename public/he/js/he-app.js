@@ -124,7 +124,7 @@ function initHeNavCategories(db) {
     // Remove existing category items
     navbarNav.querySelectorAll('[data-he-category="true"]').forEach(function (el) { el.remove(); });
 
-    var maxVisible = window.innerWidth >= 992 ? 4 : 2;
+    var maxVisible = window.innerWidth >= 1200 ? 3 : 2;
     var visible = categories.slice(0, maxVisible);
     var hidden = categories.slice(maxVisible);
 
@@ -160,6 +160,46 @@ function initHeNavCategories(db) {
       if (moreDropdownMenu.children.length > 0) {
         moreDropdown.classList.remove('d-none');
       }
+    }
+
+    fitHeNavToWidth();
+  }
+
+  // RTL-aware overflow guard: fold inline categories into the "עוד" dropdown
+  // until the expanded navbar fits its container. Collapse handles < xl.
+  function fitHeNavToWidth() {
+    var collapse = document.getElementById('navbarMain');
+    var moreDropdown = document.getElementById('more-dropdown');
+    var moreDropdownMenu = document.getElementById('more-dropdown-menu');
+    var navbarNav = document.querySelector('#navbarMain .navbar-nav');
+    if (!collapse || !moreDropdown || !moreDropdownMenu || !navbarNav) return;
+    if (window.innerWidth < 1200) return;
+
+    function overflows() {
+      if (collapse.scrollWidth > collapse.clientWidth) return true;
+      var container = collapse.closest('.container');
+      if (!container) return false;
+      var cr = container.getBoundingClientRect();
+      var lr = navbarNav.getBoundingClientRect();
+      // RTL: items spill past the container's LEFT edge
+      return lr.left < cr.left + 8 || lr.right > cr.right - 8;
+    }
+
+    var guard = 20;
+    while (overflows() && guard-- > 0) {
+      var inlineCats = navbarNav.querySelectorAll('li[data-he-category="true"]');
+      var lastCat = inlineCats[inlineCats.length - 1];
+      if (!lastCat) break;
+      var link = lastCat.querySelector('a');
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.className = 'dropdown-item';
+      a.href = link.getAttribute('href');
+      a.textContent = link.textContent;
+      li.appendChild(a);
+      moreDropdownMenu.insertBefore(li, moreDropdownMenu.firstChild);
+      lastCat.remove();
+      moreDropdown.classList.remove('d-none');
     }
   }
 

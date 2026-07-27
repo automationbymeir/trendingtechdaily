@@ -68,7 +68,7 @@ body {
 .navbar .nav-link {
   font-weight: 600;
   color: var(--color-text-body) !important;
-  padding: 0.5rem 0.75rem;
+  padding: 0.4rem 0.55rem;
   white-space: nowrap;
 }
 
@@ -448,7 +448,7 @@ body {
 }
 
 /* Responsive */
-@media (max-width: 991.98px) {
+@media (max-width: 1199.98px) {
   .navbar .navbar-nav {
     flex-direction: column;
     align-items: flex-start;
@@ -476,4 +476,21 @@ body {
   .featured-article-body {
     padding: var(--spacing-md);
   }
+}
+
+
+/* ---- Google Auto Ads containment (mirrors /styles.css) ---- */
+body > .google-auto-placed,
+.article-card .google-auto-placed,
+.article-grid .google-auto-placed,
+.stories-contain .google-auto-placed,
+#featured-article-container .google-auto-placed,
+.video-recommend .google-auto-placed,
+nav .google-auto-placed,
+.navbar .google-auto-placed {
+  display: none !important;
+}
+
+ins.adsbygoogle[data-ad-status="unfilled"] {
+  display: none !important;
 }

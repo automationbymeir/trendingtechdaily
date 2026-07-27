@@ -37,16 +37,52 @@ function loadCategory(slug) {
     }
 
     console.log('Querying database for category:', slug);
-    db.collection('sections')
-        .where('slug', '==', slug)
-        .where('active', '==', true)
-        .limit(1)
-        .get()
+
+    // Strategy (tries each in order, stops at first match):
+    // 1. sections: where slug == slug
+    // 2. sections: scan all, match by name.toLowerCase()
+    // 3. categories: where slug == slug
+    // 4. categories: scan all, match by name.toLowerCase()
+    const matchByName = (docs) => {
+        const found = docs.find(d => {
+            const name = (d.data().name || '');
+            return name.toLowerCase().replace(/\s+/g, '-') === slug;
+        });
+        return found ? { empty: false, docs: [found], size: 1 } : { empty: true, docs: [], size: 0 };
+    };
+
+    const findSection = () => {
+        // 1. sections by slug field
+        return db.collection('sections').where('slug', '==', slug).limit(1).get()
+            .then(snap => {
+                if (!snap.empty) return snap;
+                // 2. sections by name
+                return db.collection('sections').get().then(allSnap => {
+                    const byName = matchByName(allSnap.docs);
+                    if (!byName.empty) return byName;
+                    // 3. categories by slug field
+                    return db.collection('categories').where('slug', '==', slug).limit(1).get()
+                        .then(catSnap => {
+                            if (!catSnap.empty) return catSnap;
+                            // 4. categories by name
+                            return db.collection('categories').get().then(allCatSnap => {
+                                return matchByName(allCatSnap.docs);
+                            });
+                        });
+                });
+            })
+            .catch(err => {
+                console.error('findSection error:', err);
+                return { empty: true, docs: [], size: 0 };
+            });
+    };
+
+    findSection()
         .then(snapshot => {
             console.log('Query completed. Found documents:', snapshot.size);
             if (snapshot.empty) {
                 console.error('Category not found for slug:', slug);
-                showError('Category not found or is not active.');
+                showError('Category not found.');
                 return;
             }
             
@@ -179,18 +215,19 @@ function loadCategoryArticles(categoryId, categorySlug) {
         });
 }
 
-// Show error message
+// Show error message — target articles container if available, otherwise fall back to main
 function showError(message) {
     console.error('ERROR:', message);
-    const mainContent = document.querySelector('main') || document.querySelector('.container') || document.body;
-    mainContent.innerHTML = `
-        <div class="container mt-5">
-            <div class="alert alert-danger" role="alert">
-                <h4 class="alert-heading">Error</h4>
-                <p>${message}</p>
-                <hr>
-                <p class="mb-0"><a href="/" class="btn btn-primary">Go to Homepage</a></p>
-            </div>
+    const target = document.getElementById('articles-container') ||
+                   document.getElementById('category-container') ||
+                   document.querySelector('main') ||
+                   document.body;
+    target.innerHTML = `
+        <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">Error</h4>
+            <p>${message}</p>
+            <hr>
+            <p class="mb-0"><a href="/" class="btn btn-primary">Go to Homepage</a></p>
         </div>
     `;
 }

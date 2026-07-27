@@ -186,7 +186,6 @@ function initializeResponsiveCategories() {
     const navbarNav = document.querySelector('#navbarMain .navbar-nav');
     const moreDropdownMenu = document.getElementById('more-dropdown-menu');
     const moreDropdown = document.getElementById('more-dropdown');
-    const podcastsLabel = 'Podcasts';
     const stocksLabel = 'Stocks';
 
     if (!navbarNav) {
@@ -237,15 +236,7 @@ function initializeResponsiveCategories() {
         moreDropdownMenu.appendChild(li);
       });
 
-      // Always include Podcasts and Stock Data links
-      const podcastsLi = document.createElement('li');
-      const podcastsLink = document.createElement('a');
-      podcastsLink.className = 'dropdown-item';
-      podcastsLink.href = '/podcasts.html';
-      podcastsLink.innerHTML = `<i class="bi bi-mic me-1"></i>${podcastsLabel}`;
-      podcastsLi.appendChild(podcastsLink);
-      moreDropdownMenu.appendChild(podcastsLi);
-
+      // Include Stock Data link
       const stocksLi = document.createElement('li');
       const stocksLink = document.createElement('a');
       stocksLink.className = 'dropdown-item';

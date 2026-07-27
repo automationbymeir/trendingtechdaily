@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="styles.css"> <link rel="stylesheet" href="css/signup-styles.css"> <link rel="stylesheet" href="css/profile-styles.css"> <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/css/cookie-consent.css">
 </head>
 <body>
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ"
@@ -109,6 +110,23 @@
                                     <span class="text-muted ms-2">Loading watchlist...</span>
                                 </div>
                                 <div id="stock-watchlist-content" class="profile-activity-list"></div>
+                            </div>
+                        </div>
+
+                        <div class="card shadow-sm mb-4 profile-card">
+                            <div class="card-header profile-card-header">Newsletter Subscription</div>
+                            <div class="card-body">
+                                <p class="text-muted small mb-3">Get the top tech news delivered to your inbox every Friday.</p>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="newsletter-en-toggle">
+                                    <label class="form-check-label" for="newsletter-en-toggle">Subscribe to English Newsletter</label>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="newsletter-he-toggle">
+                                    <label class="form-check-label" for="newsletter-he-toggle">Subscribe to Hebrew Newsletter (עברית)</label>
+                                </div>
+                                <button id="save-newsletter-btn" class="btn btn-sm btn-primary">Save Preferences</button>
+                                <span id="newsletter-feedback" class="ms-2 small"></span>
                             </div>
                         </div>
                     </div>
@@ -210,5 +228,6 @@
     <script src="/js/auth.js"></script>
     <script src="/js/profile.js"></script>
     <script src="/js/nav-loader.js"></script>
+  <script src="/js/cookie-consent.js" defer></script>
 </body>
 </html>

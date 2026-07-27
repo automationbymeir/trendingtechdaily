@@ -16,10 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadRecommendedVideos();
     }
 
-    // Load Sidebar Podcasts if container exists
-    if (document.getElementById('sidebar-podcasts-list')) {
-        loadSidebarPodcasts();
-    }
+
 
     // Initialize Welcome Popup if elements exist
     if (document.getElementById('welcome-popup-overlay')) {
@@ -345,87 +342,6 @@ function displayQuotaExceededAIAgentBanner(container) {
 }
 
 
-// --- Load Sidebar Podcasts (Your existing function) ---
-async function loadSidebarPodcasts() {
-    const podcastsContainer = document.getElementById('sidebar-podcasts-list');
-    const loader = document.getElementById('sidebar-podcasts-loader');
-    const errorContainer = document.getElementById('sidebar-podcasts-error');
-
-    if (!podcastsContainer) {
-        console.error("Sidebar podcasts container not found");
-        return;
-    }
-
-    try {
-        if (typeof functions === 'undefined') {
-            throw new Error("Firebase Functions service not available. Check app-base.js");
-        }
-
-        console.log("Loading sidebar podcasts...");
-        const getTechPodcastsFn = functions.httpsCallable('getTechPodcasts');
-
-        const result = await getTechPodcastsFn({
-            query: window.podcastQuery || "technology podcast programming ai",
-            market: window.podcastMarket || "US",
-            limit: 4
-        });
-
-        const podcasts = getSafe(() => result.data.podcasts, []);
-        console.log("Received sidebar podcast data:", podcasts);
-
-        if (loader) loader.remove();
-
-        if (podcasts && podcasts.length > 0) {
-            renderSidebarPodcasts(podcasts);
-        } else {
-            if (errorContainer) {
-                errorContainer.textContent = 'No podcasts available at the moment.';
-                errorContainer.classList.remove('d-none'); // Ensure d-none is removed to show message
-            }
-        }
-
-    } catch (error) {
-        console.error("Error loading sidebar podcasts:", error);
-        if (loader) loader.remove();
-        if (errorContainer) {
-            errorContainer.textContent = `Could not load podcasts: ${getSafe(() => error.message, 'Unknown error')}`;
-            errorContainer.classList.remove('d-none'); // Ensure d-none is removed to show message
-        }
-    }
-}
-
-// --- Render Sidebar Podcasts (Your existing function) ---
-function renderSidebarPodcasts(podcasts) {
-    const container = document.getElementById('sidebar-podcasts-list');
-    if (!container) return;
-
-    let html = '';
-    podcasts.forEach(podcast => {
-        const imageUrl = getSafe(() => podcast.imageUrl, '/img/default-podcast-art.png');
-        const podcastName = getSafe(() => podcast.name, 'Untitled Podcast');
-        const publisher = getSafe(() => podcast.publisher, 'Unknown Publisher');
-        const spotifyUrl = getSafe(() => podcast.spotifyUrl, '#');
-        const totalEpisodes = getSafe(() => podcast.total_episodes);
-
-        html += `
-            <a href="${spotifyUrl}" target="_blank" rel="noopener noreferrer" class="sidebar-podcast-item">
-                <img src="${imageUrl}" alt="${podcastName}" class="sidebar-podcast-image"
-                     onerror="this.onerror=null; this.src='/img/default-podcast-art.png';">
-                <div class="sidebar-podcast-content">
-                    <div class="sidebar-podcast-title">${podcastName}</div>
-                    <div class="sidebar-podcast-publisher">${publisher}</div>
-                    <div class="sidebar-podcast-meta">
-                        <i class="bi bi-spotify spotify-icon"></i>
-                        <span>Listen on Spotify</span>
-                        ${totalEpisodes ? `<span>• ${totalEpisodes} episodes</span>` : ''}
-                    </div>
-                </div>
-            </a>
-        `;
-    });
-
-    container.innerHTML = html;
-}
 
 // --- Welcome Popup Functionality (MODIFIED FOR SCROLL TRIGGER) ---
 function initWelcomePopup() {

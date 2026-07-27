@@ -1,52 +1,90 @@
-<nav class="navbar navbar-expand-lg">
+<nav class="navbar navbar-expand-xl ttd-nav">
   <div class="container">
-    <a class="navbar-brand" href="/">TrendingTech Daily</a>
+    <a class="navbar-brand fw-bold" href="/">TrendingTech Daily</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse" id="navbarMain">
-      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
-        <li class="nav-item">
-          <a class="nav-link" href="/">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/podcasts.html">Podcasts</a>
-        </li>
-        <!-- More dropdown for overflow categories -->
+      <!-- Primary nav — pushed to the right on desktop -->
+      <ul class="navbar-nav ms-xl-auto align-items-xl-center mb-2 mb-xl-0">
+        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="/compare"><i class="bi bi-columns-gap me-1"></i>Compare</a></li>
+        <li class="nav-item"><a class="nav-link" href="/ai-tools"><span aria-hidden="true">✨</span> AI Tools</a></li>
+        <li class="nav-item"><a class="nav-link" href="/design-systems"><span aria-hidden="true">🎨</span> Design Systems</a></li>
+        <li class="nav-item"><a class="nav-link" href="/podcasts"><i class="bi bi-headphones me-1"></i>Podcasts</a></li>
+
+        <!-- Category overflow dropdown (populated by nav-loader.js) -->
         <li class="nav-item dropdown d-none" id="more-dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">More</a>
           <ul class="dropdown-menu" id="more-dropdown-menu"></ul>
         </li>
-        <li id="category-nav-placeholder"></li>
-        <!-- Search bar -->
+        <li id="category-nav-placeholder" class="d-none"></li>
+
+        <!-- Language switch -->
         <li class="nav-item">
-          <form class="d-flex" id="nav-search-form" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search..." aria-label="Search" id="nav-search-input">
-          </form>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#" id="search-toggle-btn" role="button" aria-label="Toggle search">
-            <i class="bi bi-search"></i>
-          </a>
-        </li>
-        <li class="nav-item" id="auth-login-link">
-          <a class="nav-link" href="/login.html">Login</a>
-        </li>
-        <li class="nav-item" id="auth-signup-link">
-          <a class="nav-link" href="/signup.html">Sign Up</a>
-        </li>
-        <li class="nav-item dropdown" id="auth-profile-menu">
-          <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <img id="user-profile-pic-nav" src="/img/default-avatar.png" alt="User" style="width: 25px; height: 25px; border-radius: 50%; margin-right: 8px; background-color: #eee;">
-            <span id="user-display-name-nav">Profile</span>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-            <li><a class="dropdown-item" href="/profile.html">My Profile</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><button class="dropdown-item" type="button" id="auth-logout-btn">Logout</button></li>
-          </ul>
+          <a class="nav-link fw-semibold text-primary" href="/he" title="Switch to Hebrew site"><i class="bi bi-globe me-1"></i>עברית</a>
         </li>
       </ul>
+
+      <!-- Right-side utility strip: search + socials + auth -->
+      <div class="ttd-nav-utility d-flex flex-column flex-xl-row align-items-xl-center gap-2 gap-xl-3 ms-xl-3">
+        <!-- Search (icon toggles expandable field) -->
+        <div class="d-flex align-items-center ttd-nav-search">
+          <form id="nav-search-form" role="search">
+            <input class="form-control form-control-sm" type="search" placeholder="Search..." aria-label="Search" id="nav-search-input">
+          </form>
+          <a class="nav-link p-1" href="#" id="search-toggle-btn" role="button" aria-label="Toggle search">
+            <i class="bi bi-search"></i>
+          </a>
+        </div>
+
+        <!-- Social icons — compact row -->
+        <div class="d-flex align-items-center ttd-nav-social">
+          <a class="nav-link p-1" href="https://www.youtube.com/channel/UC73gfqq3PphoRm1ANvR05Qw" target="_blank" rel="noopener" title="YouTube" style="color:#ff0000;"><i class="bi bi-youtube"></i></a>
+          <a class="nav-link p-1" href="https://www.instagram.com/stories/trendingtechdaily2026/" target="_blank" rel="noopener" title="Instagram" style="color:#E1306C;"><i class="bi bi-instagram"></i></a>
+          <a class="nav-link p-1" href="https://x.com/TrendingTechD" target="_blank" rel="noopener" title="X (Twitter)" style="color:#000;"><i class="bi bi-twitter-x"></i></a>
+          <a class="nav-link p-1" href="https://www.facebook.com/profile.php?id=61560799001603" target="_blank" rel="noopener" title="Facebook" style="color:#1877F2;"><i class="bi bi-facebook"></i></a>
+          <a class="nav-link p-1" href="https://www.linkedin.com/company/121034249/" target="_blank" rel="noopener" title="LinkedIn" style="color:#0A66C2;"><i class="bi bi-linkedin"></i></a>
+        </div>
+
+        <!-- Auth: Login/Sign Up when logged out; Profile dropdown when logged in -->
+        <div class="d-flex align-items-center ttd-nav-auth">
+          <a class="nav-link px-2" href="/login.html" id="auth-login-link">Login</a>
+          <a class="btn btn-sm btn-primary ms-1" href="/signup.html" id="auth-signup-link">Sign Up</a>
+          <div class="dropdown d-none" id="auth-profile-menu">
+            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <img id="user-profile-pic-nav" src="/img/default-avatar.png" alt="User" style="width:26px; height:26px; border-radius:50%; margin-right:8px; background-color:#eee;">
+              <span id="user-display-name-nav">Profile</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+              <li><a class="dropdown-item" href="/profile.html">My Profile</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><button class="dropdown-item" type="button" id="auth-logout-btn">Logout</button></li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </nav>
+
+<style>
+  /* Nav visual polish — matches Geist-brand chrome on the videos */
+  .ttd-nav { padding-top: .5rem; padding-bottom: .5rem; }
+  .ttd-nav .navbar-brand { font-family: 'Orbitron', sans-serif; letter-spacing: .5px; }
+  .ttd-nav .nav-link { padding: .4rem .7rem; font-weight: 500; }
+  .ttd-nav .nav-link i.bi { font-size: 1.05rem; }
+  .ttd-nav-social .nav-link { font-size: 1.15rem; }
+  .ttd-nav-social .nav-link:hover { transform: translateY(-1px); transition: transform .15s ease; }
+  /* Auth compact style */
+  .ttd-nav-auth .btn-primary { padding: .25rem .8rem; font-weight: 600; }
+  /* Mobile: everything stacks; auth pills go full width */
+  @media (max-width: 1199.98px) {
+    .ttd-nav-utility { border-top: 1px solid rgba(0,0,0,.06); margin-top: .5rem; padding-top: .5rem; }
+    .ttd-nav-social { justify-content: flex-start; }
+    /* On mobile the toggle icon is redundant — expand the search inline. */
+    #nav-search-form { width: 100% !important; opacity: 1 !important; overflow: visible !important; margin: .25rem 0; }
+    .ttd-nav-search #search-toggle-btn { display: none; }
+  }
+</style>

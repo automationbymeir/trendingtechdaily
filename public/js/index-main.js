@@ -84,6 +84,8 @@ function initWelcomePopup() {
 // ... (the rest of your existing code)
 // --- Functions specific to index.html rendering ---
 function loadFeaturedArticle() {
+    // Skip when homepage was server-rendered by handleEnHomepage
+    if (window.EN_SSR_READY) return;
     const container = document.getElementById('featured-article-container');
     if (!container || typeof db === 'undefined') {
         console.warn("Featured container or DB not ready for loadFeaturedArticle.");
@@ -137,6 +139,8 @@ function loadMostRecentArticleAsFeatured() {
 }
 
 function loadLatestArticles() {
+    // Skip when homepage was server-rendered by handleEnHomepage
+    if (window.EN_SSR_READY) return;
     const container = document.getElementById('articles-container');
     if (!container || typeof db === 'undefined') {
         console.warn("Articles container or DB not ready for loadLatestArticles.");
@@ -201,7 +205,14 @@ function renderArticle(doc, container, isFeatured = false) {
             }
         }
         
-        const articleUrl = article.slug ? (window.language === 'he' ? `/article-he.html?slug=${article.slug}` : `/article.html?slug=${article.slug}`) : '#';
+        // Build clean SEO-friendly URL using category slug from cache
+        let _catSlug1 = 'uncategorized';
+        if (article.category && categoryCache[article.category]) {
+            _catSlug1 = (typeof categoryCache[article.category] === 'object')
+                ? (categoryCache[article.category].slug || article.category.toLowerCase())
+                : article.category.toLowerCase();
+        }
+        const articleUrl = article.slug ? `/${_catSlug1}/${article.slug}` : '#';
         const cardClass = isFeatured ? 'featured-article' : 'article-card';
         const titleTag = isFeatured ? 'h2' : 'h3';
         const title = getSafe(() => article.title, 'Untitled Article');
@@ -246,7 +257,14 @@ function renderArticleCard(article) {
             }
         }
         
-        const articleUrl = getSafe(() => article.slug) ? (window.language === 'he' ? `/article-he.html?slug=${getSafe(() => article.slug)}` : `/article.html?slug=${getSafe(() => article.slug)}`) : '#';
+        // Build clean SEO-friendly URL using category slug from cache
+        let _catSlug2 = 'uncategorized';
+        if (article.category && categoryCache[article.category]) {
+            _catSlug2 = (typeof categoryCache[article.category] === 'object')
+                ? (categoryCache[article.category].slug || article.category.toLowerCase())
+                : article.category.toLowerCase();
+        }
+        const articleUrl = getSafe(() => article.slug) ? `/${_catSlug2}/${getSafe(() => article.slug)}` : '#';
         const title = getSafe(() => article.title, 'Untitled Article');
         const excerpt = getSafe(() => article.excerpt, '');
         const featuredImage = getSafe(() => article.featuredImage);

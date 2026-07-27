@@ -1,4 +1,15 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin/
+Disallow: /admin
+Disallow: /en-home-fallback.html
+Disallow: /he/he-home-fallback.html
+Disallow: /profile
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /he/login
+Disallow: /he/signup
+Disallow: /he/profile
 
-Sitemap: https://trendingtechdaily.com/sitemap.xml
+Sitemap: https://www.trendingtechdaily.com/sitemap.xml

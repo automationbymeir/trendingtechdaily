@@ -560,9 +560,39 @@ main > .container > section {
 }
 
 /* --- 9. Responsive Adjustments --- */
+
+/* Mobile navbar: stack items vertically when collapse is open */
+@media (max-width: 991.98px) {
+  .navbar .navbar-nav {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  .navbar .nav-item {
+    width: 100%;
+  }
+
+  #category-nav-placeholder {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .navbar .navbar-brand {
+    max-width: calc(100% - 56px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  #nav-search-form.active {
+    width: 100%;
+    margin-right: 0;
+  }
+}
+
 @media (max-width: 992px) {
-  .article-grid { 
-    grid-template-columns: repeat(2, 1fr); 
+  .article-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -640,12 +670,61 @@ main > .container > section {
 .py-5 { padding-top: var(--spacing-xl); padding-bottom: var(--spacing-xl); }
 
 /* --- Automation by Meir Banner --- */
+@keyframes ab-shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+@keyframes ab-pulse-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(66,133,244,0.4); }
+  70%  { box-shadow: 0 0 0 10px rgba(66,133,244,0); }
+  100% { box-shadow: 0 0 0 0 rgba(66,133,244,0); }
+}
+@keyframes ab-slide-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 .automation-banner {
-  background: linear-gradient(135deg, #4285F4 0%, #34A853 100%);
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
   color: #fff;
   text-align: center;
-  border: none;
+  border: 1px solid rgba(66,133,244,0.25);
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
   box-shadow: var(--shadow-deep);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  animation: ab-pulse-ring 2.8s ease-out infinite;
+}
+
+.automation-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255,255,255,0.06) 50%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  animation: ab-shimmer 3.5s linear infinite;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.automation-banner::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #4285F4, #34A853, #4285F4);
+  border-radius: 12px 12px 0 0;
+}
+
+.automation-banner:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(66,133,244,0.35);
 }
 
 .automation-banner-link {
@@ -659,14 +738,12 @@ main > .container > section {
   font-size: 1.5rem;
   margin-bottom: var(--spacing-sm);
   color: inherit;
+  animation: ab-slide-up 0.6s ease both;
 }
 
 .automation-banner p {
   margin: 0;
   font-size: 0.95rem;
-  color: inherit;
-}
-
-.automation-banner:hover {
-  transform: translateY(-2px);
+  color: rgba(200,210,240,0.85);
+  animation: ab-slide-up 0.6s 0.12s ease both;
 }

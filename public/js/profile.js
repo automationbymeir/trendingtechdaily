@@ -243,11 +243,12 @@ async function loadUserProfile(user) {
             });
         }
         
-        // Load activity data
         loadSavedArticles(user);
         loadReadHistory(user);
         loadMyComments(user);
         loadStockWatchlist(user);
+        loadNewsletterPreferences(user);
+        setupNewsletterPreferences();
 
         if (profileLoading) profileLoading.style.display = 'none';
         if (profileContent) profileContent.style.display = 'block';
@@ -674,3 +675,73 @@ async function loadStockWatchlist(user) {
         if (loadingElement) loadingElement.style.display = 'none';
     }
 }
+
+// --- Newsletter Preferences ---
+async function loadNewsletterPreferences(user) {
+    if (!user || typeof db === 'undefined') return;
+    try {
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        if (userDoc.exists) {
+            const data = userDoc.data();
+            if (data.newsletterEn) document.getElementById('newsletter-en-toggle').checked = true;
+            if (data.newsletterHe) document.getElementById('newsletter-he-toggle').checked = true;
+        }
+    } catch (error) {
+        console.error("profile.js - Error loading newsletter preferences:", error);
+    }
+}
+
+function setupNewsletterPreferences() {
+    const saveBtn = document.getElementById('save-newsletter-btn');
+    if (!saveBtn) return;
+    
+    // Check if listener is already added
+    if (saveBtn.dataset.listenerAdded) return;
+    saveBtn.dataset.listenerAdded = 'true';
+
+    saveBtn.addEventListener('click', async () => {
+        const userToUpdate = window.currentUser || (auth ? auth.currentUser : null);
+        const feedbackSpan = document.getElementById('newsletter-feedback');
+        if (!userToUpdate) {
+            feedbackSpan.className = 'ms-2 small text-danger';
+            feedbackSpan.textContent = 'Authentication error.';
+            return;
+        }
+
+        const enSub = document.getElementById('newsletter-en-toggle').checked;
+        const heSub = document.getElementById('newsletter-he-toggle').checked;
+
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Saving...';
+        
+        try {
+            await db.collection('users').doc(userToUpdate.uid).set({
+                newsletterEn: enSub,
+                newsletterHe: heSub,
+                newsletterEmail: userToUpdate.email
+            }, { merge: true });
+
+            // Also update the centralized subscribers collection
+            const subRef = db.collection('subscribers').doc(userToUpdate.uid);
+            await subRef.set({
+                email: userToUpdate.email,
+                name: userToUpdate.displayName || '',
+                subscribedEn: enSub,
+                subscribedHe: heSub,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+
+            feedbackSpan.className = 'ms-2 small text-success';
+            feedbackSpan.textContent = 'Preferences saved!';
+            setTimeout(() => { feedbackSpan.textContent = ''; }, 3000);
+        } catch (error) {
+            console.error("profile.js - Error saving newsletter preferences:", error);
+            feedbackSpan.className = 'ms-2 small text-danger';
+            feedbackSpan.textContent = 'Error saving preferences.';
+        } finally {
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Save Preferences';
+        }
+    });
+}
+

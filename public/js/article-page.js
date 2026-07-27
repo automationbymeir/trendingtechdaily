@@ -248,10 +248,50 @@ async function renderArticle(article, section) {
             <div class="article-body-content">
                 ${getSafe(() => article.content, '<p>No content available.</p>')}
             </div>
-            
+
+            ${Array.isArray(article.tweetUrls) && article.tweetUrls.length > 0 ? `
+            <div class="article-tweets mt-5 pt-4 border-top">
+                <h4 class="mb-3 fw-bold" style="font-size:1.1rem;">
+                    <i class="bi bi-twitter-x me-2"></i>Trending on X
+                </h4>
+                <div class="row g-3">
+                    ${article.tweetUrls.map(url => `
+                    <div class="col-12 col-md-4">
+                        <blockquote class="twitter-tweet" data-dnt="true" data-theme="light" data-align="center">
+                            <a href="${url}"></a>
+                        </blockquote>
+                    </div>`).join('')}
+                </div>
+            </div>` : ''}
+
+            ${Array.isArray(article.youtubeVideos) && article.youtubeVideos.length > 0 ? `
+            <div class="article-youtube mt-5 pt-4 border-top">
+                <h4 class="mb-3 fw-bold" style="font-size:1.1rem;">
+                    <i class="bi bi-youtube me-2 text-danger"></i>Watch on YouTube
+                </h4>
+                <div class="row g-4">
+                    ${article.youtubeVideos.map(v => `
+                    <div class="col-12 col-md-6">
+                        <div class="ratio ratio-16x9 rounded overflow-hidden shadow-sm">
+                            <iframe src="https://www.youtube.com/embed/${(v.videoId || '').replace(/[^A-Za-z0-9_-]/g, '')}"
+                                    title="${(v.title || '').replace(/"/g, '&quot;')}"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    referrerpolicy="strict-origin-when-cross-origin"
+                                    allowfullscreen
+                                    loading="lazy"></iframe>
+                        </div>
+                        <div class="mt-2 small">
+                            <div class="fw-bold text-truncate" title="${(v.title || '').replace(/"/g, '&quot;')}">${v.title || ''}</div>
+                            ${v.channelTitle ? `<div class="text-muted">${v.channelTitle}</div>` : ''}
+                        </div>
+                    </div>`).join('')}
+                </div>
+            </div>` : ''}
+
             ${Array.isArray(article.tags) && article.tags.length > 0 ? `
             <div class="article-tags mt-4">
-                <i class="bi bi-tags"></i> Tags: 
+                <i class="bi bi-tags"></i> Tags:
                 ${article.tags.map(tag => `<span class="badge bg-secondary me-1">${tag}</span>`).join('')}
             </div>` : ''}
         </article>
@@ -283,6 +323,19 @@ async function renderArticle(article, section) {
     
     articleContainer.innerHTML = articleHTML;
     console.log('Article rendered successfully');
+
+    // Load Twitter widget script if article has embedded tweets
+    if (Array.isArray(article.tweetUrls) && article.tweetUrls.length > 0) {
+        if (window.twttr && window.twttr.widgets) {
+            window.twttr.widgets.load();
+        } else if (!document.getElementById('twitter-widgets-script')) {
+            const twitterScript = document.createElement('script');
+            twitterScript.id = 'twitter-widgets-script';
+            twitterScript.async = true;
+            twitterScript.src = 'https://platform.twitter.com/widgets.js';
+            document.body.appendChild(twitterScript);
+        }
+    }
 }
 
 // Setup share buttons - SINGLE FUNCTION

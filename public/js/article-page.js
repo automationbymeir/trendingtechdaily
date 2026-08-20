@@ -342,6 +342,14 @@ function renderArticle(article, isHe) {
   `;
 
   articleContainer.innerHTML = html;
+
+  // Safe AdSense initialization for newly rendered ad slots
+  try {
+    const uninitializedAds = articleContainer.querySelectorAll('.adsbygoogle:not([data-adsbygoogle-status])');
+    uninitializedAds.forEach(() => {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    });
+  } catch (e) {}
 }
 
 // Format raw text or markdown into styled paragraphs and subheadings
@@ -355,6 +363,9 @@ function formatArticleBody(content, isHe) {
   }
 
   const blocks = content.split(/\n\n+/);
+  let pCount = 0;
+  let adInserted = false;
+
   return blocks.map(block => {
     const trimmed = block.trim();
     if (!trimmed) return '';
@@ -368,7 +379,26 @@ function formatArticleBody(content, isHe) {
       const items = trimmed.split('\n').map(li => `<li>${li.replace(/^[-*]\s+/, '')}</li>`).join('');
       return `<ul class="my-3 ps-4">${items}</ul>`;
     }
-    return `<p class="mb-4" style="line-height:1.8;">${trimmed}</p>`;
+
+    pCount++;
+    let result = `<p class="mb-4" style="line-height:1.8;">${trimmed}</p>`;
+
+    // Insert 1 clean, non-intrusive In-Article ad slot after paragraph 2 or 3 in long articles
+    if (pCount === 3 && !adInserted && blocks.length >= 5) {
+      adInserted = true;
+      result += `
+        <div class="ad-unit ad-in-article my-4">
+          <span class="ad-label">${isHe ? 'תוכן ממומן' : 'ADVERTISEMENT'}</span>
+          <ins class="adsbygoogle"
+               style="display:block; text-align:center;"
+               data-ad-layout="in-article"
+               data-ad-format="fluid"
+               data-ad-client="ca-pub-8142734137865758"></ins>
+        </div>
+      `;
+    }
+
+    return result;
   }).join('');
 }
 

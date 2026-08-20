@@ -25,8 +25,9 @@ function initializeNavigation() {
       .catch(error => console.error(`Error loading content for ${placeholderId}:`, error));
   };
 
-  const isHebrew = window.location.pathname.startsWith('/he');
-  const navFile = isHebrew ? '/he/nav.html' : '/nav.html';
+  const path = window.location.pathname;
+  const isHebrew = path.startsWith('/he') || path.includes('/he/') || document.documentElement.getAttribute('dir') === 'rtl' || document.documentElement.getAttribute('lang') === 'he';
+  const navFile = isHebrew ? '/he/nav.html?v=20260820_he5' : '/nav.html?v=20260820_he5';
 
   const navAlreadyLoaded = document.getElementById('site-header');
 
@@ -50,8 +51,8 @@ function initializeNavigation() {
     });
   }
 
-  // Load footer based on language
-  const footerFile = isHebrew ? '/he/footer.html' : '/footer.html';
+  // Load footer based on language with cache-busting
+  const footerFile = isHebrew ? '/he/footer.html?v=20260820_he5' : '/footer.html?v=20260820_he5';
   loadHTML(footerFile, 'footer-placeholder', () => {
     if (typeof firebase !== 'undefined' && firebase.apps.length) {
       loadFooterCategories();

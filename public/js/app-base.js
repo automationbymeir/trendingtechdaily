@@ -117,7 +117,7 @@ function loadSections() {
       const marketsText = isHe ? 'שוק ההון' : 'Stock Data';
       footerHTML += `<li><a href="${marketsUrl}">${marketsText}</a></li>`;
 
-      if (footerCategoriesList) footerCategoriesList.innerHTML = footerHTML;
+      if (footerCategoriesList && !isHe) footerCategoriesList.innerHTML = footerHTML;
       if (sidebarContainer) sidebarContainer.innerHTML = sideHTML;
 
       // Clean up any remaining API containers completely

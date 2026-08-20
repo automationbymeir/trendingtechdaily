@@ -21,8 +21,12 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Load footer.html
-        fetch('/footer.html')
+        // Determine language
+        const isHebrew = window.location.pathname.startsWith('/he') || document.documentElement.getAttribute('dir') === 'rtl';
+        const footerUrl = isHebrew ? '/he/footer.html' : '/footer.html';
+        
+        // Load footer
+        fetch(footerUrl)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`Failed to load footer.html: ${response.statusText}`);

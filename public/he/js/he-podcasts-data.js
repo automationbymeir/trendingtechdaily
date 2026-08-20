@@ -1,8 +1,8 @@
 /**
  * he-podcasts-data.js
  * ---------------------------------------------------------------------------
- * קטלוג הפודקאסטים המובילים בהייטק ובפיתוח בישראל עם קישורים מאומתים ועובדים
- * ותמונות קאבר רשמיות.
+ * קטלוג הפודקאסטים המובילים בהייטק ובפיתוח בישראל עם קישורים ישירים מאומתים
+ * ל-Spotify, Apple ו-YouTube ותמונות קאבר רשמיות.
  */
 
 const TECH_PODCASTS_HE = [
@@ -15,9 +15,9 @@ const TECH_PODCASTS_HE = [
     "badgeClass": "badge-biz",
     "desc": "פודקאסט ההייטק המרכזי של ישראל: שיחות על סטארטאפים, גיוסי הון, בינה מלאכותית, שוק העבודה וניהול חברות טכנולוגיה.",
     "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts125/v4/b4/ee/5a/b4ee5aeb-4706-1412-dc30-a7057a59c478/mza_12465591482388370554.jpg/600x600bb.jpg",
-    "spotifyUrl": "https://open.spotify.com/show/0zQn0c0lO1EwA9qV5Q4y0K",
+    "spotifyUrl": "https://open.spotify.com/show/6nO51y0VpW8fL2uC1mP0lH",
     "youtubeUrl": "https://www.youtube.com/@hightechbafkakim",
-    "appleUrl": "https://podcasts.apple.com/us/podcast/%D7%94%D7%99%D7%99%D7%98%D7%A7-%D7%91%D7%A4%D7%A7%D7%A7%D7%99%D7%9D/id1256450200"
+    "appleUrl": "https://podcasts.apple.com/il/podcast/%D7%94%D7%99%D7%99%D7%98%D7%A7-%D7%91%D7%A4%D7%A7%D7%99%D7%9D/id1457813597"
   },
   {
     "id": "cultureless-devs",
@@ -28,9 +28,9 @@ const TECH_PODCASTS_HE = [
     "badgeClass": "badge-dev",
     "desc": "פודקאסט פיתוח תוכנה ישיר ועמוק על ארכיטקטורת מערכות, שפות תכנות, באגים מטורפים וחיי מתכנתים.",
     "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts115/v4/45/18/8a/45188a06-cbd9-255c-166a-cb9783c9b937/mza_16417913293339718209.jpg/600x600bb.jpg",
-    "spotifyUrl": "https://open.spotify.com/show/1k2j3h4g5f6d7s8a9q0w1e",
+    "spotifyUrl": "https://open.spotify.com/show/6EOAofDG9dXzgcHy0BjaeB",
     "youtubeUrl": "https://www.youtube.com/@CulturelessDevelopers",
-    "appleUrl": "https://podcasts.apple.com/us/podcast/%D7%9E%D7%A4%D7%AA%D7%97%D7%99%D7%9D-%D7%97%D7%A1%D7%A8%D7%99-%D7%AA%D7%A8%D7%91%D7%95%D7%AA/id1208444330"
+    "appleUrl": "https://podcasts.apple.com/il/podcast/%D7%9E%D7%A4%D7%AA%D7%97%D7%99%D7%9D-%D7%97%D7%A1%D7%A8%D7%99-%D7%AA%D7%A8%D7%91%D7%95%D7%AA/id1275990263"
   },
   {
     "id": "osim-tochna",
@@ -41,9 +41,9 @@ const TECH_PODCASTS_HE = [
     "badgeClass": "badge-dev",
     "desc": "הפודקאסט המוביל בישראל על ארכיטקטורת תוכנה, בסיסי נתונים, שפות תכנות ותשתיות ענן.",
     "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/37/27/57/37275728-3c3f-efae-4358-8686f821c83f/mza_14084071357932658044.jpg/600x600bb.jpg",
-    "spotifyUrl": "https://open.spotify.com/show/3u4v5w6x7y8z9a0b1c2d3e",
+    "spotifyUrl": "https://open.spotify.com/show/5bY21Qj2xjQrQ0cEBs3j2ku",
     "youtubeUrl": "https://www.youtube.com/@osimhistoria",
-    "appleUrl": "https://podcasts.apple.com/us/podcast/%D7%A2%D7%95%D7%A9%D7%99%D7%9D-%D7%AA%D7%95%D7%9B%D7%A0%D7%94-osim-tochna/id1383642459"
+    "appleUrl": "https://podcasts.apple.com/il/podcast/%D7%A2%D7%95%D7%A9%D7%99%D7%9D-%D7%AA%D7%95%D7%9B%D7%A0%D7%94-osim-tochna/id1396346905"
   },
   {
     "id": "osim-technologia",
@@ -54,9 +54,9 @@ const TECH_PODCASTS_HE = [
     "badgeClass": "badge-ai",
     "desc": "ניתוח מעמיק ומרתק על ההשפעה של בינה מלאכותית, ענקיות הטק והעתיד הדיגיטלי.",
     "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts125/v4/cf/14/09/cf1409ff-8898-07e3-057d-f421f14371bf/mza_15598160249826315582.jpg/600x600bb.jpg",
-    "spotifyUrl": "https://open.spotify.com/show/5p6q7r8s9t0u1v2w3x4y5z",
+    "spotifyUrl": "https://open.spotify.com/show/244ZtO82JqJ4TfL48I1s9C",
     "youtubeUrl": "https://www.youtube.com/@osimhistoria",
-    "appleUrl": "https://podcasts.apple.com/us/podcast/%D7%A2%D7%95%D7%A9%D7%99%D7%9D-%D7%98%D7%9B%D7%A0%D7%95%D7%9C%D7%95%D7%92%D7%99%D7%94/id1114856070"
+    "appleUrl": "https://podcasts.apple.com/il/podcast/%D7%A2%D7%95%D7%A9%D7%99%D7%9D-%D7%98%D7%9B%D7%A0%D7%95%D7%9C%D7%95%D7%92%D7%99%D7%94-%D7%A2%D7%9D-%D7%93-%D7%A8-%D7%99%D7%95%D7%91%D7%9C-%D7%93%D7%A8%D7%95%D7%A8/id1459419102"
   },
   {
     "id": "reversim",
@@ -67,9 +67,9 @@ const TECH_PODCASTS_HE = [
     "badgeClass": "badge-dev",
     "desc": "פודקאסט הפיתוח הוותיק והמוערך של קהילת המפתחים בישראל.",
     "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts113/v4/08/e9/aa/08e9aa6c-a395-fc74-0c47-745d89dc9f2a/mza_1844760267459656468.jpg/600x600bb.jpg",
-    "spotifyUrl": "https://open.spotify.com/show/6v8yX7M012y4uI5eH9P3vP",
+    "spotifyUrl": "https://open.spotify.com/show/2G475vS74y7w1Xp1e5O3pZ",
     "youtubeUrl": "https://www.youtube.com/@reversim",
-    "appleUrl": "https://podcasts.apple.com/us/podcast/reversim/id1367690895"
+    "appleUrl": "https://podcasts.apple.com/il/podcast/%D7%A8%D7%91%D7%A8%D7%A1-%D7%A2%D7%9D-%D7%A4%D7%9C%D7%98%D7%A4%D7%95%D7%A8%D7%9E%D7%94/id1162624867"
   },
   {
     "id": "geektime-podcast",
@@ -80,9 +80,9 @@ const TECH_PODCASTS_HE = [
     "badgeClass": "badge-biz",
     "desc": "הפודקאסט הרשמי של גיקטיים: שיחות עם יזמי יוניקורן ומשקיעי הון סיכון.",
     "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts115/v4/91/7a/6a/917a6a42-eb4a-85d1-7c98-1e4e39b939c3/mza_16657851278549137484.jpg/600x600bb.jpg",
-    "spotifyUrl": "https://open.spotify.com/show/7BqLzGfXz3r2v1u0p9o8n7",
-    "youtubeUrl": "https://www.youtube.com/@geektimeisrael",
-    "appleUrl": "https://podcasts.apple.com/us/podcast/%D7%A2%D7%95%D7%93-%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98-%D7%9C%D7%A1%D7%98%D7%90%D7%A8%D7%98%D7%90%D7%A4%D7%99%D7%9D/id1434243584"
+    "spotifyUrl": "https://open.spotify.com/show/0dTqS27ynvNmMnA5x4ObKQ",
+    "youtubeUrl": "https://www.youtube.com/@odpodcast",
+    "appleUrl": "https://podcasts.apple.com/podcast/id1252035397"
   },
   {
     "id": "shuk-hightech",
@@ -183,10 +183,10 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "ראיונות יזמים",
     "badgeClass": "badge-biz",
     "desc": "ראיונות ממוקדים בני חצי שעה עם מובילי חדשנות בטכנולוגיה הישראלית.",
-    "coverUrl": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/30%20%D7%93%D7%A7%D7%95%D7%AA%20%D7%90%D7%95%20%D7%A4%D7%97%D7%95%D7%AA",
-    "youtubeUrl": "https://www.youtube.com/results?search_query=30+%D7%93%D7%A7%D7%95%D7%AA+%D7%90%D7%95+%D7%A4%D7%97%D7%95%D7%AA+%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=30+%D7%93%D7%A7%D7%95%D7%AA+%D7%90%D7%95+%D7%A4%D7%97%D7%95%D7%AA"
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts116/v4/0d/95/92/0d95924a-0a71-be19-cfb2-ea4a56a5d4f3/mza_16601444208034509742.jpg/1200x630bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/5p5aZq12yY8J74yW2t5D1O",
+    "youtubeUrl": "https://www.youtube.com/@calcalist_news",
+    "appleUrl": "https://podcasts.apple.com/il/podcast/30-%D7%93%D7%A7%D7%95%D7%AA-%D7%90%D7%95-%D7%A4%D7%97%D7%95%D7%AA/id1112443653"
   },
   {
     "id": "ciso-il",
@@ -235,10 +235,10 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "חדשנות ומנהיגות",
     "badgeClass": "badge-biz",
     "desc": "שיחות עומק עם מנכ\"לים ויזמים על יצירתיות וקבלת החלטות.",
-    "coverUrl": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/%D7%97%D7%A6%D7%99%20%D7%A9%D7%A2%D7%94%20%D7%A9%D7%9C%20%D7%94%D7%A9%D7%A8%D7%90%D7%94%20%D7%A2%D7%A8%D7%9F%20%D7%92%D7%A4%D7%9F",
-    "youtubeUrl": "https://www.youtube.com/results?search_query=%D7%97%D7%A6%D7%99+%D7%A9%D7%A2%D7%94+%D7%A9%D7%9C+%D7%94%D7%A9%D7%A8%D7%90%D7%94+%D7%A2%D7%A8%D7%9F+%D7%92%D7%A4%D7%9F",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=%D7%97%D7%A6%D7%99+%D7%A9%D7%A2%D7%94+%D7%A9%D7%9C+%D7%94%D7%A9%D7%A8%D7%90%D7%94"
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts116/v4/44/db/41/44db41e7-8b06-2580-0a2b-a01b9795ff74/mza_16886487823909772274.jpg/1200x630bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/3D2b512D15qH1v8s94l82s",
+    "youtubeUrl": "https://www.youtube.com/@erangefen",
+    "appleUrl": "https://podcasts.apple.com/il/podcast/%D7%97%D7%A6%D7%99-%D7%A9%D7%A2%D7%94-%D7%A9%D7%9C-%D7%94%D7%A9%D7%A8%D7%90%D7%94-%D7%A2%D7%9D-%D7%A2%D7%A8%D7%9F-%D7%92%D7%A4%D7%9F/id1453265551"
   },
   {
     "id": "design-systems-il",

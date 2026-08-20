@@ -318,6 +318,26 @@ function renderArticle(article, isHe) {
         <span class="small fw-bold text-muted me-2" style="font-family:var(--font-mono); font-size:0.75rem;">${isHe ? 'תגיות:' : 'TAGS:'}</span>
         ${renderTags(article.tags, isHe)}
       </div>
+
+      <!-- Telegram Channel CTA Banner -->
+      <div class="telegram-cta-card mt-4 p-4 rounded-3 d-flex align-items-center justify-content-between flex-wrap gap-3" style="background:linear-gradient(135deg, rgba(34, 158, 217, 0.14) 0%, rgba(14, 16, 22, 0.96) 100%); border:1px solid rgba(34, 158, 217, 0.4); box-shadow:0 8px 24px rgba(0,0,0,0.35);">
+        <div class="d-flex align-items-center gap-3">
+          <div style="width:50px; height:50px; border-radius:12px; background:#229ED9; display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.75rem; flex-shrink:0; box-shadow:0 4px 14px rgba(34, 158, 217, 0.45);">
+            <i class="bi bi-telegram"></i>
+          </div>
+          <div>
+            <h4 class="mb-1 fw-bold" style="font-size:1.15rem; color:#fff; font-family:var(--font-display); line-height:1.2;">
+              ${isHe ? 'רוצים לקבל עדכוני AI וטכנולוגיה בזמן אמת?' : 'Want real-time AI & tech intelligence dispatches?'}
+            </h4>
+            <p class="mb-0 text-muted" style="font-size:0.875rem; line-height:1.45;">
+              ${isHe ? 'הצטרפו לערוץ הטלגרם הרשמי של TrendingTech Daily למבזקים חיים, מחקרים מעמיקים וכלים חדשים ישירות לנייד.' : 'Join the official TrendingTech Daily Telegram channel for breaking research, model launches, and market analysis.'}
+            </p>
+          </div>
+        </div>
+        <a href="${isHe ? 'https://t.me/+tXn569Iw7QpkNjlk' : 'https://t.me/+S6EM_ZmX9sAzNzU0'}" target="_blank" rel="noopener noreferrer" class="btn d-inline-flex align-items-center gap-2 px-3 py-2 fw-bold text-white" style="background:#229ED9; border-color:#229ED9; font-size:0.92rem; border-radius:8px; white-space:nowrap; box-shadow:0 4px 12px rgba(34, 158, 217, 0.35); text-decoration:none;">
+          <i class="bi bi-telegram"></i> <span>${isHe ? 'הצטרפו לערוץ בטלגרם' : 'Join Telegram Channel'}</span>
+        </a>
+      </div>
     </article>
   `;
 

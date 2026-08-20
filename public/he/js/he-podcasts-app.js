@@ -115,6 +115,11 @@
                   <i class="bi bi-youtube ms-1 text-danger"></i> YouTube
                 </a>
               ` : ''}
+              ${p.appleUrl ? `
+                <a href="${p.appleUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm" title="Apple Podcasts">
+                  <i class="bi bi-apple ms-1"></i> Apple
+                </a>
+              ` : ''}
             </div>
           </div>
         </div>

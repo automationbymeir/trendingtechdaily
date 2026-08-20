@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-mode="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, follow" />
+  <link rel="canonical" href="https://www.trendingtechdaily.com/" />
+  <title>TrendingTech Daily - Latest Tech News, AI Breakthroughs and Industry Intelligence</title>
+  
+  <meta name="google-site-verification" content="AAJy5uWJtM-PEQ6kOZCAiIQuO3CijcFc6DYM7dNYEVY" />
+  <meta name="keywords" content="trending tech, latest tech news, technology trends, AI, design systems, semiconductors, gadgets" />
+  <meta name="description" content="TrendingTech Daily delivers the latest tech news, AI updates, hardware reviews, design systems decoded, and real-time market data." />
+  
+  <!-- Open Graph / Social Media -->
+  <meta property="og:title" content="TrendingTech Daily - Latest Tech News and Intelligence" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://trendingtechdaily.com/" />
+  <meta property="og:image" content="https://trendingtechdaily.com/img/logo.png" />
+  <meta property="og:description" content="Delivering real-time tech intelligence, foundational AI breakthroughs, and design system analysis." />
+  <meta property="og:site_name" content="TrendingTech Daily" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&family=Lora:ital,wght@0,500;0,600;1,400&family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+  <!-- Master Unified Stylesheet (Figma Tech News System) -->
+  <link rel="stylesheet" href="/styles.css">
+
+  <!-- Icons -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- Firebase App & Services -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js" defer></script>
+</head>
+<body>
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+  <!-- Live Stock & Breaking Ticker Strip -->
+  <div class="ticker-strip" aria-label="Market Ticker and Breaking News">
+    <div class="ticker-wrap">
+      <div class="ticker-content">
+        <span class="ticker-item">
+          <span class="ticker-badge" style="background:#E63946; color:#fff;">NVDA</span> $912.40 <span class="ticker-up">+3.2% ▲</span>
+        </span>
+        <span class="ticker-item">
+          <span class="ticker-badge" style="background:#10B981; color:#fff;">AAPL</span> $234.10 <span class="ticker-up">+0.8% ▲</span>
+        </span>
+        <span class="ticker-item">
+          <span class="ticker-badge" style="background:#F59E0B; color:#fff;">BTC</span> $96,420 <span class="ticker-down">-1.1% ▼</span>
+        </span>
+        <span class="ticker-item">
+          <span class="ticker-badge" style="background:#A855F7; color:#fff;">TSMC</span> $194.80 <span class="ticker-up">+1.9% ▲</span>
+        </span>
+        <span class="ticker-item">
+          <span class="ticker-badge" style="background:#00D2FF; color:#000;">MSFT</span> $450.20 <span class="ticker-up">+1.4% ▲</span>
+        </span>
+        <span class="ticker-item">
+          <span class="ticker-badge" style="background:#E63946; color:#fff;">BREAKING</span> OpenAI expands autonomous agent reasoning models with dynamic tool execution
+        </span>
+        <span class="ticker-item">
+          <span class="ticker-badge" style="background:#10B981; color:#fff;">DESIGN SYSTEMS</span> News Corp rolls out NewsKit v8 with multi-brand Tokens Studio synchronization
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Placeholder (Loaded dynamically by nav-loader.js) -->
+  <div id="navbar-placeholder"></div>
+
+  <!-- Video Stories Ribbon -->
+  <section class="stories-ribbon" aria-label="Featured Story Reels">
+    <div class="container">
+      <div class="stories-track" id="stories-wrapper">
+        <!-- Story circles loaded dynamically via stories.js / fallback items -->
+        <div class="story-card" data-story-index="0">
+          <div class="story-avatar">
+            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=120&auto=format&fit=crop&q=60" alt="DeepSeek" />
+            <span class="story-badge">LIVE</span>
+          </div>
+          <span class="story-title">DeepSeek V3</span>
+        </div>
+
+        <div class="story-card" data-story-index="1">
+          <div class="story-avatar">
+            <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=120&auto=format&fit=crop&q=60" alt="Figma UI" />
+            <span class="story-badge">NEW</span>
+          </div>
+          <span class="story-title">Figma UI3</span>
+        </div>
+
+        <div class="story-card" data-story-index="2">
+          <div class="story-avatar">
+            <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=120&auto=format&fit=crop&q=60" alt="Crypto" />
+          </div>
+          <span class="story-title">Crypto Rally</span>
+        </div>
+
+        <div class="story-card" data-story-index="3">
+          <div class="story-avatar">
+            <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=120&auto=format&fit=crop&q=60" alt="Security" />
+          </div>
+          <span class="story-title">Cyber Shield</span>
+        </div>
+
+        <div class="story-card" data-story-index="4">
+          <div class="story-avatar">
+            <img src="https://images.unsplash.com/photo-1534972195531-a756b1126f24?w=120&auto=format&fit=crop&q=60" alt="NextJS" />
+          </div>
+          <span class="story-title">NextJS 16</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Story Video Viewer Modal -->
+  <div class="story-viewer-modal" id="story-viewer-modal" role="dialog" aria-modal="true" aria-label="Story Viewer">
+    <div class="story-viewer-close" id="story-viewer-close" aria-label="Close Story"><i class="bi bi-x-lg"></i></div>
+    <div class="story-viewer-content">
+      <div class="story-progress-container" id="story-progress-container"></div>
+      <video id="story-video-player" playsinline autoplay></video>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       HERO ASYMMETRIC 68% / 32% GRID (FIGMA TECH NEWS SYSTEM)
+       ======================================================================== -->
+  <main class="container hero-section">
+    <div class="hero-figma-grid">
+      
+      <!-- Lead Feature Container (Left 68%) — Populated dynamically by index-main.js -->
+      <div id="featured-article-container">
+        <article class="hero-lead-card" style="background:var(--bg-surface-elevated); min-height:420px; display:flex; align-items:flex-end; border-radius:var(--radius-lg); border:1px solid var(--border-color);">
+          <div class="hero-lead-content p-4" style="width:100%;">
+            <div class="spinner-border text-danger mb-3" role="status" style="width:2rem; height:2rem;"></div>
+            <div style="height:28px; width:75%; margin-bottom:12px; background:rgba(255,255,255,0.1); border-radius:4px;"></div>
+            <div style="height:16px; width:55%; margin-bottom:16px; background:rgba(255,255,255,0.06); border-radius:4px;"></div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Trending Stories Column (Right 32%) -->
+      <aside class="trending-column-card" id="trending-stories-container">
+        <div class="trending-header-title">
+          <span>Trending Stories</span>
+          <span style="font-size:0.75rem; color:var(--accent-red); font-family:var(--font-mono);">TOP 4</span>
+        </div>
+
+        <ul class="trending-list" id="trending-stories-list">
+          <li class="py-4 text-center text-muted small" style="font-family:var(--font-mono);">
+            <div class="spinner-border spinner-border-sm text-danger me-2" role="status"></div>
+            Loading Trending Dispatches...
+          </li>
+        </ul>
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       SECONDARY 3-COLUMN CARD GRID (FIGMA TECH NEWS SYSTEM)
+       ======================================================================== -->
+  <section class="container secondary-grid-section" aria-label="Curated Feature Stories">
+    <div class="section-header-row">
+      <h2 class="section-title"><span class="indicator-dot"></span> Featured Dispatches</h2>
+      <a href="/category.html?slug=top-stories" class="section-view-all">View All Dispatches →</a>
+    </div>
+
+    <div class="secondary-3col-grid" id="top-stories-container">
+      <div class="col-12 py-5 text-center text-muted" style="font-family:var(--font-mono);">
+        <div class="spinner-border spinner-border-sm text-danger me-2" role="status"></div>
+        Loading Featured Intelligence...
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       INTELLIGENCE HUBS & CATALOGS BENTO ROW
+       ======================================================================== -->
+  <section class="container mb-5" aria-label="Intelligence Hubs">
+    <div class="section-header-row">
+      <h2 class="section-title"><span class="indicator-dot"></span> Intelligence Catalogs &amp; Tools</h2>
+      <a href="/ai-tools.html" class="section-view-all">Browse All Catalogs →</a>
+    </div>
+
+    <div class="ai-tools-grid" id="bento-intelligence-grid">
+      
+      <!-- AI Tool Card -->
+      <div class="ai-tool-card" id="bento-ai-tool-card">
+        <div>
+          <div class="ai-tool-header">
+            <div class="ai-tool-icon" id="bento-ai-icon">✨</div>
+            <span class="ai-tool-pricing" id="bento-ai-pricing">Freemium</span>
+          </div>
+          <h3 class="ai-tool-title" id="bento-ai-title">Claude 3.7 Sonnet</h3>
+          <p class="ai-tool-desc" id="bento-ai-desc">Anthropic's hybrid reasoning model combining instantaneous response tokens with verified extended thinking.</p>
+        </div>
+        <div class="ai-tool-footer">
+          <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted);" id="bento-ai-rating">Rating: 9.9/10</span>
+          <a class="btn btn-outline btn-sm" id="bento-ai-link" href="/ai-tools.html">View Spec</a>
+        </div>
+      </div>
+
+      <!-- Design System Card -->
+      <div class="ds-card" id="bento-ds-card">
+        <div>
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="badge badge-dev" id="bento-ds-badge">Design System</span>
+            <i class="bi bi-box-seam text-primary"></i>
+          </div>
+          <h3 class="ai-tool-title" id="bento-ds-title">NewsKit (News Corp)</h3>
+          <p class="ai-tool-desc" id="bento-ds-desc">The open-source design system powering WSJ, The Times, and The Sun with multi-brand theme token orchestration.</p>
+          <div class="ds-swatches-row" id="bento-ds-swatches">
+            <span class="ds-swatch-dot" style="background:#090A0E;"></span>
+            <span class="ds-swatch-dot" style="background:#E63946;"></span>
+            <span class="ds-swatch-dot" style="background:#10B981;"></span>
+            <span class="ds-swatch-dot" style="background:#F4F6F9;"></span>
+          </div>
+        </div>
+        <div class="ai-tool-footer">
+          <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted);" id="bento-ds-framework">React · Tokens Studio</span>
+          <a class="btn btn-outline btn-sm" id="bento-ds-link" href="/design-systems.html">Read Review</a>
+        </div>
+      </div>
+
+      <!-- Stock Wishlist Spotlight Card -->
+      <div class="ai-tool-card" id="bento-market-card">
+        <div>
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="badge badge-chips">Market Watch</span>
+            <i class="bi bi-graph-up text-warning"></i>
+          </div>
+          <h3 class="ai-tool-title" id="bento-market-title">Tech Leaders Wishlist</h3>
+          <p class="ai-tool-desc" id="bento-market-desc">Automated watchlist tracking price action, P/E ratios, and enterprise revenue across semiconductor and AI foundries.</p>
+        </div>
+        <div class="ai-tool-footer">
+          <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted);" id="bento-market-count">48 Equities</span>
+          <a class="btn btn-outline btn-sm" href="/stock-data.html">Open Board</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       LATEST ARTICLES FEED & SIDEBAR
+       ======================================================================== -->
+  <section class="container mb-5">
+    <div class="feed-sidebar-layout">
+      
+      <!-- Main Articles Feed (Left 68%) -->
+      <div class="feed-main-col">
+        <div class="section-header-row">
+          <h2 class="section-title"><span class="indicator-dot"></span> Latest News Stream</h2>
+        </div>
+        
+        <!-- Firestore Articles Feed Container -->
+        <div id="articles-container">
+          <div class="spinner-container">
+            <div class="spinner-border" role="status"></div>
+            <p class="text-muted mt-2" style="font-size:0.875rem;">Loading latest news articles...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Column (Right 32%) -->
+      <aside class="feed-sidebar-col">
+        
+        <!-- Trending Categories Widget -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <h4 class="card-title mb-3" style="font-size:1rem;">Trending Topics</h4>
+            <ul class="d-flex flex-column gap-2" id="categories-list">
+              <li><a href="/category.html?slug=ai" class="d-flex justify-content-between align-items-center text-muted"><span class="text-main fw-bold">Artificial Intelligence</span><span class="badge badge-ai">HOT</span></a></li>
+              <li><a href="/category.html?slug=dev" class="d-flex justify-content-between align-items-center text-muted"><span class="text-main fw-bold">Developer Tools</span><span class="badge badge-dev">DEV</span></a></li>
+              <li><a href="/category.html?slug=computing" class="d-flex justify-content-between align-items-center text-muted"><span class="text-main fw-bold">Computing &amp; Chips</span><span class="badge badge-chips">2nm</span></a></li>
+              <li><a href="/stock-data.html" class="d-flex justify-content-between align-items-center text-muted"><span class="text-main fw-bold">Markets &amp; Stocks</span><span class="badge badge-security">LIVE</span></a></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Trending GitHub Repos Widget -->
+        <div class="card mb-4" id="trending-github-section">
+          <div class="card-body">
+            <h4 class="card-title mb-3" style="font-size:1rem;"><i class="bi bi-github me-1"></i> Trending GitHub Repos</h4>
+            <div id="trending-github-loader" class="text-center py-2">
+              <div class="spinner-border" style="width:1.5rem; height:1.5rem;" role="status"></div>
+            </div>
+            <ul id="trending-github-list" class="d-flex flex-column gap-2"></ul>
+          </div>
+        </div>
+
+        <!-- Automation by Meir Sponsored Banner -->
+        <div class="card" style="border-color:var(--accent-red); background:var(--bg-surface-elevated);">
+          <div class="card-body">
+            <span class="badge badge-ai mb-2">Partner Spotlight</span>
+            <h4 class="card-title" style="font-size:1.05rem;">Automation by Meir</h4>
+            <p class="card-text mb-3">Scale your engineering and business workflows with custom autonomous AI agent pipelines.</p>
+            <a href="https://www.automationbymeir.com/" target="_blank" rel="noopener" class="btn btn-subscribe btn-sm w-100">
+              Explore Automation Solutions →
+            </a>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       PERSISTENT AUDIO DOCK
+       ======================================================================== -->
+  <div class="podcast-dock" role="region" aria-label="Persistent Audio Player">
+    <div class="container dock-inner">
+      <div class="dock-track-info">
+        <div class="dock-art"><i class="bi bi-mic-fill"></i></div>
+        <div class="dock-meta">
+          <div class="dock-title">Lex Fridman Podcast #419 — Sam Altman: OpenAI, GPT-5 &amp; AGI</div>
+          <div class="dock-sub">Lex Fridman &amp; Sam Altman · 2 hr 18 min</div>
+        </div>
+      </div>
+      <div class="dock-controls">
+        <div class="dock-progress">
+          <div class="dock-progress-bar" style="width:35%;"></div>
+        </div>
+        <span style="font-size:0.75rem; font-family:var(--font-mono); color:var(--text-muted);">48:20 / 2:18:00</span>
+        <a href="https://open.spotify.com/episode/5dKfZ1i9u9H9Gk5W0f1cQY" target="_blank" rel="noopener" class="dock-play-btn" aria-label="Play on Spotify"><i class="bi bi-play-fill"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       AI COPILOT FLOATING TRIGGER & SLIDE-OVER DRAWER
+       ======================================================================== -->
+  <button class="ai-floating-trigger" id="aiCopilotTrigger" aria-label="Ask AI Assistant">
+    <i class="bi bi-stars"></i>
+    <span>Ask Tech AI</span>
+  </button>
+
+  <aside class="ai-copilot-drawer" id="aiCopilotDrawer" aria-label="AI Tech News Assistant">
+    <div class="ai-copilot-header">
+      <div class="ai-copilot-title">
+        <span class="ai-status-pulse"></span>
+        <span>AI Tech Copilot</span>
+      </div>
+      <button class="btn-icon" id="aiCopilotCloseBtn" aria-label="Close Assistant">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="ai-quick-prompts">
+      <button class="ai-prompt-pill" data-prompt="What's trending today in AI?">Trending in AI?</button>
+      <button class="ai-prompt-pill" data-prompt="Summarize recent chip foundry news">2nm Chip News</button>
+      <button class="ai-prompt-pill" data-prompt="Explain design systems tokens">Design Tokens</button>
+    </div>
+
+    <div class="ai-chat-body" id="aiChatMessages">
+      <div class="ai-bubble ai-bubble-bot">
+        Hello! I'm your AI Tech Assistant on TrendingTech Daily. I can explain complex architectures, summarize articles, or look up market movements. How can I help you today?
+      </div>
+    </div>
+
+    <form class="ai-chat-input-row" id="aiChatInputForm">
+      <input type="text" class="form-control" placeholder="Ask about tech news, chips, AI..." id="aiChatInputField" autocomplete="off" />
+      <button type="submit" class="btn btn-subscribe btn-sm" id="aiChatSendBtn"><i class="bi bi-send-fill"></i></button>
+    </form>
+  </aside>
+
+  <!-- Footer Placeholder (Loaded dynamically by nav-loader.js) -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script src="/js/config.js?v=20260820_2" defer></script>
+  <script src="/js/auth.js?v=20260820_2" defer></script>
+  <script src="/js/nav-loader.js?v=20260820_2" defer></script>
+  <script src="/js/app-base.js?v=20260820_2" defer></script>
+  <script src="/js/index-main.js?v=20260820_2" defer></script>
+  <script src="/js/index-features.js?v=20260820_2" defer></script>
+  <script src="/js/github-trending.js?v=20260820_2" defer></script>
+  <script src="/js/stories.js?v=20260820_2" defer></script>
+  <script src="/js/ai-agent.js?v=20260820_2" defer></script>
+</body>
+</html>

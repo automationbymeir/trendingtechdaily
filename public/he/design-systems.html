@@ -1,165 +1,143 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he" dir="rtl" data-mode="dark">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-5VF5QF9ZCJ"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag("js", new Date());
-  gtag("config", "G-5VF5QF9ZCJ");
-</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מערכות עיצוב מפוענחות — פלטות צבעים, ארכיטקטורת רכיבים וניתוח | TrendingTech Daily</title>
+  <meta name="description" content="ספריית מערכות העיצוב המלאה — NewsKit, Material 3, Carbon, Polaris, Fluent ועוד. פלטות צבעים, פילוסופיית עיצוב וניתוח מקצועי בעברית."/>
+  <link rel="canonical" href="https://www.trendingtechdaily.com/he/design-systems"/>
+  <link rel="alternate" hreflang="en" href="https://www.trendingtechdaily.com/design-systems"/>
+  <link rel="alternate" hreflang="he" href="https://www.trendingtechdaily.com/he/design-systems"/>
+  <link rel="alternate" hreflang="x-default" href="https://www.trendingtechdaily.com/design-systems"/>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Rubik:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>מערכות עיצוב מפוענחות — פלטות, פילוסופיה והדעה של Claude | TrendingTech Daily</title>
-<meta name="description" content="הספרייה השלמה של מערכות עיצוב — Material, Apple HIG, Carbon, Polaris, Fluent ועוד. פלטות, פילוסופיות וניתוח של Claude."/>
-<link rel="canonical" href="https://www.trendingtechdaily.com/he/design-systems"/>
-<link rel="alternate" hreflang="he" href="https://www.trendingtechdaily.com/he/design-systems"/>
-<link rel="alternate" hreflang="en" href="https://www.trendingtechdaily.com/design-systems"/>
-<link rel="alternate" hreflang="x-default" href="https://www.trendingtechdaily.com/design-systems"/>
+  <!-- Master Unified Stylesheet -->
+  <link rel="stylesheet" href="/he/styles.css">
+  <link rel="stylesheet" href="/css/design-systems.css">
 
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/he/styles.css">
-<link rel="stylesheet" href="/css/design-systems.css?v=2">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"CollectionPage","name":"מערכות עיצוב מפוענחות","description":"ספריית מערכות עיצוב — פלטות, פילוסופיה, יכולות וניתוח של Claude.","url":"https://www.trendingtechdaily.com/he/design-systems","inLanguage":"he"}
-</script>
-<script>
-  window.DS_I18N = {
-    addToStack: 'הוסף להשוואה', added: 'נוסף', view: 'צפייה',
-    noResults: 'לא נמצאו מערכות עיצוב שתואמות לסינון.',
-    loading: 'טוען...',
-    yourStack: 'ההשוואה שלי',
-    exportMd: 'ייצוא Markdown', exportJson: 'ייצוא JSON',
-    emptyStack: 'ההשוואה ריקה. לחץ "הוסף להשוואה" על כל כרטיס.',
-    remove: 'הסר',
-    trending: 'חמים',
-  };
-</script>
+  <!-- Firebase App & Services -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
 </head>
 <body class="ds-page">
 
-<div id="navbar-placeholder"></div>
+  <!-- Navbar Placeholder -->
+  <div id="navbar-placeholder"></div>
 
-<header class="ds-hero text-center">
-  <div class="container">
-    <div class="ds-poweredby">
-      <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-        <path fill="#FFC107" d="M12 2 l2.4 6.8 L21 9.6 l-5.4 4.1 1.9 7.1 L12 16.8 6.5 20.8 l1.9-7.1 L3 9.6 l6.6-.8 Z"/>
-      </svg>
-      <span>מופעל על ידי <strong>Claude</strong> · Anthropic × TrendingTech Daily</span>
-    </div>
-    <h1>מערכות עיצוב<span class="ds-slash">/</span>מפוענחות</h1>
-    <p class="ds-sub">פלטות, פילוסופיה והדעה של Claude על כל ספריית רכיבים שמעצבת את הרשת המודרנית.</p>
-    <div class="ds-searchbar">
-      <i class="bi bi-search"></i>
-      <input id="ds-search" type="search" placeholder="חיפוש מערכות עיצוב, חברות, פלטות..." aria-label="חיפוש מערכות עיצוב">
-    </div>
-    <div class="ds-cta-row">
-      <a class="ds-chip-big" href="/he/ai-tools/guide"><i class="bi bi-book"></i> קרא את המדריך</a>
-      <a class="ds-chip-big" href="/he/ai-tools/glossary"><i class="bi bi-journal-bookmark"></i> מילון מונחים</a>
-    </div>
-  </div>
-</header>
-
-<main class="container">
-
-  <section class="ds-trending" aria-label="חמים השבוע">
-    <h2 style="font-family: var(--font-heading); margin-bottom: .5rem;"><i class="bi bi-fire text-warning"></i> חמים השבוע</h2>
-    <div id="ds-trending-track" class="ds-trending-track"></div>
-  </section>
-
-  <section class="ds-buckets" id="ds-buckets"></section>
-
-  <section class="ds-layout">
-    <aside class="ds-sidebar" aria-label="סינון">
-      <h4>סוג</h4>
-      <label><input type="radio" name="ds-type" value="" checked> הכל</label>
-      <label><input type="radio" name="ds-type" value="big-tech"> חברות גדולות</label>
-      <label><input type="radio" name="ds-type" value="open-source"> קוד פתוח</label>
-      <label><input type="radio" name="ds-type" value="modern"> מודרני</label>
-      <label><input type="radio" name="ds-type" value="government"> ממשלתי</label>
-      <label><input type="radio" name="ds-type" value="enterprise"> אנטרפרייז</label>
-
-      <h4>יכולות</h4>
-      <label><input type="checkbox" name="ds-capability" value="hasComponents"> ספריית רכיבים</label>
-      <label><input type="checkbox" name="ds-capability" value="hasFigma"> ערכת Figma</label>
-      <label><input type="checkbox" name="ds-capability" value="hasOpenSource"> קוד פתוח</label>
-      <label><input type="checkbox" name="ds-capability" value="hasVoiceTone"> טון וסגנון</label>
-
-      <h4>מתאים ל</h4>
-      <div class="ds-chips">
-        <span class="ds-chip" data-bestfor="enterprise">אנטרפרייז</span>
-        <span class="ds-chip" data-bestfor="startups">סטארטאפים</span>
-        <span class="ds-chip" data-bestfor="mobile">מובייל</span>
-        <span class="ds-chip" data-bestfor="web">ווב</span>
-        <span class="ds-chip" data-bestfor="design-teams">צוותי עיצוב</span>
-        <span class="ds-chip" data-bestfor="dev-teams">צוותי פיתוח</span>
+  <!-- ── Hero (Hebrew) ─────────────────────────────────────────── -->
+  <header class="ds-hero text-center">
+    <div class="container">
+      <div class="ds-poweredby">
+        <i class="bi bi-palette-fill" style="color:var(--accent-red);"></i>
+        <span>אינדקס מערכות עיצוב ארגוניות · <strong>TrendingTech Daily</strong></span>
       </div>
-
-      <h4>שפה</h4>
-      <a href="/design-systems" class="ds-chip">EN</a>
-      <a href="/he/design-systems" class="ds-chip active">HE</a>
-    </aside>
-
-    <div>
-      <div class="d-flex justify-content-between align-items-end mb-3">
-        <h2 style="font-family: var(--font-heading); margin: 0;">כל מערכות העיצוב</h2>
-        <small class="text-muted">מסודר לפי דירוג חמים</small>
+      <h1>מערכות עיצוב<span class="ds-slash">/</span>מפוענחות</h1>
+      <p class="ds-sub">פלטות צבעים, ארכיטקטורת Tokens, ספריות רכיבים וניתוח טכנולוגי של מערכות העיצוב המובילות בעולם.</p>
+      
+      <div class="ds-searchbar">
+        <i class="bi bi-search"></i>
+        <input id="ds-search" type="search" placeholder="חיפוש מערכות עיצוב, חברות, פלטות (למשל NewsKit, Carbon, Polaris)..." aria-label="חיפוש מערכות עיצוב">
       </div>
-      <div id="ds-grid" class="ds-grid"></div>
+      
+      <div class="ds-cta-row">
+        <a class="ds-chip-big" href="/he/ai-tools-guide.html"><i class="bi bi-book"></i> מדריך מקצועי</a>
+        <a class="ds-chip-big" href="/he/ai-tools-glossary.html"><i class="bi bi-journal-bookmark"></i> מילון Tokens</a>
+      </div>
     </div>
-  </section>
+  </header>
 
-  <section class="ds-seo-section mt-5 pb-5">
-    <h2>למה לפענח מערכות עיצוב?</h2>
-    <p>כל מוצר טוב רץ על מערכת עיצוב. מ-<strong>Material Design</strong> של גוגל ועד <strong>Human Interface Guidelines</strong> של אפל, מ-<strong>Carbon</strong> של IBM ועד <strong>Polaris</strong> של Shopify — הספריות האלה מעצבות את המראה, התחושה וההתנהגות של האפליקציות שאתם משתמשים בהן כל יום. אנחנו מפענחים כל אחת — פלטות, טיפוגרפיה, פילוסופיה, יכולות — ונותנים ל-Claude לומר את דעתו על מה כל מערכת עושה הכי טוב.</p>
-    <p>סננו לפי סוג, יכולות, בנו מחסנית השוואה וייצאו ב-Markdown לשיתוף עם הצוות.</p>
-  </section>
+  <main class="container my-4 my-md-5">
 
-</main>
+    <!-- ── Trending Strip ──────────────────────────────────────── -->
+    <section class="ds-trending" aria-label="מערכות עיצוב פופולריות השבוע">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 style="font-family: var(--font-display); font-size:1.35rem; font-weight:800; text-transform:uppercase; margin-bottom:0;">
+          <i class="bi bi-fire text-warning ms-1"></i> מערכות העיצוב המבוקשות ביותר
+        </h2>
+      </div>
+      <div id="ds-trending-track" class="ds-trending-track"></div>
+    </section>
 
-<button class="ds-stack-pill" id="ds-stack-pill" aria-label="פתח את ההשוואה שלי">
-  <i class="bi bi-stack"></i> השוואה
-  <span class="ds-stack-count" id="ds-stack-count">0</span>
-</button>
+    <!-- ── Category Buckets ───────────────────────────────────── -->
+    <section class="ds-buckets" id="ds-buckets"></section>
 
-<div class="ds-modal-backdrop" id="ds-stack-modal" role="dialog" aria-modal="true">
-  <div class="ds-modal">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h3 style="margin:0; font-family: var(--font-heading);">ההשוואה שלי</h3>
-      <button id="ds-stack-close" class="btn-close" aria-label="סגור"></button>
-    </div>
-    <div id="ds-stack-body"></div>
-    <div class="d-flex gap-2 mt-3">
-      <button id="ds-export-md" class="btn btn-primary"><i class="bi bi-markdown"></i> ייצוא Markdown</button>
-      <button id="ds-export-json" class="btn btn-outline-primary"><i class="bi bi-filetype-json"></i> ייצוא JSON</button>
+    <!-- ── Layout: Sidebar + Grid ─────────────────────────────── -->
+    <section class="ds-layout">
+      <aside class="ds-sidebar" aria-label="סינון">
+        <h4>סוג המערכת</h4>
+        <label><input type="radio" name="ds-type" value="" checked> כל הסוגים</label>
+        <label><input type="radio" name="ds-type" value="big-tech"> ענקיות טכנולוגיה</label>
+        <label><input type="radio" name="ds-type" value="open-source"> קוד פתוח</label>
+        <label><input type="radio" name="ds-type" value="modern"> חברות צמיחה</label>
+        <label><input type="radio" name="ds-type" value="government"> מגזר ציבורי וממשל</label>
+        <label><input type="radio" name="ds-type" value="enterprise"> סקייל ארגוני</label>
+
+        <h4>יכולות המערכת</h4>
+        <label><input type="checkbox" name="ds-capability" value="hasComponents"> ספריית React / Vue</label>
+        <label><input type="checkbox" name="ds-capability" value="hasFigma"> קובצי Figma ו-Tokens</label>
+        <label><input type="checkbox" name="ds-capability" value="hasOpenSource"> קוד פתוח</label>
+        <label><input type="checkbox" name="ds-capability" value="hasVoiceTone"> הנחיות שפה ומיתוג</label>
+
+        <h4>מתאים במיוחד עבור</h4>
+        <div class="ds-chips">
+          <span class="ds-chip" data-bestfor="enterprise">ארגונים גדולים</span>
+          <span class="ds-chip" data-bestfor="startups">סטארטאפים</span>
+          <span class="ds-chip" data-bestfor="mobile">אפליקציות מובייל</span>
+          <span class="ds-chip" data-bestfor="data-heavy">מערכות דאטה</span>
+        </div>
+      </aside>
+
+      <div>
+        <div id="ds-grid" class="ds-grid"></div>
+        <div id="ds-empty" class="text-center py-5" style="display:none;">
+          <i class="bi bi-palette" style="font-size:3rem; color:var(--text-faint);"></i>
+          <h3 class="mt-3" style="font-size:1.25rem;">לא נמצאו מערכות עיצוב תואמות</h3>
+          <p class="text-muted">נסו להסיר חלק ממסנני החיפוש.</p>
+        </div>
+        <div id="ds-loading" class="text-center py-4" style="display:none;">
+          <div class="spinner-border text-danger" role="status"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Persistent Audio Dock -->
+  <div class="podcast-dock" role="region" aria-label="נגן פודקאסט">
+    <div class="container dock-inner">
+      <div class="dock-track-info">
+        <div class="dock-art"><i class="bi bi-mic-fill"></i></div>
+        <div class="dock-meta">
+          <div class="dock-title">הייטק בפקקים — עתיד הבינה המלאכותית בישראל ובעולם</div>
+          <div class="dock-sub">הייטק בפקקים עם אורי טוביאס · 48 דקות</div>
+        </div>
+      </div>
+      <div class="dock-controls">
+        <div class="dock-progress"><div class="dock-progress-bar" style="width:40%;"></div></div>
+        <a href="https://open.spotify.com/show/0zQn0c0lO1EwA9qV5Q4y0K" target="_blank" rel="noopener" class="dock-play-btn" aria-label="הפעל בספוטיפיי"><i class="bi bi-play-fill"></i></a>
+      </div>
     </div>
   </div>
-</div>
 
-<footer style="background:#0B1220; color:#fff; padding: 3rem 1rem 2rem; margin-top: 4rem;">
-  <div class="container text-center">
-    <div class="ds-footer-badge mb-3" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.16); color:#fff;">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path fill="#FFC107" d="M12 2 l2.4 6.8 L21 9.6 l-5.4 4.1 1.9 7.1 L12 16.8 6.5 20.8 l1.9-7.1 L3 9.6 l6.6-.8 Z"/>
-      </svg>
-      <span>מופעל על ידי Claude · Anthropic</span>
-    </div>
-    <p style="opacity:.8;">מערכות עיצוב מפוענחות — פרויקט של TrendingTech Daily. <a href="/he/" style="color:#FFC107;">← חזרה לעמוד הבית</a></p>
-  </div>
-</footer>
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
-<script src="/he/js/he-app.js" defer></script>
-<script src="/js/design-systems.js?v=2" defer></script>
+  <!-- Scripts -->
+  <script src="/js/config.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/nav-loader.js"></script>
+  <script src="/js/app-base.js"></script>
+  <script src="/js/design-systems.js"></script>
 </body>
 </html>

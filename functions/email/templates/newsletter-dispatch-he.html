@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrendingTech Daily — המבזק השבועי</title>
+  <!--[if mso]>
+  <style type="text/css">
+    body, table, td, a { font-family: Arial, Tahoma, sans-serif !important; }
+  </style>
+  <![endif]-->
+  <style type="text/css">
+    body {
+      margin: 0 !important;
+      padding: 0 !important;
+      background-color: #090A0E !important;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Rubik', Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      direction: rtl !important;
+      text-align: right !important;
+      color: #FFFFFF !important;
+    }
+    table {
+      border-spacing: 0;
+      border-collapse: collapse;
+      mso-table-lspace: 0pt;
+      mso-table-rspace: 0pt;
+    }
+    td {
+      padding: 0;
+    }
+    img {
+      border: 0;
+      -ms-interpolation-mode: bicubic;
+    }
+    a {
+      text-decoration: none;
+      color: #E63946;
+    }
+    @media screen and (max-width: 600px) {
+      .email-container {
+        width: 100% !important;
+        padding: 12px !important;
+      }
+      .stack-column {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        direction: rtl !important;
+      }
+      .hero-title {
+        font-size: 24px !important;
+        line-height: 30px !important;
+      }
+      .card-pad {
+        padding: 16px !important;
+      }
+    }
+  </style>
+</head>
+<body style="margin:0; padding:0; background-color:#090A0E; color:#FFFFFF; direction:rtl; text-align:right;">
+
+  <!-- Outer Background Container -->
+  <table role="presentation" width="100%" bgcolor="#090A0E" cellpadding="0" cellspacing="0" border="0" dir="rtl">
+    <tr>
+      <td align="center" style="padding: 24px 12px 48px;">
+        
+        <!-- Main Email Card Wrapper (600px Max) -->
+        <table role="presentation" class="email-container" width="600" cellpadding="0" cellspacing="0" border="0" dir="rtl" style="max-width:600px; width:100%; background-color:#111319; border:1px solid #1E2330; border-radius:12px; overflow:hidden; text-align:right;">
+          
+          <!-- Top Crimson Accent Bar -->
+          <tr>
+            <td height="4" style="background: linear-gradient(90deg, #E63946 0%, #A855F7 50%, #F59E0B 100%); font-size:0; line-height:0;">&nbsp;</td>
+          </tr>
+
+          <!-- Header / Brand Section -->
+          <tr>
+            <td class="card-pad" style="padding: 28px 32px 20px; border-bottom:1px solid #1E2330;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" dir="rtl">
+                <tr>
+                  <td align="right" valign="middle">
+                    <a href="https://www.trendingtechdaily.com/he" target="_blank" style="font-size: 22px; font-weight: 900; color: #FFFFFF; font-family: -apple-system, sans-serif; letter-spacing: -0.5px;">
+                      <bdo dir="ltr">TrendingTech<span style="color:#E63946;">Daily</span></bdo>
+                    </a>
+                  </td>
+                  <td align="left" valign="middle">
+                    <span style="font-size: 11px; font-weight: 700; color: #E63946; background-color: rgba(230,57,70,0.15); border: 1px solid rgba(230,57,70,0.3); padding: 4px 8px; border-radius: 4px; text-transform: uppercase; font-family: monospace;">
+                      מבזק מס׳ {{edition_number}}
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="2" style="padding-top: 6px;" align="right">
+                    <span style="font-size: 12px; color: #94A3B8; font-family: monospace;">
+                      {{dispatch_date}} · מודיעין טכנולוגי יומי, ניתוחי ארכיטקטורה ושוק ההון
+                    </span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Lead Story Hero Banner -->
+          <tr>
+            <td style="padding: 0;">
+              <a href="{{lead_story_url}}" target="_blank">
+                <img src="{{lead_story_image}}" alt="{{lead_story_title}}" width="600" style="width:100%; max-width:600px; height:auto; display:block; border-bottom:1px solid #1E2330;" />
+              </a>
+            </td>
+          </tr>
+
+          <!-- Lead Story Content -->
+          <tr>
+            <td class="card-pad" style="padding: 28px 32px; background-color: #141720; border-bottom: 1px solid #1E2330; text-align:right;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" dir="rtl">
+                <tr>
+                  <td align="right">
+                    <span style="display:inline-block; font-size: 11px; font-weight: 800; color: #E63946; background: rgba(230,57,70,0.15); border: 1px solid rgba(230,57,70,0.3); padding: 3px 8px; border-radius: 3px; font-family: monospace; margin-bottom: 12px;">
+                      {{lead_story_category}}
+                    </span>
+                    <h1 class="hero-title" style="margin: 0 0 12px; font-size: 26px; font-weight: 800; line-height: 34px; color: #FFFFFF; font-family: -apple-system, sans-serif;">
+                      <a href="{{lead_story_url}}" target="_blank" style="color: #FFFFFF; text-decoration: none;">
+                        {{lead_story_title}}
+                      </a>
+                    </h1>
+                    <p style="margin: 0 0 16px; font-size: 15px; line-height: 25px; color: #CBD5E1;">
+                      {{lead_story_excerpt}}
+                    </p>
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" dir="rtl">
+                      <tr>
+                        <td align="center" bgcolor="#E63946" style="border-radius: 6px;">
+                          <a href="{{lead_story_url}}" target="_blank" style="display: inline-block; padding: 10px 20px; font-size: 14px; font-weight: 700; color: #FFFFFF; text-decoration: none; border-radius: 6px;">
+                            לקריאת הניתוח המלא באתר ←
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Curated Tech Dispatches Section -->
+          <tr>
+            <td class="card-pad" style="padding: 28px 32px 12px; text-align:right;">
+              <h2 style="margin: 0 0 20px; font-size: 14px; font-weight: 800; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.5px; font-family: monospace;">
+                <span style="color:#E63946;">●</span> ידיעות וניתוחים נבחרים השבוע
+              </h2>
+
+              <!-- Dispatch Item 1 -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" dir="rtl" style="margin-bottom: 20px; background-color: #171A23; border: 1px solid #1E2330; border-radius: 8px; overflow: hidden; text-align:right;">
+                <tr>
+                  <td class="card-pad" style="padding: 16px 20px; text-align:right;">
+                    <span style="font-size: 10px; font-weight: 800; color: #F59E0B; background: rgba(245,158,11,0.15); border: 1px solid rgba(245,158,11,0.3); padding: 2px 6px; border-radius: 3px; font-family: monospace;">
+                      שבבים ומחשוב
+                    </span>
+                    <h3 style="margin: 8px 0 6px; font-size: 17px; font-weight: 700; line-height: 24px;">
+                      <a href="{{story_1_url}}" target="_blank" style="color: #FFFFFF; text-decoration: none;">
+                        {{story_1_title}}
+                      </a>
+                    </h3>
+                    <p style="margin: 0 0 10px; font-size: 13px; line-height: 21px; color: #94A3B8;">
+                      {{story_1_excerpt}}
+                    </p>
+                    <a href="{{story_1_url}}" target="_blank" style="font-size: 12px; font-weight: 700; color: #E63946;">
+                      לפרטים הטכניים המלאים ←
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Dispatch Item 2 -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" dir="rtl" style="margin-bottom: 20px; background-color: #171A23; border: 1px solid #1E2330; border-radius: 8px; overflow: hidden; text-align:right;">
+                <tr>
+                  <td class="card-pad" style="padding: 16px 20px; text-align:right;">
+                    <span style="font-size: 10px; font-weight: 800; color: #10B981; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); padding: 2px 6px; border-radius: 3px; font-family: monospace;">
+                      כלי פיתוח ותוכנה
+                    </span>
+                    <h3 style="margin: 8px 0 6px; font-size: 17px; font-weight: 700; line-height: 24px;">
+                      <a href="{{story_2_url}}" target="_blank" style="color: #FFFFFF; text-decoration: none;">
+                        {{story_2_title}}
+                      </a>
+                    </h3>
+                    <p style="margin: 0 0 10px; font-size: 13px; line-height: 21px; color: #94A3B8;">
+                      {{story_2_excerpt}}
+                    </p>
+                    <a href="{{story_2_url}}" target="_blank" style="font-size: 12px; font-weight: 700; color: #E63946;">
+                      לפרטים הטכניים המלאים ←
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Featured Intelligence Hub Teaser -->
+          <tr>
+            <td class="card-pad" style="padding: 0 32px 28px; text-align:right;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" dir="rtl" style="background: linear-gradient(135deg, rgba(230,57,70,0.15) 0%, rgba(168,85,247,0.1) 100%); border: 1px solid rgba(230,57,70,0.3); border-radius: 8px; padding: 20px; text-align:right;">
+                <tr>
+                  <td align="right">
+                    <span style="font-size: 11px; font-weight: 800; color: #FFFFFF; font-family: monospace;">
+                      ✨ מרכזי המידע החדשים
+                    </span>
+                    <h4 style="margin: 6px 0 4px; font-size: 16px; font-weight: 800; color: #FFFFFF;">
+                      קטלוג כלי AI ומערכות עיצוב מפוענחות
+                    </h4>
+                    <p style="margin: 0 0 12px; font-size: 13px; line-height: 20px; color: #CBD5E1;">
+                      גלו ספריות קומפוננטות, שרתי MCP, פלטות צבעים ומעקב שוק ההון בזמן אמת.
+                    </p>
+                    <a href="https://www.trendingtechdaily.com/he/ai-tools.html" target="_blank" style="display:inline-block; font-size: 12px; font-weight: 700; color: #FFFFFF; background-color: #E63946; padding: 6px 14px; border-radius: 4px;">
+                      למרכז כלי AI ←
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Email Footer -->
+          <tr>
+            <td class="card-pad" style="padding: 24px 32px; background-color: #0D0E15; border-top: 1px solid #1E2330; text-align: center;">
+              <p style="margin: 0 0 10px; font-size: 12px; color: #64748B;">
+                הודעה זו נשלחה אליך משום שנרשמת לניוזלטר של TrendingTech Daily.
+              </p>
+              <p style="margin: 0 0 12px; font-size: 12px; color: #94A3B8;">
+                <a href="https://www.trendingtechdaily.com/he" target="_blank" style="color: #94A3B8; text-decoration: underline;">אתר הבית</a> · 
+                <a href="https://www.trendingtechdaily.com/he/profile.html" target="_blank" style="color: #94A3B8; text-decoration: underline;">ניהול העדפות</a> · 
+                <a href="{{unsubscribe_url}}" target="_blank" style="color: #E63946; text-decoration: underline;">הסרה מהרשימה</a>
+              </p>
+              <p style="margin: 0; font-size: 11px; font-family: monospace; color: #475569;">
+                © 2026 TrendingTech Daily. info@trendingtechdaily.com
+              </p>
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

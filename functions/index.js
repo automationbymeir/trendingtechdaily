@@ -179,6 +179,39 @@ exports.autoGenerateArticle = onSchedule({ schedule: "every 1 hours", region: "u
   }
 });
 
+// === Batch Article Generation (Gemini Batch API — 50% cost savings) ===
+const { submitDailyArticleBatch, processPendingBatches } = require("./batchArticleGenerator");
+
+// Runs once per day: collects 24 topics and submits them as a single Gemini batch job.
+exports.scheduledBatchArticleSubmit = onSchedule({
+  schedule: "0 0 * * *", // midnight UTC daily
+  region: "us-central1",
+  secrets: ["NEWS_API_KEY", "GROK_API_KEY"],
+  timeoutSeconds: 300,
+}, async () => {
+  try {
+    const result = await submitDailyArticleBatch(process.env.NEWS_API_KEY);
+    logger.info(`Batch job submitted: ${result.jobName} (${result.topicCount} topics)`);
+  } catch (err) {
+    logger.error("scheduledBatchArticleSubmit failed:", err);
+  }
+});
+
+// Runs every 4 hours: picks up any completed batch jobs and creates articles from results.
+exports.scheduledBatchArticleProcessor = onSchedule({
+  schedule: "0 */4 * * *",
+  region: "us-central1",
+  secrets: ["UNSPLASH_ACCESS_KEY"],
+  timeoutSeconds: 540,
+}, async () => {
+  try {
+    const result = await processPendingBatches(process.env.UNSPLASH_ACCESS_KEY);
+    logger.info(`Batch processor: created ${result.processed} articles`);
+  } catch (err) {
+    logger.error("scheduledBatchArticleProcessor failed:", err);
+  }
+});
+
 exports.testGenerateArticle = onCall({ secrets: ["NEWS_API_KEY", "GROK_API_KEY", "SMTP_USER", "SMTP_PASS", "SMTP_HOST", "SMTP_PORT", "ARTICLE_NOTIFY_EMAIL"], region: "us-central1" }, async (request) => {
   if (!request.auth || request.auth.token.admin !== true) {
     throw new HttpsError('permission-denied', 'Admin privileges required');

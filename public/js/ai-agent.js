@@ -23,17 +23,17 @@ class AITechAgent {
     }
 
     init() {
-      this.button = document.getElementById('aiAgentButton');
-      this.chat = document.getElementById('aiAgentChat');
-      this.closeBtn = document.getElementById('aiChatClose');
+      this.button = document.getElementById('aiCopilotTrigger') || document.getElementById('aiAgentButton');
+      this.chat = document.getElementById('aiCopilotDrawer') || document.getElementById('aiAgentChat');
+      this.closeBtn = document.getElementById('aiCopilotCloseBtn') || document.getElementById('aiChatClose');
       this.messagesContainer = document.getElementById('aiChatMessages');
-      this.inputForm = document.getElementById('aiInputForm');
-      this.inputField = document.getElementById('aiInputField');
-      this.sendButton = document.getElementById('aiSendButton');
+      this.inputForm = document.getElementById('aiChatInputForm') || document.getElementById('aiInputForm');
+      this.inputField = document.getElementById('aiChatInputField') || document.getElementById('aiInputField');
+      this.sendButton = document.getElementById('aiChatSendBtn') || document.getElementById('aiSendButton');
 
-      if (!this.button || !this.chat || !this.closeBtn || !this.messagesContainer || !this.inputForm || !this.inputField || !this.sendButton) {
-        console.error("AI Agent: One or more required DOM elements are missing. Agent cannot initialize.");
-        return;
+      if (!this.button || !this.chat || !this.messagesContainer || !this.inputForm || !this.inputField) {
+        console.warn("AI Agent: Some optional DOM elements were not found; continuing with available elements.");
+        if (!this.chat || !this.inputForm) return;
       }
 
       this.button.addEventListener('click', () => this.toggle());
@@ -41,8 +41,11 @@ class AITechAgent {
       this.inputForm.addEventListener('submit', (e) => this.handleSubmit(e));
       this.inputField.addEventListener('input', () => this.handleInputTyping());
 
-      document.querySelectorAll('.ai-quick-action').forEach(btn => {
-        btn.addEventListener('click', (e) => this.handleQuickAction(e.target.dataset.action));
+      document.querySelectorAll('.ai-quick-action, .ai-prompt-pill').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const el = e.currentTarget || e.target;
+          this.handleQuickAction(el.dataset.prompt || el.dataset.action || el.textContent.trim());
+        });
       });
 
       this.initializeFirebaseServices(); // Initialize Firebase services
@@ -162,9 +165,11 @@ class AITechAgent {
     // This is the method from your class structure.
     // It sends data to the main AI HTTP endpoint.
     async processMessageWithServer(userMessage) {
+        const isHebrew = document.documentElement.lang === 'he' || window.location.pathname.startsWith('/he');
         const contextForBackend = await this.buildContextForBackend();
         let payload = {
             prompt: userMessage,
+            language: isHebrew ? 'he' : 'en',
             conversationHistory: this.conversationHistory,
             context: contextForBackend,
             // Inform the backend about client-side tools it can request
@@ -618,53 +623,51 @@ class AIAgentBanner {
 
 
 // --- Global Initializer for AI Agent and its Banner ---
-document.addEventListener('DOMContentLoaded', () => {
+function initAiAgentOnPage() {
   // Initialize AI Tech Agent
-  if (document.getElementById('aiAgentContainer')) { // Check if agent HTML exists
-    window.aiTechAgent = new AITechAgent();
-    window.aiTechAgent.init(); // This was missing in your class structure
+  if (document.getElementById('aiCopilotDrawer') || document.getElementById('aiCopilotTrigger') || document.getElementById('aiAgentContainer') || document.getElementById('aiAgentButton')) {
+    if (!window.aiTechAgent) {
+      window.aiTechAgent = new AITechAgent();
+      window.aiTechAgent.init();
+    }
   } else {
-    console.warn("AI Agent container not found. AI Tech Agent not initialized.");
+    console.log("AI Agent elements not present on this view.");
   }
 
-  // Initialize AI Agent Pointer Banner
-  if (document.getElementById('aiAgentBannerPointer')) { // Check if banner HTML exists
-    new AIAgentBanner();
-  } else {
-    console.warn("AI Agent Banner Pointer container not found. Banner not initialized.");
-  }
-
-  // Inject AI Agent styles (from your provided styles.css, slightly adapted)
-  // This ensures core styles are present even if external CSS fails or is modified.
+  // Inject AI Agent styles
   if (!document.getElementById('aiAgentCoreStyles')) {
-      const styleSheet = document.createElement("style");
-      styleSheet.id = 'aiAgentCoreStyles';
-      // Using the styles you provided for .ai-code-block, etc.
-      styleSheet.innerHTML = `
-          .ai-code-block {
-              background-color: #1e1e1e; color: #d4d4d4; padding: 12px;
-              border-radius: 6px; overflow-x: auto; margin: 8px 0;
-              font-family: 'Fira Code', monospace; font-size: 13px; line-height: 1.5;
-          }
-          .ai-message-bubble table {
-              width: 100%; border-collapse: collapse; margin: 8px 0;
-          }
-          .ai-message-bubble th, .ai-message-bubble td {
-              padding: 8px; text-align: left; border: 1px solid #e0e0e0;
-          }
-          .ai-message-bubble th { background-color: #f5f5f5; font-weight: 600; }
-          /* Styles for bot-info messages */
-          .ai-message.bot-info .ai-message-bubble {
-              background-color: #e0e7ff; /* Light blue */
-              color: #374151; /* Darker text for readability */
-              font-style: italic;
-              font-size: 0.9em;
-              padding: 8px 12px;
-          }
-      `;
-      document.head.appendChild(styleSheet);
+    const styleSheet = document.createElement("style");
+    styleSheet.id = 'aiAgentCoreStyles';
+    styleSheet.innerHTML = `
+      .ai-code-block {
+        background-color: #1e1e1e; color: #d4d4d4; padding: 12px;
+        border-radius: 6px; overflow-x: auto; margin: 8px 0;
+        font-family: 'Fira Code', monospace; font-size: 13px; line-height: 1.5;
+      }
+      .ai-message-bubble table {
+        width: 100%; border-collapse: collapse; margin: 8px 0;
+      }
+      .ai-message-bubble th, .ai-message-bubble td {
+        padding: 8px; text-align: left; border: 1px solid #e0e0e0;
+      }
+      .ai-message-bubble th { background-color: #f5f5f5; font-weight: 600; }
+      .ai-message.bot-info .ai-message-bubble {
+        background-color: #e0e7ff;
+        color: #374151;
+        font-style: italic;
+        font-size: 0.9em;
+        padding: 8px 12px;
+      }
+    `;
+    document.head.appendChild(styleSheet);
   }
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initAiAgentOnPage);
+} else {
+  initAiAgentOnPage();
+}
 
 // Ensure the enhancedStyles (from your previous context) are also included.
 // If 'enhancedStyles' variable is from another script, ensure it's loaded.

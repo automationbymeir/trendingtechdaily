@@ -60,7 +60,7 @@ async function generateArticleContent(request) { // request contains { auth, dat
         throw new HttpsError("internal", "Core AI SDK (@google/genai) failed to load.");
       }
 
-      const genAI = new GoogleGenAI({ vertexai: { project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' } });
+      const genAI = new GoogleGenAI({ project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' });
 
       const structuredPrompt = `
 Write a professional tech/finance news article about "${topic}" in the style of Yahoo Finance or Bloomberg.
@@ -291,7 +291,7 @@ async function generateArticleImage(request) {
             throw new HttpsError("internal", "Core AI SDK failed to load.");
         }
 
-        const genAI = new GoogleGenAI({ vertexai: { project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' } });
+        const genAI = new GoogleGenAI({ project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' });
 
         // Ask Gemini to create an SVG image
         const svgPrompt = `Create a simple SVG image for this article topic: "${prompt}".
@@ -407,7 +407,7 @@ async function generateTopTenArticle(request) {
         const { GoogleGenAI } = getGeminiSDK();
         if (!sdkLoaded || !GoogleGenAI) throw new HttpsError("internal", "Core AI SDK failed to load.");
 
-        const genAI = new GoogleGenAI({ vertexai: { project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' } });
+        const genAI = new GoogleGenAI({ project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' });
 
         const structuredPrompt = `Create a top ${count} list article about "${topic}" for a technology news website.
 
@@ -496,7 +496,7 @@ async function generateHowToArticle(request) {
         const { GoogleGenAI } = getGeminiSDK();
         if (!sdkLoaded || !GoogleGenAI) throw new HttpsError("internal", "Core AI SDK failed to load.");
 
-        const genAI = new GoogleGenAI({ vertexai: { project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' } });
+        const genAI = new GoogleGenAI({ project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' });
 
         const structuredPrompt = `Create a step-by-step how-to article about "${topic}" for a technology news website.
 
@@ -585,7 +585,7 @@ async function readArticleAloud(request) {
         const { GoogleGenAI } = getGeminiSDK();
         if (!sdkLoaded || !GoogleGenAI) throw new HttpsError("internal", "Core AI SDK failed to load.");
 
-        const genAI = new GoogleGenAI({ vertexai: { project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' } });
+        const genAI = new GoogleGenAI({ project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' });
         const result = await genAI.models.generateContent(
             buildGenerateContentRequest(text, {
                 model: 'tts-1-hd',

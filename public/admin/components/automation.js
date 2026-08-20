@@ -21,8 +21,11 @@ function loadAutomationPanel() {
             </div>
             <div class="card-body">
               <table class="table table-sm mb-0">
-                <thead><tr><th>Function</th><th>Schedule (UTC)</th><th>Action</th></tr></thead>
-                <tbody>
+                  <tr>
+                    <td><strong>Daily Catalog Scraper</strong><br><small class="text-muted">Discovers, enriches &amp; ingests trending AI Tools &amp; Design Systems</small></td>
+                    <td><code>0 4 * * *</code><br><small class="text-muted">Daily at 07:00 AM Asia/Jerusalem</small></td>
+                    <td><span class="badge bg-success">Daily Active</span></td>
+                  </tr>
                   <tr>
                     <td><strong>Trending Articles</strong><br><small class="text-muted">2 AI articles from news crawl</small></td>
                     <td><code>0 8,20 * * *</code><br><small class="text-muted">Daily at 8:00 AM &amp; 8:00 PM UTC</small></td>
@@ -90,6 +93,14 @@ function loadAutomationPanel() {
               <i class="bi bi-play-circle me-2"></i>Manual Triggers
             </div>
             <div class="card-body d-flex flex-column gap-3">
+              <div>
+                <p class="mb-1"><strong>Daily Catalog Scraper</strong> — Scrape &amp; discover new AI Tools and Design Systems now</p>
+                <button id="trigger-daily-scraper-btn" class="btn btn-warning btn-sm text-dark fw-bold">
+                  <i class="bi bi-search me-1"></i>Run Daily Scraper Now
+                </button>
+              </div>
+              <div id="trigger-daily-scraper-status" class="d-none alert alert-info py-2 mb-0"></div>
+              <hr class="my-1">
               <div>
                 <p class="mb-1"><strong>Trending AI Articles</strong> — crawl news &amp; publish 2 articles now</p>
                 <button id="trigger-trending-btn" class="btn btn-success btn-sm">
@@ -280,6 +291,7 @@ function loadAutomationPanel() {
   loadLogs();
 
   document.getElementById('refresh-logs-btn').addEventListener('click', loadLogs);
+  document.getElementById('trigger-daily-scraper-btn')?.addEventListener('click', triggerDailyScraper);
   document.getElementById('trigger-trending-btn').addEventListener('click', triggerTrending);
   document.getElementById('trigger-comparisons-btn').addEventListener('click', triggerComparisons);
   document.getElementById('trigger-carousel-btn').addEventListener('click', triggerCarousel);
@@ -433,17 +445,24 @@ function loadLogs() {
 
         const typeBadge = log.type === 'trending'
           ? '<span class="badge bg-primary">Trending</span>'
+          : log.type === 'daily_catalog_scraper'
+          ? '<span class="badge bg-warning text-dark"><i class="bi bi-search me-1"></i>Catalog Scraper</span>'
           : log.type === 'instagram_carousel'
           ? '<span class="badge bg-info text-dark"><i class="bi bi-instagram me-1"></i>IG Carousel</span>'
-          : '<span class="badge bg-secondary">Auto</span>';
+          : `<span class="badge bg-secondary">${log.type || 'Auto'}</span>`;
 
         const triggerBadge = log.trigger === 'manual'
           ? '<span class="badge bg-warning text-dark"><i class="bi bi-hand-index me-1"></i>Manual</span>'
           : '<span class="badge bg-light text-dark border"><i class="bi bi-clock me-1"></i>Scheduled</span>';
 
-        // Render IG-carousel rows distinctly: list comparison ids + IG media link
+        // Render IG-carousel / Catalog Scraper rows distinctly
         let carouselCell = '';
-        if (log.type === 'instagram_carousel') {
+        if (log.type === 'daily_catalog_scraper') {
+          const items = Array.isArray(log.items) ? log.items : [];
+          const itemBadges = items.map(it => `<span class="badge bg-dark me-1">${it.name}</span>`).join(' ');
+          const msg = log.message ? `<div class="small text-muted mt-1">${log.message}</div>` : '';
+          carouselCell = `<div class="small">${itemBadges || 'Discovered & verified catalogs'}</div>${msg}`;
+        } else if (log.type === 'instagram_carousel') {
           const ids = Array.isArray(log.comparisonIds) ? log.comparisonIds : [];
           const mediaLink = log.mediaId
             ? `<a href="https://www.instagram.com/p/${log.mediaId}/" target="_blank" rel="noopener" class="d-block small"><i class="bi bi-link-45deg me-1"></i>View on Instagram</a>`
@@ -452,7 +471,7 @@ function loadLogs() {
           carouselCell = `<div class="small">${ids.length} comparisons</div>${mediaLink}${err}`;
         }
 
-        const articles = log.type === 'instagram_carousel'
+        const articles = (log.type === 'instagram_carousel' || log.type === 'daily_catalog_scraper')
           ? carouselCell
           : Array.isArray(log.articles) && log.articles.length > 0
           ? log.articles.map(a => {
@@ -505,6 +524,34 @@ function updateStats(logs) {
   document.getElementById('stat-success').textContent = success;
   document.getElementById('stat-error').textContent = errors;
   document.getElementById('stat-articles').textContent = articles;
+}
+
+// ── Manual Daily Catalog Scraper Trigger ────────────────────────────────────
+async function triggerDailyScraper() {
+  const btn = document.getElementById('trigger-daily-scraper-btn');
+  const statusEl = document.getElementById('trigger-daily-scraper-status');
+  const originalHtml = btn.innerHTML;
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Scraping…';
+  statusEl.className = 'alert alert-info py-2 mb-0';
+  statusEl.innerHTML = '<span class="spinner-border spinner-border-sm me-2" style="width:.8rem;height:.8rem"></span>Scraping web for new trending AI tools and Design Systems…';
+  statusEl.classList.remove('d-none');
+
+  try {
+    const fn = firebase.functions().httpsCallable('triggerDailyCatalogScraper', { timeout: 300000 });
+    const res = await fn();
+    const data = (res && res.data) || {};
+    statusEl.className = 'alert alert-success py-2 mb-0';
+    statusEl.innerHTML = `<i class="bi bi-check-circle me-1"></i>Success! Added ${data.addedCount || 0} new items to catalogs.`;
+    loadLogs();
+  } catch (err) {
+    statusEl.className = 'alert alert-danger py-2 mb-0';
+    statusEl.innerHTML = `<i class="bi bi-x-circle me-1"></i>Error: ${err.message}`;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalHtml;
+  }
 }
 
 // ── Manual trigger ─────────────────────────────────────────────────────────

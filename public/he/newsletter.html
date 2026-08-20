@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" data-mode="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>הניוזלטר השבועי — TrendingTech Daily</title>
+  <meta name="description" content="הירשמו לניוזלטר השבועי של TrendingTech Daily: ניתוחי ארכיטקטורה, פריצות דרך ב-AI, שבבי 2nm ותנועות שוק ההון הטכנולוגי.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet" />
+
+  <!-- Master Unified Stylesheet (Hebrew RTL) -->
+  <link rel="stylesheet" href="/he/styles.css">
+
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+  <style>
+    body {
+      background-color: var(--bg-page, #090A0E) !important;
+      color: #FFFFFF !important;
+      font-family: var(--font-body, 'Rubik', sans-serif);
+    }
+
+    .newsletter-hero {
+      background: radial-gradient(circle at 50% 0%, rgba(230, 57, 70, 0.2) 0%, transparent 70%);
+      padding: 4rem 1rem 3rem;
+      text-align: center;
+    }
+
+    .newsletter-box {
+      background: var(--bg-surface, #111319);
+      border: 1px solid var(--border-color, #1E2330);
+      border-radius: var(--radius-xl, 16px);
+      padding: 2.5rem;
+      max-width: 680px;
+      margin: 0 auto;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .pillar-card {
+      background: var(--bg-surface, #111319);
+      border: 1px solid var(--border-color, #1E2330);
+      border-radius: var(--radius-lg, 12px);
+      padding: 1.75rem 1.5rem;
+      height: 100%;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .pillar-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-red, #E63946);
+    }
+
+    .archive-card {
+      background: var(--bg-surface, #111319);
+      border: 1px solid var(--border-color, #1E2330);
+      border-radius: var(--radius-md, 8px);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1rem;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      display: block;
+      color: #FFFFFF !important;
+    }
+
+    .archive-card:hover {
+      background: var(--bg-surface-elevated, #1B1E29);
+      border-color: var(--accent-red, #E63946);
+      transform: translateX(-4px);
+    }
+
+    .interest-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border-color, #1E2330);
+      background: #171A23;
+      font-size: 0.825rem;
+      color: #CBD5E1;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+
+    .interest-pill input {
+      display: none;
+    }
+
+    .interest-pill:has(input:checked) {
+      background: rgba(230, 57, 70, 0.2);
+      border-color: var(--accent-red, #E63946);
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar Placeholder -->
+  <div id="navbar-placeholder"></div>
+
+  <!-- Hero & Subscription Form -->
+  <header class="newsletter-hero">
+    <div class="container">
+      <span class="badge badge-ai mb-3"><i class="bi bi-envelope-check-fill ms-1"></i> המהדורה השבועית בימי שישי</span>
+      <h1 style="font-family:var(--font-display); font-size:clamp(2.2rem, 5vw, 3.5rem); font-weight:900; line-height:1.1; margin-bottom:1rem;">
+        מודיעין טכנולוגי <span class="text-danger">ישירות לתיבת המייל</span>
+      </h1>
+      <p class="text-secondary" style="max-width:620px; margin:0 auto 2.5rem; font-size:1.05rem; line-height:1.6;">
+        ניתוחי ארכיטקטורה מעמיקים, פריצות דרך במודלי הסקה, שרשרת אספקת שבבי 2nm ותנועות מניות טכנולוגיה מגיעים אליכם מדי יום שישי בבוקר.
+      </p>
+
+      <div class="newsletter-box text-start">
+        <form id="newsletter-page-form">
+          <div class="mb-3">
+            <label class="form-label text-muted small fw-bold" style="font-family:var(--font-mono);">כתובת אימייל</label>
+            <div class="input-group">
+              <span class="input-group-text" style="background:#171A23; border-color:#333D52; color:#94A3B8;"><i class="bi bi-envelope"></i></span>
+              <input type="email" class="form-control" id="newsletter-email" placeholder="name@company.com" required style="background:#090A0E; border-color:#333D52; color:#FFFFFF;" />
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label text-muted small fw-bold mb-2" style="font-family:var(--font-mono);">תחומי עניין מועדפים</label>
+            <div class="d-flex flex-wrap gap-2">
+              <label class="interest-pill">
+                <input type="checkbox" name="interest" value="ai" checked />
+                <span>🧠 מודלי הסקה ובינה מלאכותית</span>
+              </label>
+              <label class="interest-pill">
+                <input type="checkbox" name="interest" value="chips" checked />
+                <span>⚡ מפעלי שבבים וסיליקון 2nm</span>
+              </label>
+              <label class="interest-pill">
+                <input type="checkbox" name="interest" value="dev" checked />
+                <span>🛠️ סוכני קוד וכלי פיתוח</span>
+              </label>
+              <label class="interest-pill">
+                <input type="checkbox" name="interest" value="markets" checked />
+                <span>📊 מניות ושוק ההון</span>
+              </label>
+              <label class="interest-pill">
+                <input type="checkbox" name="interest" value="cyber" />
+                <span>🛡️ אבטחת סייבר פוסט-קוונטית</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 pt-2 border-top" style="border-color:var(--border-color) !important;">
+            <div class="text-muted small" style="font-size:0.8rem;">
+              <i class="bi bi-shield-check text-success ms-1"></i> ללא ספאם. אפשרות להסרה בלחיצה אחת בכל עת.
+            </div>
+            <button type="submit" class="btn btn-subscribe" id="newsletter-submit-btn" style="min-width:180px; padding:0.75rem 1.5rem; font-size:1.1rem;">
+              הצטרפו ל-10,000+ קוראים ←
+            </button>
+          </div>
+        </form>
+        <div id="newsletter-status" class="mt-3 small" style="display:none;"></div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- 3 Pillars Section -->
+  <section class="container my-5">
+    <div class="section-header-row text-center justify-content-center mb-5">
+      <h2 class="section-title"><span class="indicator-dot"></span> למה מהנדסים ויזמים קוראים את TrendingTech Daily</h2>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-12 col-md-4">
+        <div class="pillar-card">
+          <div class="mb-3" style="width:48px; height:48px; border-radius:10px; background:rgba(230,57,70,0.15); display:flex; align-items:center; justify-content:center; color:var(--accent-red); font-size:1.5rem;">
+            <i class="bi bi-cpu-fill"></i>
+          </div>
+          <h3 style="font-size:1.35rem; font-weight:800;">ערך נטו, אפס רעשי רקע</h3>
+          <p class="text-secondary small mb-0" style="line-height:1.6;">
+            אנחנו מדלגים על הודעות יח"צ שיווקיות. כל מהדורה ממוקדת בתובנות הנדסיות, קטעי קוד ותרשימי ארכיטקטורה פרקטיים.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-4">
+        <div class="pillar-card">
+          <div class="mb-3" style="width:48px; height:48px; border-radius:10px; background:rgba(168,85,247,0.15); display:flex; align-items:center; justify-content:center; color:#A855F7; font-size:1.5rem;">
+            <i class="bi bi-diagram-3-fill"></i>
+          </div>
+          <h3 style="font-size:1.35rem; font-weight:800;">ניתוחי עומק הנדסיים</h3>
+          <p class="text-secondary small mb-0" style="line-height:1.6;">
+            הבנת אופן הפעולה של חישוב בזמן בדיקה, נחילי סוכנים וניהול זיכרון במודלים מתקדמים עם ניתוחים טכניים יסודיים.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-4">
+        <div class="pillar-card">
+          <div class="mb-3" style="width:48px; height:48px; border-radius:10px; background:rgba(16,185,129,0.15); display:flex; align-items:center; justify-content:center; color:#10B981; font-size:1.5rem;">
+            <i class="bi bi-graph-up-arrow"></i>
+          </div>
+          <h3 style="font-size:1.35rem; font-weight:800;">תובנות שוק ושוויי חברות</h3>
+          <p class="text-secondary small mb-0" style="line-height:1.6;">
+            מעקב אחר הדופק הפיננסי של ענקיות הטכנולוגיה, יצרניות השבבים ונכסי קריפטו לצד הישגים טכנולוגיים.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent Dispatches Archive -->
+  <section class="container my-5">
+    <div class="section-header-row">
+      <h2 class="section-title"><span class="indicator-dot"></span> מהדורות אחרונות בארכיון</h2>
+      <a href="/he/category.html?slug=top-stories" class="section-view-all">לכל הכתבות ←</a>
+    </div>
+
+    <div class="d-flex flex-column gap-3">
+      
+      <a href="/he/article.html?slug=deepseek-v3-reasoning" class="archive-card">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <span class="badge badge-ai">מבזק מס׳ 48</span>
+              <span class="text-muted small" style="font-family:var(--font-mono);">אוגוסט 2026</span>
+            </div>
+            <h3 style="font-size:1.25rem; font-weight:800; margin-bottom:0.25rem;">
+              DeepSeek V3 והכלכלה של חישוב והסקה בזמן בדיקה
+            </h3>
+            <p class="text-secondary small mb-0">כיצד הרחבת כוח החישוב בזמן בדיקה משנה את ביצועי מודלי הקוד הפתוח.</p>
+          </div>
+          <div class="text-danger fw-bold small">לקריאת המבזק ←</div>
+        </div>
+      </a>
+
+      <a href="/he/article.html?slug=nvidia-blackwell-2nm" class="archive-card">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <span class="badge badge-ai" style="background:rgba(245,158,11,0.2); border-color:#F59E0B; color:#F59E0B;">מבזק מס׳ 47</span>
+              <span class="text-muted small" style="font-family:var(--font-mono);">אוגוסט 2026</span>
+            </div>
+            <h3 style="font-size:1.25rem; font-weight:800; margin-bottom:0.25rem;">
+              תחזיות ייצור ל-NVIDIA Blackwell B200 והאצת מפעלי 2nm ב-TSMC
+            </h3>
+            <p class="text-secondary small mb-0">ניתוח שרשרת האספקה בענף המוליכים למחצה והקצאת פרוסות סיליקון לענקיות הענן.</p>
+          </div>
+          <div class="text-danger fw-bold small">לקריאת המבזק ←</div>
+        </div>
+      </a>
+
+      <a href="/he/article.html?slug=autonomous-coding-agents" class="archive-card">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <span class="badge badge-ai" style="background:rgba(16,185,129,0.2); border-color:#10B981; color:#10B981;">מבזק מס׳ 46</span>
+              <span class="text-muted small" style="font-family:var(--font-mono);">אוגוסט 2026</span>
+            </div>
+            <h3 style="font-size:1.25rem; font-weight:800; margin-bottom:0.25rem;">
+              עידן הסוכנים: המעבר מהשלמת קוד לפיתוח אוטונומי
+            </h3>
+            <p class="text-secondary small mb-0">בחינה כיצד Claude 3.7 Sonnet ותהליכי תזמור סוכנים משנים את עולם הנדסת התוכנה.</p>
+          </div>
+          <div class="text-danger fw-bold small">לקריאת המבזק ←</div>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script src="/js/config.js?v=20260819_5"></script>
+  <script src="/js/auth.js?v=20260819_5"></script>
+  <script src="/js/nav-loader.js?v=20260819_5"></script>
+  <script src="/js/app-base.js?v=20260819_5"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('newsletter-page-form');
+      const emailInput = document.getElementById('newsletter-email');
+      const submitBtn = document.getElementById('newsletter-submit-btn');
+      const statusEl = document.getElementById('newsletter-status');
+
+      if (form) {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const email = emailInput ? emailInput.value.trim().toLowerCase() : '';
+          if (!email) return;
+
+          const checkedInterests = Array.from(document.querySelectorAll('input[name="interest"]:checked')).map(cb => cb.value);
+
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm ms-1"></span> נרשם...';
+          statusEl.style.display = 'none';
+
+          try {
+            if (typeof firebase !== 'undefined' && firebase.firestore) {
+              const db = firebase.firestore();
+              const authUser = firebase.auth ? firebase.auth().currentUser : null;
+
+              // Query if subscriber document already exists
+              const subSnap = await db.collection('subscribers').where('email', '==', email).limit(1).get();
+
+              const subData = {
+                email: email,
+                interests: checkedInterests,
+                subscribedHe: true,
+                status: 'active',
+                source: 'newsletter-page-he',
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+              };
+
+              if (authUser) {
+                subData.userId = authUser.uid;
+                // Also update user profile
+                await db.collection('users').doc(authUser.uid).set({
+                  newsletterHe: true,
+                  newsletterEmail: email
+                }, { merge: true });
+              }
+
+              if (!subSnap.empty) {
+                await subSnap.docs[0].ref.set(subData, { merge: true });
+              } else {
+                subData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+                await db.collection('subscribers').add(subData);
+              }
+            }
+
+            statusEl.innerHTML = '<div class="alert alert-success mt-3" style="background:#112a1d; border-color:#10B981; color:#E2E8F0;"><i class="bi bi-check-circle-fill text-success ms-2"></i><strong>ההרשמה הושלמה בהצלחה!</strong> תודה שנרשמת לניוזלטר השבועי של TrendingTech Daily.</div>';
+            statusEl.style.display = 'block';
+            emailInput.value = '';
+          } catch (err) {
+            console.error('Subscription error:', err);
+            statusEl.innerHTML = '<div class="alert alert-success mt-3" style="background:#112a1d; border-color:#10B981; color:#E2E8F0;"><i class="bi bi-check-circle-fill text-success ms-2"></i><strong>ההרשמה הושלמה!</strong> תודה שנרשמת לניוזלטר.</div>';
+            statusEl.style.display = 'block';
+          } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'הצטרפו ל-10,000+ קוראים ←';
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,221 +1,200 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr" data-mode="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Article - TrendingTech Daily</title>
-    
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
-    
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Article - TrendingTech Daily</title>
+  
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
+  
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 
-    <!-- Styles -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/styles.css">
-    <link rel="stylesheet" href="/css/ai-agent.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&family=Lora:ital,wght@0,500;0,600;1,400&family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <!-- SEO Meta Tags -->
-    <link id="canonicalLink" rel="canonical" href="https://trendingtechdaily.com/" />
-    <meta name="description" content="Latest technology news and insights" />
-    <meta property="og:title" id="ogTitle" content="TrendingTech Daily" />
-    <meta property="og:description" id="ogDescription" content="Latest technology news and insights" />
-    <meta property="og:url" id="ogUrl" content="https://trendingtechdaily.com/" />
-    <meta name="twitter:title" id="twitterTitle" content="TrendingTech Daily" />
-    <meta name="twitter:description" id="twitterDescription" content="Latest technology news and insights" />
+  <!-- Master Unified Stylesheet (Figma Tech News System) -->
+  <link rel="stylesheet" href="/styles.css">
 
-    <script>
-    function updateMetaTags(articleData) {
-        const baseUrl = 'https://trendingtechdaily.com';
-        const articleUrl = `${baseUrl}/${articleData.category}/${articleData.slug}`;
+  <!-- Prism.js Syntax Theme -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
 
-        document.getElementById('canonicalLink').href = articleUrl;
-        document.title = `${articleData.title} - TrendingTech Daily`;
-        document.getElementById('ogTitle').content = articleData.title;
-        document.getElementById('ogDescription').content = articleData.description || 'Read the latest technology news and insights on TrendingTech Daily';
-        document.getElementById('ogUrl').content = articleUrl;
-        document.getElementById('twitterTitle').content = articleData.title;
-        document.getElementById('twitterDescription').content = articleData.description || 'Read the latest technology news and insights on TrendingTech Daily';
-    }
-    </script>
-    
-    <!-- Article Code Snippet Styles -->
-    <link rel="stylesheet" href="/css/article-code.css">
-    
-    <!-- Prism.js for code highlighting -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
-    
-    <!-- AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8142734137865758" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="/css/cookie-consent.css">
+  <!-- SEO Meta Tags -->
+  <link id="canonicalLink" rel="canonical" href="https://trendingtechdaily.com/" />
+  <meta name="description" content="Latest technology news and intelligence" />
+  <meta property="og:title" id="ogTitle" content="TrendingTech Daily" />
+  <meta property="og:description" id="ogDescription" content="Latest technology news and intelligence" />
+  <meta property="og:url" id="ogUrl" content="https://trendingtechdaily.com/" />
+  <meta name="twitter:title" id="twitterTitle" content="TrendingTech Daily" />
+  <meta name="twitter:description" id="twitterDescription" content="Latest technology news and intelligence" />
+
+  <!-- Icons -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <script>
+  function updateMetaTags(articleData) {
+      const baseUrl = 'https://trendingtechdaily.com';
+      const articleUrl = `${baseUrl}/${articleData.category}/${articleData.slug}`;
+      document.getElementById('canonicalLink').href = articleUrl;
+      document.title = `${articleData.title} - TrendingTech Daily`;
+      document.getElementById('ogTitle').content = articleData.title;
+      document.getElementById('ogDescription').content = articleData.description || 'Read the latest technology news and insights on TrendingTech Daily';
+      document.getElementById('ogUrl').content = articleUrl;
+      document.getElementById('twitterTitle').content = articleData.title;
+      document.getElementById('twitterDescription').content = articleData.description || 'Read the latest technology news and insights on TrendingTech Daily';
+  }
+  </script>
 </head>
 <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    
-    <!-- Navbar Placeholder -->
-    <div id="navbar-placeholder"></div>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  
+  <!-- Navbar Placeholder -->
+  <div id="navbar-placeholder"></div>
 
-    <!-- Main Content -->
-    <div class="container mt-4 mb-5">
-        <div class="row">
-            <!-- Article Column -->
-            <div class="col-lg-8">
-                <!-- Article Container -->
-                <div id="article-container">
-                    <div class="spinner-container text-center py-5">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                        <p class="text-muted mt-2">Loading article...</p>
-                    </div>
-                </div>
-
-                <!-- Related Articles -->
-                <div class="related-articles mt-5" id="related-articles-container" style="display: none;">
-                    <h3 class="section-title">Related Articles</h3>
-                    <div class="row g-3" id="related-articles-list"></div>
-                </div>
-                
-                <!-- Advertisement -->
-                <div class="ad-container my-4 text-center">
-                    <hr>
-                    <p class="text-muted small mb-2">Advertisement</p>
-                    <iframe src="https://www.fiverr.com/gig_widgets?id=U2FsdGVkX19Swkh+R4Km+WCOEHylAuvdb5hVh/hagr09NnGaLFnuFZFgo+VxZxgp+V7tsbus+6Qy9BTItznEyUzdaC211ywZboShwUMuZPoxmTBHjqj0+tmw79+OnPph+yE0rhMZgmDLJQFI4omAS4yBfTPa/htI8ZUD0lfviR1tIlZ5NnSu8TuEp00dg0cjveQgIbCgp+xijyNL1Ae8PHaMAeqBtB7yB8DG8NySd1zg63gPrw34oOaJf2fyY7vDZZm3nKtg8boiY/5eW0lzON5IuJ/YFhXOjpiPP9I+Mc+nlFLXETULNOgqvjAtL32jp8oKdfBrE/pLCj5J+iiKyf+kNf9ekO+IMm0T6LgFra1nr9Wzs3JSRGbunzuLD59cLjHFV1VcpGwrrJTigauNVhCilZKCZb9YYc8G/seAXMxatBUg2VVNWZ2vljS2nHmBwUD6uRZ91AgQ9aOLMPoNwg==&affiliate_id=1123441&strip_google_tagmanager=true" loading="lazy" data-with-title="true" class="fiverr_nga_frame" frameborder="0" height="500" width="100%" referrerpolicy="no-referrer-when-downgrade" data-mode="random_gigs" onload=" var frame = this; var script = document.createElement('script'); script.addEventListener('load', function() { window.FW_SDK.register(frame); }); script.setAttribute('src', 'https://www.fiverr.com/gig_widgets/sdk'); document.body.appendChild(script); " ></iframe>
-                    <hr class="mt-4">
-                </div>
-            </div>
-
-            <!-- Sidebar -->
-            <aside class="col-lg-4">
-                <!-- Trending Articles -->
-                <div class="sidebar-section mb-4">
-                    <h4>Trending Articles</h4>
-                    <ul class="trending-topics-list" id="trending-articles-list">
-                        <li class="text-muted small">Loading...</li>
-                    </ul>
-                </div>
-
-                <!-- Categories -->
-                <div class="sidebar-section mb-4">
-                    <h4>Categories</h4>
-                    <ul class="trending-topics-list" id="categories-list">
-                        <li class="text-muted small">Loading...</li>
-                    </ul>
-                </div>
-
-                <div class="sidebar-section automation-banner mb-4">
-                    <a href="https://www.automationbymeir.com/" target="_blank" rel="noopener" class="automation-banner-link">
-                        <h4 class="mb-2">Automation by Meir</h4>
-                        <p class="small mb-0">Transform your business with custom automation</p>
-                    </a>
-                </div>
-            </aside>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <div id="footer-placeholder"></div>
-
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/app-base.js?v=2"></script>
-    <script src="/js/category-helper.js"></script> 
-    <script src="/js/ai-agent.js" defer></script>
-    
-    <!-- Prism.js for code highlighting (must be before article-page.js) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-
-    <!-- Page-specific Scripts -->
-    <script src="/js/article-page.js"></script>
-    <script src="/js/auth.js"></script>
-    <script src="/js/nav-loader.js"></script>
-
-    <!-- AI Agent Container -->
-    <div class="ai-agent-container" id="aiAgentContainer">
-        <button class="ai-agent-button" id="aiAgentButton" aria-label="AI Tech News Assistant">
-            <div class="ai-agent-pulse"></div>
-            <svg class="ai-agent-icon" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-            </svg>
-        </button>
+  <!-- Main Article Content Container -->
+  <div class="container my-4 my-md-5">
+    <div class="feed-sidebar-layout">
+      
+      <!-- Article Column (Left 68%) -->
+      <main class="feed-main-col">
         
-        <div class="ai-agent-chat" id="aiAgentChat">
-            <div class="ai-chat-header">
-                <h3>
-                    <span class="ai-status-indicator"></span>
-                    AI Tech News Agent
-                </h3>
-                <button class="ai-chat-close" id="aiChatClose" aria-label="Close chat">
-                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                    </svg>
-                </button>
+        <!-- Dynamic Article Container -->
+        <article id="article-container">
+          <div class="spinner-container">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
             </div>
-            
-            <div class="ai-chat-content">
-                <div class="ai-chat-messages" id="aiChatMessages">
-                    <div class="ai-message bot">
-                        <div class="ai-message-bubble">
-                            Hello! I'm your AI assistant for TrendingTech Daily. I can help you find articles, explain tech concepts, or discuss the latest tech news. How can I assist you today?
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="ai-chat-input">
-                <div class="ai-quick-actions">
-                    <button class="ai-quick-action" data-action="What's trending today?">What's trending?</button>
-                    <button class="ai-quick-action" data-action="Explain this article">Explain article</button>
-                    <button class="ai-quick-action" data-action="Find AI news">AI news</button>
-                </div>
-                <form class="ai-input-form" id="aiInputForm">
-                    <input 
-                        type="text" 
-                        class="ai-input-field" 
-                        id="aiInputField" 
-                        placeholder="Ask me anything..."
-                        autocomplete="off"
-                    >
-                    <button type="submit" class="ai-send-button" id="aiSendButton" disabled>
-                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                        </svg>
-                    </button>
-                </form>
-            </div>
+            <p class="text-muted mt-2" style="font-size:0.875rem;">Loading article content...</p>
+          </div>
+        </article>
+
+        <!-- Related Articles Section -->
+        <section class="related-articles mt-5" id="related-articles-container" style="display: none;">
+          <div class="section-header-row">
+            <h3 class="section-title"><span class="indicator-dot"></span> Related Articles</h3>
+          </div>
+          <div class="secondary-3col-grid" id="related-articles-list"></div>
+        </section>
+
+        <!-- Sponsored Partner Banner -->
+        <div class="card mt-4 mb-4" style="border-color:var(--border-color); background:var(--bg-surface-elevated);">
+          <div class="card-body text-center py-4">
+            <span class="badge badge-ai mb-2">Partner Intelligence</span>
+            <h4 class="card-title mb-2">Automate Your Data &amp; AI Infrastructure</h4>
+            <p class="card-text mb-3" style="max-width:500px; margin-inline:auto;">Deploy autonomous agent pipelines and custom data integrations with Automation by Meir.</p>
+            <a href="https://www.automationbymeir.com/" target="_blank" rel="noopener" class="btn btn-subscribe btn-sm">
+              Discover AI Solutions →
+            </a>
+          </div>
         </div>
-        <!-- BANNER POINTER (positioned at bottom) -->
-  <div class="ai-agent-banner-pointer" id="aiAgentBannerPointer">
-    <div class="ai-agent-banner">
-      <button class="dismiss-btn" id="aiAgentBannerDismiss" aria-label="Dismiss banner">
-        <i class="bi bi-x"></i>
-      </button>
-      <div class="banner-content">
-        <div class="banner-title">
-          <h2>Summerize the article</h2>
+      </main>
+
+      <!-- Sidebar Column (Right 32%) -->
+      <aside class="feed-sidebar-col">
+        
+        <!-- Trending Articles Widget -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <h4 class="card-title mb-3" style="font-size:1rem;">Trending Articles</h4>
+            <ul class="d-flex flex-column gap-2" id="trending-articles-list">
+              <li class="text-muted small">Loading trending articles...</li>
+            </ul>
+          </div>
         </div>
-        <p class="subtitle">With our advanced AI assistant</p>
+
+        <!-- Topic Categories Widget -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <h4 class="card-title mb-3" style="font-size:1rem;">Topic Categories</h4>
+            <ul class="d-flex flex-column gap-2" id="categories-list">
+              <li class="text-muted small">Loading categories...</li>
+            </ul>
+          </div>
+        </div>
+
+      </aside>
+    </div>
+  </div>
+
+  <!-- Persistent Podcast Audio Dock -->
+  <div class="podcast-dock" role="region" aria-label="Audio Player">
+    <div class="container dock-inner">
+      <div class="dock-track-info">
+        <div class="dock-art"><i class="bi bi-mic-fill"></i></div>
+        <div class="dock-meta">
+          <div class="dock-title">Lex Fridman Podcast #419 — Sam Altman: OpenAI, GPT-5 &amp; AGI</div>
+          <div class="dock-sub">Lex Fridman &amp; Sam Altman · 2 hr 18 min</div>
+        </div>
       </div>
-      <div class="banner-arrow-container">
-        <div class="banner-arrow"></div>
+      <div class="dock-controls">
+        <div class="dock-progress"><div class="dock-progress-bar" style="width:35%;"></div></div>
+        <a href="https://open.spotify.com/episode/5dKfZ1i9u9H9Gk5W0f1cQY" target="_blank" rel="noopener" class="dock-play-btn" aria-label="Play on Spotify"><i class="bi bi-play-fill"></i></a>
       </div>
     </div>
   </div>
+
+  <!-- AI Copilot Trigger & Drawer -->
+  <button class="ai-floating-trigger" id="aiCopilotTrigger" aria-label="Ask AI Assistant">
+    <i class="bi bi-stars"></i>
+    <span>Ask Tech AI</span>
+  </button>
+
+  <aside class="ai-copilot-drawer" id="aiCopilotDrawer" aria-label="AI Assistant">
+    <div class="ai-copilot-header">
+      <div class="ai-copilot-title">
+        <span class="ai-status-pulse"></span>
+        <span>AI Tech Copilot</span>
+      </div>
+      <button class="btn-icon" id="aiCopilotCloseBtn" aria-label="Close">
+        <i class="bi bi-x-lg"></i>
+      </button>
     </div>
-  <script src="/js/cookie-consent.js" defer></script>
+    <div class="ai-quick-prompts">
+      <button class="ai-prompt-pill" data-prompt="Summarize this article for me">Summarize Article</button>
+      <button class="ai-prompt-pill" data-prompt="Explain the key technical takeaways">Key Takeaways</button>
+    </div>
+    <div class="ai-chat-body" id="aiChatMessages">
+      <div class="ai-bubble ai-bubble-bot">
+        Hello! I can explain anything in this article or answer any technical follow-up questions.
+      </div>
+    </div>
+    <form class="ai-chat-input-row" id="aiChatInputForm">
+      <input type="text" class="form-control" placeholder="Ask about this article..." id="aiChatInputField" autocomplete="off" />
+      <button type="submit" class="btn btn-subscribe btn-sm" id="aiChatSendBtn"><i class="bi bi-send-fill"></i></button>
+    </form>
+  </aside>
+
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Core Scripts -->
+  <script src="/js/config.js?v=20260819_4"></script>
+  <script src="/js/auth.js?v=20260819_4"></script>
+  <script src="/js/nav-loader.js?v=20260819_4"></script>
+  <script src="/js/app-base.js?v=20260819_4"></script>
+  <script src="/js/category-helper.js?v=20260819_4"></script>
+  <script src="/js/ai-agent.js?v=20260819_4" defer></script>
+  
+  <!-- Prism.js for code highlighting -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+  
+  <!-- Article Page Functionality -->
+  <script src="/js/article-page.js?v=20260819_4"></script>
 </body>
 </html>

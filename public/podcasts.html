@@ -1,537 +1,198 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr" data-mode="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Best Tech Podcasts 2025 — TrendingTech Daily</title>
-    <meta name="description" content="The best tech podcasts of 2025 — handpicked recommendations for developers, founders, and curious minds. AI, security, business, and developer podcasts curated by TrendingTech Daily.">
-    <link rel="canonical" href="https://trendingtechdaily.com/podcasts" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Best Tech Podcasts — TrendingTech Daily</title>
+  <meta name="description" content="The best tech podcasts — handpicked recommendations for developers, founders, and engineers. AI, security, business, and developer audio feeds.">
+  <link rel="canonical" href="https://trendingtechdaily.com/podcasts" />
 
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
 
-    <!-- Firebase Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <!-- Simple module loader -->
-    <script>
-        window.loadModule = function(url) {
-            return new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                script.type = 'text/javascript';
-                script.src = url;
-                script.onload = () => resolve();
-                script.onerror = () => reject(new Error(`Failed to load module: ${url}`));
-                document.head.appendChild(script);
-            });
-        };
-    </script>
+  <!-- Master Unified Stylesheet (Figma Tech News System) -->
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/css/podcasts.css">
 
-    <!-- Stylesheets -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Sans:wght@400;600&family=Fira+Code&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="css/podcasts.css">
-    <link rel="stylesheet" href="/css/cookie-consent.css">
+  <!-- Icons -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-    <!-- AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8142734137865758" crossorigin="anonymous"></script>
-
-    <!-- Favicons -->
-    <link rel="icon" href="/favicon.ico" sizes="any">
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-
-    <style>
-        .filter-btn { border: 2px solid #dee2e6; background: white; color: #495057; font-family: 'IBM Plex Sans', sans-serif; font-weight: 600; padding: .4rem 1.2rem; border-radius: 2rem; }
-        .filter-btn.active { background: #0d6efd; border-color: #0d6efd; color: white; }
-        .filter-btn:hover:not(.active) { background: #f8f9fa; border-color: #adb5bd; }
-    </style>
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 </head>
-
 <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
-    <!-- Navbar Placeholder -->
-    <div id="navbar-placeholder"></div>
+  <!-- Navbar Placeholder -->
+  <div id="navbar-placeholder"></div>
 
-    <!-- Masthead -->
-    <header class="masthead">
-        <div class="container text-center">
-            <h1 id="masthead-title">Best Tech Podcasts 2025</h1>
-            <p id="masthead-description" class="lead">Handpicked recommendations for developers, founders, and curious minds — curated by TrendingTech Daily.</p>
-        </div>
-    </header>
-
-    <!-- Category Filter Tabs -->
-    <div class="container mb-4">
-        <div class="d-flex flex-wrap gap-2 justify-content-center">
-            <button class="btn filter-btn active" data-filter="all">All</button>
-            <button class="btn filter-btn" data-filter="ai-tech">AI &amp; Tech</button>
-            <button class="btn filter-btn" data-filter="security">Security</button>
-            <button class="btn filter-btn" data-filter="business">Business</button>
-            <button class="btn filter-btn" data-filter="developer">Developer</button>
-        </div>
+  <!-- Hero Banner -->
+  <section class="container my-4 my-md-5">
+    <div class="podcast-hero-banner">
+      <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
+        <span class="badge badge-ai">AUDIO STUDIO & PODCASTS</span>
+      </div>
+      <h1>Top Curated Tech Podcasts</h1>
+      <p>Handpicked audio broadcasts, interviews with foundational researchers, deep architectural deep dives, and founder post-mortems.</p>
+      
+      <!-- Filter Tabs -->
+      <div class="d-flex flex-wrap gap-2 justify-content-center mt-4">
+        <button class="btn btn-subscribe btn-sm filter-btn active" data-filter="all">All Channels</button>
+        <button class="btn btn-outline btn-sm filter-btn" data-filter="ai-tech">AI &amp; Models</button>
+        <button class="btn btn-outline btn-sm filter-btn" data-filter="developer">Engineering</button>
+        <button class="btn btn-outline btn-sm filter-btn" data-filter="business">Founders &amp; VC</button>
+        <button class="btn btn-outline btn-sm filter-btn" data-filter="security">Cybersecurity</button>
+      </div>
     </div>
+  </section>
 
-    <!-- Main Content -->
-    <main class="container my-4">
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4" id="podcasts-container">
+  <!-- Main Podcasts Grid -->
+  <main class="container mb-5">
+    <div class="podcast-grid" id="podcasts-container">
 
-            <!-- 1. Lex Fridman Podcast -->
-            <div class="col podcast-item" data-category="ai-tech">
-                <div class="card h-100 podcast-card shadow-sm">
-                    <div class="podcast-header" style="background: linear-gradient(135deg, #667eea, #764ba2); height:90px; display:flex; align-items:center; justify-content:center; border-radius:.5rem .5rem 0 0; position:relative;">
-                        <span style="font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:900; color:rgba(255,255,255,0.9);">L</span>
-                        <span class="badge position-absolute top-0 end-0 m-2" style="font-size:.65rem; background:rgba(0,0,0,0.35);">AI &amp; Tech</span>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title" style="font-size:1rem;">Lex Fridman Podcast</h5>
-                        <p class="card-text small text-muted mb-1">by Lex Fridman</p>
-                        <p class="mb-2" style="color:#f59e0b; letter-spacing:2px;">★★★★★</p>
-                        <p class="podcast-description mb-3">Long-form conversations with scientists, engineers, AI researchers, and entrepreneurs. Deep dives into consciousness, AI, physics, and the future of humanity.</p>
-                        <div class="mt-auto">
-                            <a href="https://open.spotify.com/search/Lex%20Fridman%20Podcast" target="_blank" rel="noopener noreferrer" class="btn btn-spotify w-100">
-                                <i class="bi bi-spotify me-2"></i>Listen on Spotify
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <!-- 1. Lex Fridman -->
+      <div class="podcast-card-item" data-category="ai-tech">
+        <div class="podcast-card-header" style="background: linear-gradient(135deg, #1E1B4B, #4338CA);">
+          <span>L</span>
+        </div>
+        <div class="podcast-card-body">
+          <div>
+            <span class="badge badge-ai mb-2">AI & Research</span>
+            <h3 class="podcast-card-title">Lex Fridman Podcast</h3>
+            <div class="podcast-card-host">Host: Lex Fridman</div>
+            <p class="podcast-card-desc">Conversations about AI, science, technology, history, philosophy, and the general nature of intelligence.</p>
+          </div>
+          <div class="podcast-card-cta">
+            <a href="https://open.spotify.com/show/2MAi0BvDc6GTFvKkRrrspL" target="_blank" rel="noopener" class="btn btn-secondary btn-sm"><i class="bi bi-spotify me-1"></i> Spotify</a>
+            <a href="https://www.youtube.com/@lexfridman" target="_blank" rel="noopener" class="btn btn-ghost btn-sm"><i class="bi bi-youtube me-1"></i> YouTube</a>
+          </div>
+        </div>
+      </div>
 
-            <!-- 2. Darknet Diaries -->
-            <div class="col podcast-item" data-category="security">
-                <div class="card h-100 podcast-card shadow-sm">
-                    <div class="podcast-header" style="background: linear-gradient(135deg, #f43b47, #453a94); height:90px; display:flex; align-items:center; justify-content:center; border-radius:.5rem .5rem 0 0; position:relative;">
-                        <span style="font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:900; color:rgba(255,255,255,0.9);">D</span>
-                        <span class="badge position-absolute top-0 end-0 m-2" style="font-size:.65rem; background:rgba(0,0,0,0.35);">Security</span>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title" style="font-size:1rem;">Darknet Diaries</h5>
-                        <p class="card-text small text-muted mb-1">by Jack Rhysider</p>
-                        <p class="mb-2" style="color:#f59e0b; letter-spacing:2px;">★★★★★</p>
-                        <p class="podcast-description mb-3">True crime stories from the dark side of the internet — hackers, breaches, espionage, and the battles fought in cyberspace.</p>
-                        <div class="mt-auto">
-                            <a href="https://open.spotify.com/search/Darknet%20Diaries" target="_blank" rel="noopener noreferrer" class="btn btn-spotify w-100">
-                                <i class="bi bi-spotify me-2"></i>Listen on Spotify
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <!-- 2. Dwarkesh Patel -->
+      <div class="podcast-card-item" data-category="ai-tech">
+        <div class="podcast-card-header" style="background: linear-gradient(135deg, #0F766E, #0D9488);">
+          <span>D</span>
+        </div>
+        <div class="podcast-card-body">
+          <div>
+            <span class="badge badge-chips mb-2">AI Deep Dives</span>
+            <h3 class="podcast-card-title">Dwarkesh Podcast</h3>
+            <div class="podcast-card-host">Host: Dwarkesh Patel</div>
+            <p class="podcast-card-desc">In-depth technical interviews with leading AI lab leaders, chip architects, historians, and mathematicians.</p>
+          </div>
+          <div class="podcast-card-cta">
+            <a href="https://open.spotify.com/show/3d0b2fV9cT1tN5wZ1mN9jC" target="_blank" rel="noopener" class="btn btn-secondary btn-sm"><i class="bi bi-spotify me-1"></i> Spotify</a>
+            <a href="https://www.youtube.com/@DwarkeshPatel" target="_blank" rel="noopener" class="btn btn-ghost btn-sm"><i class="bi bi-youtube me-1"></i> YouTube</a>
+          </div>
+        </div>
+      </div>
 
-            <!-- 3. Hard Fork -->
-            <div class="col podcast-item" data-category="ai-tech">
-                <div class="card h-100 podcast-card shadow-sm">
-                    <div class="podcast-header" style="background: linear-gradient(135deg, #667eea, #764ba2); height:90px; display:flex; align-items:center; justify-content:center; border-radius:.5rem .5rem 0 0; position:relative;">
-                        <span style="font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:900; color:rgba(255,255,255,0.9);">H</span>
-                        <span class="badge position-absolute top-0 end-0 m-2" style="font-size:.65rem; background:rgba(0,0,0,0.35);">AI &amp; Tech</span>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title" style="font-size:1rem;">Hard Fork</h5>
-                        <p class="card-text small text-muted mb-1">by Kevin Roose &amp; Casey Newton</p>
-                        <p class="mb-2" style="color:#f59e0b; letter-spacing:2px;">★★★★★</p>
-                        <p class="podcast-description mb-3">The New York Times podcast making sense of the rapidly changing world of Big Tech, AI, and its effects on our lives.</p>
-                        <div class="mt-auto">
-                            <a href="https://open.spotify.com/search/Hard%20Fork%20NY%20Times" target="_blank" rel="noopener noreferrer" class="btn btn-spotify w-100">
-                                <i class="bi bi-spotify me-2"></i>Listen on Spotify
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <!-- 3. Latent Space -->
+      <div class="podcast-card-item" data-category="developer">
+        <div class="podcast-card-header" style="background: linear-gradient(135deg, #7C2D12, #C2410C);">
+          <span>LS</span>
+        </div>
+        <div class="podcast-card-body">
+          <div>
+            <span class="badge badge-dev mb-2">AI Engineering</span>
+            <h3 class="podcast-card-title">Latent Space</h3>
+            <div class="podcast-card-host">Hosts: Swyx &amp; Alessio</div>
+            <p class="podcast-card-desc">The AI engineer podcast covering foundation models, autonomous agents, evals, and inference stacks.</p>
+          </div>
+          <div class="podcast-card-cta">
+            <a href="https://open.spotify.com/show/1KssRzG4Dk8iG2cRjQ1wZ" target="_blank" rel="noopener" class="btn btn-secondary btn-sm"><i class="bi bi-spotify me-1"></i> Spotify</a>
+          </div>
+        </div>
+      </div>
 
-            <!-- 4. Acquired -->
-            <div class="col podcast-item" data-category="business">
-                <div class="card h-100 podcast-card shadow-sm">
-                    <div class="podcast-header" style="background: linear-gradient(135deg, #11998e, #38ef7d); height:90px; display:flex; align-items:center; justify-content:center; border-radius:.5rem .5rem 0 0; position:relative;">
-                        <span style="font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:900; color:rgba(255,255,255,0.9);">A</span>
-                        <span class="badge position-absolute top-0 end-0 m-2" style="font-size:.65rem; background:rgba(0,0,0,0.35);">Business</span>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title" style="font-size:1rem;">Acquired</h5>
-                        <p class="card-text small text-muted mb-1">by Ben Gilbert &amp; David Rosenthal</p>
-                        <p class="mb-2" style="color:#f59e0b; letter-spacing:2px;">★★★★★</p>
-                        <p class="podcast-description mb-3">Deep-dive tellings of the greatest company stories ever — Apple, Amazon, NVIDIA, Berkshire — through the lens of business strategy and technology.</p>
-                        <div class="mt-auto">
-                            <a href="https://open.spotify.com/search/Acquired%20podcast" target="_blank" rel="noopener noreferrer" class="btn btn-spotify w-100">
-                                <i class="bi bi-spotify me-2"></i>Listen on Spotify
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <!-- 4. Darknet Diaries -->
+      <div class="podcast-card-item" data-category="security">
+        <div class="podcast-card-header" style="background: linear-gradient(135deg, #18181B, #27272A);">
+          <span>DD</span>
+        </div>
+        <div class="podcast-card-body">
+          <div>
+            <span class="badge badge-security mb-2">Cybersecurity</span>
+            <h3 class="podcast-card-title">Darknet Diaries</h3>
+            <div class="podcast-card-host">Host: Jack Rhysider</div>
+            <p class="podcast-card-desc">True stories about hackers, breaches, shadow operations, and the dark underbelly of the internet.</p>
+          </div>
+          <div class="podcast-card-cta">
+            <a href="https://open.spotify.com/show/4XPl3uEEL9hvqMkoZrzbx5" target="_blank" rel="noopener" class="btn btn-secondary btn-sm"><i class="bi bi-spotify me-1"></i> Spotify</a>
+          </div>
+        </div>
+      </div>
 
-            <!-- 5. All-In Podcast -->
-            <div class="col podcast-item" data-category="business">
-                <div class="card h-100 podcast-card shadow-sm">
-                    <div class="podcast-header" style="background: linear-gradient(135deg, #11998e, #38ef7d); height:90px; display:flex; align-items:center; justify-content:center; border-radius:.5rem .5rem 0 0; position:relative;">
-                        <span style="font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:900; color:rgba(255,255,255,0.9);">A</span>
-                        <span class="badge position-absolute top-0 end-0 m-2" style="font-size:.65rem; background:rgba(0,0,0,0.35);">Business</span>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title" style="font-size:1rem;">All-In Podcast</h5>
-                        <p class="card-text small text-muted mb-1">by Chamath, Jason, Sacks &amp; Friedberg</p>
-                        <p class="mb-2" style="color:#f59e0b; letter-spacing:2px;">★★★★★</p>
-                        <p class="podcast-description mb-3">Four tech venture capitalists discuss tech, investing, politics, and macro trends with raw, unfiltered takes every week.</p>
-                        <div class="mt-auto">
-                            <a href="https://open.spotify.com/search/All-In%20Podcast" target="_blank" rel="noopener noreferrer" class="btn btn-spotify w-100">
-                                <i class="bi bi-spotify me-2"></i>Listen on Spotify
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    </div>
+  </main>
 
-            <!-- 6. How I Built This -->
-            <div class="col podcast-item" data-category="business">
-                <div class="card h-100 podcast-card shadow-sm">
-                    <div class="podcast-header" style="background: linear-gradient(135deg, #11998e, #38ef7d); height:90px; display:flex; align-items:center; justify-content:center; border-radius:.5rem .5rem 0 0; position:relative;">
-                        <span style="font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:900; color:rgba(255,255,255,0.9);">H</span>
-                        <span class="badge position-absolute top-0 end-0 m-2" style="font-size:.65rem; background:rgba(0,0,0,0.35);">Business</span>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title" style="font-size:1rem;">How I Built This</h5>
-                        <p class="card-text small text-muted mb-1">by Guy Raz</p>
-                        <p class="mb-2" style="color:#f59e0b; letter-spacing:2px;">★★★★★</p>
-                        <p class="podcast-description mb-3">NPR's Guy Raz dives into the stories behind some of the world's best-known companies and the entrepreneurs who built them from scratch.</p>
-                        <div class="mt-auto">
-                            <a href="https://open.spotify.com/search/How%20I%20Built%20This%20NPR" target="_blank" rel="noopener noreferrer" class="btn btn-spotify w-100">
-                                <i class="bi bi-spotify me-2"></i>Listen on Spotify
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <!-- Persistent Podcast Audio Dock -->
+  <div class="podcast-dock" role="region" aria-label="Audio Player">
+    <div class="container dock-inner">
+      <div class="dock-track-info">
+        <div class="dock-art"><i class="bi bi-mic-fill"></i></div>
+        <div class="dock-meta">
+          <div class="dock-title">Lex Fridman Podcast #419 — Sam Altman: OpenAI, GPT-5 &amp; AGI</div>
+          <div class="dock-sub">Lex Fridman &amp; Sam Altman · 2 hr 18 min</div>
+        </div>
+      </div>
+      <div class="dock-controls">
+        <div class="dock-progress"><div class="dock-progress-bar" style="width:35%;"></div></div>
+        <span style="font-size:0.75rem; font-family:var(--font-mono); color:var(--text-muted);">48:20 / 2:18:00</span>
+        <a href="https://open.spotify.com/episode/5dKfZ1i9u9H9Gk5W0f1cQY" target="_blank" rel="noopener" class="dock-play-btn" aria-label="Play on Spotify"><i class="bi bi-play-fill"></i></a>
+      </div>
+    </div>
+  </div>
 
-            <!-- 7. Syntax.fm -->
-            <div class="col podcast-item" data-category="developer">
-                <div class="card h-100 podcast-card shadow-sm">
-                    <div class="podcast-header" style="background: linear-gradient(135deg, #2193b0, #6dd5ed); height:90px; display:flex; align-items:center; justify-content:center; border-radius:.5rem .5rem 0 0; position:relative;">
-                        <span style="font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:900; color:rgba(255,255,255,0.9);">S</span>
-                        <span class="badge position-absolute top-0 end-0 m-2" style="font-size:.65rem; background:rgba(0,0,0,0.35);">Developer</span>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title" style="font-size:1rem;">Syntax.fm</h5>
-                        <p class="card-text small text-muted mb-1">by Wes Bos &amp; Scott Tolinski</p>
-                        <p class="mb-2" style="color:#f59e0b; letter-spacing:2px;">★★★★☆</p>
-                        <p class="podcast-description mb-3">Tasty web development treats for full-stack developers — JavaScript, CSS, React, Node.js and everything in between.</p>
-                        <div class="mt-auto">
-                            <a href="https://open.spotify.com/search/Syntax.fm%20podcast" target="_blank" rel="noopener noreferrer" class="btn btn-spotify w-100">
-                                <i class="bi bi-spotify me-2"></i>Listen on Spotify
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
 
-            <!-- 8. Security Now -->
-            <div class="col podcast-item" data-category="security">
-                <div class="card h-100 podcast-card shadow-sm">
-                    <div class="podcast-header" style="background: linear-gradient(135deg, #f43b47, #453a94); height:90px; display:flex; align-items:center; justify-content:center; border-radius:.5rem .5rem 0 0; position:relative;">
-                        <span style="font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:900; color:rgba(255,255,255,0.9);">S</span>
-                        <span class="badge position-absolute top-0 end-0 m-2" style="font-size:.65rem; background:rgba(0,0,0,0.35);">Security</span>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title" style="font-size:1rem;">Security Now</h5>
-                        <p class="card-text small text-muted mb-1">by Steve Gibson &amp; Leo Laporte</p>
-                        <p class="mb-2" style="color:#f59e0b; letter-spacing:2px;">★★★★☆</p>
-                        <p class="podcast-description mb-3">Weekly deep-dive into internet security, vulnerabilities, exploits, and practical advice on staying safe online.</p>
-                        <div class="mt-auto">
-                            <a href="https://open.spotify.com/search/Security%20Now%20podcast" target="_blank" rel="noopener noreferrer" class="btn btn-spotify w-100">
-                                <i class="bi bi-spotify me-2"></i>Listen on Spotify
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <!-- Scripts -->
+  <script src="/js/config.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/nav-loader.js"></script>
+  <script src="/js/app-base.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const items = document.querySelectorAll('.podcast-card-item');
 
-            <!-- 9. The Tim Ferriss Show -->
-            <div class="col podcast-item" data-category="business">
-                <div class="card h-100 podcast-card shadow-sm">
-                    <div class="podcast-header" style="background: linear-gradient(135deg, #11998e, #38ef7d); height:90px; display:flex; align-items:center; justify-content:center; border-radius:.5rem .5rem 0 0; position:relative;">
-                        <span style="font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:900; color:rgba(255,255,255,0.9);">T</span>
-                        <span class="badge position-absolute top-0 end-0 m-2" style="font-size:.65rem; background:rgba(0,0,0,0.35);">Business</span>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title" style="font-size:1rem;">The Tim Ferriss Show</h5>
-                        <p class="card-text small text-muted mb-1">by Tim Ferriss</p>
-                        <p class="mb-2" style="color:#f59e0b; letter-spacing:2px;">★★★★☆</p>
-                        <p class="podcast-description mb-3">Tim deconstructs world-class performers — athletes, authors, investors, chess prodigies — to extract the tactics and mindsets you can use.</p>
-                        <div class="mt-auto">
-                            <a href="https://open.spotify.com/search/Tim%20Ferriss%20Show" target="_blank" rel="noopener noreferrer" class="btn btn-spotify w-100">
-                                <i class="bi bi-spotify me-2"></i>Listen on Spotify
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => {
+            b.classList.remove('active', 'btn-subscribe');
+            b.classList.add('btn-outline');
+          });
+          btn.classList.add('active', 'btn-subscribe');
+          btn.classList.remove('btn-outline');
 
-            <!-- 10. My First Million -->
-            <div class="col podcast-item" data-category="business">
-                <div class="card h-100 podcast-card shadow-sm">
-                    <div class="podcast-header" style="background: linear-gradient(135deg, #11998e, #38ef7d); height:90px; display:flex; align-items:center; justify-content:center; border-radius:.5rem .5rem 0 0; position:relative;">
-                        <span style="font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:900; color:rgba(255,255,255,0.9);">M</span>
-                        <span class="badge position-absolute top-0 end-0 m-2" style="font-size:.65rem; background:rgba(0,0,0,0.35);">Business</span>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title" style="font-size:1rem;">My First Million</h5>
-                        <p class="card-text small text-muted mb-1">by Sam Parr &amp; Shaan Puri</p>
-                        <p class="mb-2" style="color:#f59e0b; letter-spacing:2px;">★★★★☆</p>
-                        <p class="podcast-description mb-3">Brainstorming million-dollar business ideas, side hustles, and dissecting trends before they go mainstream. Brutally honest startup conversation.</p>
-                        <div class="mt-auto">
-                            <a href="https://open.spotify.com/search/My%20First%20Million%20podcast" target="_blank" rel="noopener noreferrer" class="btn btn-spotify w-100">
-                                <i class="bi bi-spotify me-2"></i>Listen on Spotify
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 11. The Changelog -->
-            <div class="col podcast-item" data-category="developer">
-                <div class="card h-100 podcast-card shadow-sm">
-                    <div class="podcast-header" style="background: linear-gradient(135deg, #2193b0, #6dd5ed); height:90px; display:flex; align-items:center; justify-content:center; border-radius:.5rem .5rem 0 0; position:relative;">
-                        <span style="font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:900; color:rgba(255,255,255,0.9);">T</span>
-                        <span class="badge position-absolute top-0 end-0 m-2" style="font-size:.65rem; background:rgba(0,0,0,0.35);">Developer</span>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title" style="font-size:1rem;">The Changelog</h5>
-                        <p class="card-text small text-muted mb-1">by Adam Stacoviak &amp; Jerod Santo</p>
-                        <p class="mb-2" style="color:#f59e0b; letter-spacing:2px;">★★★★☆</p>
-                        <p class="podcast-description mb-3">Conversations with the hackers, leaders, and innovators of the software world — open source, developer culture, and the future of software.</p>
-                        <div class="mt-auto">
-                            <a href="https://open.spotify.com/search/The%20Changelog%20podcast" target="_blank" rel="noopener noreferrer" class="btn btn-spotify w-100">
-                                <i class="bi bi-spotify me-2"></i>Listen on Spotify
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 12. 20VC -->
-            <div class="col podcast-item" data-category="business">
-                <div class="card h-100 podcast-card shadow-sm">
-                    <div class="podcast-header" style="background: linear-gradient(135deg, #11998e, #38ef7d); height:90px; display:flex; align-items:center; justify-content:center; border-radius:.5rem .5rem 0 0; position:relative;">
-                        <span style="font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:900; color:rgba(255,255,255,0.9);">2</span>
-                        <span class="badge position-absolute top-0 end-0 m-2" style="font-size:.65rem; background:rgba(0,0,0,0.35);">Business</span>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title" style="font-size:1rem;">20VC</h5>
-                        <p class="card-text small text-muted mb-1">by Harry Stebbings</p>
-                        <p class="mb-2" style="color:#f59e0b; letter-spacing:2px;">★★★★☆</p>
-                        <p class="podcast-description mb-3">The world's largest venture capital podcast. Conversations with the world's best VCs — fund strategy, portfolio construction, and founder relationships.</p>
-                        <div class="mt-auto">
-                            <a href="https://open.spotify.com/search/20VC%20podcast" target="_blank" rel="noopener noreferrer" class="btn btn-spotify w-100">
-                                <i class="bi bi-spotify me-2"></i>Listen on Spotify
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 13. Software Engineering Daily -->
-            <div class="col podcast-item" data-category="developer">
-                <div class="card h-100 podcast-card shadow-sm">
-                    <div class="podcast-header" style="background: linear-gradient(135deg, #2193b0, #6dd5ed); height:90px; display:flex; align-items:center; justify-content:center; border-radius:.5rem .5rem 0 0; position:relative;">
-                        <span style="font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:900; color:rgba(255,255,255,0.9);">S</span>
-                        <span class="badge position-absolute top-0 end-0 m-2" style="font-size:.65rem; background:rgba(0,0,0,0.35);">Developer</span>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title" style="font-size:1rem;">Software Engineering Daily</h5>
-                        <p class="card-text small text-muted mb-1">by Various Hosts</p>
-                        <p class="mb-2" style="color:#f59e0b; letter-spacing:2px;">★★★★☆</p>
-                        <p class="podcast-description mb-3">Technical interviews about software topics with engineers from top tech companies — distributed systems, databases, ML infrastructure, and more.</p>
-                        <div class="mt-auto">
-                            <a href="https://open.spotify.com/search/Software%20Engineering%20Daily" target="_blank" rel="noopener noreferrer" class="btn btn-spotify w-100">
-                                <i class="bi bi-spotify me-2"></i>Listen on Spotify
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 14. Huberman Lab -->
-            <div class="col podcast-item" data-category="ai-tech">
-                <div class="card h-100 podcast-card shadow-sm">
-                    <div class="podcast-header" style="background: linear-gradient(135deg, #667eea, #764ba2); height:90px; display:flex; align-items:center; justify-content:center; border-radius:.5rem .5rem 0 0; position:relative;">
-                        <span style="font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:900; color:rgba(255,255,255,0.9);">H</span>
-                        <span class="badge position-absolute top-0 end-0 m-2" style="font-size:.65rem; background:rgba(0,0,0,0.35);">AI &amp; Tech</span>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title" style="font-size:1rem;">Huberman Lab</h5>
-                        <p class="card-text small text-muted mb-1">by Andrew Huberman</p>
-                        <p class="mb-2" style="color:#f59e0b; letter-spacing:2px;">★★★★★</p>
-                        <p class="podcast-description mb-3">Stanford neuroscientist Andrew Huberman discusses science-based tools for everyday life — performance, sleep, focus, and cutting-edge research.</p>
-                        <div class="mt-auto">
-                            <a href="https://open.spotify.com/search/Huberman%20Lab" target="_blank" rel="noopener noreferrer" class="btn btn-spotify w-100">
-                                <i class="bi bi-spotify me-2"></i>Listen on Spotify
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 15. Invest Like the Best -->
-            <div class="col podcast-item" data-category="business">
-                <div class="card h-100 podcast-card shadow-sm">
-                    <div class="podcast-header" style="background: linear-gradient(135deg, #11998e, #38ef7d); height:90px; display:flex; align-items:center; justify-content:center; border-radius:.5rem .5rem 0 0; position:relative;">
-                        <span style="font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:900; color:rgba(255,255,255,0.9);">I</span>
-                        <span class="badge position-absolute top-0 end-0 m-2" style="font-size:.65rem; background:rgba(0,0,0,0.35);">Business</span>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title" style="font-size:1rem;">Invest Like the Best</h5>
-                        <p class="card-text small text-muted mb-1">by Patrick O'Shaughnessy</p>
-                        <p class="mb-2" style="color:#f59e0b; letter-spacing:2px;">★★★★☆</p>
-                        <p class="podcast-description mb-3">Conversations with the brightest minds in investing and business — exploring best ideas, frameworks, and mental models for long-term wealth creation.</p>
-                        <div class="mt-auto">
-                            <a href="https://open.spotify.com/search/Invest%20Like%20the%20Best" target="_blank" rel="noopener noreferrer" class="btn btn-spotify w-100">
-                                <i class="bi bi-spotify me-2"></i>Listen on Spotify
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 16. Founders -->
-            <div class="col podcast-item" data-category="business">
-                <div class="card h-100 podcast-card shadow-sm">
-                    <div class="podcast-header" style="background: linear-gradient(135deg, #11998e, #38ef7d); height:90px; display:flex; align-items:center; justify-content:center; border-radius:.5rem .5rem 0 0; position:relative;">
-                        <span style="font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:900; color:rgba(255,255,255,0.9);">F</span>
-                        <span class="badge position-absolute top-0 end-0 m-2" style="font-size:.65rem; background:rgba(0,0,0,0.35);">Business</span>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title" style="font-size:1rem;">Founders</h5>
-                        <p class="card-text small text-muted mb-1">by David Senra</p>
-                        <p class="mb-2" style="color:#f59e0b; letter-spacing:2px;">★★★★★</p>
-                        <p class="podcast-description mb-3">What made the greatest entrepreneurs in history who they were? David reads biographies of history's greatest founders and distills the lessons.</p>
-                        <div class="mt-auto">
-                            <a href="https://open.spotify.com/search/Founders%20podcast%20David%20Senra" target="_blank" rel="noopener noreferrer" class="btn btn-spotify w-100">
-                                <i class="bi bi-spotify me-2"></i>Listen on Spotify
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 17. Smashing Security -->
-            <div class="col podcast-item" data-category="security">
-                <div class="card h-100 podcast-card shadow-sm">
-                    <div class="podcast-header" style="background: linear-gradient(135deg, #f43b47, #453a94); height:90px; display:flex; align-items:center; justify-content:center; border-radius:.5rem .5rem 0 0; position:relative;">
-                        <span style="font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:900; color:rgba(255,255,255,0.9);">S</span>
-                        <span class="badge position-absolute top-0 end-0 m-2" style="font-size:.65rem; background:rgba(0,0,0,0.35);">Security</span>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title" style="font-size:1rem;">Smashing Security</h5>
-                        <p class="card-text small text-muted mb-1">by Graham Cluley &amp; Carole Theriault</p>
-                        <p class="mb-2" style="color:#f59e0b; letter-spacing:2px;">★★★★☆</p>
-                        <p class="podcast-description mb-3">A fun look at the world of cybersecurity, hacking, and online privacy — with a light-hearted approach that makes the scary stuff actually enjoyable.</p>
-                        <div class="mt-auto">
-                            <a href="https://open.spotify.com/search/Smashing%20Security%20podcast" target="_blank" rel="noopener noreferrer" class="btn btn-spotify w-100">
-                                <i class="bi bi-spotify me-2"></i>Listen on Spotify
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 18. Planet Money -->
-            <div class="col podcast-item" data-category="business">
-                <div class="card h-100 podcast-card shadow-sm">
-                    <div class="podcast-header" style="background: linear-gradient(135deg, #11998e, #38ef7d); height:90px; display:flex; align-items:center; justify-content:center; border-radius:.5rem .5rem 0 0; position:relative;">
-                        <span style="font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:900; color:rgba(255,255,255,0.9);">P</span>
-                        <span class="badge position-absolute top-0 end-0 m-2" style="font-size:.65rem; background:rgba(0,0,0,0.35);">Business</span>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title" style="font-size:1rem;">Planet Money</h5>
-                        <p class="card-text small text-muted mb-1">by NPR</p>
-                        <p class="mb-2" style="color:#f59e0b; letter-spacing:2px;">★★★★☆</p>
-                        <p class="podcast-description mb-3">NPR explains the global economy with clarity and humor. From Fed rate hikes to NFT bubbles — making complex economics genuinely entertaining.</p>
-                        <div class="mt-auto">
-                            <a href="https://open.spotify.com/search/Planet%20Money%20NPR" target="_blank" rel="noopener noreferrer" class="btn btn-spotify w-100">
-                                <i class="bi bi-spotify me-2"></i>Listen on Spotify
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 19. Y Combinator Podcast -->
-            <div class="col podcast-item" data-category="business">
-                <div class="card h-100 podcast-card shadow-sm">
-                    <div class="podcast-header" style="background: linear-gradient(135deg, #11998e, #38ef7d); height:90px; display:flex; align-items:center; justify-content:center; border-radius:.5rem .5rem 0 0; position:relative;">
-                        <span style="font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:900; color:rgba(255,255,255,0.9);">Y</span>
-                        <span class="badge position-absolute top-0 end-0 m-2" style="font-size:.65rem; background:rgba(0,0,0,0.35);">Business</span>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title" style="font-size:1rem;">Y Combinator Podcast</h5>
-                        <p class="card-text small text-muted mb-1">by Craig Cannon</p>
-                        <p class="mb-2" style="color:#f59e0b; letter-spacing:2px;">★★★★☆</p>
-                        <p class="podcast-description mb-3">Startup wisdom from the world's most prestigious accelerator — founder stories, lessons from YC partners, and practical advice for building companies.</p>
-                        <div class="mt-auto">
-                            <a href="https://open.spotify.com/search/Y%20Combinator%20Podcast" target="_blank" rel="noopener noreferrer" class="btn btn-spotify w-100">
-                                <i class="bi bi-spotify me-2"></i>Listen on Spotify
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 20. The WIRED Podcast -->
-            <div class="col podcast-item" data-category="ai-tech">
-                <div class="card h-100 podcast-card shadow-sm">
-                    <div class="podcast-header" style="background: linear-gradient(135deg, #667eea, #764ba2); height:90px; display:flex; align-items:center; justify-content:center; border-radius:.5rem .5rem 0 0; position:relative;">
-                        <span style="font-family:'Orbitron',sans-serif; font-size:2rem; font-weight:900; color:rgba(255,255,255,0.9);">W</span>
-                        <span class="badge position-absolute top-0 end-0 m-2" style="font-size:.65rem; background:rgba(0,0,0,0.35);">AI &amp; Tech</span>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title" style="font-size:1rem;">The WIRED Podcast</h5>
-                        <p class="card-text small text-muted mb-1">by WIRED</p>
-                        <p class="mb-2" style="color:#f59e0b; letter-spacing:2px;">★★★★☆</p>
-                        <p class="podcast-description mb-3">WIRED's reporters discuss the biggest tech stories of the week — AI breakthroughs, digital culture, and the intersection of technology and society.</p>
-                        <div class="mt-auto">
-                            <a href="https://open.spotify.com/search/The%20WIRED%20Podcast" target="_blank" rel="noopener noreferrer" class="btn btn-spotify w-100">
-                                <i class="bi bi-spotify me-2"></i>Listen on Spotify
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div><!-- /#podcasts-container -->
-    </main>
-
-    <!-- Footer Placeholder -->
-    <div id="footer-placeholder"></div>
-
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/app-base.js"></script>
-    <script src="/js/auth.js"></script>
-    <script src="/js/nav-loader.js"></script>
-
-    <script>
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                const cat = this.dataset.filter;
-                document.querySelectorAll('.podcast-item').forEach(card => {
-                    card.style.display = (cat === 'all' || card.dataset.category === cat) ? '' : 'none';
-                });
-            });
+          const filter = btn.dataset.filter;
+          items.forEach(item => {
+            if (filter === 'all' || item.dataset.category === filter) {
+              item.style.display = 'flex';
+            } else {
+              item.style.display = 'none';
+            }
+          });
         });
-    </script>
-    <script src="/js/cookie-consent.js" defer></script>
+      });
+    });
+  </script>
 </body>
 </html>

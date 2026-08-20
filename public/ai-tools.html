@@ -1,181 +1,143 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>\n
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-5VF5QF9ZCJ"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag("js", new Date());
-  gtag("config", "G-5VF5QF9ZCJ");
-</script>
+<html lang="en" dir="ltr" data-mode="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Tools Pulse — Claude Skills, MCP, GitHub Trends | TrendingTech Daily</title>
+  <meta name="description" content="The premier directory unifying Claude Skills, MCP connectors, trending GitHub repos & LLM models — rated and reviewed by AI."/>
+  <link rel="canonical" href="https://www.trendingtechdaily.com/ai-tools"/>
+  <link rel="alternate" hreflang="en" href="https://www.trendingtechdaily.com/ai-tools"/>
+  <link rel="alternate" hreflang="he" href="https://www.trendingtechdaily.com/he/ai-tools"/>
+  <link rel="alternate" hreflang="x-default" href="https://www.trendingtechdaily.com/ai-tools"/>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Tools Pulse — Claude Skills, MCP, GitHub Trends | TrendingTech Daily</title>
-<meta name="description" content="The only directory that unifies Claude Skills, MCP connectors, trending GitHub repos & LLM products — all rated, ranked, and reviewed by AI."/>
-<link rel="canonical" href="https://www.trendingtechdaily.com/ai-tools"/>
-<link rel="alternate" hreflang="en" href="https://www.trendingtechdaily.com/ai-tools"/>
-<link rel="alternate" hreflang="he" href="https://www.trendingtechdaily.com/he/ai-tools"/>
-<link rel="alternate" hreflang="x-default" href="https://www.trendingtechdaily.com/ai-tools"/>
-<meta property="og:type" content="website"/>
-<meta property="og:title" content="AI Tools Pulse — TrendingTech Daily"/>
-<meta property="og:description" content="Claude Skills, MCP connectors, trending GitHub repos & LLM products — rated, ranked, and reviewed by AI."/>
-<meta property="og:url" content="https://www.trendingtechdaily.com/ai-tools"/>
+  <!-- Master Unified Stylesheet -->
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/css/ai-tools.css">
 
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=IBM+Plex+Sans:wght@400;600;700&family=Fira+Code&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/styles.css">
-<link rel="stylesheet" href="/css/ai-tools.css?v=4">
-<link rel="stylesheet" href="/css/ai-tools-guide.css?v=4">
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"CollectionPage","name":"AI Tools Pulse","description":"Directory of Claude Skills, MCP connectors, GitHub repos and LLM products.","url":"https://www.trendingtechdaily.com/ai-tools","inLanguage":"en"}
-</script>
+  <!-- Firebase App & Services -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
 </head>
 <body class="aip-page">
 
-<div id="navbar-placeholder"></div>
+  <!-- Navbar Placeholder -->
+  <div id="navbar-placeholder"></div>
 
-<!-- ── Hero ─────────────────────────────────────────────────── -->
-<header class="aip-hero text-center">
-  <div class="container">
-    <div class="aip-poweredby">
-      <!-- Inline Claude wordmark mark -->
-      <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-        <path fill="#FFC107" d="M12 2 l2.4 6.8 L21 9.6 l-5.4 4.1 1.9 7.1 L12 16.8 6.5 20.8 l1.9-7.1 L3 9.6 l6.6-.8 Z"/>
-      </svg>
-      <span>Powered by <strong>Claude</strong> · Anthropic × TrendingTech Daily</span>
-    </div>
-    <h1>AI Tools Pulse</h1>
-    <p class="aip-sub">The only directory that unifies <strong>Claude Skills</strong>, <strong>MCP connectors</strong>, trending <strong>GitHub repos</strong> &amp; <strong>LLM products</strong> — all rated, ranked, and reviewed by AI.</p>
-    <div id="explainer-video-slot"></div>
-    <div class="aip-searchbar">
-      <i class="bi bi-search"></i>
-      <input id="aip-search" type="search" placeholder="Search 1000+ AI tools, skills, connectors..." aria-label="Search AI tools">
-    </div>
-    <div class="aip-cta-row">
-      <a class="aip-chip aip-chip-big" href="/ai-tools/guide"><i class="bi bi-book"></i> Read the guide</a>
-      <a class="aip-chip aip-chip-big" href="/ai-tools/glossary"><i class="bi bi-journal-bookmark"></i> Glossary</a>
-    </div>
-  </div>
-</header>
-
-<main class="container">
-
-  <!-- ── Trending strip ──────────────────────────────────────── -->
-  <section class="aip-trending" aria-label="Trending this week">
-    <h2 style="font-family: var(--font-heading); margin-bottom: .5rem;"><i class="bi bi-fire text-warning"></i> Trending This Week</h2>
-    <div id="aip-trending-track" class="aip-trending-track"></div>
-  </section>
-
-  <!-- ── Category buckets ───────────────────────────────────── -->
-  <section class="aip-buckets" id="aip-buckets"></section>
-
-  <!-- ── Layout: sidebar + grid ─────────────────────────────── -->
-  <section class="aip-layout">
-    <aside class="aip-sidebar" aria-label="Filters">
-      <h4>Type</h4>
-      <label><input type="radio" name="aip-type" value=""> All</label>
-      <label><input type="radio" name="aip-type" value="claude-skill"> Claude Skill</label>
-      <label><input type="radio" name="aip-type" value="mcp-connector"> MCP Connector</label>
-      <label><input type="radio" name="aip-type" value="github-repo"> GitHub Repo</label>
-      <label><input type="radio" name="aip-type" value="llm-product"> LLM Product</label>
-      <label><input type="radio" name="aip-type" value="agent-framework"> Agent Framework</label>
-
-      <h4>Category</h4>
-      <label><input type="checkbox" name="aip-category" value="coding"> Coding</label>
-      <label><input type="checkbox" name="aip-category" value="research"> Research</label>
-      <label><input type="checkbox" name="aip-category" value="writing"> Writing</label>
-      <label><input type="checkbox" name="aip-category" value="data"> Data</label>
-      <label><input type="checkbox" name="aip-category" value="automation"> Automation</label>
-      <label><input type="checkbox" name="aip-category" value="design"> Design</label>
-
-      <h4>Best for</h4>
-      <div class="aip-chips">
-        <span class="aip-chip" data-bestfor="developers">Developers</span>
-        <span class="aip-chip" data-bestfor="pms">PMs</span>
-        <span class="aip-chip" data-bestfor="designers">Designers</span>
-        <span class="aip-chip" data-bestfor="researchers">Researchers</span>
-        <span class="aip-chip" data-bestfor="marketers">Marketers</span>
-        <span class="aip-chip" data-bestfor="data-teams">Data teams</span>
+  <!-- ── Hero ─────────────────────────────────────────────────── -->
+  <header class="aip-hero text-center">
+    <div class="container">
+      <div class="aip-poweredby">
+        <i class="bi bi-stars" style="color:var(--accent-red);"></i>
+        <span>AI Intelligence Directory · <strong>TrendingTech Daily</strong></span>
       </div>
-
-      <h4>Pricing</h4>
-      <label><input type="radio" name="aip-pricing" value=""> All</label>
-      <label><input type="radio" name="aip-pricing" value="free"> Free</label>
-      <label><input type="radio" name="aip-pricing" value="freemium"> Freemium</label>
-      <label><input type="radio" name="aip-pricing" value="paid"> Paid</label>
-      <label><input type="radio" name="aip-pricing" value="open-source"> Open source</label>
-
-      <h4>Language</h4>
-      <a href="/ai-tools" class="aip-chip active">EN</a>
-      <a href="/he/ai-tools" class="aip-chip">HE</a>
-    </aside>
-
-    <div>
-      <div class="d-flex justify-content-between align-items-end mb-3">
-        <h2 style="font-family: var(--font-heading); margin: 0;">All Tools</h2>
-        <small class="text-muted">Sorted by trending score</small>
+      <h1>AI Tools<span style="color:var(--accent-red);">/</span>Pulse</h1>
+      <p class="aip-sub">The curated intelligence directory unifying <strong>Claude Skills</strong>, <strong>MCP connectors</strong>, <strong>GitHub repos</strong>, and <strong>Autonomous Agents</strong> — rated and indexed.</p>
+      
+      <div class="aip-searchbar">
+        <i class="bi bi-search"></i>
+        <input id="aip-search" type="search" placeholder="Search 1,000+ AI models, Claude skills, MCP servers..." aria-label="Search AI tools">
       </div>
-      <div id="aip-grid" class="aip-grid"></div>
+      
+      <div class="aip-cta-row">
+        <a class="aip-chip-big" href="/ai-tools-guide.html"><i class="bi bi-book"></i> Read Guide</a>
+        <a class="aip-chip-big" href="/ai-tools-glossary.html"><i class="bi bi-journal-bookmark"></i> Glossary</a>
+      </div>
     </div>
-  </section>
+  </header>
 
-  <!-- SEO Content -->
-  <section class="aip-seo-section mt-5 pb-5">
-    <h2>Why use our AI Tools Directory?</h2>
-    <p>The AI landscape is moving faster than ever. At TrendingTech Daily, we curate the best and most impactful AI solutions to supercharge your workflow. Whether you are looking for the latest <strong>Claude Skills</strong>, custom <strong>Model Context Protocol (MCP) connectors</strong>, trending <strong>GitHub repositories</strong> for AI agents, or specialized <strong>LLM products</strong>, our directory helps you discover, evaluate, and integrate the right tools.</p>
-    <p>Our database is updated regularly and features tools for coding, data analysis, automation, research, and design. Build your custom AI stack, track pricing models, and explore what is trending this week in the world of artificial intelligence.</p>
-  </section>
+  <main class="container my-4 my-md-5">
 
-</main>
+    <!-- ── Trending strip ──────────────────────────────────────── -->
+    <section class="aip-trending" aria-label="Trending this week">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 style="font-family: var(--font-display); font-size:1.35rem; font-weight:800; text-transform:uppercase; margin-bottom:0;">
+          <i class="bi bi-fire text-warning me-1"></i> Trending Intelligence This Week
+        </h2>
+      </div>
+      <div id="aip-trending-track" class="aip-trending-track"></div>
+    </section>
 
-<!-- ── Stack Builder pill ──────────────────────────────────── -->
-<button class="aip-stack-pill" id="aip-stack-pill" aria-label="Open your AI tools stack">
-  <i class="bi bi-stack"></i> Your Stack
-  <span class="aip-stack-count" id="aip-stack-count">0</span>
-</button>
+    <!-- ── Category Buckets ───────────────────────────────────── -->
+    <section class="aip-buckets" id="aip-buckets"></section>
 
-<div class="aip-modal-backdrop" id="aip-stack-modal" role="dialog" aria-modal="true">
-  <div class="aip-modal">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h3 style="margin:0; font-family: var(--font-heading);">Your Stack</h3>
-      <button id="aip-stack-close" class="btn-close" aria-label="Close"></button>
-    </div>
-    <div id="aip-stack-body"></div>
-    <div class="d-flex gap-2 mt-3">
-      <button id="aip-export-md" class="btn btn-primary"><i class="bi bi-markdown"></i> Export Markdown</button>
-      <button id="aip-export-json" class="btn btn-outline-primary"><i class="bi bi-filetype-json"></i> Export JSON</button>
+    <!-- ── Layout: Sidebar + Grid ─────────────────────────────── -->
+    <section class="aip-layout">
+      <aside class="aip-sidebar" aria-label="Filters">
+        <h4>Tool Type</h4>
+        <label><input type="radio" name="aip-type" value="" checked> All Types</label>
+        <label><input type="radio" name="aip-type" value="claude-skill"> Claude Skill</label>
+        <label><input type="radio" name="aip-type" value="mcp-connector"> MCP Connector</label>
+        <label><input type="radio" name="aip-type" value="github-repo"> GitHub Repo</label>
+        <label><input type="radio" name="aip-type" value="llm-product"> LLM Product</label>
+        <label><input type="radio" name="aip-type" value="agent-framework"> Agent Framework</label>
+
+        <h4>Domain</h4>
+        <label><input type="checkbox" name="aip-category" value="coding"> Coding & IDE</label>
+        <label><input type="checkbox" name="aip-category" value="research"> Research & Reasoning</label>
+        <label><input type="checkbox" name="aip-category" value="writing"> Writing & Content</label>
+        <label><input type="checkbox" name="aip-category" value="data"> Data & Analytics</label>
+        <label><input type="checkbox" name="aip-category" value="automation"> Automation & Workflow</label>
+        <label><input type="checkbox" name="aip-category" value="design"> UI / UX Design</label>
+
+        <h4>Pricing Model</h4>
+        <label><input type="radio" name="aip-pricing" value="" checked> All Pricing</label>
+        <label><input type="radio" name="aip-pricing" value="free"> Free / Open Source</label>
+        <label><input type="radio" name="aip-pricing" value="freemium"> Freemium</label>
+        <label><input type="radio" name="aip-pricing" value="paid"> Commercial / Paid</label>
+      </aside>
+
+      <div>
+        <div id="aip-grid" class="aip-grid"></div>
+        <div id="aip-empty" class="text-center py-5" style="display:none;">
+          <i class="bi bi-robot" style="font-size:3rem; color:var(--text-faint);"></i>
+          <h3 class="mt-3" style="font-size:1.25rem;">No tools found</h3>
+          <p class="text-muted">Try adjusting your filters or search keywords.</p>
+        </div>
+        <div id="aip-loading" class="text-center py-4" style="display:none;">
+          <div class="spinner-border text-danger" role="status"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Persistent Audio Dock -->
+  <div class="podcast-dock" role="region" aria-label="Audio Player">
+    <div class="container dock-inner">
+      <div class="dock-track-info">
+        <div class="dock-art"><i class="bi bi-mic-fill"></i></div>
+        <div class="dock-meta">
+          <div class="dock-title">Lex Fridman Podcast #419 — Sam Altman: OpenAI, GPT-5 &amp; AGI</div>
+          <div class="dock-sub">Lex Fridman &amp; Sam Altman · 2 hr 18 min</div>
+        </div>
+      </div>
+      <div class="dock-controls">
+        <div class="dock-progress"><div class="dock-progress-bar" style="width:35%;"></div></div>
+        <a href="https://open.spotify.com/episode/5dKfZ1i9u9H9Gk5W0f1cQY" target="_blank" rel="noopener" class="dock-play-btn" aria-label="Play on Spotify"><i class="bi bi-play-fill"></i></a>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- ── Footer ──────────────────────────────────────────────── -->
-<footer style="background:#0B1220; color:#fff; padding: 3rem 1rem 2rem; margin-top: 4rem;">
-  <div class="container text-center">
-    <div class="aip-footer-badge mb-3" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.16); color:#fff;">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path fill="#FFC107" d="M12 2 l2.4 6.8 L21 9.6 l-5.4 4.1 1.9 7.1 L12 16.8 6.5 20.8 l1.9-7.1 L3 9.6 l6.6-.8 Z"/>
-      </svg>
-      <span>Powered by Claude · Anthropic</span>
-    </div>
-    <p style="opacity:.8;">AI Tools Pulse is a TrendingTech Daily project. <a href="/" style="color:#FFC107;">← Back to TTD Home</a></p>
-    <p class="small" style="opacity:.5; margin-top:1rem;">© TrendingTech Daily. All rights reserved.</p>
-  </div>
-</footer>
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/js/app-base.js?v=2"></script>
-<script src="/js/auth.js"></script>
-<script src="/js/nav-loader.js"></script>
-<script src="/js/ai-tools.js?v=4"></script>
+  <!-- Scripts -->
+  <script src="/js/config.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/nav-loader.js"></script>
+  <script src="/js/app-base.js"></script>
+  <script src="/js/ai-tools.js"></script>
 </body>
 </html>

@@ -1,128 +1,89 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he" dir="rtl" data-mode="dark">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>יצירת חשבון - TrendingTech Daily</title>
+  <link rel="canonical" href="https://trendingtechdaily.com/he/signup" />
+
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
   new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
   j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
   })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
-  <meta charset="UTF-8" />
-  <meta name="google-site-verification" content="AAJy5uWJtM-PEQ6kOZCAiIQuO3CijcFc6DYM7dNYEVY" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>הרשמה - TrendingTech Daily</title>
-  <link rel="canonical" href="https://trendingtechdaily.com/he/signup" />
+  
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/he/styles.css" />
-  <style>
-    body { font-family: 'Heebo', sans-serif; background: #f7f8fc; }
-    .auth-wrapper { min-height: 80vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
-    .auth-card {
-      background: #fff;
-      border-radius: 20px;
-      border: none;
-      box-shadow: 0 4px 32px rgba(0,0,0,0.09);
-      padding: 2.5rem 2rem;
-      width: 100%;
-      max-width: 420px;
-    }
-    .auth-logo { font-size: 1rem; font-weight: 800; color: #6366f1; letter-spacing: -0.5px; text-decoration: none; }
-    .auth-title { font-weight: 700; color: #1a1a2e; font-size: 1.5rem; }
-    .auth-sub { color: #888; font-size: 0.9rem; }
-    .btn-google {
-      background: #fff;
-      border: 1.5px solid #ddd;
-      color: #333;
-      font-weight: 500;
-      border-radius: 10px;
-      transition: background 0.15s;
-    }
-    .btn-google:hover { background: #f3f4f6; border-color: #bbb; }
-    .or-divider {
-      display: flex; align-items: center; gap: 0.75rem;
-      color: #aaa; font-size: 0.8rem; margin: 1rem 0;
-    }
-    .or-divider::before, .or-divider::after {
-      content: ''; flex: 1; height: 1px; background: #e5e7eb;
-    }
-    .form-control { border-radius: 10px; border: 1.5px solid #e5e7eb; padding: 0.65rem 0.9rem; }
-    .form-control:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
-    .btn-primary { border-radius: 10px; font-weight: 600; background: #6366f1; border-color: #6366f1; }
-    .btn-primary:hover { background: #4f52d6; border-color: #4f52d6; }
-    .form-label { font-weight: 500; font-size: 0.9rem; color: #374151; margin-bottom: 0.35rem; }
-    .benefit-item { display: flex; align-items: center; gap: 0.5rem; color: #4b5563; font-size: 0.9rem; margin-bottom: 0.4rem; }
-    .benefit-item i { color: #6366f1; }
-  </style>
-  <link rel="stylesheet" href="/css/cookie-consent.css">
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="/he/styles.css">
+  <link rel="stylesheet" href="/css/signup-styles.css">
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 </head>
 <body>
-  <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ"
-  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  <div id="he-nav-placeholder"></div>
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  
+  <!-- Navbar Placeholder -->
+  <div id="navbar-placeholder"></div>
+  
+  <div class="auth-page-container">
+    <main class="container">
+      <div class="auth-card">
+        <h1 class="auth-title">יצירת חשבון חינם</h1>
+        <p class="text-center text-muted mb-4" style="font-size:0.875rem;">הצטרפו לקבלת רשימת מעקב אישית, שמירת כתבות וסיכומי AI חכמים.</p>
+        
+        <form id="signup-form" novalidate>
+          <div class="auth-form-group">
+            <label for="signup-name">שם מלא</label>
+            <input type="text" id="signup-name" class="form-control" placeholder="ישראל ישראלי" required>
+          </div>
+          <div class="auth-form-group">
+            <label for="signup-email">כתובת אימייל</label>
+            <input type="email" id="signup-email" class="form-control" placeholder="you@company.com" required>
+          </div>
+          <div class="auth-form-group">
+            <label for="signup-password">סיסמה (לפחות 6 תווים)</label>
+            <input type="password" id="signup-password" class="form-control" placeholder="••••••••" required minlength="6">
+          </div>
+          <button type="submit" class="auth-submit-btn mt-2">הרשם עכשיו</button>
+          <div id="signup-error" class="text-danger mt-2 small text-center auth-error-message"></div>
+        </form>
 
-  <div class="auth-wrapper">
-    <div class="auth-card">
-      <div class="text-center mb-4">
-        <a href="/he/" class="auth-logo d-block mb-3">TrendingTech Daily</a>
-        <h2 class="auth-title mb-1">צרו חשבון חינם</h2>
-        <p class="auth-sub">הצטרפו לקהילת הטכנולוגיה שלנו</p>
+        <div class="auth-divider">
+          <span>או הרשמו באמצעות</span>
+        </div>
+
+        <button id="google-signup-btn" class="auth-social-btn">
+          <i class="bi bi-google"></i> המשך באמצעות Google
+        </button>
+
+        <div class="auth-alt-links">
+          <p>כבר יש לכם חשבון? <a href="/he/login.html">התחברו כאן</a></p>
+        </div>
       </div>
-
-      <!-- Benefits -->
-      <div class="mb-4 px-1">
-        <div class="benefit-item"><i class="bi bi-bookmark-check-fill"></i> שמרו כתבות לקריאה מאוחרת</div>
-        <div class="benefit-item"><i class="bi bi-bell-fill"></i> קבלו עדכונים על כתבות חדשות</div>
-        <div class="benefit-item"><i class="bi bi-star-fill"></i> גישה לתכנים בלעדיים</div>
-      </div>
-
-      <!-- Google Sign Up -->
-      <button id="he-google-signup-btn" class="btn btn-google w-100 py-2 mb-3 d-flex align-items-center justify-content-center gap-2">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" height="18" alt="Google" />
-        הרשמה עם Google
-      </button>
-
-      <div class="or-divider">או</div>
-
-      <!-- Email/Password Form -->
-      <form id="he-signup-form" novalidate>
-        <div class="mb-3">
-          <label for="he-signup-name" class="form-label">שם תצוגה</label>
-          <input type="text" id="he-signup-name" class="form-control" placeholder="השם שיופיע לאחרים" required />
-        </div>
-        <div class="mb-3">
-          <label for="he-signup-email" class="form-label">כתובת אימייל</label>
-          <input type="email" id="he-signup-email" class="form-control" placeholder="name@example.com" required />
-        </div>
-        <div class="mb-3">
-          <label for="he-signup-password" class="form-label">סיסמה <small class="text-muted">(לפחות 6 תווים)</small></label>
-          <input type="password" id="he-signup-password" class="form-control" placeholder="בחרו סיסמה חזקה" required minlength="6" />
-        </div>
-        <div id="he-signup-error" class="text-danger small mb-2 text-center" style="min-height:1.2em;"></div>
-        <button type="submit" id="he-signup-submit" class="btn btn-primary w-100 py-2">הרשמה</button>
-      </form>
-
-      <p class="text-center small mt-4 mb-0" style="color:#555;">
-        כבר יש לכם חשבון?
-        <a href="/he/login" class="fw-600 text-decoration-none" style="color:#6366f1;">כניסה</a>
-      </p>
-    </div>
+    </main>
   </div>
 
-  <footer class="py-3" style="background:#1a1a2e; color:#888; text-align:center; font-size:0.82rem;">
-    <span>© 2025 TrendingTech Daily</span>
-    <span class="mx-2">·</span>
-    <a href="/he/" class="text-muted text-decoration-none">חזרה לראשי</a>
-  </footer>
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="/he/js/he-app.js"></script>
-  <script src="/he/js/he-signup.js"></script>
-  <script src="/he/js/he-cookie-consent.js" defer></script>
+  <script src="/js/config.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/nav-loader.js"></script>
+  <script src="/js/app-base.js"></script>
+  <script src="/js/signup.js"></script>
 </body>
 </html>

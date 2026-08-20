@@ -1,6 +1,11 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he" dir="rtl" data-mode="dark">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>שוק ההון ומניות טכנולוגיה - TrendingTech Daily</title>
+  <link rel="canonical" href="https://trendingtechdaily.com/he/shuk-hon" />
+  
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
   new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -8,926 +13,329 @@
   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
   })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
 
-  <meta charset="UTF-8" />
-  <meta name="google-site-verification" content="AAJy5uWJtM-PEQ6kOZCAiIQuO3CijcFc6DYM7dNYEVY" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>שוק ההון | TrendingTech Daily</title>
-  <meta name="description" content="נתוני שוק ההון בזמן אמת - מניות, קריפטו ובורסת תל אביב. TrendingTech Daily." />
-  <meta name="keywords" content="שוק ההון, מניות, בורסה, תל אביב, TEVA, NICE, CHKP, קריפטו, השקעות" />
-  <meta property="og:title" content="שוק ההון | TrendingTech Daily" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://trendingtechdaily.com/he/shuk-hon" />
-  <meta property="og:description" content="נתוני שוק ההון בזמן אמת בעברית - מניות ישראליות ואמריקאיות, קריפטו, ובורסת תל אביב." />
-  <meta property="og:site_name" content="TrendingTech Daily" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 
-  <!-- Firebase SDK (deferred) -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js" defer></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js" defer></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js" defer></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js" defer></script>
-
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
-
-  <!-- Google Fonts - Heebo -->
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&display=swap" rel="stylesheet">
-
-  <!-- Custom CSS -->
+  <!-- Master Unified Stylesheet (Hebrew) -->
   <link rel="stylesheet" href="/he/styles.css">
   <link rel="stylesheet" href="/css/stock-styles.css">
-  <link rel="stylesheet" href="/css/cookie-consent.css">
 
+  <!-- Icons -->
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-  <style>
-    body { font-family: 'Heebo', sans-serif; }
-
-    /* Legal disclaimer banner */
-    .legal-disclaimer-banner {
-      background: linear-gradient(135deg, #fff3cd, #ffeaa0);
-      border: 2px solid #f59e0b;
-      border-radius: 10px;
-      padding: 1rem 1.25rem;
-      margin-bottom: 1.5rem;
-      font-size: 0.85rem;
-      color: #92400e;
-      line-height: 1.6;
-      font-weight: 500;
-    }
-    .legal-disclaimer-banner .disclaimer-icon {
-      font-size: 1.3rem;
-      margin-left: 0.5rem;
-      vertical-align: middle;
-    }
-
-    /* Search container */
-    .he-search-container { position: relative; }
-    .he-search-suggestions {
-      position: absolute;
-      top: 100%;
-      right: 0;
-      left: 0;
-      background: #fff;
-      border: 1px solid #dee2e6;
-      border-top: none;
-      border-radius: 0 0 8px 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-      z-index: 1050;
-      max-height: 280px;
-      overflow-y: auto;
-    }
-    .he-suggestion-item {
-      display: flex;
-      align-items: center;
-      padding: 10px 14px;
-      cursor: pointer;
-      border-bottom: 1px solid #f0f0f0;
-      gap: 10px;
-      direction: rtl;
-    }
-    .he-suggestion-item:hover { background: #f8f9fa; }
-    .he-suggestion-logo { width: 28px; height: 28px; border-radius: 4px; object-fit: contain; }
-    .he-suggestion-logo-placeholder {
-      width: 28px; height: 28px; border-radius: 4px;
-      background: linear-gradient(135deg, #e9ecef, #dee2e6);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.6rem; color: #6c757d; font-weight: 700;
-    }
-
-    /* Quick select buttons */
-    .quick-select-btn {
-      font-size: 0.8rem;
-      padding: 0.25rem 0.6rem;
-      border-radius: 20px;
-      font-family: 'Heebo', sans-serif;
-    }
-
-    /* Section styling */
-    .shuk-section {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-    .shuk-section h2 {
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 1rem;
-      color: #1A1A2E;
-    }
-
-    /* He stock cards */
-    .he-stock-card {
-      background: #fff;
-      border: 1px solid #e9ecef;
-      border-radius: 10px;
-      padding: 1rem;
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      text-align: right;
-    }
-    .he-stock-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-    }
-    .he-stock-card .stock-symbol { font-weight: 700; font-size: 1rem; color: #1A1A2E; }
-    .he-stock-card .stock-price { font-size: 1.1rem; font-weight: 600; }
-    .he-stock-card .stock-change.positive { color: #16a34a; }
-    .he-stock-card .stock-change.negative { color: #dc2626; }
-    .he-stock-card .stock-logo { width: 32px; height: 32px; border-radius: 6px; object-fit: contain; }
-
-    /* Video cards */
-    .video-card {
-      background: #1a1a2e;
-      border-radius: 12px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      text-decoration: none;
-      color: inherit;
-      display: block;
-    }
-    .video-card:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
-    .video-card-thumb {
-      background: linear-gradient(135deg, #0f172a, #1e3a5f);
-      height: 140px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-    .video-card-thumb .play-icon {
-      font-size: 3rem;
-      color: #ff0000;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
-      transition: transform 0.2s;
-    }
-    .video-card:hover .play-icon { transform: scale(1.15); }
-    .video-card-body { padding: 0.85rem; }
-    .video-card-title { font-weight: 700; color: #fff; font-size: 0.9rem; margin-bottom: 0.3rem; }
-    .video-card-desc { color: #94a3b8; font-size: 0.78rem; line-height: 1.4; margin: 0; }
-
-    /* Sidebar cards */
-    .sidebar-card {
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-      margin-bottom: 1.5rem;
-      overflow: hidden;
-    }
-    .sidebar-card .sidebar-card-header {
-      background: linear-gradient(135deg, #1A1A2E, #16213e);
-      color: #fff;
-      padding: 0.85rem 1rem;
-      font-weight: 700;
-      font-size: 0.95rem;
-    }
-    .sidebar-card .sidebar-card-body { padding: 1rem; }
-
-    /* TradingView widget */
-    .tradingview-widget-container { border-radius: 8px; overflow: hidden; }
-
-    /* Loader */
-    .he-loader {
-      text-align: center;
-      padding: 2rem;
-      color: #6c757d;
-    }
-    .he-loader .spinner-border { width: 2rem; height: 2rem; }
-
-    /* Watchlist empty state */
-    .watchlist-empty {
-      text-align: center;
-      padding: 2rem;
-      color: #6c757d;
-      font-size: 0.9rem;
-    }
-
-    /* News article cards */
-    .he-news-card {
-      background: #fff;
-      border: 1px solid #e9ecef;
-      border-radius: 10px;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      transition: box-shadow 0.2s;
-    }
-    .he-news-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
-    .he-news-card h6 { font-weight: 700; font-size: 0.9rem; color: #1A1A2E; margin-bottom: 0.4rem; }
-    .he-news-card .excerpt { font-size: 0.82rem; color: #555; line-height: 1.5; margin-bottom: 0.5rem; }
-    .he-news-card .meta { font-size: 0.75rem; color: #888; }
-    .he-news-card .disclaimer-inline { font-size: 0.7rem; color: #999; font-style: italic; margin-top: 0.5rem; border-top: 1px solid #f0f0f0; padding-top: 0.4rem; }
-
-    /* Sidebar article list */
-    .sidebar-article-item {
-      padding: 0.6rem 0;
-      border-bottom: 1px solid #f0f0f0;
-      font-size: 0.82rem;
-    }
-    .sidebar-article-item:last-child { border-bottom: none; }
-    .sidebar-article-item a { color: #1A1A2E; text-decoration: none; font-weight: 600; }
-    .sidebar-article-item a:hover { color: #2196F3; text-decoration: underline; }
-
-    /* automation banner */
-    .automation-banner {
-      background: linear-gradient(135deg, #1A1A2E, #16213e);
-      border-radius: 12px;
-      padding: 1.25rem;
-      color: #fff;
-      text-decoration: none;
-      display: block;
-    }
-    .automation-banner:hover { opacity: 0.92; color: #fff; }
-
-    /* Modal RTL fixes */
-    #heStockDetailModal .modal-title { direction: rtl; }
-    #heStockDetailModal .modal-footer { justify-content: flex-start; }
-
-    /* Footer */
-    .he-footer {
-      background: #1A1A2E;
-      color: #aaa;
-      padding: 3rem 0 1.5rem;
-      margin-top: 3rem;
-      font-size: 0.9rem;
-    }
-    .he-footer h5 { color: #fff; font-weight: 700; margin-bottom: 1rem; }
-    .he-footer a { color: #aaa; text-decoration: none; }
-    .he-footer a:hover { color: #fff; }
-    .he-footer ul { list-style: none; padding: 0; margin: 0; }
-    .he-footer ul li { margin-bottom: 0.4rem; }
-    .he-footer .copyright { border-top: 1px solid #333; padding-top: 1rem; margin-top: 2rem; text-align: center; color: #666; }
-
-    /* Book cards */
-    .he-book-card {
-      background: #fff;
-      border: 1px solid #e9ecef;
-      border-radius: 12px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      height: 100%;
-    }
-    .he-book-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-    }
-    .he-book-cover-wrap {
-      width: 100%;
-      height: 200px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #f0f4ff, #e8eeff);
-      overflow: hidden;
-      position: relative;
-    }
-    .he-book-cover-wrap img {
-      max-height: 190px;
-      max-width: 100%;
-      object-fit: contain;
-      box-shadow: 3px 3px 12px rgba(0,0,0,0.18);
-      border-radius: 4px;
-    }
-    .he-book-cover-placeholder {
-      width: 110px;
-      height: 160px;
-      border-radius: 6px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-align: center;
-      padding: 0.5rem;
-      box-shadow: 3px 3px 12px rgba(0,0,0,0.2);
-      line-height: 1.3;
-    }
-    .he-book-card .book-body {
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
-    .he-book-card .book-title {
-      font-weight: 700;
-      font-size: 0.95rem;
-      color: #1A1A2E;
-      margin-bottom: 0.2rem;
-      line-height: 1.3;
-    }
-    .he-book-card .book-author {
-      font-size: 0.8rem;
-      color: #6c757d;
-      margin-bottom: 0.6rem;
-    }
-    .he-book-card .book-desc {
-      font-size: 0.82rem;
-      color: #444;
-      line-height: 1.5;
-      flex: 1;
-      margin-bottom: 0.75rem;
-    }
-    .he-book-card .book-badge {
-      font-size: 0.7rem;
-      margin-bottom: 0.5rem;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .shuk-section { padding: 1rem; }
-      .legal-disclaimer-banner { font-size: 0.78rem; }
-      .he-book-cover-wrap { height: 160px; }
-    }
-  </style>
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
 </head>
 <body>
-  <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ"
-  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  
+  <!-- Live Market Ticker (Hebrew) -->
+  <div class="ticker-strip" aria-label="מבזק שוק ההון">
+    <div class="ticker-wrap">
+      <div class="ticker-content">
+        <span class="ticker-item"><span class="ticker-badge" style="background:#E63946; color:#fff;">NVDA</span> $912.40 <span class="ticker-up">+3.2% ▲</span></span>
+        <span class="ticker-item"><span class="ticker-badge" style="background:#10B981; color:#fff;">AAPL</span> $234.10 <span class="ticker-up">+0.8% ▲</span></span>
+        <span class="ticker-item"><span class="ticker-badge" style="background:#F59E0B; color:#fff;">BTC</span> $96,420 <span class="ticker-down">-1.1% ▼</span></span>
+        <span class="ticker-item"><span class="ticker-badge" style="background:#A855F7; color:#fff;">TSMC</span> $194.80 <span class="ticker-up">+1.9% ▲</span></span>
+        <span class="ticker-item"><span class="ticker-badge" style="background:#00D2FF; color:#000;">MSFT</span> $450.20 <span class="ticker-up">+1.4% ▲</span></span>
+      </div>
+    </div>
+  </div>
 
   <!-- Navbar Placeholder -->
   <div id="navbar-placeholder"></div>
 
-  <!-- Legal Disclaimer Banner (prominent, NOT dismissible) -->
-  <div class="container mt-3">
-    <div class="legal-disclaimer-banner" role="note" aria-label="גילוי נאות משפטי">
-      <i class="bi bi-exclamation-triangle-fill disclaimer-icon"></i>
-      <strong>גילוי נאות:</strong>
-      התכנים מובאים לצורכי לימוד והעשרה בלבד, ואינם מהווים ייעוץ השקעות, שיווק השקעות, או תחליף לייעוץ פיניינסי/מס מקצועי המתחשב בנתונים ובצרכים המיוחדים של כל אדם. אין באמור כדי להוות התחייבות להשגת תשואה. כל הפועל בהסתמך על המידע עושה זאת על דעת עצמו ועל אחריותו בלבד.
+  <!-- Main Container -->
+  <main class="container my-4 my-md-5">
+    
+    <!-- Hero Header & Search -->
+    <div class="stock-page-hero">
+      <div class="d-flex align-items-center gap-2 mb-2">
+        <span class="badge badge-chips">מודיעין שוק בזמן אמת</span>
+      </div>
+      <h1 class="hero-main-title" style="font-size:clamp(1.75rem, 3.5vw, 2.5rem); margin-bottom:0.5rem;">
+        שוק ההון, מניות שבבים וענקיות הטכנולוגיה
+      </h1>
+      <p style="color:var(--text-muted); font-size:1.05rem; margin-bottom:1.5rem; max-width:750px;">
+        מעקב בזמן אמת אחר ציטוטי מסחר, ניתוחים פיננסיים, יעדי אנליסטים ואינדיקטורים של בינה מלאכותית ליותר מ-50 חברות טכנולוגיה מובילות.
+      </p>
+
+      <!-- Stock Search -->
+      <div class="stock-search-wrap" id="stock-search-container">
+        <input type="search" placeholder="חיפוש סימול או חברה (למשל NVDA, אפל, TSMC)..." id="stock-search-input" autocomplete="off" />
+        <button type="button" id="stock-search-btn"><i class="bi bi-search ms-1"></i> חפש</button>
+        <div class="search-suggestions d-none" id="stock-suggestions"></div>
+      </div>
+    </div>
+
+    <!-- Watchlist Grid -->
+    <div class="section-header-row">
+      <h2 class="section-title"><span class="indicator-dot"></span> ענקיות הטכנולוגיה המובילות</h2>
+      <span style="font-family:var(--font-mono); font-size:0.8rem; color:var(--text-muted);">פיד נתונים חי</span>
+    </div>
+
+    <div class="stock-cards-grid" id="stock-cards-grid">
+      
+      <!-- NVDA Card -->
+      <div class="stock-metric-card">
+        <div>
+          <div class="stock-card-top">
+            <span class="stock-card-symbol">NVDA · NVIDIA</span>
+            <span class="badge badge-ai">שבבים</span>
+          </div>
+          <div class="stock-card-price">$912.40</div>
+          <div class="stock-card-change stock-up">+3.2% (+$28.30) היום ▲</div>
+        </div>
+        <div class="mt-3 pt-2" style="border-top:1px solid var(--border-color); font-size:0.75rem; color:var(--text-muted);">
+          שווי שוק: $2.24T · מכפיל רווח: 42.1
+        </div>
+      </div>
+
+      <!-- AAPL Card -->
+      <div class="stock-metric-card">
+        <div>
+          <div class="stock-card-top">
+            <span class="stock-card-symbol">AAPL · Apple</span>
+            <span class="badge badge-dev">חומרה</span>
+          </div>
+          <div class="stock-card-price">$234.10</div>
+          <div class="stock-card-change stock-up">+0.8% (+$1.85) היום ▲</div>
+        </div>
+        <div class="mt-3 pt-2" style="border-top:1px solid var(--border-color); font-size:0.75rem; color:var(--text-muted);">
+          שווי שוק: $3.58T · מכפיל רווח: 33.4
+        </div>
+      </div>
+
+      <!-- TSM Card -->
+      <div class="stock-metric-card">
+        <div>
+          <div class="stock-card-top">
+            <span class="stock-card-symbol">TSM · TSMC</span>
+            <span class="badge badge-chips">ייצור שבבים</span>
+          </div>
+          <div class="stock-card-price">$194.80</div>
+          <div class="stock-card-change stock-up">+1.9% (+$3.64) היום ▲</div>
+        </div>
+        <div class="mt-3 pt-2" style="border-top:1px solid var(--border-color); font-size:0.75rem; color:var(--text-muted);">
+          שווי שוק: $1.01T · מובילת ייצור 2nm
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Financial Table View -->
+    <div class="section-header-row mt-5">
+      <h2 class="section-title"><span class="indicator-dot"></span> טבלת שוק מקיפה</h2>
+    </div>
+
+    <div class="stock-table-card">
+      <table class="stock-table">
+        <thead>
+          <tr>
+            <th>סימול</th>
+            <th>שם החברה</th>
+            <th>מחיר (USD)</th>
+            <th>שינוי יומי</th>
+            <th>מחזור</th>
+            <th>פעולה</th>
+          </tr>
+        </thead>
+        <tbody id="stock-table-body">
+          <tr>
+            <td><span class="stock-ticker-sym">NVDA</span></td>
+            <td>NVIDIA Corporation</td>
+            <td><span class="stock-price-val">$912.40</span></td>
+            <td><span class="stock-up fw-bold">+3.20%</span></td>
+            <td>48.2M</td>
+            <td><button class="btn btn-outline btn-sm">ניתוח</button></td>
+          </tr>
+          <tr>
+            <td><span class="stock-ticker-sym">MSFT</span></td>
+            <td>Microsoft Corporation</td>
+            <td><span class="stock-price-val">$450.20</span></td>
+            <td><span class="stock-up fw-bold">+1.40%</span></td>
+            <td>22.1M</td>
+            <td><button class="btn btn-outline btn-sm">ניתוח</button></td>
+          </tr>
+          <tr>
+            <td><span class="stock-ticker-sym">GOOGL</span></td>
+            <td>Alphabet Inc.</td>
+            <td><span class="stock-price-val">$182.50</span></td>
+            <td><span class="stock-up fw-bold">+0.95%</span></td>
+            <td>19.4M</td>
+            <td><button class="btn btn-outline btn-sm">ניתוח</button></td>
+          </tr>
+          <tr>
+            <td><span class="stock-ticker-sym">BTC</span></td>
+            <td>Bitcoin / USD</td>
+            <td><span class="stock-price-val">$96,420.00</span></td>
+            <td><span class="stock-down fw-bold">-1.10%</span></td>
+            <td>$34.1B</td>
+            <td><button class="btn btn-outline btn-sm">ניתוח</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- Persistent Audio Dock -->
+  <div class="podcast-dock" role="region" aria-label="נגן פודקאסט">
+    <div class="container dock-inner">
+      <div class="dock-track-info">
+        <div class="dock-art"><i class="bi bi-graph-up-arrow"></i></div>
+        <div class="dock-meta">
+          <div class="dock-title">הייטק בפקקים — עתיד הבינה המלאכותית בישראל ובעולם</div>
+          <div class="dock-sub">הייטק בפקקים עם אורי טוביאס · 48 דקות</div>
+        </div>
+      </div>
+      <div class="dock-controls">
+        <div class="dock-progress"><div class="dock-progress-bar" style="width:40%;"></div></div>
+        <a href="https://open.spotify.com/show/0zQn0c0lO1EwA9qV5Q4y0K" target="_blank" rel="noopener" class="dock-play-btn" aria-label="הפעל בספוטיפיי"><i class="bi bi-play-fill"></i></a>
+      </div>
     </div>
   </div>
 
-  <main class="container mb-5">
-    <div class="row">
-      <!-- LEFT COLUMN (col-lg-8) -->
-      <div class="col-lg-8">
-
-        <!-- 1. Stock Search Section -->
-        <section id="stock-search-section" class="shuk-section">
-          <h2><i class="bi bi-search me-2"></i>חיפוש מניות</h2>
-          <div class="he-search-container mb-3">
-            <div class="input-group">
-              <input
-                type="text"
-                id="stock-search-he"
-                class="form-control text-end"
-                placeholder="חפש מניה (לדוגמה: AAPL, TEVA)"
-                autocomplete="off"
-                maxlength="20"
-                dir="rtl"
-              />
-              <button class="btn btn-primary" id="search-btn-he" type="button" aria-label="חפש">
-                <i class="bi bi-search"></i>
-              </button>
-            </div>
-            <div id="search-suggestions-he" class="he-search-suggestions" style="display:none;"></div>
-          </div>
-
-          <!-- Israeli Quick Select -->
-          <div class="mb-2">
-            <small class="text-muted fw-600 d-block mb-1">מניות ישראליות:</small>
-            <div class="d-flex flex-wrap gap-2">
-              <button class="btn btn-outline-primary quick-select-btn" data-symbol="TEVA">TEVA</button>
-              <button class="btn btn-outline-primary quick-select-btn" data-symbol="NICE">NICE</button>
-              <button class="btn btn-outline-primary quick-select-btn" data-symbol="CHKP">CHKP</button>
-              <button class="btn btn-outline-primary quick-select-btn" data-symbol="ESLT">ESLT (Elbit)</button>
-              <button class="btn btn-outline-primary quick-select-btn" data-symbol="MNDO">MNDO</button>
-            </div>
-          </div>
-
-          <!-- US Quick Select -->
-          <div>
-            <small class="text-muted fw-600 d-block mb-1">מניות אמריקאיות:</small>
-            <div class="d-flex flex-wrap gap-2">
-              <button class="btn btn-outline-secondary quick-select-btn" data-symbol="AAPL">AAPL</button>
-              <button class="btn btn-outline-secondary quick-select-btn" data-symbol="MSFT">MSFT</button>
-              <button class="btn btn-outline-secondary quick-select-btn" data-symbol="GOOGL">GOOGL</button>
-              <button class="btn btn-outline-secondary quick-select-btn" data-symbol="NVDA">NVDA</button>
-              <button class="btn btn-outline-secondary quick-select-btn" data-symbol="TSLA">TSLA</button>
-            </div>
-          </div>
-        </section>
-
-        <!-- 2. Market Data Section -->
-        <section id="market-section" class="shuk-section">
-          <h2><i class="bi bi-graph-up-arrow me-2"></i>נתוני שוק</h2>
-          <div id="market-loader-he" class="he-loader">
-            <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">טוען...</span>
-            </div>
-            <p class="mt-2 mb-0">טוען נתוני שוק...</p>
-          </div>
-          <div id="market-error-he" class="alert alert-warning d-none" role="alert"></div>
-          <div id="market-data-he" class="row g-3"></div>
-        </section>
-
-        <!-- 3. Israeli Market Section -->
-        <section id="israeli-market-section" class="shuk-section">
-          <h2>
-            <i class="bi bi-building me-2"></i>בורסת תל אביב
-            <span class="badge bg-primary fs-6 me-2">ת"א 35</span>
-          </h2>
-          <p class="text-muted small mb-3">מניות מובילות מהבורסה לניירות ערך בתל אביב</p>
-          <div id="tase-loader" class="he-loader">
-            <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">טוען...</span>
-            </div>
-            <p class="mt-2 mb-0">טוען מניות בורסת תל אביב...</p>
-          </div>
-          <div id="tase-error" class="alert alert-warning d-none" role="alert"></div>
-          <div id="tase-data" class="row g-3"></div>
-        </section>
-
-        <!-- 4. Crypto Section -->
-        <section id="crypto-section-he" class="shuk-section">
-          <h2><i class="bi bi-currency-bitcoin me-2"></i>מטבעות דיגיטליים</h2>
-          <div id="crypto-loader-he" class="he-loader">
-            <div class="spinner-border text-warning" role="status">
-              <span class="visually-hidden">טוען...</span>
-            </div>
-            <p class="mt-2 mb-0">טוען מחירי מטבעות דיגיטליים...</p>
-          </div>
-          <div id="crypto-error-he" class="alert alert-warning d-none" role="alert"></div>
-          <div id="crypto-data-he" class="row g-3"></div>
-        </section>
-
-        <!-- 5. Watchlist Section -->
-        <section id="watchlist-section-he" class="shuk-section">
-          <h2><i class="bi bi-star-fill text-warning me-2"></i>רשימת המעקב שלי</h2>
-          <div id="watchlist-stocks-he">
-            <div class="watchlist-empty">
-              <i class="bi bi-star fs-2 d-block mb-2 text-muted"></i>
-              <p>רשימת המעקב שלך ריקה.</p>
-            </div>
-          </div>
-          <p class="text-muted small mt-2 mb-0">
-            <i class="bi bi-info-circle me-1"></i>
-            לחץ על כוכב ★ ליד כל מניה כדי להוסיף לרשימת המעקב.
-            <span class="text-primary">משתמשים רשומים — הרשימה נשמרת לחשבונכם אוטומטית.</span>
-          </p>
-        </section>
-
-        <!-- 6. Recommended Books Section -->
-        <section id="books-section-he" class="shuk-section">
-          <h2><i class="bi bi-book me-2"></i>ספרים מומלצים על שוק ההון</h2>
-          <p class="text-muted small mb-3">הספרים הטובים ביותר להשקעות ופיננסים — בעברית ובאנגלית</p>
-          <div id="he-books-grid" class="row g-3">
-
-            <!-- Book 0: המשקיע הנבון -->
-            <div class="col-6 col-md-4" id="he-book-col-0">
-              <div class="he-book-card">
-                <div class="he-book-cover-wrap">
-                  <div class="he-book-cover-placeholder" id="he-book-ph-0" style="background:linear-gradient(135deg,#1A1A2E,#16213e)">
-                    <i class="bi bi-book fs-2 mb-1"></i><br>המשקיע הנבון
-                  </div>
-                </div>
-                <div class="book-body">
-                  <span class="badge bg-primary book-badge">קלאסיק</span>
-                  <div class="book-title">המשקיע הנבון</div>
-                  <div class="book-author">בנג'מין גראהם</div>
-                  <div class="book-desc">הספר הקלאסי ביותר על השקעות ערך — מורו של וורן באפט. מלמד כיצד לנתח מניות, לחשוב לטווח ארוך ולהישאר רגוע בתנודות שוק.</div>
-                  <a href="https://www.steimatzky.co.il/catalogsearch/result/?q=%D7%94%D7%9E%D7%A9%D7%A7%D7%99%D7%A2+%D7%94%D7%A0%D7%91%D7%95%D7%9F" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm w-100">
-                    <i class="bi bi-cart me-1"></i>לרכישה בסטימצקי
-                  </a>
-                </div>
+  <!-- Hebrew Stock Detail & Interactive Chart Modal -->
+  <div class="modal fade" id="heStockDetailModal" tabindex="-1" aria-labelledby="heStockDetailModalLabel" aria-hidden="true" dir="rtl">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content" style="background:var(--bg-surface-elevated); border:1px solid var(--border-color); color:var(--text-primary); border-radius:12px; box-shadow:var(--shadow-xl);">
+        
+        <!-- Modal Header -->
+        <div class="modal-header d-flex justify-content-between align-items-center" style="border-bottom:1px solid var(--border-color); padding:1rem 1.5rem;">
+          <div class="d-flex align-items-center gap-3">
+            <img id="he-detail-logo" src="" alt="" style="width:36px; height:36px; border-radius:6px; display:none;" />
+            <div>
+              <div class="d-flex align-items-center gap-2">
+                <h3 class="modal-title fs-5 fw-bold mb-0" id="he-detail-symbol">NVDA</h3>
+                <span class="badge badge-ai" id="he-detail-exchange">NASDAQ</span>
               </div>
-            </div>
-
-            <!-- Book 1: הלך אקראי בוול סטריט -->
-            <div class="col-6 col-md-4" id="he-book-col-1">
-              <div class="he-book-card">
-                <div class="he-book-cover-wrap">
-                  <div class="he-book-cover-placeholder" id="he-book-ph-1" style="background:linear-gradient(135deg,#1a2e0a,#2d5a16)">
-                    <i class="bi bi-book fs-2 mb-1"></i><br>הלך אקראי בוול סטריט
-                  </div>
-                </div>
-                <div class="book-body">
-                  <span class="badge bg-success book-badge">השקעה פסיבית</span>
-                  <div class="book-title">הלך אקראי בוול סטריט</div>
-                  <div class="book-author">ברטון מלקיאל</div>
-                  <div class="book-desc">מדוע כמעט אף מנהל קרן לא מצליח לנצח את המדד לאורך זמן? מסביר בבהירות מדוע קרנות אינדקס עדיפות לרוב המשקיעים.</div>
-                  <a href="https://www.steimatzky.co.il/catalogsearch/result/?q=%D7%94%D7%9C%D7%9A+%D7%90%D7%A7%D7%A8%D7%90%D7%99+%D7%91%D7%95%D7%95%D7%9C+%D7%A1%D7%98%D7%A8%D7%99%D7%98" target="_blank" rel="noopener" class="btn btn-outline-success btn-sm w-100">
-                    <i class="bi bi-cart me-1"></i>לרכישה בסטימצקי
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            <!-- Book 2: אבא עשיר אבא עני -->
-            <div class="col-6 col-md-4" id="he-book-col-2">
-              <div class="he-book-card">
-                <div class="he-book-cover-wrap">
-                  <div class="he-book-cover-placeholder" id="he-book-ph-2" style="background:linear-gradient(135deg,#2e0a0a,#6b1f1f)">
-                    <i class="bi bi-book fs-2 mb-1"></i><br>אבא עשיר אבא עני
-                  </div>
-                </div>
-                <div class="book-body">
-                  <span class="badge bg-danger book-badge">רב מכר עולמי</span>
-                  <div class="book-title">אבא עשיר אבא עני</div>
-                  <div class="book-author">רוברט קיוסאקי</div>
-                  <div class="book-desc">הספר הפיננסי הנמכר ביותר בעולם. שינה את חשיבתם של מיליונים על כסף, נכסים, התחייבויות ועצמאות פיננסית.</div>
-                  <a href="https://www.steimatzky.co.il/catalogsearch/result/?q=%D7%90%D7%91%D7%90+%D7%A2%D7%A9%D7%99%D7%A8+%D7%90%D7%91%D7%90+%D7%A2%D7%A0%D7%99" target="_blank" rel="noopener" class="btn btn-outline-danger btn-sm w-100">
-                    <i class="bi bi-cart me-1"></i>לרכישה בסטימצקי
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            <!-- Book 3: לחשוב מהר, לחשוב לאט -->
-            <div class="col-6 col-md-4" id="he-book-col-3">
-              <div class="he-book-card">
-                <div class="he-book-cover-wrap">
-                  <div class="he-book-cover-placeholder" id="he-book-ph-3" style="background:linear-gradient(135deg,#0a1628,#1e3a5f)">
-                    <i class="bi bi-book fs-2 mb-1"></i><br>לחשוב מהר, לחשוב לאט
-                  </div>
-                </div>
-                <div class="book-body">
-                  <span class="badge bg-warning text-dark book-badge">פסיכולוגיית כסף</span>
-                  <div class="book-title">לחשוב מהר, לחשוב לאט</div>
-                  <div class="book-author">דניאל קהנמן</div>
-                  <div class="book-desc">זוכה פרס נובל לכלכלה. מסביר את ההטיות הקוגניטיביות שגורמות לנו לטעויות פיננסיות — ידע חיוני לכל משקיע.</div>
-                  <a href="https://www.steimatzky.co.il/catalogsearch/result/?q=%D7%9C%D7%97%D7%A9%D7%95%D7%91+%D7%9E%D7%94%D7%A8+%D7%9C%D7%97%D7%A9%D7%95%D7%91+%D7%9C%D7%90%D7%98" target="_blank" rel="noopener" class="btn btn-outline-warning btn-sm w-100">
-                    <i class="bi bi-cart me-1"></i>לרכישה בסטימצקי
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            <!-- Book 4: פסיכולוגיה של כסף -->
-            <div class="col-6 col-md-4" id="he-book-col-4">
-              <div class="he-book-card">
-                <div class="he-book-cover-wrap">
-                  <div class="he-book-cover-placeholder" id="he-book-ph-4" style="background:linear-gradient(135deg,#2e1a0a,#6b4c1f)">
-                    <i class="bi bi-book fs-2 mb-1"></i><br>פסיכולוגיה של כסף
-                  </div>
-                </div>
-                <div class="book-body">
-                  <span class="badge bg-info text-dark book-badge">חדש ומומלץ</span>
-                  <div class="book-title">פסיכולוגיה של כסף</div>
-                  <div class="book-author">מורגן האוסל</div>
-                  <div class="book-desc">כיצד אנשים חושבים, מתנהגים ומרגישים לגבי כסף. האוסל מראה שהגישה הנפשית להשקעות חשובה לא פחות מהידע הטכני.</div>
-                  <a href="https://www.steimatzky.co.il/catalogsearch/result/?q=%D7%A4%D7%A1%D7%99%D7%9B%D7%95%D7%9C%D7%95%D7%92%D7%99%D7%94+%D7%A9%D7%9C+%D7%9B%D7%A1%D7%A3" target="_blank" rel="noopener" class="btn btn-outline-info btn-sm w-100">
-                    <i class="bi bi-cart me-1"></i>לרכישה בסטימצקי
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            <!-- Book 5: מניות לטווח ארוך -->
-            <div class="col-6 col-md-4" id="he-book-col-5">
-              <div class="he-book-card">
-                <div class="he-book-cover-wrap">
-                  <div class="he-book-cover-placeholder" id="he-book-ph-5" style="background:linear-gradient(135deg,#1a0a2e,#3b1f6e)">
-                    <i class="bi bi-book fs-2 mb-1"></i><br>מניות לטווח ארוך
-                  </div>
-                </div>
-                <div class="book-body">
-                  <span class="badge bg-secondary book-badge">אקדמי</span>
-                  <div class="book-title">מניות לטווח ארוך</div>
-                  <div class="book-author">ג'רמי סיגל</div>
-                  <div class="book-desc">מחקר מקיף המוכיח כי מניות הן ההשקעה הטובה ביותר לטווח ארוך. בסיס אקדמי חשוב לכל מי שמשקיע בשוק ההון.</div>
-                  <a href="https://www.steimatzky.co.il/catalogsearch/result/?q=%D7%9E%D7%A0%D7%99%D7%95%D7%AA+%D7%9C%D7%98%D7%95%D7%95%D7%97+%D7%90%D7%A8%D7%95%D7%9A+%D7%A1%D7%99%D7%92%D7%9C" target="_blank" rel="noopener" class="btn btn-outline-secondary btn-sm w-100">
-                    <i class="bi bi-cart me-1"></i>לרכישה בסטימצקי
-                  </a>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        <!-- 7. Hebrew Videos Section -->
-        <section id="videos-section" class="shuk-section">
-          <h2><i class="bi bi-play-circle me-2"></i>סרטוני ניתוח שוק בעברית</h2>
-          <p class="text-muted small mb-3">סרטונים עדכניים על שוק ההון, מניות והשקעות — מתחלפים אוטומטית</p>
-          <div id="videos-grid" class="row g-3">
-            <!-- Loaded dynamically by loadHeYouTubeVideos() -->
-            <div class="col-12 text-center py-4">
-              <div class="spinner-border text-danger" role="status"><span class="visually-hidden">טוען...</span></div>
-              <p class="mt-2 text-muted small">טוען סרטונים...</p>
+              <div class="text-muted small" id="he-detail-name">NVIDIA Corporation</div>
             </div>
           </div>
-        </section>
-
-        <!-- 7. Stock News Section -->
-        <section id="stock-news-he" class="shuk-section">
-          <h2><i class="bi bi-newspaper me-2"></i>חדשות שוק ההון</h2>
-          <!-- Legal disclaimer inside news section -->
-          <p class="text-muted small fst-italic mb-3" style="font-size:0.78rem; border-right: 3px solid #f59e0b; padding-right: 0.75rem; background: #fffbeb; padding: 0.6rem 0.75rem; border-radius: 6px;">
-            התכנים מובאים לצורכי לימוד והעשרה בלבד, ואינם מהווים ייעוץ השקעות, שיווק השקעות, או תחליף לייעוץ פיניינסי/מס מקצועי המתחשב בנתונים ובצרכים המיוחדים של כל אדם. אין באמור כדי להוות התחייבות להשגת תשואה. כל הפועל בהסתמך על המידע עושה זאת על דעת עצמו ועל אחריותו בלבד.
-          </p>
-          <div id="stock-news-loader-he" class="he-loader">
-            <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">טוען...</span>
-            </div>
-            <p class="mt-2 mb-0">טוען חדשות שוק ההון...</p>
-          </div>
-          <div id="stock-news-error-he" class="alert alert-warning d-none" role="alert"></div>
-          <div class="row g-3" id="stock-news-articles-he"></div>
-        </section>
-
-      </div><!-- /col-lg-8 -->
-
-      <!-- RIGHT SIDEBAR (col-lg-4) -->
-      <aside class="col-lg-4 mt-4 mt-lg-0">
-
-        <!-- 1. TradingView Widget -->
-        <div class="sidebar-card mb-4">
-          <div class="sidebar-card-header">
-            <i class="bi bi-bar-chart-line me-2"></i>גרפים בזמן אמת
-          </div>
-          <div class="sidebar-card-body p-0">
-            <div class="tradingview-widget-container">
-              <iframe
-                id="tradingview_widget"
-                src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_widget&symbol=SPY&interval=D&hidesidetoolbar=1&symboledit=1&saveimage=1&toolbarbg=f1f3f6&studies=%5B%5D&theme=light&style=1&timezone=Asia%2FJerusalem&withdateranges=1&showpopupbutton=1"
-                width="100%"
-                height="400"
-                frameborder="0"
-                allowtransparency="true"
-                scrolling="no"
-                title="TradingView גרף מניות"
-                loading="lazy"
-              ></iframe>
-            </div>
-          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="סגור"></button>
         </div>
 
-        <!-- 2. Popular Israeli Stocks -->
-        <div class="sidebar-card mb-4">
-          <div class="sidebar-card-header">
-            <i class="bi bi-star me-2"></i>מניות ישראליות פופולריות
-          </div>
-          <div class="sidebar-card-body">
-            <div class="d-flex flex-wrap gap-2">
-              <button
-                class="btn btn-outline-primary btn-sm"
-                data-symbol="TEVA"
-                onclick="window.heSearchStock && window.heSearchStock('TEVA')"
-              >טבע (TEVA)</button>
-              <button
-                class="btn btn-outline-primary btn-sm"
-                data-symbol="NICE"
-                onclick="window.heSearchStock && window.heSearchStock('NICE')"
-              >נייס (NICE)</button>
-              <button
-                class="btn btn-outline-primary btn-sm"
-                data-symbol="CHKP"
-                onclick="window.heSearchStock && window.heSearchStock('CHKP')"
-              >צ'ק פוינט (CHKP)</button>
-              <button
-                class="btn btn-outline-primary btn-sm"
-                data-symbol="ESLT"
-                onclick="window.heSearchStock && window.heSearchStock('ESLT')"
-              >אלביט (ESLT)</button>
-              <button
-                class="btn btn-outline-primary btn-sm"
-                data-symbol="MNDO"
-                onclick="window.heSearchStock && window.heSearchStock('MNDO')"
-              >מיינד סי (MNDO)</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- 3. Automation Banner -->
-        <div class="mb-4">
-          <a
-            href="https://www.automationbymeir.com/"
-            target="_blank"
-            rel="noopener"
-            class="automation-banner"
-          >
-            <h5 class="mb-1" style="color:#fff;"><i class="bi bi-gear-fill me-2"></i>Automation by Meir</h5>
-            <p class="small mb-0" style="color:#aaa;">שדרגו את העסק שלכם עם אוטומציה מותאמת אישית</p>
-          </a>
-        </div>
-
-        <!-- 4. Stock Articles from Firestore -->
-        <div class="sidebar-card">
-          <div class="sidebar-card-header">
-            <i class="bi bi-file-text me-2"></i>כתבות שוק ההון
-          </div>
-          <div class="sidebar-card-body">
-            <div id="he-stock-articles-sidebar">
-              <div class="text-center text-muted py-3">
-                <div class="spinner-border spinner-border-sm" role="status">
-                  <span class="visually-hidden">טוען...</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </aside><!-- /col-lg-4 -->
-    </div><!-- /row -->
-  </main>
-
-  <!-- Stock Detail Modal -->
-  <div
-    class="modal fade"
-    id="heStockDetailModal"
-    tabindex="-1"
-    aria-labelledby="heStockDetailModalLabel"
-    aria-hidden="true"
-    dir="rtl"
-  >
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title d-flex align-items-center gap-2" id="heStockDetailModalLabel">
-            <img id="he-detail-logo" src="" alt="" class="rounded" style="width:32px;height:32px;object-fit:contain;display:none;" />
-            <span id="he-detail-symbol" class="fw-bold">—</span>
-            <span class="text-muted">-</span>
-            <span id="he-detail-name" class="text-muted fw-normal">שם החברה</span>
-          </h5>
-          <button type="button" class="btn-close ms-0 me-auto" data-bs-dismiss="modal" aria-label="סגור"></button>
-        </div>
-        <div class="modal-body">
-          <!-- Loading -->
+        <!-- Modal Body -->
+        <div class="modal-body" style="padding:1.5rem;">
+          
+          <!-- Loading State -->
           <div id="he-detail-loading" class="text-center py-4" style="display:none;">
-            <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">טוען...</span>
-            </div>
-            <p class="mt-2 text-muted">טוען נתוני מניה...</p>
+            <div class="spinner-border text-primary" role="status"><span class="visually-hidden">טוען...</span></div>
+            <p class="text-muted small mt-2">שולף נתוני מסחר בזמן אמת וגרפים טכניים...</p>
           </div>
-          <!-- Error -->
-          <div id="he-detail-error" class="alert alert-danger" style="display:none;" role="alert"></div>
 
-          <!-- Content -->
+          <!-- Error Alert -->
+          <div id="he-detail-error" class="alert alert-danger py-2 mb-3" style="display:none;"></div>
+
+          <!-- Main Content -->
           <div id="he-detail-content">
-            <!-- Price -->
-            <div class="d-flex align-items-baseline gap-3 mb-3">
-              <h2 class="mb-0 fw-bold">$<span id="he-detail-price">--</span></h2>
-              <span id="he-detail-change" class="h5 mb-0">--</span>
-            </div>
+            
+            <!-- Price Banner & Timeframe Buttons -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+              <div>
+                <div class="d-flex align-items-baseline gap-2">
+                  <span class="fs-2 fw-black" id="he-detail-price" style="font-family:var(--font-mono);">$0.00</span>
+                  <span class="fw-bold" id="he-detail-change">+0.00 (+0.00%)</span>
+                </div>
+                <div class="text-muted" style="font-size:0.75rem; font-family:var(--font-mono);" id="he-detail-last-updated">שער חי מהבורסה בזמן אמת</div>
+              </div>
 
-            <!-- Stats Row -->
-            <div class="row g-3 mb-3">
-              <div class="col-6 col-md-3">
-                <div class="border rounded p-2 text-center">
-                  <div class="text-muted small">פתיחה</div>
-                  <div class="fw-bold" id="he-detail-open">--</div>
-                </div>
-              </div>
-              <div class="col-6 col-md-3">
-                <div class="border rounded p-2 text-center">
-                  <div class="text-muted small">גבוה</div>
-                  <div class="fw-bold text-success" id="he-detail-high">--</div>
-                </div>
-              </div>
-              <div class="col-6 col-md-3">
-                <div class="border rounded p-2 text-center">
-                  <div class="text-muted small">נמוך</div>
-                  <div class="fw-bold text-danger" id="he-detail-low">--</div>
-                </div>
-              </div>
-              <div class="col-6 col-md-3">
-                <div class="border rounded p-2 text-center">
-                  <div class="text-muted small">נפח</div>
-                  <div class="fw-bold" id="he-detail-volume">--</div>
-                </div>
+              <!-- Timeframe Selector -->
+              <div class="btn-group btn-group-sm" role="group" id="he-chart-range-selector">
+                <button type="button" class="btn btn-outline-secondary" data-range="1d">יום 1</button>
+                <button type="button" class="btn btn-outline-secondary" data-range="5d">5 ימים</button>
+                <button type="button" class="btn btn-primary active" data-range="1mo">חודש</button>
+                <button type="button" class="btn btn-outline-secondary" data-range="6mo">חצי שנה</button>
+                <button type="button" class="btn btn-outline-secondary" data-range="1y">שנה</button>
               </div>
             </div>
 
-            <!-- Chart -->
-            <div id="he-stock-chart" class="mb-3" style="height:300px; position:relative;">
+            <!-- Chart Container -->
+            <div class="stock-chart-wrap mb-4" style="height:260px; position:relative; background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:8px; padding:12px;">
               <canvas id="heStockChart"></canvas>
             </div>
 
-            <!-- Company Description -->
-            <div id="he-company-description" class="mb-3" style="display:none;">
-              <h6 class="fw-bold">אודות החברה</h6>
-              <p id="he-company-desc-text" class="text-muted small"></p>
+            <!-- Extended Fundamentals 6-Col Grid -->
+            <div class="row g-2 mb-4" style="font-family:var(--font-mono); font-size:0.82rem;">
+              <div class="col-6 col-md-4">
+                <div class="p-2 rounded" style="background:var(--bg-surface); border:1px solid var(--border-subtle);">
+                  <div class="text-muted" style="font-size:0.7rem;">שער פתיחה</div>
+                  <div class="fw-bold" id="he-detail-open">--</div>
+                </div>
+              </div>
+              <div class="col-6 col-md-4">
+                <div class="p-2 rounded" style="background:var(--bg-surface); border:1px solid var(--border-subtle);">
+                  <div class="text-muted" style="font-size:0.7rem;">נעילה קודמת</div>
+                  <div class="fw-bold" id="he-detail-prev-close">--</div>
+                </div>
+              </div>
+              <div class="col-6 col-md-4">
+                <div class="p-2 rounded" style="background:var(--bg-surface); border:1px solid var(--border-subtle);">
+                  <div class="text-muted" style="font-size:0.7rem;">טווח יומי (נמוך-גבוה)</div>
+                  <div class="fw-bold" id="he-detail-range">--</div>
+                </div>
+              </div>
+              <div class="col-6 col-md-4">
+                <div class="p-2 rounded" style="background:var(--bg-surface); border:1px solid var(--border-subtle);">
+                  <div class="text-muted" style="font-size:0.7rem;">טווח 52 שבועות</div>
+                  <div class="fw-bold" id="he-detail-52w-range">--</div>
+                </div>
+              </div>
+              <div class="col-6 col-md-4">
+                <div class="p-2 rounded" style="background:var(--bg-surface); border:1px solid var(--border-subtle);">
+                  <div class="text-muted" style="font-size:0.7rem;">נפח מסחר</div>
+                  <div class="fw-bold" id="he-detail-volume">--</div>
+                </div>
+              </div>
+              <div class="col-6 col-md-4">
+                <div class="p-2 rounded" style="background:var(--bg-surface); border:1px solid var(--border-subtle);">
+                  <div class="text-muted" style="font-size:0.7rem;">שווי שוק</div>
+                  <div class="fw-bold" id="he-detail-market-cap">--</div>
+                </div>
+              </div>
             </div>
 
-            <!-- Legal disclaimer in modal -->
-            <p class="text-muted small fst-italic mb-0" style="font-size:0.72rem; border-top:1px solid #e9ecef; padding-top:0.75rem;">
-              <i class="bi bi-exclamation-circle me-1"></i>
-              התכנים מובאים לצורכי לימוד בלבד ואינם מהווים ייעוץ השקעות. כל הפועל בהסתמך על המידע עושה זאת על דעת עצמו ועל אחריותו בלבד.
-            </p>
+            <!-- Company Profile Description -->
+            <div id="he-company-description" class="mb-3" style="display:none;">
+              <h4 class="fs-6 fw-bold mb-1"><i class="bi bi-info-circle me-1"></i> פרופיל עסקי ופעילות החברה</h4>
+              <p class="text-muted small mb-0" id="he-company-desc-text" style="line-height:1.6;"></p>
+            </div>
+
           </div>
         </div>
-        <div class="modal-footer justify-content-start">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-            <i class="bi bi-x-circle me-1"></i>סגור
+
+        <!-- Modal Footer -->
+        <div class="modal-footer d-flex justify-content-between" style="border-top:1px solid var(--border-color); padding:0.75rem 1.5rem;">
+          <button type="button" class="btn btn-outline btn-sm" id="he-watchlist-toggle-btn">
+            <i class="bi bi-star me-1"></i><span>הוסף למעקב</span>
           </button>
-          <button type="button" class="btn btn-outline-warning" id="he-watchlist-toggle-btn">
-            <i class="bi bi-star me-1"></i>
-            <span>הוסף לרשימת המעקב</span>
-          </button>
+          <a id="he-detail-yahoo-link" href="https://finance.yahoo.com" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+            <i class="bi bi-box-arrow-up-right me-1"></i>צפה ב-Yahoo Finance
+          </a>
         </div>
+
       </div>
     </div>
   </div>
 
-  <!-- Footer -->
-  <footer class="he-footer">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-3 mb-4 mb-md-0">
-          <h5>TrendingTech Daily</h5>
-          <p class="small">הישארו מעודכנים עם חדשות הטכנולוגיה האחרונות, עדכוני שוק ההון וניתוחי השקעות.</p>
-        </div>
-        <div class="col-md-3 mb-4 mb-md-0">
-          <h5>קישורים מהירים</h5>
-          <ul>
-            <li><a href="/he/">ראשי</a></li>
-            <li><a href="/he/shuk-hon">שוק ההון</a></li>
-            <li><a href="/he/podcasts">פודקאסטים</a></li>
-            <li><a href="/he/about">אודות</a></li>
-            <li><a href="/he/privacy">מדיניות פרטיות</a></li>
-            <li><a href="/he/terms">תנאי שימוש</a></li>
-          </ul>
-        </div>
-        <div class="col-md-3 mb-4 mb-md-0">
-          <h5>קטגוריות</h5>
-          <ul>
-            <li><a href="/he/ai">בינה מלאכותית</a></li>
-            <li><a href="/he/technology">טכנולוגיה</a></li>
-            <li><a href="/he/startups">סטארטאפים</a></li>
-            <li><a href="/he/crypto">קריפטו</a></li>
-            <li><a href="/he/shuk-hon">שוק ההון</a></li>
-          </ul>
-        </div>
-        <div class="col-md-3">
-          <h5>צרו קשר</h5>
-          <p class="small">
-            <i class="bi bi-envelope-fill me-1"></i>info@trendingtechdaily.com<br>
-            <i class="bi bi-globe me-1"></i><a href="/">English Version</a>
-          </p>
-          <p class="small fst-italic mt-2" style="color:#666; font-size:0.75rem;">
-            התכנים באתר לצורכי לימוד בלבד ואינם מהווים ייעוץ השקעות.
-          </p>
-        </div>
-      </div>
-      <div class="copyright">
-        <p style="margin:0;">© 2025 TrendingTech Daily. כל הזכויות שמורות.</p>
-      </div>
-    </div>
-  </footer>
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
 
-  <!-- Chart.js -->
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- Bootstrap JS (deferred) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
-
-  <!-- App scripts -->
-  <script src="/he/js/he-app.js" defer></script>
-  <script src="/he/js/he-shuk-hon.js" defer></script>
-  <script src="/he/js/he-ai-agent-shuk.js" defer></script>
-  <script src="/he/js/he-cookie-consent.js" defer></script>
-
-  <!-- Async book cover loader (independent of main JS bundle) -->
-  <script>
-  (function() {
-    var BOOK_QUERIES = [
-      'The Intelligent Investor Benjamin Graham',
-      'A Random Walk Down Wall Street Malkiel',
-      'Rich Dad Poor Dad Kiyosaki',
-      'Thinking Fast and Slow Kahneman',
-      'The Psychology of Money Morgan Housel',
-      'Stocks for the Long Run Jeremy Siegel'
-    ];
-    function loadCover(idx, query) {
-      var url = 'https://www.googleapis.com/books/v1/volumes?q=' +
-                encodeURIComponent(query) + '&maxResults=1&fields=items(volumeInfo/imageLinks)';
-      fetch(url).then(function(r){ return r.json(); }).then(function(data) {
-        var links = data && data.items && data.items[0] &&
-                    data.items[0].volumeInfo && data.items[0].volumeInfo.imageLinks;
-        if (!links) return;
-        var raw = links.extraLarge || links.large || links.medium || links.thumbnail;
-        if (!raw) return;
-        raw = raw.replace('http://', 'https://').replace('zoom=1', 'zoom=2');
-        var wrap = document.querySelector('#he-book-col-' + idx + ' .he-book-cover-wrap');
-        if (!wrap) return;
-        var img = document.createElement('img');
-        img.src = raw;
-        img.alt = 'book cover';
-        img.onload = function() {
-          var ph = document.getElementById('he-book-ph-' + idx);
-          if (ph) ph.style.display = 'none';
-          wrap.appendChild(img);
-        };
-      }).catch(function(){});
-    }
-    // Start loading covers after page is interactive
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', function() {
-        BOOK_QUERIES.forEach(function(q, i) { setTimeout(function(){ loadCover(i, q); }, i * 300); });
-      });
-    } else {
-      BOOK_QUERIES.forEach(function(q, i) { setTimeout(function(){ loadCover(i, q); }, i * 300); });
-    }
-  })();
-  </script>
+  <script src="/js/config.js?v=20260820_2"></script>
+  <script src="/js/auth.js?v=20260820_2"></script>
+  <script src="/js/nav-loader.js?v=20260820_2"></script>
+  <script src="/js/app-base.js?v=20260820_2"></script>
+  <script src="/he/js/he-shuk-hon.js?v=20260820_2"></script>
 </body>
 </html>

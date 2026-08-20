@@ -1,90 +1,171 @@
-<nav class="navbar navbar-expand-xl ttd-nav">
-  <div class="container">
-    <a class="navbar-brand fw-bold" href="/">TrendingTech Daily</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+<!-- TrendingTechDaily — Global Navigation Header (Figma Tech News System) -->
+<header class="site-header" id="site-header">
+  <div class="container nav-main-bar">
+    
+    <!-- Brand Logo -->
+    <a class="brand-logo" href="/" title="TrendingTech Daily">
+      TrendingTech<span>Daily</span>
+    </a>
 
-    <div class="collapse navbar-collapse" id="navbarMain">
-      <!-- Primary nav — pushed to the right on desktop -->
-      <ul class="navbar-nav ms-xl-auto align-items-xl-center mb-2 mb-xl-0">
-        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="/compare"><i class="bi bi-columns-gap me-1"></i>Compare</a></li>
-        <li class="nav-item"><a class="nav-link" href="/ai-tools">AI Tools</a></li>
-        <li class="nav-item"><a class="nav-link" href="/design-systems">Design Systems</a></li>
-        <li class="nav-item"><a class="nav-link" href="/podcasts"><i class="bi bi-headphones me-1"></i>Podcasts</a></li>
+    <!-- Desktop Navigation Links (Clean Typographic Text - No Icons) -->
+    <ul class="nav-links" id="desktop-nav-links">
+      <li><a class="nav-link" href="/">Home</a></li>
+      <li><a class="nav-link" href="/category.html?slug=ai">AI</a></li>
+      <li><a class="nav-link" href="/category.html?slug=dev">Dev</a></li>
+      <li><a class="nav-link" href="/category.html?slug=computing">Computing</a></li>
+      <li><a class="nav-link" href="/stock-data.html">Markets</a></li>
+      <li><a class="nav-link" href="/podcasts.html">Podcasts</a></li>
+      <li><a class="nav-link" href="/design-systems.html">Design Systems</a></li>
+      <li><a class="nav-link" href="/ai-tools.html">AI Tools</a></li>
+    </ul>
 
-        <!-- Category overflow dropdown (populated by nav-loader.js) -->
-        <li class="nav-item dropdown d-none" id="more-dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">More</a>
-          <ul class="dropdown-menu" id="more-dropdown-menu"></ul>
-        </li>
-        <li id="category-nav-placeholder" class="d-none"></li>
+    <!-- Right Navigation Utility Actions -->
+    <div class="nav-right-actions">
+      
+      <!-- Desktop Search Bar -->
+      <div class="nav-search-box">
+        <form id="nav-search-form" role="search">
+          <i class="bi bi-search"></i>
+          <input type="search" placeholder="Search tech news..." aria-label="Search" id="nav-search-input" autocomplete="off" />
+        </form>
+      </div>
 
-        <!-- Language switch -->
-        <li class="nav-item">
-          <a class="nav-link fw-semibold text-primary" href="/he" title="Switch to Hebrew site"><i class="bi bi-globe me-1"></i>עברית</a>
-        </li>
-      </ul>
+      <!-- Mobile/Tablet Search Trigger -->
+      <button class="btn-search-trigger" id="mobile-search-btn" aria-label="Toggle Search">
+        <i class="bi bi-search"></i>
+      </button>
 
-      <!-- Right-side utility strip: search + socials + auth -->
-      <div class="ttd-nav-utility d-flex flex-column flex-xl-row align-items-xl-center gap-2 gap-xl-3 ms-xl-3">
-        <!-- Search (icon toggles expandable field) -->
-        <div class="d-flex align-items-center ttd-nav-search">
-          <form id="nav-search-form" role="search">
-            <input class="form-control form-control-sm" type="search" placeholder="Search..." aria-label="Search" id="nav-search-input">
-          </form>
-          <a class="nav-link p-1" href="#" id="search-toggle-btn" role="button" aria-label="Toggle search">
-            <i class="bi bi-search"></i>
+      <!-- Language Switcher -->
+      <a class="btn-lang-switch" href="/he" title="עבור לאתר בעברית">
+        עברית
+      </a>
+
+      <!-- Auth State (Logged Out: Subscribe/Login; Logged In: Profile & Avatar) -->
+      <div class="nav-auth-container" id="nav-auth-container">
+        <!-- Logged Out Container -->
+        <div id="nav-logged-out" class="d-flex align-items-center gap-2">
+          <a class="btn btn-subscribe btn-sm" href="/signup.html" id="auth-signup-link">
+            Subscribe
+          </a>
+          <a class="btn btn-ghost btn-sm" href="/login.html" id="auth-login-link">
+            Sign In
           </a>
         </div>
-
-        <!-- Social icons — compact row, only where there's room (≥1400px) or in the mobile menu -->
-        <div class="align-items-center ttd-nav-social d-flex d-xl-none d-xxl-flex">
-          <a class="nav-link p-1" href="https://www.youtube.com/channel/UC73gfqq3PphoRm1ANvR05Qw" target="_blank" rel="noopener" title="YouTube" style="color:#ff0000;"><i class="bi bi-youtube"></i></a>
-          <a class="nav-link p-1" href="https://www.instagram.com/stories/trendingtechdaily2026/" target="_blank" rel="noopener" title="Instagram" style="color:#E1306C;"><i class="bi bi-instagram"></i></a>
-          <a class="nav-link p-1" href="https://x.com/TrendingTechD" target="_blank" rel="noopener" title="X (Twitter)" style="color:#000;"><i class="bi bi-twitter-x"></i></a>
-          <a class="nav-link p-1" href="https://www.facebook.com/profile.php?id=61560799001603" target="_blank" rel="noopener" title="Facebook" style="color:#1877F2;"><i class="bi bi-facebook"></i></a>
-          <a class="nav-link p-1" href="https://www.linkedin.com/company/121034249/" target="_blank" rel="noopener" title="LinkedIn" style="color:#0A66C2;"><i class="bi bi-linkedin"></i></a>
+        
+        <!-- Logged In Container -->
+        <div class="d-none align-items-center gap-2" id="auth-profile-menu">
+          <a href="/admin/dashboard.html" class="btn btn-outline-danger btn-sm d-none" id="nav-admin-btn" title="Admin Dashboard">
+            <i class="bi bi-shield-lock-fill"></i> <span class="d-none d-lg-inline">Admin</span>
+          </a>
+          <a class="d-flex align-items-center gap-2 text-decoration-none" href="/profile.html" id="profileDropdown" aria-label="User profile" title="My Profile">
+            <img id="user-profile-pic-nav" src="/img/default-avatar.png" alt="Avatar" style="width:32px; height:32px; border-radius:50%; object-fit:cover; border:2px solid var(--accent-red);">
+            <span id="user-name-nav" class="d-none d-xl-inline text-main fw-bold small"></span>
+          </a>
+          <button id="auth-logout-btn" class="btn-icon btn-sm" title="Sign Out" aria-label="Sign Out">
+            <i class="bi bi-box-arrow-right"></i>
+          </button>
         </div>
+      </div>
 
-        <!-- Auth: Login/Sign Up when logged out; Profile dropdown when logged in -->
-        <div class="d-flex align-items-center ttd-nav-auth">
-          <a class="nav-link px-2" href="/login.html" id="auth-login-link">Login</a>
-          <a class="btn btn-sm btn-primary ms-1" href="/signup.html" id="auth-signup-link">Sign Up</a>
-          <div class="dropdown d-none" id="auth-profile-menu">
-            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <img id="user-profile-pic-nav" src="/img/default-avatar.png" alt="User" style="width:26px; height:26px; border-radius:50%; margin-right:8px; background-color:#eee;">
-              <span id="user-display-name-nav">Profile</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-              <li><a class="dropdown-item" href="/profile.html">My Profile</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><button class="dropdown-item" type="button" id="auth-logout-btn">Logout</button></li>
-            </ul>
-          </div>
-        </div>
+      <!-- Mobile Hamburger Button -->
+      <button class="hamburger-btn" id="hamburger-menu-btn" aria-label="Open Navigation Menu">
+        <i class="bi bi-list"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Crimson Sub-Navigation Ribbon (Figma Design System) -->
+  <nav class="subnav-ribbon" aria-label="Sub Topics">
+    <div class="container subnav-container">
+      <ul class="subnav-track" id="subnav-track">
+        <li><a class="subnav-link active" href="/">Latest News</a></li>
+        <li><a class="subnav-link" href="/category.html?slug=top-stories">Top Stories</a></li>
+        <li><a class="subnav-link" href="/category.html?slug=ai-models">Reasoning Models</a></li>
+        <li><a class="subnav-link" href="/category.html?slug=autonomous-agents">Autonomous Agents</a></li>
+        <li><a class="subnav-link" href="/category.html?slug=chips">Silicon &amp; Foundries</a></li>
+        <li><a class="subnav-link" href="/category.html?slug=cybersecurity">Cybersecurity</a></li>
+        <li><a class="subnav-link" href="/ai-tools.html">AI Tools Hub</a></li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<!-- Off-Canvas Mobile Navigation Drawer -->
+<div class="drawer-backdrop" id="drawer-backdrop"></div>
+
+<aside class="mobile-nav-drawer" id="mobile-nav-drawer" aria-label="Mobile Navigation">
+  <div class="drawer-header">
+    <a class="brand-logo" href="/">
+      TrendingTech<span>Daily</span>
+    </a>
+    <button class="drawer-close-btn" id="drawer-close-btn" aria-label="Close Menu">
+      <i class="bi bi-x-lg"></i>
+    </button>
+  </div>
+
+  <div class="drawer-body">
+    <!-- Mobile Search Form -->
+    <form class="mobile-drawer-search" id="mobile-drawer-search-form">
+      <input type="search" class="form-control" placeholder="Search articles, tools, stocks..." id="mobile-drawer-search-input" />
+    </form>
+
+    <!-- Main Categories (Clean Typographic Text - No Icons) -->
+    <div>
+      <div class="drawer-section-title">Navigation</div>
+      <div class="drawer-nav-list">
+        <a class="drawer-nav-link active" href="/">Home</a>
+        <a class="drawer-nav-link" href="/category.html?slug=ai">Artificial Intelligence</a>
+        <a class="drawer-nav-link" href="/category.html?slug=dev">Developer Tools</a>
+        <a class="drawer-nav-link" href="/category.html?slug=computing">Computing &amp; Hardware</a>
+        <a class="drawer-nav-link" href="/stock-data.html">Market Data &amp; Stocks</a>
+        <a class="drawer-nav-link" href="/podcasts.html">Podcasts</a>
+        <a class="drawer-nav-link" href="/design-systems.html">Design Systems Decoded</a>
+        <a class="drawer-nav-link" href="/ai-tools.html">AI Tools Directory</a>
+      </div>
+    </div>
+
+    <!-- Quick Sub-topics -->
+    <div>
+      <div class="drawer-section-title">Topics &amp; Highlights</div>
+      <div class="drawer-nav-list">
+        <a class="drawer-nav-link" href="/category.html?slug=top-stories">Top Stories</a>
+        <a class="drawer-nav-link" href="/category.html?slug=editors-picks">Editor's Picks</a>
+        <a class="drawer-nav-link" href="/category.html?slug=opinions">Opinions &amp; Analysis</a>
       </div>
     </div>
   </div>
-</nav>
 
-<style>
-  /* Nav visual polish — matches Geist-brand chrome on the videos */
-  .ttd-nav { padding-top: .5rem; padding-bottom: .5rem; }
-  .ttd-nav .navbar-brand { font-family: 'Orbitron', sans-serif; letter-spacing: .5px; }
-  .ttd-nav .nav-link { padding: .4rem .55rem; font-weight: 500; }
-  .ttd-nav .nav-link i.bi { font-size: 1.05rem; }
-  .ttd-nav-social .nav-link { font-size: 1.15rem; }
-  .ttd-nav-social .nav-link:hover { transform: translateY(-1px); transition: transform .15s ease; }
-  /* Auth compact style */
-  .ttd-nav-auth .btn-primary { padding: .25rem .8rem; font-weight: 600; }
-  /* Mobile: everything stacks; auth pills go full width */
-  @media (max-width: 1199.98px) {
-    .ttd-nav-utility { border-top: 1px solid rgba(0,0,0,.06); margin-top: .5rem; padding-top: .5rem; }
-    .ttd-nav-social { justify-content: flex-start; }
-    /* On mobile the toggle icon is redundant — expand the search inline. */
-    #nav-search-form { width: 100% !important; opacity: 1 !important; overflow: visible !important; margin: .25rem 0; }
-    .ttd-nav-search #search-toggle-btn { display: none; }
-  }
-</style>
+  <div class="drawer-footer">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <a class="btn-lang-switch" href="/he">
+        עברית (Hebrew)
+      </a>
+      <button class="btn-icon" id="theme-mode-toggle-btn" aria-label="Toggle light/dark mode">
+        <i class="bi bi-sun"></i>
+      </button>
+    </div>
+    
+    <!-- Mobile Drawer Logged Out -->
+    <div id="drawer-logged-out" class="d-flex gap-2">
+      <a class="btn btn-subscribe flex-grow-1" href="/signup.html">Create Free Account</a>
+      <a class="btn btn-secondary" href="/login.html">Login</a>
+    </div>
+
+    <!-- Mobile Drawer Logged In -->
+    <div id="drawer-logged-in" class="d-none flex-column gap-2">
+      <a class="d-flex align-items-center gap-2 p-2 rounded text-decoration-none" href="/profile.html" style="background:var(--bg-surface-elevated); border:1px solid var(--border-color);">
+        <img id="drawer-profile-pic" src="/img/default-avatar.png" alt="Avatar" style="width:32px; height:32px; border-radius:50%; object-fit:cover;">
+        <div class="d-flex flex-column">
+          <span id="drawer-user-name" class="fw-bold text-main small">My Account</span>
+          <span class="text-muted" style="font-size:0.75rem;">View Profile &amp; Settings</span>
+        </div>
+      </a>
+      <a href="/admin/dashboard.html" class="btn btn-outline-danger btn-sm d-none text-start" id="drawer-admin-btn">
+        <i class="bi bi-shield-lock-fill me-1"></i> Admin Dashboard
+      </a>
+      <button id="drawer-logout-btn" class="btn btn-secondary btn-sm w-100">
+        <i class="bi bi-box-arrow-right me-1"></i> Sign Out
+      </button>
+    </div>
+  </div>
+</aside>

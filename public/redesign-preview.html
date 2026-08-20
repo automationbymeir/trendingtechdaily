@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="figma-tech" data-mode="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TrendingTechDaily — Figma Tech News Design System Preview</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&family=Rubik:wght@400;500;700;800&family=Newsreader:ital,opsz,wght@0,6..72,600;1,6..72,400&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <style>
+    /* ==========================================================================
+       1. GLOBAL RESET & BASE
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.2s ease, color 0.2s ease;
+      padding-top: 60px; /* Space for demo control bar */
+      padding-bottom: 84px; /* Space for bottom dock */
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1320px;
+      margin-inline: auto;
+      padding-inline: 1.25rem;
+    }
+
+    /* ==========================================================================
+       2. THEME TOKENS: FIGMA TECH NEWS DESIGN SYSTEM (Primary) & EDITORIALS
+       ========================================================================== */
+
+    /* ─── FIGMA TECH NEWS DESIGN SYSTEM ──────────────────────────────────── */
+    html[data-theme="figma-tech"] {
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-heading: 'Barlow Condensed', sans-serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-full: 9999px;
+      
+      --accent-red: #E63946; /* Figma Design System Signature Crimson Red */
+      --accent-red-hover: #D62839;
+      --accent-red-subtle: rgba(230, 57, 70, 0.15);
+      
+      --tag-ai: #E63946;
+      --tag-chips: #F59E0B;
+      --tag-dev: #10B981;
+      --tag-security: #00D2FF;
+      --tag-purple: #A855F7;
+
+      --border-style: 1px solid var(--border-color);
+      --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    }
+
+    html[data-theme="figma-tech"][data-mode="dark"] {
+      --bg-page: #090A0E;
+      --bg-surface: #111319;
+      --bg-surface-subtle: #171A23;
+      --bg-subnav: #E63946;
+      --text-subnav: #FFFFFF;
+      --bg-ticker: #050608;
+      --text-ticker: #E2E8F0;
+      --text-main: #FFFFFF;
+      --text-muted: #94A3B8;
+      --text-faint: #64748B;
+      --border-color: #1E2330;
+      --border-hover: #333D52;
+      --hero-overlay: linear-gradient(180deg, rgba(9, 10, 14, 0.2) 0%, rgba(9, 10, 14, 0.85) 75%, rgba(9, 10, 14, 0.98) 100%);
+    }
+
+    html[data-theme="figma-tech"][data-mode="light"] {
+      --bg-page: #F4F6F9;
+      --bg-surface: #FFFFFF;
+      --bg-surface-subtle: #E9ECEF;
+      --bg-subnav: #E63946;
+      --text-subnav: #FFFFFF;
+      --bg-ticker: #111319;
+      --text-ticker: #F8FAFC;
+      --text-main: #0F172A;
+      --text-muted: #475569;
+      --text-faint: #94A3B8;
+      --border-color: #E2E8F0;
+      --border-hover: #CBD5E1;
+      --hero-overlay: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(15, 23, 42, 0.8) 100%);
+    }
+
+    /* ─── 1B: The Times / NewsKit Pure ───────────────────────────────────── */
+    html[data-theme="newskit-times"] {
+      --font-heading: 'Newsreader', Georgia, serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --radius-sm: 2px;
+      --radius-md: 4px;
+      --radius-lg: 8px;
+      --radius-full: 9999px;
+      --accent-red: #0D4738;
+      --accent-red-hover: #072B22;
+      --bg-subnav: #0A1E3F;
+      --text-subnav: #FFFFFF;
+      --border-style: 1px solid var(--border-color);
+      --card-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    html[data-theme="newskit-times"][data-mode="light"] {
+      --bg-page: #FAFAFA;
+      --bg-surface: #FFFFFF;
+      --bg-surface-subtle: #F3F4F6;
+      --bg-ticker: #0A1E3F;
+      --text-ticker: #F8FAFC;
+      --text-main: #1A1A1A;
+      --text-muted: #4B5563;
+      --text-faint: #9CA3AF;
+      --border-color: #E5E7EB;
+      --border-hover: #1A1A1A;
+    }
+    html[data-theme="newskit-times"][data-mode="dark"] {
+      --bg-page: #0B0E14;
+      --bg-surface: #121722;
+      --bg-surface-subtle: #1C2434;
+      --bg-ticker: #06090F;
+      --text-ticker: #E2E8F0;
+      --text-main: #F3F4F6;
+      --text-muted: #9CA3AF;
+      --text-faint: #6B7280;
+      --border-color: #242E42;
+      --border-hover: #384865;
+    }
+
+    /* ─── 1A: FT & Bloomberg ─────────────────────────────────────────────── */
+    html[data-theme="newskit-ft"] {
+      --font-heading: 'Playfair Display', Georgia, serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --radius-sm: 0px;
+      --radius-md: 2px;
+      --radius-lg: 4px;
+      --radius-full: 2px;
+      --accent-red: #990F3D;
+      --bg-subnav: #990F3D;
+      --text-subnav: #FFF1E5;
+      --border-style: 1px solid var(--border-color);
+      --card-shadow: none;
+    }
+    html[data-theme="newskit-ft"][data-mode="light"] {
+      --bg-page: #FFF1E5;
+      --bg-surface: #FFF7F0;
+      --bg-surface-subtle: #F2DFC9;
+      --bg-ticker: #0A1329;
+      --text-ticker: #FFF1E5;
+      --text-main: #0A1329;
+      --text-muted: #4F5868;
+      --text-faint: #8E98A8;
+      --border-color: #E8D3BF;
+      --border-hover: #0A1329;
+    }
+    html[data-theme="newskit-ft"][data-mode="dark"] {
+      --bg-page: #0C1017;
+      --bg-surface: #141A24;
+      --bg-surface-subtle: #1F2736;
+      --bg-ticker: #06090E;
+      --text-ticker: #F2DFC9;
+      --text-main: #F3ECE2;
+      --text-muted: #9BA4B5;
+      --text-faint: #677184;
+      --border-color: #273347;
+      --border-hover: #D97706;
+    }
+
+    /* RTL Support */
+    html[dir="rtl"] {
+      font-family: 'Rubik', var(--font-body);
+    }
+
+    /* ==========================================================================
+       3. TOP CONTROL BAR (Switcher)
+       ========================================================================== */
+    .demo-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: #08090D;
+      color: #F8FAFC;
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-inline: 1.25rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .demo-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #94A3B8;
+    }
+
+    .demo-title strong {
+      color: #FFFFFF;
+    }
+
+    .figma-badge {
+      background: #E63946;
+      color: #FFFFFF;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .demo-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .demo-btn-group {
+      display: flex;
+      background: #141720;
+      padding: 3px;
+      border-radius: 6px;
+      gap: 2px;
+      border: 1px solid #232836;
+    }
+
+    .demo-btn {
+      background: transparent;
+      border: none;
+      color: #94A3B8;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .demo-btn.active {
+      background: #E63946;
+      color: #FFFFFF;
+      box-shadow: 0 1px 4px rgba(230, 57, 70, 0.4);
+    }
+
+    .demo-toggle-btn {
+      background: #141720;
+      border: 1px solid #232836;
+      color: #F8FAFC;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .demo-toggle-btn:hover {
+      background: #232836;
+    }
+
+    /* ==========================================================================
+       4. TICKER STRIP
+       ========================================================================== */
+    .ticker-strip {
+      background-color: var(--bg-ticker);
+      color: var(--text-ticker);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding-block: 0.35rem;
+      border-bottom: var(--border-style);
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .ticker-content {
+      display: inline-flex;
+      align-items: center;
+      gap: 2rem;
+      animation: tickerSlide 35s linear infinite;
+    }
+
+    @keyframes tickerSlide {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .ticker-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .ticker-badge {
+      font-weight: 700;
+      padding: 1px 4px;
+      border-radius: var(--radius-sm);
+      font-size: 0.65rem;
+    }
+
+    .ticker-up { color: #10B981; }
+    .ticker-down { color: #EF4444; }
+
+    /* ==========================================================================
+       5. MAIN NAVIGATION (FIGMA TECH NEWS STYLE)
+       ========================================================================== */
+    .site-header {
+      background: var(--bg-surface);
+      border-bottom: var(--border-style);
+      position: sticky;
+      top: 60px;
+      z-index: 100;
+    }
+
+    .nav-main-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .brand-logo {
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 1.45rem;
+      letter-spacing: -0.03em;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .brand-logo span {
+      color: var(--accent-red);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      list-style: none;
+      gap: 1.75rem;
+    }
+
+    .nav-link {
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: color 0.15s ease;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: var(--text-main);
+    }
+
+    .nav-right-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .btn-search-icon {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.15rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s ease;
+    }
+
+    .btn-search-icon:hover {
+      color: var(--text-main);
+    }
+
+    .btn-subscribe {
+      background: var(--accent-red);
+      color: #FFFFFF;
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 7px 18px;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .btn-subscribe:hover {
+      background: var(--accent-red-hover);
+    }
+
+    /* Sub-Navigation Ribbon (Red Banner as seen in Figma) */
+    .subnav-ribbon {
+      background: var(--bg-subnav);
+      color: var(--text-subnav);
+      padding-block: 0.5rem;
+      overflow-x: auto;
+    }
+
+    .subnav-track {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      list-style: none;
+      font-family: var(--font-heading);
+      font-size: 0.82rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .subnav-link {
+      color: rgba(255, 255, 255, 0.85);
+      transition: color 0.15s ease;
+    }
+
+    .subnav-link:hover, .subnav-link.active {
+      color: #FFFFFF;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    /* ==========================================================================
+       6. HERO SECTION: 68% / 32% ASYMMETRIC GRID (From Figma System)
+       ========================================================================== */
+    .hero-section {
+      padding-block: 2rem;
+    }
+
+    .hero-figma-grid {
+      display: grid;
+      grid-template-columns: 2.1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 992px) {
+      .hero-figma-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Big Hero Story Card */
+    .hero-lead-card {
+      background: var(--bg-surface);
+      border: var(--border-style);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: relative;
+      min-height: 480px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      box-shadow: var(--card-shadow);
+    }
+
+    .hero-bg-media {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .hero-bg-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .hero-overlay-shade {
+      position: absolute;
+      inset: 0;
+      background: var(--hero-overlay);
+      z-index: 2;
+    }
+
+    .hero-lead-content {
+      position: relative;
+      z-index: 3;
+      padding: 2rem;
+      max-width: 850px;
+    }
+
+    /* Vertical Red Accent Bar (Direct from Figma Design) */
+    .hero-title-wrap {
+      display: flex;
+      align-items: stretch;
+      gap: 1rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .hero-red-bar {
+      width: 6px;
+      background: var(--accent-red);
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .hero-main-title {
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 2.15rem;
+      line-height: 1.2;
+      color: #FFFFFF;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-standfirst {
+      font-size: 1rem;
+      color: #CBD5E1;
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+      margin-inline-start: calc(6px + 1rem);
+    }
+
+    .hero-meta-bar {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      font-size: 0.82rem;
+      color: #94A3B8;
+      margin-inline-start: calc(6px + 1rem);
+    }
+
+    .hero-meta-bar strong {
+      color: #FFFFFF;
+    }
+
+    /* Trending / Top Stories Column (Right 32%) */
+    .trending-column-card {
+      background: var(--bg-surface);
+      border: var(--border-style);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .trending-header-title {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-main);
+      padding-bottom: 0.75rem;
+      margin-bottom: 1rem;
+      border-bottom: var(--border-style);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .trending-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      flex-grow: 1;
+      justify-content: space-between;
+    }
+
+    .trending-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px dashed var(--border-color);
+    }
+
+    .trending-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .trending-num {
+      font-family: var(--font-mono);
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text-faint);
+      line-height: 1;
+      flex-shrink: 0;
+      width: 32px;
+    }
+
+    .trending-item-content {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .trending-tag {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    .trending-headline {
+      font-family: var(--font-heading);
+      font-size: 0.95rem;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--text-main);
+      transition: color 0.15s ease;
+    }
+
+    .trending-headline:hover {
+      color: var(--accent-red);
+    }
+
+    /* ==========================================================================
+       7. SECONDARY 3-CARD GRID (From Figma System)
+       ========================================================================== */
+    .secondary-grid-section {
+      padding-bottom: 2.5rem;
+    }
+
+    .secondary-3col-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 860px) {
+      .secondary-3col-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .sub-article-card {
+      background: var(--bg-surface);
+      border: var(--border-style);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .sub-article-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-hover);
+    }
+
+    .sub-img-wrap {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #171A23;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .sub-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .sub-article-card:hover .sub-img-wrap img {
+      transform: scale(1.03);
+    }
+
+    .sub-body {
+      padding: 1.25rem;
+      display: flex;
+      gap: 1rem;
+      flex-grow: 1;
+    }
+
+    /* Triple vertical pill indicator (Signature from Figma system) */
+    .triple-indicator {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex-shrink: 0;
+      padding-top: 4px;
+    }
+
+    .triple-pill {
+      width: 4px;
+      height: 14px;
+      border-radius: 2px;
+    }
+
+    .sub-text-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-grow: 1;
+    }
+
+    .sub-kicker {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+
+    .sub-title {
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--text-main);
+      margin-bottom: 0.6rem;
+    }
+
+    .sub-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       8. BOTTOM PODCAST DOCK (Persistent)
+       ========================================================================== */
+    .podcast-dock {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background: var(--bg-surface);
+      border-top: var(--border-style);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      padding-inline: 1.25rem;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .dock-inner {
+      width: 100%;
+      max-width: 1320px;
+      margin-inline: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .dock-track-info {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .dock-art {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      background: var(--accent-red);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+    }
+
+    .dock-title {
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .dock-sub {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .dock-play-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--accent-red);
+      color: #FFFFFF;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       TOP DEMO CONTROLLER
+       ======================================================================== -->
+  <header class="demo-bar">
+    <div class="demo-title">
+      <span class="figma-badge">Figma Link</span>
+      <span>Tech News Site Design System: <strong>TrendingTechDaily</strong></span>
+    </div>
+
+    <div class="demo-controls">
+      <div class="demo-btn-group">
+        <button class="demo-btn active" onclick="setFigmaTheme('figma-tech')">
+          <i class="bi bi-figma"></i> Figma Tech News
+        </button>
+        <button class="demo-btn" onclick="setFigmaTheme('newskit-times')">
+          <i class="bi bi-newspaper"></i> The Times (NewsKit)
+        </button>
+        <button class="demo-btn" onclick="setFigmaTheme('newskit-ft')">
+          <i class="bi bi-graph-up"></i> FT & Bloomberg
+        </button>
+      </div>
+
+      <button class="demo-toggle-btn" onclick="toggleColorMode()">
+        <i id="mode-icon" class="bi bi-sun-fill"></i> <span id="mode-text">Light</span>
+      </button>
+
+      <button class="demo-toggle-btn" onclick="toggleDirection()">
+        <i class="bi bi-translate"></i> <span id="dir-text">עברית (RTL)</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       LIVE REAL-TIME TICKER
+       ======================================================================== -->
+  <div class="ticker-strip">
+    <div class="ticker-content">
+      <span class="ticker-item">
+        <span class="ticker-badge" style="background:#E63946; color:#fff;">NVDA</span> $912.40 <span class="ticker-up">+3.2% ▲</span>
+      </span>
+      <span class="ticker-item">
+        <span class="ticker-badge" style="background:#10B981; color:#fff;">AAPL</span> $234.10 <span class="ticker-up">+0.8% ▲</span>
+      </span>
+      <span class="ticker-item">
+        <span class="ticker-badge" style="background:#F59E0B; color:#fff;">BTC</span> $96,420 <span class="ticker-down">-1.1% ▼</span>
+      </span>
+      <span class="ticker-item">
+        <span class="ticker-badge" style="background:#A855F7; color:#fff;">MSFT</span> $450.20 <span class="ticker-up">+1.4% ▲</span>
+      </span>
+      <span class="ticker-item">
+        <span class="ticker-badge" style="background:#00D2FF; color:#000;">BREAKING</span> OpenAI GPT-5 reasoning benchmark audits released to enterprise partners
+      </span>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MAIN SITE HEADER (FIGMA TECH NEWS)
+       ======================================================================== -->
+  <header class="site-header">
+    <div class="container nav-main-bar">
+      <a href="#" class="brand-logo">
+        TrendingTech<span>Daily</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#" class="nav-link active">AI</a></li>
+        <li><a href="#" class="nav-link">Dev</a></li>
+        <li><a href="#" class="nav-link">Computing</a></li>
+        <li><a href="#" class="nav-link">Markets</a></li>
+        <li><a href="#" class="nav-link">Podcasts</a></li>
+        <li><a href="#" class="nav-link">Design Systems</a></li>
+      </ul>
+
+      <div class="nav-right-actions">
+        <button class="btn-search-icon" aria-label="Search">
+          <i class="bi bi-search"></i>
+        </button>
+        <button class="btn-subscribe">
+          Subscribe
+        </button>
+      </div>
+    </div>
+
+    <!-- Red Sub-Navigation Ribbon from Figma System -->
+    <nav class="subnav-ribbon">
+      <div class="container">
+        <ul class="subnav-track">
+          <li><a href="#" class="subnav-link active">Latest News</a></li>
+          <li><a href="#" class="subnav-link">Top Stories</a></li>
+          <li><a href="#" class="subnav-link">Editor's Picks</a></li>
+          <li><a href="#" class="subnav-link">Opinions</a></li>
+          <li><a href="#" class="subnav-link">Foundational Models</a></li>
+          <li><a href="#" class="subnav-link">Autonomous Agents</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ========================================================================
+       HERO ASYMMETRIC 68% / 32% GRID (FIGMA TECH NEWS)
+       ======================================================================== -->
+  <main class="container hero-section">
+    <div class="hero-figma-grid">
+      
+      <!-- Big Hero Lead Card (Left 68%) -->
+      <article class="hero-lead-card">
+        <div class="hero-bg-media">
+          <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&auto=format&fit=crop&q=80" alt="Neural AI Brain" />
+        </div>
+        <div class="hero-overlay-shade"></div>
+
+        <div class="hero-lead-content">
+          <div class="hero-title-wrap">
+            <div class="hero-red-bar"></div>
+            <h1 class="hero-main-title">
+              GPT-5 Arrives with Native Multimodal Reasoning That Outpaces Benchmarks
+            </h1>
+          </div>
+          <p class="hero-standfirst">
+            Inside the new transformer architecture blending continuous test-time compute with dynamic tool synthesis and real-time verifiable chains of thought.
+          </p>
+          <div class="hero-meta-bar">
+            <span>By <strong>Tech Staff</strong></span>
+            <span>·</span>
+            <span>Aug 19, 2026</span>
+            <span>·</span>
+            <span>8 min read</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Trending List Card (Right 32%) -->
+      <aside class="trending-column-card">
+        <div class="trending-header-title">
+          <span>Trending Stories</span>
+          <span style="font-size:0.75rem; color:var(--accent-red); font-family:var(--font-mono);">TOP 4</span>
+        </div>
+
+        <ul class="trending-list">
+          <li class="trending-item">
+            <span class="trending-num">01</span>
+            <div class="trending-item-content">
+              <span class="trending-tag" style="color:var(--tag-ai);">[AI & REASONING]</span>
+              <a href="#" class="trending-headline">OpenAI Expands Autonomous Agent Swarm APIs for Enterprise Production</a>
+            </div>
+          </li>
+
+          <li class="trending-item">
+            <span class="trending-num">02</span>
+            <div class="trending-item-content">
+              <span class="trending-tag" style="color:var(--tag-chips);">[CHIPS & SILICON]</span>
+              <a href="#" class="trending-headline">TSMC 2nm Production Exceeds Yield Projections as Hyperscalers Lock Wafers</a>
+            </div>
+          </li>
+
+          <li class="trending-item">
+            <span class="trending-num">03</span>
+            <div class="trending-item-content">
+              <span class="trending-tag" style="color:var(--tag-dev);">[DEV TOOLS]</span>
+              <a href="#" class="trending-headline">Vite 8 & Next.js 16 Benchmark Comparison: Sub-Millisecond HMR Achieved</a>
+            </div>
+          </li>
+
+          <li class="trending-item">
+            <span class="trending-num">04</span>
+            <div class="trending-item-content">
+              <span class="trending-tag" style="color:var(--tag-security);">[CYBERSECURITY]</span>
+              <a href="#" class="trending-headline">Post-Quantum Cryptography Mandate Enacted Across Global Banking Networks</a>
+            </div>
+          </li>
+        </ul>
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       SECONDARY 3-COLUMN CARD GRID (FIGMA TECH NEWS)
+       ======================================================================== -->
+  <section class="container secondary-grid-section">
+    <div class="secondary-3col-grid">
+
+      <!-- Card 1: Dev (Purple Indicator) -->
+      <article class="sub-article-card">
+        <div class="sub-img-wrap">
+          <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop&q=80" alt="Code" />
+        </div>
+        <div class="sub-body">
+          <div class="triple-indicator">
+            <span class="triple-pill" style="background:#A855F7;"></span>
+            <span class="triple-pill" style="background:#A855F7;"></span>
+            <span class="triple-pill" style="background:#A855F7;"></span>
+          </div>
+          <div class="sub-text-content">
+            <div>
+              <div class="sub-kicker" style="color:#A855F7;">Developer Tools</div>
+              <h3 class="sub-title">Agentic IDEs: The Sunset of Traditional Autocomplete</h3>
+            </div>
+            <div class="sub-meta">By Julianne Reyes · 5 min read</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 2: Robotics (Amber/Yellow Indicator) -->
+      <article class="sub-article-card">
+        <div class="sub-img-wrap">
+          <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&auto=format&fit=crop&q=80" alt="Robotics" />
+        </div>
+        <div class="sub-body">
+          <div class="triple-indicator">
+            <span class="triple-pill" style="background:#F59E0B;"></span>
+            <span class="triple-pill" style="background:#F59E0B;"></span>
+            <span class="triple-pill" style="background:#F59E0B;"></span>
+          </div>
+          <div class="sub-text-content">
+            <div>
+              <div class="sub-kicker" style="color:#F59E0B;">Robotics & AI</div>
+              <h3 class="sub-title">Humanoid Vision-Action Models Demonstrate Zero-Shot Factory Tasks</h3>
+            </div>
+            <div class="sub-meta">By Alex Thorne · 7 min read</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 3: Space / Quantum (Green/Cyan Indicator) -->
+      <article class="sub-article-card">
+        <div class="sub-img-wrap">
+          <img src="https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?w=600&auto=format&fit=crop&q=80" alt="Satellite" />
+        </div>
+        <div class="sub-body">
+          <div class="triple-indicator">
+            <span class="triple-pill" style="background:#10B981;"></span>
+            <span class="triple-pill" style="background:#10B981;"></span>
+            <span class="triple-pill" style="background:#10B981;"></span>
+          </div>
+          <div class="sub-text-content">
+            <div>
+              <div class="sub-kicker" style="color:#10B981;">Quantum & Space</div>
+              <h3 class="sub-title">Orbital Optical Laser Mesh Connects Ground Datacenters at 100Gbps</h3>
+            </div>
+            <div class="sub-meta">By Sarah Vance · 4 min read</div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       PERSISTENT AUDIO DOCK
+       ======================================================================== -->
+  <div class="podcast-dock">
+    <div class="dock-inner">
+      <div class="dock-track-info">
+        <div class="dock-art"><i class="bi bi-mic-fill"></i></div>
+        <div>
+          <div class="dock-title">Lex Fridman Podcast #419 — Sam Altman: OpenAI, GPT-5 &amp; AGI</div>
+          <div class="dock-sub">Lex Fridman &amp; Sam Altman · 2 hr 18 min</div>
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:0.75rem;">
+        <span style="font-size:0.75rem; font-family:var(--font-mono); color:var(--text-muted);">48:20 / 2:18:00</span>
+        <a href="https://open.spotify.com/episode/5dKfZ1i9u9H9Gk5W0f1cQY" target="_blank" rel="noopener" class="dock-play-btn" aria-label="Play on Spotify"><i class="bi bi-play-fill"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       SCRIPT CONTROLLER
+       ======================================================================== -->
+  <script>
+    function setFigmaTheme(themeName) {
+      document.documentElement.setAttribute('data-theme', themeName);
+      document.querySelectorAll('.demo-btn').forEach(btn => btn.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+    }
+
+    function toggleColorMode() {
+      const currentMode = document.documentElement.getAttribute('data-mode') || 'dark';
+      const nextMode = currentMode === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-mode', nextMode);
+      
+      const icon = document.getElementById('mode-icon');
+      const text = document.getElementById('mode-text');
+      if (nextMode === 'light') {
+        icon.className = 'bi bi-moon-stars';
+        text.textContent = 'Dark';
+      } else {
+        icon.className = 'bi bi-sun-fill';
+        text.textContent = 'Light';
+      }
+    }
+
+    function toggleDirection() {
+      const currentDir = document.documentElement.getAttribute('dir') || 'ltr';
+      const nextDir = currentDir === 'ltr' ? 'rtl' : 'ltr';
+      document.documentElement.setAttribute('dir', nextDir);
+      
+      const dirText = document.getElementById('dir-text');
+      if (nextDir === 'rtl') {
+        dirText.textContent = 'English (LTR)';
+      } else {
+        dirText.textContent = 'עברית (RTL)';
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,233 +1,418 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-mode="dark">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Profile - TrendingTech Daily</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Profile — TrendingTech Daily</title>
 
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Sans:wght@400;600&family=Fira+Code&display=swap" rel="stylesheet">
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
 
-    <link rel="stylesheet" href="styles.css"> <link rel="stylesheet" href="css/signup-styles.css"> <link rel="stylesheet" href="css/profile-styles.css"> <link rel="icon" href="/favicon.ico" sizes="any">
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <link rel="stylesheet" href="/css/cookie-consent.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!-- Master Stylesheet (Figma Tech News System) -->
+  <link rel="stylesheet" href="/styles.css">
+
+  <!-- Icons -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <style>
+    /* High Contrast & Figma Obsidian Theme Enforcement */
+    body {
+      background-color: var(--bg-page, #090A0E) !important;
+      color: #FFFFFF !important;
+    }
+    .card {
+      background-color: var(--bg-surface, #111319) !important;
+      border: 1px solid var(--border-color, #1E2330) !important;
+      color: #FFFFFF !important;
+    }
+    .card-body, .card-header {
+      color: #FFFFFF !important;
+    }
+    .text-main, #profile-display-name, h1, h2, h3, h4, h5, h6 {
+      color: #FFFFFF !important;
+    }
+    #profile-bio {
+      color: #E2E8F0 !important;
+      font-size: 0.95rem !important;
+    }
+    .text-muted, #profile-email, #profile-joined {
+      color: #94A3B8 !important;
+    }
+    #saved-articles-list a, #read-history-list a {
+      color: #FFFFFF !important;
+      font-weight: 500 !important;
+      text-decoration: none !important;
+      transition: color 0.15s ease;
+    }
+    #saved-articles-list a:hover, #read-history-list a:hover {
+      color: #E63946 !important;
+    }
+    .form-check-label {
+      color: #F8FAFC !important;
+      font-weight: 600 !important;
+    }
+    .form-switch .form-check-input:checked {
+      background-color: #E63946 !important;
+      border-color: #E63946 !important;
+    }
+    .modal-content {
+      background-color: #111319 !important;
+      color: #FFFFFF !important;
+      border: 1px solid #1E2330 !important;
+    }
+    .modal-header, .modal-footer {
+      border-color: #1E2330 !important;
+    }
+    .form-control {
+      background-color: #1B1E29 !important;
+      border-color: #333D52 !important;
+      color: #FFFFFF !important;
+    }
+    .form-control:focus {
+      background-color: #1B1E29 !important;
+      border-color: #E63946 !important;
+      color: #FFFFFF !important;
+    }
+  </style>
 </head>
 <body>
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ"
-        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <div id="navbar-placeholder">
-        </div>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
-    <div class="auth-page-container profile-page-container">
-        <main class="container mt-4 mb-5">
-            <div class="row justify-content-center">
-                <div class="col-lg-10 col-xl-8">
-                    <h1 class="mb-4 profile-main-title">My Profile</h1>
+  <!-- Global Navbar Placeholder -->
+  <div id="navbar-placeholder"></div>
 
-                    <div id="profile-loading" class="text-center p-5">
-                        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                        <p class="text-muted mt-2">Loading profile...</p>
-                    </div>
-
-                    <div id="profile-content" style="display: none;">
-                        <div class="card shadow-sm mb-4 profile-card profile-header-card">
-                            <div class="card-body">
-                                <div class="d-flex flex-column flex-sm-row align-items-center">
-                                    <div class="position-relative mb-3 mb-sm-0 me-sm-3 profile-pic-wrapper">
-                                        <img id="profile-pic" src="/img/default-avatar.png" alt="Profile Picture" class="rounded-circle profile-avatar">
-                                        <button type="button" id="change-profile-pic-btn" class="btn btn-sm btn-light position-absolute bottom-0 end-0 rounded-circle profile-pic-edit-btn" title="Change Picture" data-bs-toggle="modal" data-bs-target="#profilePicModal">
-                                            <i class="bi bi-camera-fill"></i>
-                                        </button>
-                                    </div>
-                                    <div class="flex-grow-1 text-center text-sm-start">
-                                        <div class="d-flex align-items-center justify-content-center justify-content-sm-start">
-                                            <h3 id="profile-display-name" class="mb-0 profile-user-name">Loading...</h3>
-                                            <button type="button" class="btn btn-sm text-primary ms-2 p-0 edit-icon-btn" title="Edit Display Name" data-bs-toggle="modal" data-bs-target="#displayNameModal">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </button>
-                                        </div>
-                                        <p id="profile-email" class="text-muted mb-0 profile-user-email">Loading...</p>
-                                        <p id="profile-joined" class="text-muted small mb-0 profile-user-joined">Joined: Loading...</p>
-                                    </div>
-                                </div>
-                                <hr class="my-3">
-                                <div class="d-flex align-items-start mt-3">
-                                    <div id="bio-container" class="flex-grow-1 profile-bio-text">
-                                        <p id="profile-bio" class="mb-0">Loading bio...</p>
-                                    </div>
-                                    <button type="button" class="btn btn-sm text-primary ms-2 p-0 edit-icon-btn" title="Edit Bio" data-bs-toggle="modal" data-bs-target="#bioModal">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </button>
-                                </div>
-                                <button id="profile-logout-btn" class="btn btn-sm btn-outline-danger mt-4">Logout</button>
-                            </div>
-                        </div>
-
-                        <div class="card shadow-sm mb-4 profile-card">
-                            <div class="card-header profile-card-header">Saved Articles</div>
-                            <div class="card-body">
-                                <div id="saved-articles-list" class="profile-activity-list">Loading saved articles...</div>
-                            </div>
-                        </div>
-
-                        <div class="card shadow-sm mb-4 profile-card">
-                            <div class="card-header profile-card-header">Recently Read</div>
-                            <div class="card-body">
-                                <div id="read-history-list" class="profile-activity-list">Loading read history...</div>
-                            </div>
-                        </div>
-
-                        <div class="card shadow-sm mb-4 profile-card">
-                            <div class="card-header profile-card-header">My Comments</div>
-                            <div class="card-body">
-                                <div id="my-comments-list" class="profile-activity-list">Loading comments...</div>
-                            </div>
-                        </div>
-
-                        <div class="card shadow-sm mb-4 profile-card">
-                            <div class="card-header profile-card-header d-flex justify-content-between align-items-center">
-                                <span>Stock Watchlist</span>
-                                <a href="/stock-data.html" class="btn btn-sm btn-outline-primary">View Market Data</a>
-                            </div>
-                            <div class="card-body">
-                                <div id="stock-watchlist-loading" class="text-center py-3" style="display: none;">
-                                    <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-                                    <span class="text-muted ms-2">Loading watchlist...</span>
-                                </div>
-                                <div id="stock-watchlist-content" class="profile-activity-list"></div>
-                            </div>
-                        </div>
-
-                        <div class="card shadow-sm mb-4 profile-card">
-                            <div class="card-header profile-card-header">Newsletter Subscription</div>
-                            <div class="card-body">
-                                <p class="text-muted small mb-3">Get the top tech news delivered to your inbox every Friday.</p>
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" id="newsletter-en-toggle">
-                                    <label class="form-check-label" for="newsletter-en-toggle">Subscribe to English Newsletter</label>
-                                </div>
-                                <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" id="newsletter-he-toggle">
-                                    <label class="form-check-label" for="newsletter-he-toggle">Subscribe to Hebrew Newsletter (עברית)</label>
-                                </div>
-                                <button id="save-newsletter-btn" class="btn btn-sm btn-primary">Save Preferences</button>
-                                <span id="newsletter-feedback" class="ms-2 small"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="profile-error" class="alert alert-danger mt-4" style="display: none;"></div>
-                </div>
-            </div>
-        </main>
+  <!-- Main Profile Page Container -->
+  <main class="container my-4 my-md-5">
+    
+    <!-- Profile Page Loading Spinner -->
+    <div id="profile-loading" class="text-center py-5">
+      <div class="spinner-border text-danger" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="text-muted mt-3" style="font-family:var(--font-mono); font-size:0.9rem;">Connecting to your profile...</p>
     </div>
 
-    <div class="modal fade" id="profilePicModal" tabindex="-1" aria-labelledby="profilePicModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content auth-modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="profilePicModalLabel">Change Profile Picture</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="profile-pic-form">
-                        <div class="mb-3">
-                            <label for="profile-pic-upload" class="form-label">Select new picture (max 5MB, JPG/PNG)</label>
-                            <input class="form-control" type="file" id="profile-pic-upload" accept="image/jpeg, image/png, image/gif">
-                        </div>
-                        <div id="profile-pic-preview-container" class="mb-3 text-center" style="display: none;">
-                            <img id="profile-pic-preview" src="#" alt="Preview" class="rounded-circle" style="width: 120px; height: 120px; object-fit: cover; border: 2px solid #eee;">
-                        </div>
-                        <div id="profile-pic-feedback" class="form-message"></div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" id="save-profile-pic-btn" class="btn btn-primary auth-submit-btn">
-                        <span id="profile-pic-spinner" class="spinner-border spinner-border-sm d-none me-1" role="status"></span>
-                        Save Picture
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Error Alert Container -->
+    <div id="profile-error" class="alert alert-danger my-4 d-none" role="alert"></div>
 
-    <div class="modal fade" id="displayNameModal" tabindex="-1" aria-labelledby="displayNameModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content auth-modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="displayNameModalLabel">Edit Display Name</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="display-name-form">
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="edit-display-name" placeholder="Your Name" required maxlength="50">
-                            <label for="edit-display-name">Display Name</label>
-                        </div>
-                        <div id="display-name-feedback" class="form-message"></div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" id="save-display-name-btn" class="btn btn-primary auth-submit-btn">
-                        <span id="display-name-spinner" class="spinner-border spinner-border-sm d-none me-1" role="status"></span>
-                        Save Name
-                    </button>
-                </div>
-            </div>
+    <!-- Main Profile Content (Revealed upon auth resolution) -->
+    <div id="profile-content" class="d-none">
+      
+      <!-- Top User Identity Card -->
+      <div class="card mb-4" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); overflow:hidden;">
+        <div style="height:110px; background:linear-gradient(135deg, rgba(230,57,70,0.3) 0%, rgba(15,16,23,0.9) 100%); border-bottom:1px solid var(--border-color); position:relative;">
+          <span class="badge badge-ai" style="position:absolute; top:16px; inset-inline-end:16px;" id="profile-role-badge">MEMBER</span>
         </div>
-    </div>
+        <div class="card-body p-4 pt-0">
+          <div class="d-flex flex-column flex-md-row align-items-center align-items-md-end justify-content-between gap-3" style="margin-top:-50px;">
+            
+            <!-- User Avatar with Edit Overlay -->
+            <div class="d-flex align-items-center gap-3 flex-column flex-md-row text-center text-md-start">
+              <div class="position-relative" style="width:96px; height:96px;">
+                <img id="profile-pic" src="/img/default-avatar.png" alt="Avatar" style="width:96px; height:96px; border-radius:50%; object-fit:cover; border:4px solid var(--bg-surface); background:#000; box-shadow:var(--shadow-md);">
+                <button type="button" id="change-profile-pic-btn" class="btn btn-sm btn-dark position-absolute bottom-0 end-0 rounded-circle p-1" title="Change Avatar" data-bs-toggle="modal" data-bs-target="#profilePicModal" style="width:30px; height:30px; border:1px solid var(--border-color);">
+                  <i class="bi bi-camera-fill" style="font-size:0.75rem;"></i>
+                </button>
+              </div>
 
-    <div class="modal fade" id="bioModal" tabindex="-1" aria-labelledby="bioModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content auth-modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="bioModalLabel">Edit Bio</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <div>
+                <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2">
+                  <h1 id="profile-display-name" style="font-family:var(--font-display); font-size:1.75rem; font-weight:800; margin-bottom:0; color:var(--text-main);">
+                    User
+                  </h1>
+                  <button type="button" class="btn-icon btn-sm" title="Edit Display Name" data-bs-toggle="modal" data-bs-target="#displayNameModal">
+                    <i class="bi bi-pencil-square" style="color:var(--text-muted);"></i>
+                  </button>
                 </div>
-                <div class="modal-body">
-                    <form id="bio-form">
-                        <div class="form-floating mb-3">
-                            <textarea class="form-control" id="edit-bio" placeholder="Tell us about yourself (max 250 characters)" style="height: 150px" maxlength="250"></textarea>
-                            <label for="edit-bio">Bio (Optional)</label>
-                        </div>
-                        <div id="bio-feedback" class="form-message"></div>
-                    </form>
+                <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-3 mt-1 text-muted" style="font-family:var(--font-mono); font-size:0.8125rem;">
+                  <span id="profile-email">email@example.com</span>
+                  <span>·</span>
+                  <span id="profile-joined">Joined: August 2026</span>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" id="save-bio-btn" class="btn btn-primary auth-submit-btn">
-                        <span id="bio-spinner" class="spinner-border spinner-border-sm d-none me-1" role="status"></span>
-                        Save Bio
-                    </button>
-                </div>
+              </div>
             </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex align-items-center gap-2">
+              <a href="/admin/dashboard.html" class="btn btn-outline-danger btn-sm d-none" id="profile-admin-btn">
+                <i class="bi bi-shield-lock me-1"></i> Admin Dashboard
+              </a>
+              <button id="profile-logout-btn" class="btn btn-secondary btn-sm">
+                <i class="bi bi-box-arrow-right me-1"></i> Sign Out
+              </button>
+            </div>
+          </div>
+
+          <!-- Bio Section -->
+          <div class="mt-4 pt-3 border-top" style="border-color:var(--border-color) !important;">
+            <div class="d-flex align-items-start justify-content-between">
+              <div>
+                <span class="text-muted small fw-bold" style="font-family:var(--font-mono); font-size:0.75rem; text-transform:uppercase;">Bio &amp; Interests</span>
+                <p id="profile-bio" class="mb-0 mt-1" style="font-size:0.95rem; color:var(--text-secondary); line-height:1.6;">
+                  No bio added yet. Tell the tech community about your interests and stack!
+                </p>
+              </div>
+              <button type="button" class="btn-icon btn-sm" title="Edit Bio" data-bs-toggle="modal" data-bs-target="#bioModal">
+                <i class="bi bi-pencil-square" style="color:var(--text-muted);"></i>
+              </button>
+            </div>
+          </div>
         </div>
-    </div>
-    <div id="footer-placeholder">
+      </div>
+
+      <!-- Bento Grid Rows: Activity & Settings -->
+      <div class="row g-4 mb-4">
+        
+        <!-- Left 60%: Saved Bookmarks & History -->
+        <div class="col-12 col-lg-7">
+          
+          <!-- Saved Articles Section -->
+          <div class="card mb-4" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-md);">
+            <div class="card-header d-flex align-items-center justify-content-between py-3" style="background:transparent; border-bottom:1px solid var(--border-color);">
+              <h2 style="font-family:var(--font-display); font-size:1.25rem; font-weight:800; margin:0; color:var(--text-main);">
+                <i class="bi bi-bookmark-fill text-danger me-2"></i>Saved Articles &amp; Bookmarks
+              </h2>
+            </div>
+            <div class="card-body p-3" id="saved-articles-container">
+              <div id="saved-articles-list">
+                <p class="text-muted small fst-italic mb-0">No bookmarked articles yet. Click the bookmark icon on any article to save it here.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reading History Section -->
+          <div class="card mb-4" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-md);">
+            <div class="card-header d-flex align-items-center justify-content-between py-3" style="background:transparent; border-bottom:1px solid var(--border-color);">
+              <h2 style="font-family:var(--font-display); font-size:1.25rem; font-weight:800; margin:0; color:var(--text-main);">
+                <i class="bi bi-clock-history text-danger me-2"></i>Recently Read
+              </h2>
+            </div>
+            <div class="card-body p-3" id="read-history-container">
+              <div id="read-history-list">
+                <p class="text-muted small fst-italic mb-0">Your recently read articles will appear here.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Comments Left -->
+          <div class="card" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-md);">
+            <div class="card-header d-flex align-items-center justify-content-between py-3" style="background:transparent; border-bottom:1px solid var(--border-color);">
+              <h2 style="font-family:var(--font-display); font-size:1.25rem; font-weight:800; margin:0; color:var(--text-main);">
+                <i class="bi bi-chat-left-text-fill text-danger me-2"></i>My Discussion Comments
+              </h2>
+            </div>
+            <div class="card-body p-3" id="my-comments-container">
+              <div id="my-comments-list">
+                <p class="text-muted small fst-italic mb-0">You haven't participated in article discussions yet.</p>
+              </div>
+            </div>
+          </div>
+
         </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/js/app-base.js"></script>
-    <script src="/js/auth.js"></script>
-    <script src="/js/profile.js"></script>
-    <script src="/js/nav-loader.js"></script>
-  <script src="/js/cookie-consent.js" defer></script>
+        <!-- Right 40%: Watchlist & Newsletter Subscriptions -->
+        <div class="col-12 col-lg-5">
+          
+          <!-- Stock Market Watchlist -->
+          <div class="card mb-4" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-md);">
+            <div class="card-header d-flex align-items-center justify-content-between py-3" style="background:transparent; border-bottom:1px solid var(--border-color);">
+              <h2 style="font-family:var(--font-display); font-size:1.25rem; font-weight:800; margin:0; color:var(--text-main);">
+                <i class="bi bi-graph-up-arrow text-danger me-2"></i>Tech Equities Watchlist
+              </h2>
+              <a href="/stock-data.html" class="btn btn-outline-danger btn-sm" style="font-size:0.75rem;">Markets Hub →</a>
+            </div>
+            <div class="card-body p-3">
+              <div id="stock-watchlist-content">
+                <div class="d-flex align-items-center justify-content-between py-2 border-bottom" style="border-color:var(--border-color) !important;">
+                  <div>
+                    <span class="fw-bold text-main">NVDA</span>
+                    <span class="text-muted small d-block">NVIDIA Corp</span>
+                  </div>
+                  <div class="text-end">
+                    <span class="fw-bold text-success">$138.25</span>
+                    <span class="badge bg-success-subtle text-success small d-block">+3.12%</span>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-between py-2 border-bottom" style="border-color:var(--border-color) !important;">
+                  <div>
+                    <span class="fw-bold text-main">AAPL</span>
+                    <span class="text-muted small d-block">Apple Inc</span>
+                  </div>
+                  <div class="text-end">
+                    <span class="fw-bold text-success">$234.80</span>
+                    <span class="badge bg-success-subtle text-success small d-block">+1.45%</span>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-between py-2">
+                  <div>
+                    <span class="fw-bold text-main">BTC</span>
+                    <span class="text-muted small d-block">Bitcoin</span>
+                  </div>
+                  <div class="text-end">
+                    <span class="fw-bold text-success">$96,400</span>
+                    <span class="badge bg-success-subtle text-success small d-block">+2.80%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Newsletter Intelligence Subscriptions -->
+          <div class="card" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-md);">
+            <div class="card-header py-3" style="background:transparent; border-bottom:1px solid var(--border-color);">
+              <h2 style="font-family:var(--font-display); font-size:1.25rem; font-weight:800; margin:0; color:var(--text-main);">
+                <i class="bi bi-envelope-check-fill text-danger me-2"></i>Weekly Digest Subscriptions
+              </h2>
+            </div>
+            <div class="card-body p-3">
+              <p class="text-muted small mb-3">
+                Curated architectural breakdowns, agent innovations, and tech equity trends delivered to your inbox every Friday.
+              </p>
+              
+              <div class="form-check form-switch mb-3 p-3 rounded" style="background:var(--bg-surface-elevated); border:1px solid var(--border-color);">
+                <input class="form-check-input ms-0 me-3" type="checkbox" id="newsletter-en-toggle" checked>
+                <label class="form-check-label fw-bold text-main" for="newsletter-en-toggle">
+                  English Weekly Intelligence
+                  <span class="text-muted fw-normal d-block small">Top foundation models, chips, and dev tools.</span>
+                </label>
+              </div>
+
+              <div class="form-check form-switch mb-3 p-3 rounded" style="background:var(--bg-surface-elevated); border:1px solid var(--border-color);">
+                <input class="form-check-input ms-0 me-3" type="checkbox" id="newsletter-he-toggle">
+                <label class="form-check-label fw-bold text-main" for="newsletter-he-toggle">
+                  Hebrew Weekly Digest (עברית)
+                  <span class="text-muted fw-normal d-block small">סיכום שבועי של חדשות הטכנולוגיה וה-AI.</span>
+                </label>
+              </div>
+
+              <button id="save-newsletter-btn" class="btn btn-subscribe btn-sm w-100">
+                Save Preferences
+              </button>
+              <div id="newsletter-feedback" class="small text-center mt-2"></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       MODALS
+       ======================================================================== -->
+  
+  <!-- 1. Change Profile Picture Modal -->
+  <div class="modal fade" id="profilePicModal" tabindex="-1" aria-labelledby="profilePicModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="background:var(--bg-surface); border:1px solid var(--border-color); color:var(--text-main);">
+        <div class="modal-header" style="border-bottom:1px solid var(--border-color);">
+          <h5 class="modal-title fw-bold" id="profilePicModalLabel">Change Profile Picture</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="profile-pic-form">
+            <div class="mb-3">
+              <label for="profile-pic-upload" class="form-label small text-muted">Upload Image File (JPG/PNG, Max 5MB)</label>
+              <input class="form-control" type="file" id="profile-pic-upload" accept="image/jpeg, image/png, image/webp">
+            </div>
+            <div class="mb-3">
+              <label for="profile-pic-url-input" class="form-label small text-muted">Or Paste Image URL</label>
+              <input class="form-control" type="url" id="profile-pic-url-input" placeholder="https://example.com/avatar.jpg">
+            </div>
+            <div id="profile-pic-feedback" class="small"></div>
+          </form>
+        </div>
+        <div class="modal-footer" style="border-top:1px solid var(--border-color);">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" id="save-profile-pic-btn" class="btn btn-subscribe btn-sm">Save Picture</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Edit Display Name Modal -->
+  <div class="modal fade" id="displayNameModal" tabindex="-1" aria-labelledby="displayNameModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="background:var(--bg-surface); border:1px solid var(--border-color); color:var(--text-main);">
+        <div class="modal-header" style="border-bottom:1px solid var(--border-color);">
+          <h5 class="modal-title fw-bold" id="displayNameModalLabel">Edit Display Name</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="display-name-form">
+            <div class="mb-3">
+              <label for="edit-display-name" class="form-label small text-muted">Display Name</label>
+              <input type="text" class="form-control" id="edit-display-name" required maxlength="50">
+            </div>
+            <div id="display-name-feedback" class="small"></div>
+          </form>
+        </div>
+        <div class="modal-footer" style="border-top:1px solid var(--border-color);">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" id="save-display-name-btn" class="btn btn-subscribe btn-sm">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Edit Bio Modal -->
+  <div class="modal fade" id="bioModal" tabindex="-1" aria-labelledby="bioModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="background:var(--bg-surface); border:1px solid var(--border-color); color:var(--text-main);">
+        <div class="modal-header" style="border-bottom:1px solid var(--border-color);">
+          <h5 class="modal-title fw-bold" id="bioModalLabel">Edit Bio</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="bio-form">
+            <div class="mb-3">
+              <label for="edit-bio" class="form-label small text-muted">About You (Max 300 characters)</label>
+              <textarea class="form-control" id="edit-bio" rows="4" maxlength="300" placeholder="Software engineer, AI researcher, tech enthusiast..."></textarea>
+            </div>
+            <div id="bio-feedback" class="small"></div>
+          </form>
+        </div>
+        <div class="modal-footer" style="border-top:1px solid var(--border-color);">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" id="save-bio-btn" class="btn btn-subscribe btn-sm">Save Bio</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/js/config.js?v=20260819_5"></script>
+  <script src="/js/auth.js?v=20260819_5"></script>
+  <script src="/js/nav-loader.js?v=20260819_5"></script>
+  <script src="/js/app-base.js?v=20260819_5"></script>
+  <script src="/js/profile.js?v=20260819_5"></script>
+  <script src="/js/cookie-consent.js?v=20260819_5" defer></script>
 </body>
 </html>

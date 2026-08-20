@@ -1,248 +1,146 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he" dir="rtl" data-mode="dark">
 <head>
-  <!-- Google Tag Manager -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5VF5QF9ZCJ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag("js", new Date());
+    gtag("config", "G-5VF5QF9ZCJ");
+  </script>
 
-  <meta charset="UTF-8" />
-  <meta name="google-site-verification" content="AAJy5uWJtM-PEQ6kOZCAiIQuO3CijcFc6DYM7dNYEVY" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>מדיניות פרטיות | TrendingTech Daily</title>
-  <meta name="description" content="מדיניות הפרטיות של TrendingTech Daily — כיצד אנו אוספים, משתמשים ומגנים על המידע שלך." />
-  <link rel="canonical" href="https://trendingtechdaily.com/he/privacy" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מדיניות פרטיות — TrendingTech Daily</title>
+  <meta name="description" content="מדיניות הפרטיות של TrendingTech Daily — כיצד אנו אוספים, משתמשים ומגנים על המידע האישי שלך."/>
+  <link rel="canonical" href="https://trendingtechdaily.com/he/privacy"/>
+  <link rel="alternate" hreflang="en" href="https://trendingtechdaily.com/privacy"/>
+  <link rel="alternate" hreflang="he" href="https://trendingtechdaily.com/he/privacy"/>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js" defer></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js" defer></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js" defer></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Rubik:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
+  <!-- Master Unified Stylesheet -->
+  <link rel="stylesheet" href="/he/styles.css">
 
-  <!-- Google Fonts - Heebo -->
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="/he/styles.css" />
-  <link rel="stylesheet" href="/css/cookie-consent.css" />
-
-  <link rel="icon" href="/favicon.ico" sizes="any" />
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-
-  <style>
-    body { font-family: 'Heebo', sans-serif; }
-    .he-page-hero {
-      background: linear-gradient(135deg, #1A1A2E 0%, #16213e 60%, #0f3460 100%);
-      color: #fff;
-      padding: 4rem 0 3rem;
-      margin-bottom: 3rem;
-    }
-    .he-page-hero h1 { font-weight: 900; font-size: 2.4rem; }
-    .he-page-hero p { color: #cbd5e1; font-size: 1.05rem; }
-    .content-card {
-      background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
-      padding: 2rem 2.5rem;
-      margin-bottom: 2rem;
-    }
-    .content-card h2 {
-      font-weight: 700;
-      font-size: 1.2rem;
-      color: #1A1A2E;
-      border-right: 4px solid #6366f1;
-      padding-right: 0.75rem;
-      margin-bottom: 1rem;
-    }
-    .content-card p, .content-card li { color: #374151; line-height: 1.8; }
-    .content-card ul { padding-right: 1.25rem; }
-    .last-updated {
-      background: #f8faff;
-      border: 1px solid #e0e7ff;
-      border-radius: 8px;
-      padding: 0.6rem 1rem;
-      font-size: 0.85rem;
-      color: #6366f1;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      margin-bottom: 2rem;
-    }
-    .he-footer {
-      background: #1A1A2E;
-      color: #aaa;
-      padding: 3rem 0 1.5rem;
-      margin-top: 3rem;
-      font-size: 0.9rem;
-    }
-    .he-footer h5 { color: #fff; font-weight: 700; margin-bottom: 1rem; }
-    .he-footer a { color: #aaa; text-decoration: none; }
-    .he-footer a:hover { color: #fff; }
-    .he-footer ul { list-style: none; padding: 0; margin: 0; }
-    .he-footer ul li { margin-bottom: 0.4rem; }
-    .he-footer .copyright { border-top: 1px solid #333; padding-top: 1rem; margin-top: 2rem; text-align: center; color: #666; }
-  </style>
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 </head>
 <body>
-  <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ"
-  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <!-- Navbar Placeholder -->
   <div id="navbar-placeholder"></div>
 
-  <!-- Hero -->
-  <div class="he-page-hero">
-    <div class="container text-center">
-      <h1><i class="bi bi-shield-check me-2"></i>מדיניות פרטיות</h1>
-      <p class="mb-0">כיצד TrendingTech Daily אוספת, משתמשת ומגנה על המידע האישי שלך</p>
+  <!-- Page Content: Privacy Policy -->
+  <main class="container my-5" style="max-width: 860px;">
+    
+    <div class="card p-4 p-md-5" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); box-shadow:var(--shadow-md);">
+      <div class="d-flex align-items-center gap-2 mb-3">
+        <span class="badge badge-security">משפטי ופרטיות</span>
+      </div>
+
+      <h1 class="hero-main-title" style="font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1.5rem;">מדיניות פרטיות</h1>
+
+      <div style="font-size: 1.025rem; line-height: 1.8; color: var(--text-secondary);" class="d-flex flex-column gap-3">
+        <p>
+          מדיניות פרטיות זו מסבירה כיצד <strong>TrendingTech Daily</strong> אוספת, משתמשת ומגינה על המידע האישי שלך. השימוש באתר מהווה הסכמה לתנאים המפורטים להלן.
+        </p>
+
+        <h2 style="font-family:var(--font-display); font-size:1.5rem; font-weight:800; color:var(--text-main); margin-top:1rem;">המידע שאנו אוספים</h2>
+        <ul style="padding-right:1.25rem;">
+          <li>מזהים אישיים (כגון שם, כתובת דוא"ל) הנמסרים בעת הרשמה או פנייה אלינו.</li>
+          <li>נתוני שימוש, כגון דפים שנצפו, משך השהייה באתר ואינטראקציה עם רכיבי וידאו ושירותי YouTube.</li>
+          <li>מידע על המכשיר והדפדפן באמצעות עוגיות (Cookies) וטכנולוגיות דומות.</li>
+        </ul>
+
+        <h2 style="font-family:var(--font-display); font-size:1.5rem; font-weight:800; color:var(--text-main); margin-top:1rem;">כיצד אנו משתמשים במידע שלך</h2>
+        <p>המידע מסייע לנו:</p>
+        <ul style="padding-right:1.25rem;">
+          <li>לספק ולהתאים אישית תכנים, לרבות הטמעת סרטוני וידאו.</li>
+          <li>לשפר ולתחזק את האתר, הביצועים והשירותים.</li>
+          <li>להציג תוכן ופרסום של צדדים שלישיים באמצעות שירותי API משולבים.</li>
+          <li>לשתף נתונים אנליטיים מצטברים עם צוותינו הפנימיים וספקי שירות.</li>
+        </ul>
+
+        <h2 style="font-family:var(--font-display); font-size:1.5rem; font-weight:800; color:var(--text-main); margin-top:1rem;">שימוש בשירותי YouTube API</h2>
+        <p>
+          אנו משתמשים בשירותי YouTube API לצורך הטמעת סרטונים והמלצות תוכן. השימוש כפוף ל-<a href="https://developers.google.com/youtube/terms/api-services-terms-of-service" target="_blank" rel="noopener" style="color:var(--accent-red); font-weight:700;">תנאי השירות של YouTube API</a>. צפייה בסרטונים באתר מהווה הסכמה לשילוב זה.
+        </p>
+
+        <h2 style="font-family:var(--font-display); font-size:1.5rem; font-weight:800; color:var(--text-main); margin-top:1rem;">תוכן ופרסום של צדדים שלישיים</h2>
+        <p>
+          אנו עשויים לאפשר לגורמי צד שלישי (כגון רשתות פרסום) להציג תכנים ומודעות באתר. שותפים אלה עשויים לעשות שימוש בקובצי עוגיות לאיסוף מידע אודות השימוש באתרים שונים.
+        </p>
+
+        <h2 style="font-family:var(--font-display); font-size:1.5rem; font-weight:800; color:var(--text-main); margin-top:1rem;">קובצי עוגיות וטכנולוגיות מעקב</h2>
+        <p>
+          אנו ושותפינו עשויים לאחסן מידע במכשירכם באמצעות קובצי עוגיות כדי לשפר את חוויית המשתמש. באפשרותכם לנהל או לחסום קובצי עוגיות בהגדרות הדפדפן שלכם, אך הדבר עשוי להשפיע על תפקוד חלק מהתכונות.
+        </p>
+
+        <h2 style="font-family:var(--font-display); font-size:1.5rem; font-weight:800; color:var(--text-main); margin-top:1rem;">שיתוף מידע</h2>
+        <p>אנו עשויים לשתף מידע עם:</p>
+        <ul style="padding-right:1.25rem;">
+          <li><strong>צוותים פנימיים:</strong> לצורכי ניתוח, תמיכה ופיתוח האתר.</li>
+          <li><strong>ספקי שירותים:</strong> כגון שרתי אירוח, שירותי אנליטיקה ופלטפורמות ענן.</li>
+          <li><strong>רשויות חוק:</strong> אם הדבר נדרש על פי דין או להגנה על זכויותינו.</li>
+        </ul>
+
+        <h2 style="font-family:var(--font-display); font-size:1.5rem; font-weight:800; color:var(--text-main); margin-top:1rem;">הזכויות שלך</h2>
+        <p>
+          הנכם זכאים לעיין במידע האישי שלכם, לעדכנו או לבקש את מחיקתו. למימוש זכויות אלו או לכל שאלה, אנא פנו אלינו בדוא"ל <a href="mailto:info@trendingtechdaily.com" style="color:var(--accent-red); font-weight:700;">info@trendingtechdaily.com</a> או דרך <a href="/contact.html" style="color:var(--accent-red); font-weight:700;">טופס יצירת הקשר</a>.
+        </p>
+
+        <p class="text-muted small mt-2">
+          למידע נוסף על האופן שבו Google מעבדת נתונים, עיינו ב-<a href="https://policies.google.com/privacy" target="_blank" rel="noopener" style="color:var(--text-muted); text-decoration:underline;">מדיניות הפרטיות של Google</a>.
+        </p>
+      </div>
+
+      <div class="mt-4 pt-4 border-top" style="border-color:var(--border-color) !important;">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <div class="text-muted small" style="font-family:var(--font-mono);">
+            <i class="bi bi-shield-check ms-1" style="color:#10B981;"></i> עודכן לאחרונה: 2026
+          </div>
+          <a href="/he" class="btn btn-secondary btn-sm">← חזרה לדף הבית</a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Persistent Audio Dock (Real Podcast) -->
+  <div class="podcast-dock" role="region" aria-label="נגן שמע">
+    <div class="container dock-inner">
+      <div class="dock-track-info">
+        <div class="dock-art"><i class="bi bi-mic-fill"></i></div>
+        <div class="dock-meta">
+          <div class="dock-title">הייטק בפקקים — עתיד הבינה המלאכותית בישראל ובעולם</div>
+          <div class="dock-sub">הייטק בפקקים עם אורי טוביאס · 48 דקות</div>
+        </div>
+      </div>
+      <div class="dock-controls">
+        <div class="dock-progress"><div class="dock-progress-bar" style="width:40%;"></div></div>
+        <a href="https://open.spotify.com/show/0zQn0c0lO1EwA9qV5Q4y0K" target="_blank" rel="noopener" class="dock-play-btn" aria-label="הפעל בספוטיפיי"><i class="bi bi-play-fill"></i></a>
+      </div>
     </div>
   </div>
 
-  <main class="container mb-5">
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
 
-        <div class="last-updated">
-          <i class="bi bi-calendar3"></i>
-          עודכן לאחרונה: אפריל 2025
-        </div>
-
-        <!-- Intro -->
-        <div class="content-card">
-          <p>מדיניות פרטיות זו מסבירה כיצד <strong>TrendingTech Daily</strong>, המופעל על ידי <strong>מאיר אוטומציות</strong> (עוסק פטור, מדרגות הכפר 12, ירושלים), אוסף, משתמש ומגן על המידע האישי שלך. בשימוש באתר, אתה מסכים לנוהלים המתוארים להלן.</p>
-        </div>
-
-        <!-- Data collected -->
-        <div class="content-card">
-          <h2><i class="bi bi-database me-2"></i>מידע שאנו אוספים</h2>
-          <ul>
-            <li><strong>פרטים מזהים</strong> — שם וכתובת דוא"ל שאתה מספק בעת ההרשמה או יצירת קשר.</li>
-            <li><strong>נתוני שימוש</strong> — דפים שנצפו, זמן שהייה בדפים ואינטראקציות עם תכונות האתר.</li>
-            <li><strong>נתוני מכשיר ודפדפן</strong> — באמצעות עוגיות (cookies) וטכנולוגיות מעקב דומות.</li>
-            <li><strong>נתוני אימות</strong> — מידע שנשמר בעת כניסה לחשבון דרך Firebase Authentication.</li>
-          </ul>
-        </div>
-
-        <!-- Usage -->
-        <div class="content-card">
-          <h2><i class="bi bi-gear me-2"></i>כיצד אנו משתמשים במידע</h2>
-          <p>המידע שלך מסייע לנו:</p>
-          <ul>
-            <li>לספק ולהתאים אישית תוכן, כולל סרטוני YouTube מוטמעים.</li>
-            <li>לשפר ולתקן תקלות באתר ובשירותים שלנו.</li>
-            <li>להגיש פרסומות ותוכן של צדדים שלישיים דרך שירותי API משולבים.</li>
-            <li>לשתף נתונים מצטברים ואנונימיים עם ספקי שירות חיצוניים.</li>
-          </ul>
-        </div>
-
-        <!-- YouTube API -->
-        <div class="content-card">
-          <h2><i class="bi bi-youtube me-2"></i>שימוש בשירותי YouTube API</h2>
-          <p>אנו משתמשים בשירותי YouTube API להטמעת סרטונים והמלצות תוכן. השימוש שלנו ב-YouTube API כפוף ל<a href="https://developers.google.com/youtube/terms/api-services-terms-of-service" target="_blank" rel="noopener">תנאי שירות YouTube API</a>. בצפייה בסרטונים באתרנו, אתה מסכים לאינטגרציה זו.</p>
-        </div>
-
-        <!-- Third party -->
-        <div class="content-card">
-          <h2><i class="bi bi-megaphone me-2"></i>תוכן ופרסומות של צדדים שלישיים</h2>
-          <p>אנו מאפשרים לצדדים שלישיים (כגון רשתות פרסום) להציג תוכן ופרסומות באתרנו. שותפים אלה עשויים להשתמש בעוגיות או בטכנולוגיות דומות כדי לאסוף מידע על השימוש שלך באתר ובאתרים אחרים.</p>
-        </div>
-
-        <!-- Cookies -->
-        <div class="content-card">
-          <h2><i class="bi bi-cookie me-2"></i>עוגיות וטכנולוגיות דומות</h2>
-          <p>אנו ושותפינו משתמשים בעוגיות, web beacons וטכנולוגיות מעקב נוספות לצורך אספקת, ניתוח ושיפור שירותינו. ניתן לנהל או לבטל עוגיות דרך הגדרות הדפדפן שלך; עם זאת, חלק מהפונקציות עשויות שלא לפעול כראוי ללא עוגיות.</p>
-        </div>
-
-        <!-- Data sharing -->
-        <div class="content-card">
-          <h2><i class="bi bi-share me-2"></i>שיתוף מידע</h2>
-          <p>אנו עשויים לשתף את המידע שלך עם:</p>
-          <ul>
-            <li><strong>צוות פנימי:</strong> לצורך אנליטיקה, תמיכה ותחזוקת האתר.</li>
-            <li><strong>ספקי שירות:</strong> כגון אחסון, אנליטיקה ושותפי פרסום.</li>
-            <li><strong>רשויות חוק:</strong> אם נדרש על פי חוק או להגנה על זכויותינו.</li>
-          </ul>
-        </div>
-
-        <!-- Rights -->
-        <div class="content-card">
-          <h2><i class="bi bi-person-check me-2"></i>הזכויות שלך</h2>
-          <p>יש לך זכות לגשת, לעדכן או למחוק את המידע האישי שלך בכל עת. לממש זכויות אלה או לשאלות כלשהן, אנא פנה אלינו:</p>
-          <p>
-            <i class="bi bi-envelope-fill text-primary me-2"></i>
-            <a href="mailto:info@trendingtechdaily.com">info@trendingtechdaily.com</a>
-          </p>
-          <p>למידע נוסף על אופן טיפול Google במידע שלך, ראה את <a href="http://www.google.com/policies/privacy" target="_blank" rel="noopener">מדיניות הפרטיות של Google</a>.</p>
-        </div>
-
-        <!-- Owner -->
-        <div class="content-card">
-          <h2><i class="bi bi-building me-2"></i>פרטי בעל האתר</h2>
-          <p><strong>מאיר אוטומציות</strong><br>
-          מדרגות הכפר 12, ירושלים, ישראל<br>
-          <a href="mailto:info@trendingtechdaily.com">info@trendingtechdaily.com</a></p>
-        </div>
-
-      </div>
-    </div>
-  </main>
-
-  <!-- Footer -->
-  <footer class="he-footer">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-3 mb-4 mb-md-0">
-          <h5>TrendingTech Daily</h5>
-          <p class="small">חדשות טכנולוגיה, שוק ההון ועולם הדיגיטל — בעברית, כל יום.</p>
-        </div>
-        <div class="col-md-3 mb-4 mb-md-0">
-          <h5>קישורים מהירים</h5>
-          <ul>
-            <li><a href="/he/">ראשי</a></li>
-            <li><a href="/he/shuk-hon">שוק ההון</a></li>
-            <li><a href="/he/podcasts">פודקאסטים</a></li>
-            <li><a href="/he/about">אודות</a></li>
-            <li><a href="/he/privacy">מדיניות פרטיות</a></li>
-            <li><a href="/he/terms">תנאי שימוש</a></li>
-          </ul>
-        </div>
-        <div class="col-md-3 mb-4 mb-md-0">
-          <h5>קטגוריות</h5>
-          <ul>
-            <li><a href="/he/ai">בינה מלאכותית</a></li>
-            <li><a href="/he/technology">טכנולוגיה</a></li>
-            <li><a href="/he/startups">סטארטאפים</a></li>
-            <li><a href="/he/crypto">קריפטו</a></li>
-            <li><a href="/he/shuk-hon">שוק ההון</a></li>
-          </ul>
-        </div>
-        <div class="col-md-3">
-          <h5>צרו קשר</h5>
-          <p class="small">
-            <i class="bi bi-envelope-fill me-1"></i>info@trendingtechdaily.com<br>
-            <i class="bi bi-geo-alt-fill me-1"></i>מדרגות הכפר 12, ירושלים<br>
-            <i class="bi bi-globe me-1"></i><a href="/privacy">English Version</a>
-          </p>
-        </div>
-      </div>
-      <div class="copyright">
-        <p style="margin:0;">© 2025 TrendingTech Daily | מאיר אוטומציות — כל הזכויות שמורות.</p>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
-
-  <!-- App scripts -->
-  <script src="/he/js/he-app.js" defer></script>
-  <script src="/he/js/he-cookie-consent.js" defer></script>
+  <!-- Scripts -->
+  <script src="/js/config.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/nav-loader.js"></script>
+  <script src="/js/app-base.js"></script>
 </body>
 </html>

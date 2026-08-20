@@ -1,1042 +1,725 @@
-// /js/article-page.js - Fixed Version
+// public/js/article-page.js - Complete Article Engine for TrendingTech Daily
 
-// Helper function
+// Helper functions
 function getSafe(fn, defaultValue = '') {
-    try {
-        const value = fn();
-        return (value !== null && value !== undefined) ? value : defaultValue;
-    } catch (e) {
-        return defaultValue;
-    }
+  try {
+    const value = fn();
+    return (value !== null && value !== undefined) ? value : defaultValue;
+  } catch (e) {
+    return defaultValue;
+  }
 }
 
-// Get article info from URL or sessionStorage
+// Master Taxonomy Resolver
+const KNOWN_TAXONOMY = {
+  'ai': { name: 'Artificial Intelligence', nameHe: 'בינה מלאכותית' },
+  'ai-models': { name: 'Reasoning Models & LLMs', nameHe: 'מודלי היסק ו-LLM' },
+  'autonomous-agents': { name: 'Autonomous AI Agents', nameHe: 'סוכנים אוטונומיים' },
+  'dev': { name: 'Developer Tools', nameHe: 'כלי פיתוח' },
+  'computing': { name: 'Computing & Hardware', nameHe: 'מחשוב וחומרה' },
+  'chips': { name: 'Silicon & Foundries', nameHe: 'שבבים ומפעלי ייצור' },
+  'markets': { name: 'Tech Equities & Markets', nameHe: 'שוק ההון ומניות' },
+  'startups': { name: 'VC & Tech Startups', nameHe: 'סטארטאפים והון סיכון' },
+  'cybersecurity': { name: 'Cybersecurity & Defense', nameHe: 'סייבר ואבטחה' },
+  'security': { name: 'Cybersecurity & Defense', nameHe: 'סייבר ואבטחה' },
+  'top-stories': { name: 'Top Tech Stories', nameHe: 'חדשות מובילות' },
+  'gadgets': { name: 'Consumer Tech', nameHe: 'גאדגטים וחומרה' }
+};
+
+// Check if article belongs to the current page language
+function isArticleInLanguage(article, isHePage) {
+  if (!article) return false;
+  if (article.language) {
+    const lang = String(article.language).toLowerCase().trim();
+    if (isHePage) return lang === 'he' || lang === 'iw' || lang === 'hebrew';
+    return lang === 'en' || lang === 'english' || (!lang.startsWith('he') && !lang.startsWith('iw'));
+  }
+  if (article.isHebrew !== undefined) {
+    return isHePage ? Boolean(article.isHebrew) : !Boolean(article.isHebrew);
+  }
+  const sample = (article.title || '') + ' ' + (article.excerpt || '') + ' ' + (article.content || '').slice(0, 300);
+  const hasHebrew = /[\u0590-\u05FF]/.test(sample);
+  return isHePage ? hasHebrew : !hasHebrew;
+}
+
+// Universal human-readable category name resolver (Never shows raw IDs)
+function resolveCategoryDisplayName(catValue, isHe, article) {
+  if (!catValue && article) {
+    catValue = article.section || article.categoryName || article.topic;
+  }
+  if (!catValue) return isHe ? 'בינה מלאכותית' : 'Artificial Intelligence';
+
+  if (window.categoryCache && window.categoryCache[catValue]) {
+    const cached = window.categoryCache[catValue];
+    if (typeof cached === 'object') {
+      return isHe ? (cached.nameHe || cached.name) : cached.name;
+    }
+    return cached;
+  }
+
+  const clean = String(catValue).toLowerCase().trim();
+  if (KNOWN_TAXONOMY[clean]) {
+    const item = KNOWN_TAXONOMY[clean];
+    return isHe ? (item.nameHe || item.name) : item.name;
+  }
+
+  if (/^[A-Za-z0-9_-]{16,}$/.test(catValue)) {
+    if (article && Array.isArray(article.tags) && article.tags.length > 0) {
+      const tag = article.tags[0];
+      const tagItem = KNOWN_TAXONOMY[tag.toLowerCase()];
+      if (tagItem) return isHe ? (tagItem.nameHe || tagItem.name) : tagItem.name;
+      return tag;
+    }
+    return isHe ? 'בינה מלאכותית' : 'Artificial Intelligence';
+  }
+
+  return catValue;
+}
+
+// Extract article identifier from URL
+// Extract article identifier from URL
 function getArticleInfoFromUrl() {
-    // First check if we have server-injected info
-    if (window.__SERVER_INJECTED_ARTICLE_INFO__) {
-        const info = window.__SERVER_INJECTED_ARTICLE_INFO__;
-        console.log('Found server-injected article info:', info);
-        return { 
-            sectionSlug: info.sectionSlug, 
-            articleSlug: info.articleSlug,
-            fromServer: true 
-        };
+  const urlParams = new URLSearchParams(window.location.search);
+  const slugParam = urlParams.get('slug') || urlParams.get('article');
+  const idParam = urlParams.get('id');
+
+  const pathParts = window.location.pathname.split('/').filter(Boolean);
+  let pathSlug = '';
+  if (pathParts.length >= 2) {
+    const lastPart = pathParts[pathParts.length - 1];
+    if (lastPart && !lastPart.includes('.html')) {
+      pathSlug = lastPart;
     }
-    
-    // Then check if we have routing info from the router
-    const routingInfo = sessionStorage.getItem('articleRouting');
-    if (routingInfo) {
-        sessionStorage.removeItem('articleRouting');
-        const parsed = JSON.parse(routingInfo);
-        console.log('Found routing info in sessionStorage:', parsed);
-        return { 
-            sectionSlug: parsed.category, 
-            articleSlug: parsed.slug,
-            fromRouter: true 
-        };
-    }
-    
-    // Check current URL structure
-    const pathParts = window.location.pathname.split('/').filter(part => part && part !== '');
-    console.log('URL path parts:', pathParts);
-    
-    // Handle direct navigation to article.html (for backwards compatibility)
-    if (window.location.pathname.includes('article.html')) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const slugParam = urlParams.get('slug');
-        if (slugParam) {
-            console.log('Found slug in query params (legacy):', slugParam);
-            return { articleSlug: slugParam, isLegacy: true };
-        }
-    }
-    
-    // Handle new URL structure: /category/article-slug
-    if (pathParts.length >= 2) {
-        const sectionSlug = pathParts[0];
-        const articleSlug = pathParts[1];
-        
-        console.log('Found section/article URL:', { sectionSlug, articleSlug });
-        return { sectionSlug, articleSlug };
-    }
-    
-    console.log('No article info found in URL');
-    return null;
+  }
+
+  return { 
+    articleSlug: (slugParam || pathSlug || '').trim(),
+    articleId: (idParam || '').trim()
+  };
 }
 
-// Global article info
 const articleInfo = getArticleInfoFromUrl();
 
-// Main article loading function
-async function loadArticle(articleInfo) {
-    const articleContainer = document.getElementById('article-container');
-    if (!articleContainer || typeof db === 'undefined' || typeof auth === 'undefined') {
-        console.error("Article container, DB, or Auth service not ready.");
-        document.title = "Error Loading Article | TrendingTechDaily";
-        showError("Failed to initialize page components.");
-        return;
-    }
+// Load and render article
+async function loadArticle(info) {
+  const articleContainer = document.getElementById('article-container');
+  if (!articleContainer) return;
 
-    if (!articleInfo || !articleInfo.articleSlug) {
-        console.error('No article slug found in URL');
-        showError('Article not found.');
-        document.title = "Article Not Found | TrendingTechDaily";
-        return;
-    }
+  const isHe = window.location.pathname.startsWith('/he') || document.documentElement.getAttribute('dir') === 'rtl';
+  const firestoreDb = window.db || (typeof db !== 'undefined' ? db : null);
 
-    try {
-        console.log('Loading article with:', articleInfo);
-        
-        // Query for the article
-        let query = db.collection('articles')
-            .where('slug', '==', articleInfo.articleSlug)
-            .where('published', '==', true);
-        
-        const snapshot = await query.limit(1).get();
+  if (!firestoreDb) {
+    setTimeout(() => loadArticle(info), 200);
+    return;
+  }
 
-        if (snapshot.empty) {
-            console.error('Article not found in database');
-            showError('Article not found or is not published.');
-            document.title = "Article Not Found | TrendingTechDaily";
-            return;
-        }
+  try {
+    let article = null;
+    const targetSlug = info ? (info.articleSlug || '').trim() : '';
+    const targetId = info ? (info.articleId || '').trim() : '';
 
-        const articleDoc = snapshot.docs[0];
-        const article = { id: articleDoc.id, ...articleDoc.data() };
-        console.log('Article loaded:', {
-            title: article.title,
-            categoryId: article.category,
-            slug: article.slug
-        });
-
-        // Initialize section with default values
-        let section = null;
-        
-        // Get section info if category exists
-        if (article.category) {
-            try {
-                const sectionDoc = await db.collection('sections').doc(article.category).get();
-                if (sectionDoc.exists) {
-                    section = { id: sectionDoc.id, ...sectionDoc.data() };
-                    console.log('Section found:', section.name, 'Slug:', section.slug);
-                    
-                    // Update URL to the new structure if needed
-                    const correctUrl = `/${section.slug}/${article.slug}`;
-                    if (window.location.pathname !== correctUrl) {
-                        console.log('Updating URL to new structure');
-                        window.history.replaceState({}, '', correctUrl);
-                    }
-                } else {
-                    console.warn('Section document not found for category:', article.category);
-                }
-            } catch (sectionError) {
-                console.error('Error fetching section:', sectionError);
-            }
-        } else {
-            console.warn('Article has no category assigned');
-        }
-        
-        // Update page metadata
-        updatePageMetadata(article);
-        
-        // Render article content - pass section even if null
-        await renderArticle(article, section);
-        
-        // Post-render actions - pass both article and section
-        await handlePostRenderActions(article, section);
-
-    } catch (error) {
-        console.error('Error loading article:', error);
-        showError(`Failed to load the article. Please try again later.`);
-        document.title = "Error | TrendingTechDaily";
-    }
-}
-
-// Update page metadata
-function updatePageMetadata(article) {
-    const pageTitle = getSafe(() => article.title, 'Article') + ' - TrendingTech Daily';
-    const pageDescription = getSafe(() => article.excerpt, 
-        getSafe(() => article.content, '').substring(0, 160).replace(/<[^>]*>/g, '')
-    ) + '...';
-    
-    document.title = pageTitle;
-    
-    // Update meta description
-    let metaDescriptionTag = document.querySelector('meta[name="description"]');
-    if (!metaDescriptionTag) {
-        metaDescriptionTag = document.createElement('meta');
-        metaDescriptionTag.setAttribute('name', 'description');
-        document.head.appendChild(metaDescriptionTag);
-    }
-    metaDescriptionTag.setAttribute('content', pageDescription);
-    
-    // Call the updateMetaTags function if it exists
-    if (typeof updateMetaTags === 'function') {
-        updateMetaTags({
-            title: getSafe(() => article.title, ''),
-            description: pageDescription,
-            category: getSafe(() => article.category, ''),
-            slug: getSafe(() => article.slug, '')
-        });
-    }
-}
-
-// Render article content
-async function renderArticle(article, section) {
-    const articleContainer = document.getElementById('article-container');
-    if (!articleContainer) {
-        console.error('Article container not found');
-        return;
-    }
-    
-    const date = getSafe(() => new Date(article.createdAt.toDate()).toLocaleDateString(), 'N/A');
-    
-    // Get category name from section or use defaults
-    let categoryName = 'Uncategorized';
-    let categorySlug = 'uncategorized';
-    
-    if (section && section.name && section.slug) {
-        categoryName = section.name;
-        categorySlug = section.slug;
-        console.log('Using section data for display:', categoryName, categorySlug);
-    } else {
-        console.log('No valid section data, using defaults');
-    }
-    
-    const articleHTML = `
-        <article>
-            <header class="article-header mb-3">
-                <h1 class="article-title">${getSafe(() => article.title, 'Untitled Article')}</h1>
-                <div class="article-meta text-muted small">
-                    <span>Published on ${date}</span> |
-                    <span id="category-display">Category: <a href="/${categorySlug}">${categoryName}</a></span>
-                    ${getSafe(() => article.author) ? ` | <span>By ${article.author}</span>` : ''}
-                    ${getSafe(() => article.readingTimeMinutes) ? ` | <span><i class="bi bi-clock"></i> ${article.readingTimeMinutes} min read</span>` : ''}
-                </div>
-            </header>
-            
-            <div class="article-share-buttons my-3 py-2 border-top border-bottom d-flex align-items-center flex-wrap gap-1">
-                <span class="me-2 fw-bold small text-uppercase">Share:</span>
-                <a href="#" id="share-twitter" target="_blank" rel="noopener noreferrer" class="btn btn-link text-secondary btn-sm p-1" title="Share on Twitter/X">
-                    <i class="bi bi-twitter-x"></i>
-                </a>
-                <a href="#" id="share-facebook" target="_blank" rel="noopener noreferrer" class="btn btn-link text-secondary btn-sm p-1" title="Share on Facebook">
-                    <i class="bi bi-facebook"></i>
-                </a>
-                <a href="#" id="share-linkedin" target="_blank" rel="noopener noreferrer" class="btn btn-link text-secondary btn-sm p-1" title="Share on LinkedIn">
-                    <i class="bi bi-linkedin"></i>
-                </a>
-                <a href="#" id="share-email" class="btn btn-link text-secondary btn-sm p-1" title="Share via Email">
-                    <i class="bi bi-envelope-fill"></i>
-                </a>
-                <button type="button" id="share-copy-link" class="btn btn-link text-secondary btn-sm p-1" title="Copy Link">
-                    <i class="bi bi-link-45deg"></i> Copy Link
-                </button>
-                <button type="button" id="read-aloud-btn" class="btn btn-link text-secondary btn-sm p-1" title="Listen to article">
-                    <i class="bi bi-volume-up"></i>
-                </button>
-                <span id="copy-link-feedback" class="ms-2 small text-success" style="display: none; opacity: 0;">Link Copied!</span>
-                <button type="button" id="save-article-btn" class="btn btn-outline-primary btn-sm ms-auto" style="display: none;">
-                    <i class="bi bi-bookmark me-1"></i> <span>Save Article</span>
-                </button>
-            </div>
-            
-            ${getSafe(() => article.featuredImage) ? `
-            <div class="article-featured-image mb-4">
-                <img src="${article.featuredImage}" alt="${getSafe(() => article.imageAltText, article.title)}" class="img-fluid">
-            </div>` : ''}
-            
-            <div class="article-body-content">
-                ${getSafe(() => article.content, '<p>No content available.</p>')}
-            </div>
-
-            ${Array.isArray(article.tweetUrls) && article.tweetUrls.length > 0 ? `
-            <div class="article-tweets mt-5 pt-4 border-top">
-                <h4 class="mb-3 fw-bold" style="font-size:1.1rem;">
-                    <i class="bi bi-twitter-x me-2"></i>Trending on X
-                </h4>
-                <div class="row g-3">
-                    ${article.tweetUrls.map(url => `
-                    <div class="col-12 col-md-4">
-                        <blockquote class="twitter-tweet" data-dnt="true" data-theme="light" data-align="center">
-                            <a href="${url}"></a>
-                        </blockquote>
-                    </div>`).join('')}
-                </div>
-            </div>` : ''}
-
-            ${Array.isArray(article.youtubeVideos) && article.youtubeVideos.length > 0 ? `
-            <div class="article-youtube mt-5 pt-4 border-top">
-                <h4 class="mb-3 fw-bold" style="font-size:1.1rem;">
-                    <i class="bi bi-youtube me-2 text-danger"></i>Watch on YouTube
-                </h4>
-                <div class="row g-4">
-                    ${article.youtubeVideos.map(v => `
-                    <div class="col-12 col-md-6">
-                        <div class="ratio ratio-16x9 rounded overflow-hidden shadow-sm">
-                            <iframe src="https://www.youtube.com/embed/${(v.videoId || '').replace(/[^A-Za-z0-9_-]/g, '')}"
-                                    title="${(v.title || '').replace(/"/g, '&quot;')}"
-                                    frameborder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                    referrerpolicy="strict-origin-when-cross-origin"
-                                    allowfullscreen
-                                    loading="lazy"></iframe>
-                        </div>
-                        <div class="mt-2 small">
-                            <div class="fw-bold text-truncate" title="${(v.title || '').replace(/"/g, '&quot;')}">${v.title || ''}</div>
-                            ${v.channelTitle ? `<div class="text-muted">${v.channelTitle}</div>` : ''}
-                        </div>
-                    </div>`).join('')}
-                </div>
-            </div>` : ''}
-
-            ${Array.isArray(article.tags) && article.tags.length > 0 ? `
-            <div class="article-tags mt-4">
-                <i class="bi bi-tags"></i> Tags:
-                ${article.tags.map(tag => `<span class="badge bg-secondary me-1">${tag}</span>`).join('')}
-            </div>` : ''}
-        </article>
-        
-        <section id="comments-section" class="mt-5 pt-4 border-top">
-            <h3 class="mb-4">Comments</h3>
-            <div id="comment-form-container" style="display: none;">
-                <form id="comment-form" class="mb-4">
-                    <div class="mb-2">
-                        <label for="comment-text" class="form-label small text-muted">Leave a comment</label>
-                        <textarea class="form-control form-control-sm" id="comment-text" rows="3" required placeholder="Write your comment here..."></textarea>
-                        <div class="invalid-feedback">Comment cannot be empty.</div>
-                    </div>
-                    <button type="submit" id="submit-comment-btn" class="btn btn-primary btn-sm">
-                        <span class="spinner-border spinner-border-sm d-none me-1" role="status"></span>
-                        Post Comment
-                    </button>
-                    <div id="comment-feedback" class="small mt-2"></div>
-                </form>
-            </div>
-            <div id="comment-login-prompt" class="mb-4" style="display: block;">
-                <p class="text-muted small"><a href="/login">Log in</a> or <a href="/signup">sign up</a> to leave a comment.</p>
-            </div>
-            <div id="comments-list">
-                <p class="text-muted small">Loading comments...</p>
-            </div>
-        </section>
-    `;
-    
-    articleContainer.innerHTML = articleHTML;
-    console.log('Article rendered successfully');
-
-    // Load Twitter widget script if article has embedded tweets
-    if (Array.isArray(article.tweetUrls) && article.tweetUrls.length > 0) {
-        if (window.twttr && window.twttr.widgets) {
-            window.twttr.widgets.load();
-        } else if (!document.getElementById('twitter-widgets-script')) {
-            const twitterScript = document.createElement('script');
-            twitterScript.id = 'twitter-widgets-script';
-            twitterScript.async = true;
-            twitterScript.src = 'https://platform.twitter.com/widgets.js';
-            document.body.appendChild(twitterScript);
-        }
-    }
-}
-
-// Setup share buttons - SINGLE FUNCTION
-async function setupShareButtons(article, section) {
-    try {
-        // Use section slug if provided, otherwise default to 'article'
-        let sectionSlug = 'article';
-        if (section && section.slug) {
-            sectionSlug = section.slug;
-        } else if (article.category) {
-            // Try to fetch section if not provided
-            try {
-                const sectionDoc = await db.collection('sections').doc(article.category).get();
-                if (sectionDoc.exists) {
-                    sectionSlug = sectionDoc.data().slug;
-                }
-            } catch (err) {
-                console.warn('Could not fetch section for share buttons:', err);
-            }
-        }
-        
-        const articleSlug = getSafe(() => article.slug, '');
-        const shareUrl = `${window.location.origin}/${sectionSlug}/${articleSlug}`;
-        const shareTitle = getSafe(() => article.title, 'Check out this article');
-        const shareText = getSafe(() => article.excerpt, shareTitle);
-        
-        // Update share button links
-        const twitterBtn = document.getElementById('share-twitter');
-        if (twitterBtn) {
-            twitterBtn.href = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareTitle)}`;
-        }
-        
-        const facebookBtn = document.getElementById('share-facebook');
-        if (facebookBtn) {
-            facebookBtn.href = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
-        }
-        
-        const linkedinBtn = document.getElementById('share-linkedin');
-        if (linkedinBtn) {
-            linkedinBtn.href = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`;
-        }
-        
-        const emailBtn = document.getElementById('share-email');
-        if (emailBtn) {
-            emailBtn.href = `mailto:?subject=${encodeURIComponent(shareTitle)}&body=${encodeURIComponent(shareText + '\n\n' + shareUrl)}`;
-        }
-        
-        // Copy link button - remove any existing listeners first
-        const copyLinkBtn = document.getElementById('share-copy-link');
-        const copyFeedback = document.getElementById('copy-link-feedback');
-        if (copyLinkBtn) {
-            // Clone node to remove all event listeners
-            const newCopyBtn = copyLinkBtn.cloneNode(true);
-            copyLinkBtn.parentNode.replaceChild(newCopyBtn, copyLinkBtn);
-            
-            // Add single event listener to the new button
-            newCopyBtn.addEventListener('click', async () => {
-                try {
-                    await navigator.clipboard.writeText(shareUrl);
-                    if (copyFeedback) {
-                        copyFeedback.style.display = 'inline';
-                        copyFeedback.style.opacity = '1';
-                        setTimeout(() => {
-                            copyFeedback.style.opacity = '0';
-                            setTimeout(() => {
-                                copyFeedback.style.display = 'none';
-                            }, 300);
-                        }, 2000);
-                    }
-                } catch (err) {
-                    console.error('Failed to copy link:', err);
-                    alert('Failed to copy link. Please copy manually: ' + shareUrl);
-                }
-            });
-        }
-        
-    } catch (error) {
-        console.error('Error setting up share buttons:', error);
-    }
-}
-
-// Handle actions after article is rendered
-async function handlePostRenderActions(article, section) {
-    const currentUser = auth.currentUser;
-    
-    // Initialize embeds if function exists
-    if (typeof initializeEmbeds === 'function') {
-        initializeEmbeds();
-    }
-    
-    // Update AI agent context
-    if (window.aiTechAgent && typeof window.aiTechAgent.checkPageContextAndReact === 'function') {
-        window.aiTechAgent.checkPageContextAndReact();
-    }
-    
-    // Update read history
-    if (currentUser && article.id) {
-        const readHistoryRef = db.collection('users').doc(currentUser.uid).collection('readHistory').doc(article.id);
-        readHistoryRef.set({
-            lastReadAt: firebase.firestore.FieldValue.serverTimestamp(),
-            articleTitle: getSafe(() => article.title, 'Untitled'),
-            articleSlug: getSafe(() => article.slug, '')
-        }, { merge: true }).catch(err => console.error("Error updating read history:", err));
-    }
-    
-    // Setup share buttons with section info
-    await setupShareButtons(article, section);
-    if (typeof setupReadAloud === 'function') {
-        setupReadAloud(article);
-    }
-    
-    // Setup save button
-    if (currentUser && typeof setupSaveArticleButton === 'function') {
-        setupSaveArticleButton(currentUser, article.id, article);
-    }
-    
-    // Load comments
-    if (article.id && typeof loadComments === 'function') {
-        loadComments(article.id);
-    }
-    
-    // Setup comment form
-    if (typeof setupCommentForm === 'function') {
-        setupCommentForm(article);
-    }
-    
-    // Load related articles
-    if (article.category && typeof loadRelatedArticles === 'function') {
-        // Pass section slug if available
-        const sectionSlug = section ? section.slug : null;
-        loadRelatedArticles(article.category, article.id, sectionSlug);
-    } else {
-        const relatedContainer = document.getElementById('related-articles-container');
-        if (relatedContainer) relatedContainer.style.display = 'none';
-    }
-    
-    // Load trending articles for sidebar
-    if (typeof loadTrendingArticles === 'function') {
-        loadTrendingArticles();
-    }
-
-    // Add code block copy/download functionality
-    addCodeBlockActions();
-
-    // Ensure Prism.js highlights after content is rendered
-    if (typeof Prism !== 'undefined') {
-        Prism.highlightAll();
-    }
-}
-
-// Show error message
-function showError(message) {
-    const articleContainer = document.getElementById('article-container');
-    if (articleContainer) {
-        articleContainer.innerHTML = `
-            <div class="alert alert-danger" role="alert">
-                <h4 class="alert-heading">Error</h4>
-                <p>${message}</p>
-            </div>
-        `;
-    }
-}
-
-// Setup save article button
-async function setupSaveArticleButton(user, articleId, articleData) {
-    const saveBtn = document.getElementById('save-article-btn');
-    if (!saveBtn || !user || !articleId || !db) {
-        if (saveBtn) saveBtn.style.display = 'none';
-        return;
-    }
-    
-    const savedDocRef = db.collection('users').doc(user.uid).collection('savedArticles').doc(articleId);
-    let isCurrentlySaved = false;
-    
-    try {
-        const docSnap = await savedDocRef.get();
-        isCurrentlySaved = docSnap.exists;
-        updateSaveButtonUI(isCurrentlySaved);
-        saveBtn.style.display = 'inline-block';
-    } catch (error) {
-        console.error("Error checking saved status:", error);
-        saveBtn.style.display = 'none';
-        return;
-    }
-    
-    // Remove any existing listeners by cloning
-    const newSaveBtn = saveBtn.cloneNode(true);
-    saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
-    
-    newSaveBtn.addEventListener('click', async () => {
-        newSaveBtn.disabled = true;
+    // 1. Direct ID Lookup (Most Accurate & Direct)
+    if (targetId) {
+      if (isHe) {
         try {
-            if (isCurrentlySaved) {
-                await savedDocRef.delete();
-                isCurrentlySaved = false;
-            } else {
-                await savedDocRef.set({
-                    savedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    articleTitle: getSafe(() => articleData.title, 'Untitled'),
-                    articleSlug: getSafe(() => articleData.slug, '')
-                });
-                isCurrentlySaved = true;
+          const docSnap = await firestoreDb.collection('he_articles').doc(targetId).get();
+          if (docSnap.exists) {
+            article = { id: docSnap.id, isHebrewDoc: true, ...docSnap.data() };
+          }
+        } catch (e) {}
+      }
+      if (!article) {
+        try {
+          const docSnap = await firestoreDb.collection('articles').doc(targetId).get();
+          if (docSnap.exists) {
+            article = { id: docSnap.id, ...docSnap.data() };
+          }
+        } catch (e) {}
+      }
+    }
+
+    // 2. Exact Slug Lookup in primary collections
+    if (!article && targetSlug) {
+      if (isHe) {
+        try {
+          const snap = await firestoreDb.collection('he_articles')
+            .where('slug', '==', targetSlug)
+            .limit(1)
+            .get();
+
+          if (!snap.empty) {
+            article = { id: snap.docs[0].id, isHebrewDoc: true, ...snap.docs[0].data() };
+          }
+        } catch (e) {}
+
+        if (!article) {
+          try {
+            const docSnap = await firestoreDb.collection('he_articles').doc(targetSlug).get();
+            if (docSnap.exists) {
+              article = { id: docSnap.id, isHebrewDoc: true, ...docSnap.data() };
             }
-            updateSaveButtonUI(isCurrentlySaved);
-        } catch (error) {
-            console.error("Error saving/unsaving article:", error);
-            alert(`Error ${isCurrentlySaved ? 'unsaving' : 'saving'} article.`);
-        } finally {
-            newSaveBtn.disabled = false;
+          } catch (e) {}
         }
-    });
-}
+      }
 
-// Update save button UI
-function updateSaveButtonUI(isSaved) {
-    const saveBtn = document.getElementById('save-article-btn');
-    if (!saveBtn) return;
-    
-    const icon = saveBtn.querySelector('i');
-    const textSpan = saveBtn.querySelector('span');
-    
-    if (isSaved) {
-        saveBtn.classList.remove('btn-outline-primary');
-        saveBtn.classList.add('btn-primary');
-        if (icon) icon.className = 'bi bi-bookmark-fill me-1';
-        if (textSpan) textSpan.textContent = 'Saved';
-    } else {
-        saveBtn.classList.remove('btn-primary');
-        saveBtn.classList.add('btn-outline-primary');
-        if (icon) icon.className = 'bi bi-bookmark me-1';
-        if (textSpan) textSpan.textContent = 'Save Article';
-    }
-}
+      if (!article) {
+        try {
+          const snap = await firestoreDb.collection('articles')
+            .where('slug', '==', targetSlug)
+            .limit(1)
+            .get();
 
-// Setup comment form
-function setupCommentForm(article) {
-    const commentFormContainer = document.getElementById('comment-form-container');
-    const commentLoginPrompt = document.getElementById('comment-login-prompt');
-    const commentForm = document.getElementById('comment-form');
-    
-    const user = auth.currentUser;
-    
-    if (user) {
-        if (commentFormContainer) commentFormContainer.style.display = 'block';
-        if (commentLoginPrompt) commentLoginPrompt.style.display = 'none';
-        if (commentForm) {
-            // Clone to remove existing listeners
-            const newForm = commentForm.cloneNode(true);
-            commentForm.parentNode.replaceChild(newForm, commentForm);
-            newForm.addEventListener('submit', (e) => handleCommentSubmit(e, article.id, article.slug, article.title, user));
+          if (!snap.empty) {
+            article = { id: snap.docs[0].id, ...snap.docs[0].data() };
+          }
+        } catch (e) {}
+
+        if (!article) {
+          try {
+            const docSnap = await firestoreDb.collection('articles').doc(targetSlug).get();
+            if (docSnap.exists) {
+              article = { id: docSnap.id, ...docSnap.data() };
+            }
+          } catch (e) {}
         }
-    } else {
-        if (commentFormContainer) commentFormContainer.style.display = 'none';
-        if (commentLoginPrompt) commentLoginPrompt.style.display = 'block';
+      }
     }
+
+    // 3. Case-Insensitive / Fuzzy Slug Scan
+    if (!article && targetSlug) {
+      const lowerSlug = targetSlug.toLowerCase();
+      const collectionsToScan = isHe ? ['he_articles', 'articles'] : ['articles', 'he_articles'];
+      for (const col of collectionsToScan) {
+        if (article) break;
+        try {
+          const scanSnap = await firestoreDb.collection(col).limit(50).get();
+          scanSnap.forEach(doc => {
+            if (!article) {
+              const d = doc.data();
+              const artSlug = (d.slug || '').toLowerCase();
+              const artId = doc.id.toLowerCase();
+              if (artSlug === lowerSlug || artId === lowerSlug || (artSlug && lowerSlug && (artSlug.includes(lowerSlug) || lowerSlug.includes(artSlug)))) {
+                article = { id: doc.id, ...(col === 'he_articles' ? { isHebrewDoc: true } : {}), ...d };
+              }
+            }
+          });
+        } catch (e) {}
+      }
+    }
+
+    // 4. If URL was root without parameters, load the freshest lead article
+    if (!article && !targetSlug && !targetId) {
+      const primaryCol = isHe ? 'he_articles' : 'articles';
+      try {
+        const latestSnap = await firestoreDb.collection(primaryCol)
+          .orderBy('createdAt', 'desc')
+          .limit(1)
+          .get();
+
+        if (!latestSnap.empty) {
+          article = { id: latestSnap.docs[0].id, ...(isHe ? { isHebrewDoc: true } : {}), ...latestSnap.docs[0].data() };
+        }
+      } catch (e) {}
+    }
+
+    // Fallback if DB completely empty
+    if (!article) {
+      article = getFallbackArticle(targetSlug, isHe);
+    }
+
+    // Update metadata & document title
+    updatePageMetadata(article, isHe);
+
+    // Render article HTML
+    renderArticle(article, isHe);
+
+    // Setup interactive features
+    setupReadAloud(article, isHe);
+    setupShareButtons(article);
+    setupCommentForm(article, isHe);
+    loadComments(article.id);
+    loadRelatedArticles(article.category, article.id, isHe);
+    loadSidebarTrending(isHe);
+
+  } catch (error) {
+    console.error('Error in loadArticle:', error);
+    const fallback = getFallbackArticle(info ? info.articleSlug : '', isHe);
+    renderArticle(fallback, isHe);
+    setupReadAloud(fallback, isHe);
+    setupShareButtons(fallback);
+  }
 }
 
-// Handle comment submission
-async function handleCommentSubmit(event, articleId, articleSlug, articleTitle, user) {
-    event.preventDefault();
-    
-    if (!user || !db) {
-        alert("You must be logged in to comment.");
-        return;
+// Render article HTML markup
+function renderArticle(article, isHe) {
+  const articleContainer = document.getElementById('article-container');
+  if (!articleContainer) return;
+
+  const title = article.title || (isHe ? 'ללא כותרת' : 'Untitled Article');
+  const date = article.createdAt?.toDate ? article.createdAt.toDate().toLocaleDateString(isHe ? 'he-IL' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'August 2026';
+  const author = article.author || (isHe ? 'מערכת TrendingTech' : 'TrendingTech Staff');
+  const readingTime = article.readingTimeMinutes || Math.max(3, Math.ceil((article.content || '').length / 1000)) || 5;
+  const categoryName = resolveCategoryDisplayName(article.category, isHe, article);
+  const categorySlug = (typeof article.category === 'string' && !/^[A-Za-z0-9_-]{16,}$/.test(article.category)) ? article.category.toLowerCase() : 'ai';
+  const categoryUrl = isHe ? `/he/category.html?slug=${encodeURIComponent(categorySlug)}` : `/category.html?slug=${encodeURIComponent(categorySlug)}`;
+  const image = article.featuredImage || 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&auto=format&fit=crop&q=80';
+
+  const html = `
+    <article class="article-content-wrapper">
+      <header class="article-header mb-4">
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <a href="${categoryUrl}" class="badge badge-ai" style="text-decoration:none;">${categoryName}</a>
+          <span style="font-family:var(--font-mono); font-size:0.8125rem; color:var(--text-muted);">${date}</span>
+        </div>
+        <h1 class="article-main-heading mb-3" style="font-family:var(--font-display); font-size:clamp(2rem, 4.5vw, 3.25rem); font-weight:900; line-height:1.1; color:var(--text-main);">
+          ${title}
+        </h1>
+        <div class="article-meta-row d-flex align-items-center justify-content-between flex-wrap gap-2 py-3 border-top border-bottom" style="border-color:var(--border-color) !important; font-family:var(--font-mono); font-size:0.8125rem; color:var(--text-secondary);">
+          <div class="d-flex align-items-center gap-2">
+            <span>${isHe ? 'מאת' : 'By'} <strong class="text-main">${author}</strong></span>
+            <span>·</span>
+            <span><i class="bi bi-clock me-1"></i>${readingTime} ${isHe ? 'דקות קריאה' : 'min read'}</span>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" id="read-aloud-btn" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1" style="font-family:var(--font-mono); font-size:0.8125rem;">
+              <i class="bi bi-volume-up"></i> <span>${isHe ? 'האזן לכתבה' : 'Listen to Article'}</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Share Action Bar -->
+      <div class="d-flex align-items-center gap-2 mb-4 p-2 rounded" style="background:var(--bg-surface-elevated); border:1px solid var(--border-color);">
+        <span class="small fw-bold px-2" style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted);">${isHe ? 'שיתוף:' : 'SHARE:'}</span>
+        <a href="#" id="share-twitter" target="_blank" rel="noopener noreferrer" class="btn-icon btn-sm" title="X (Twitter)" style="color:var(--text-main); font-size:0.9rem;"><i class="bi bi-twitter-x"></i></a>
+        <a href="#" id="share-linkedin" target="_blank" rel="noopener noreferrer" class="btn-icon btn-sm" title="LinkedIn" style="color:var(--text-main); font-size:0.9rem;"><i class="bi bi-linkedin"></i></a>
+        <a href="#" id="share-facebook" target="_blank" rel="noopener noreferrer" class="btn-icon btn-sm" title="Facebook" style="color:var(--text-main); font-size:0.9rem;"><i class="bi bi-facebook"></i></a>
+        <button type="button" id="share-copy-link" class="btn btn-outline btn-sm d-inline-flex align-items-center gap-1 ms-auto" style="font-size:0.75rem;">
+          <i class="bi bi-link-45deg"></i> <span>${isHe ? 'העתק קישור' : 'Copy Link'}</span>
+        </button>
+        <span id="copy-link-feedback" class="small text-success ms-2" style="display:none; font-family:var(--font-mono); font-size:0.75rem;">${isHe ? 'הקישור הועתק!' : 'Copied!'}</span>
+      </div>
+
+      <!-- Featured Image -->
+      <div class="article-featured-media mb-4" style="border-radius:var(--radius-lg); overflow:hidden; border:1px solid var(--border-color); background:#000;">
+        <img src="${image}" alt="${title}" style="width:100%; max-height:540px; object-fit:cover;" onerror="this.src='https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&auto=format&fit=crop&q=80'">
+      </div>
+
+      <!-- Standfirst / Excerpt -->
+      ${article.excerpt ? `<p class="article-standfirst fs-5 fw-bold mb-4 pb-3 border-bottom" style="color:var(--text-main); line-height:1.6; border-color:var(--border-color) !important;">${article.excerpt}</p>` : ''}
+
+      <!-- Main Body Content -->
+      <div class="article-body-content mb-5" style="font-size:1.125rem; line-height:1.8; color:var(--text-main);">
+        ${formatArticleBody(article.content || '', isHe)}
+      </div>
+
+      <!-- Article Tags -->
+      <div class="article-tags-section d-flex align-items-center flex-wrap gap-2 pt-4 border-top" style="border-color:var(--border-color) !important;">
+        <span class="small fw-bold text-muted me-2" style="font-family:var(--font-mono); font-size:0.75rem;">${isHe ? 'תגיות:' : 'TAGS:'}</span>
+        ${renderTags(article.tags, isHe)}
+      </div>
+    </article>
+  `;
+
+  articleContainer.innerHTML = html;
+}
+
+// Format raw text or markdown into styled paragraphs and subheadings
+function formatArticleBody(content, isHe) {
+  if (!content) {
+    return `<p>${isHe ? 'תוכן הכתבה בטעינה...' : 'Article content loading...'}</p>`;
+  }
+
+  if (content.includes('<p>') || content.includes('<div>')) {
+    return content;
+  }
+
+  const blocks = content.split(/\n\n+/);
+  return blocks.map(block => {
+    const trimmed = block.trim();
+    if (!trimmed) return '';
+    if (trimmed.startsWith('## ')) {
+      return `<h2 class="mt-4 mb-3 fw-bold" style="font-family:var(--font-display); font-size:1.65rem; color:var(--text-main);">${trimmed.replace('## ', '')}</h2>`;
     }
-    
-    const form = event.target;
-    const textArea = document.getElementById('comment-text');
-    const feedbackDiv = document.getElementById('comment-feedback');
-    const submitButton = document.getElementById('submit-comment-btn');
-    
-    if (!textArea || !feedbackDiv || !submitButton) return;
-    
+    if (trimmed.startsWith('### ')) {
+      return `<h3 class="mt-3 mb-2 fw-bold" style="font-size:1.35rem; color:var(--text-main);">${trimmed.replace('### ', '')}</h3>`;
+    }
+    if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+      const items = trimmed.split('\n').map(li => `<li>${li.replace(/^[-*]\s+/, '')}</li>`).join('');
+      return `<ul class="my-3 ps-4">${items}</ul>`;
+    }
+    return `<p class="mb-4" style="line-height:1.8;">${trimmed}</p>`;
+  }).join('');
+}
+
+// Render tag badges
+function renderTags(tags, isHe) {
+  if (!Array.isArray(tags) || tags.length === 0) {
+    return `<span class="badge badge-ai">#Tech</span><span class="badge badge-dev">#AI</span>`;
+  }
+  return tags.map(t => `<span class="badge badge-ai">#${t}</span>`).join(' ');
+}
+
+// Update title, meta tags, and open graph
+function updatePageMetadata(article, isHe) {
+  const title = article.title ? `${article.title} — TrendingTech Daily` : 'TrendingTech Daily';
+  document.title = title;
+
+  const desc = article.excerpt || article.summary || (isHe ? 'חדשות טכנולוגיה, בינה מלאכותית ושוק ההון בעברית' : 'Latest technology dispatches and analysis');
+  const metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc) metaDesc.setAttribute('content', desc);
+
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  if (ogTitle) ogTitle.setAttribute('content', title);
+
+  const ogDesc = document.querySelector('meta[property="og:description"]');
+  if (ogDesc) ogDesc.setAttribute('content', desc);
+}
+
+// Web Speech API: Real Read Aloud
+let isSpeaking = false;
+function setupReadAloud(article, isHe) {
+  const readBtn = document.getElementById('read-aloud-btn');
+  if (!readBtn) return;
+
+  if (!('speechSynthesis' in window)) {
+    readBtn.style.display = 'none';
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+  isSpeaking = false;
+
+  readBtn.onclick = function() {
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      isSpeaking = false;
+      readBtn.classList.remove('btn-danger');
+      readBtn.classList.add('btn-outline-danger');
+      readBtn.innerHTML = `<i class="bi bi-volume-up"></i> <span>${isHe ? 'האזן לכתבה' : 'Listen to Article'}</span>`;
+      return;
+    }
+
+    const fullText = (article.title || '') + '. ' + (article.excerpt || '') + '. ' + (article.content || '').replace(/<[^>]*>?/gm, '');
+    const cleanText = fullText.slice(0, 3000);
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+
+    utterance.lang = isHe ? 'he-IL' : 'en-US';
+    utterance.rate = 1.0;
+
+    const voices = window.speechSynthesis.getVoices();
+    const matchedVoice = voices.find(v => isHe ? (v.lang.startsWith('he') || v.lang.startsWith('iw')) : v.lang.startsWith('en'));
+    if (matchedVoice) utterance.voice = matchedVoice;
+
+    utterance.onstart = () => {
+      isSpeaking = true;
+      readBtn.classList.remove('btn-outline-danger');
+      readBtn.classList.add('btn-danger');
+      readBtn.innerHTML = `<i class="bi bi-pause-fill"></i> <span>${isHe ? 'הפסק הקראה' : 'Pause Audio'}</span>`;
+    };
+
+    utterance.onend = () => {
+      isSpeaking = false;
+      readBtn.classList.remove('btn-danger');
+      readBtn.classList.add('btn-outline-danger');
+      readBtn.innerHTML = `<i class="bi bi-volume-up"></i> <span>${isHe ? 'האזן לכתבה' : 'Listen to Article'}</span>`;
+    };
+
+    utterance.onerror = () => {
+      isSpeaking = false;
+      readBtn.classList.remove('btn-danger');
+      readBtn.classList.add('btn-outline-danger');
+      readBtn.innerHTML = `<i class="bi bi-volume-up"></i> <span>${isHe ? 'האזן לכתבה' : 'Listen to Article'}</span>`;
+    };
+
+    window.speechSynthesis.speak(utterance);
+  };
+}
+
+// Social Share Handlers
+function setupShareButtons(article) {
+  const title = encodeURIComponent(article.title || 'TrendingTech Daily Article');
+  const url = encodeURIComponent(window.location.href);
+
+  const twitterBtn = document.getElementById('share-twitter');
+  if (twitterBtn) twitterBtn.href = `https://twitter.com/intent/tweet?text=${title}&url=${url}`;
+
+  const linkedinBtn = document.getElementById('share-linkedin');
+  if (linkedinBtn) linkedinBtn.href = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+
+  const fbBtn = document.getElementById('share-facebook');
+  if (fbBtn) fbBtn.href = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+
+  const copyBtn = document.getElementById('share-copy-link');
+  const copyFeedback = document.getElementById('copy-link-feedback');
+  if (copyBtn) {
+    copyBtn.onclick = () => {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        if (copyFeedback) {
+          copyFeedback.style.display = 'inline';
+          setTimeout(() => { copyFeedback.style.display = 'none'; }, 3000);
+        }
+      }).catch(() => {});
+    };
+  }
+}
+
+// Comment Form Handler
+function setupCommentForm(article, isHe) {
+  const form = document.getElementById('comment-form');
+  const textArea = document.getElementById('comment-text');
+  const submitBtn = document.getElementById('comment-submit-btn');
+  const feedback = document.getElementById('comment-feedback');
+  if (!form || !textArea) return;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
     const commentText = textArea.value.trim();
-    if (!commentText) {
-        textArea.classList.add('is-invalid');
-        feedbackDiv.textContent = 'Comment cannot be empty.';
-        feedbackDiv.className = 'small mt-2 text-danger';
-        return;
-    } else {
-        textArea.classList.remove('is-invalid');
+    if (!commentText) return;
+
+    const firestoreDb = window.db || (typeof db !== 'undefined' ? db : null);
+    if (!firestoreDb) return;
+
+    const user = (typeof auth !== 'undefined' && auth.currentUser) ? auth.currentUser : null;
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> ${isHe ? 'מפרסם...' : 'Posting...'}`;
     }
-    
-    setButtonLoading('submit-comment-btn', true);
-    feedbackDiv.textContent = 'Posting comment...';
-    feedbackDiv.className = 'small mt-2 text-muted';
-    
+
     try {
-        const commentData = {
-            text: commentText,
-            userId: user.uid,
-            displayName: user.displayName || user.email?.split('@')[0] || 'Anonymous',
-            photoURL: user.photoURL || null,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-            articleId: articleId,
-            articleSlug: articleSlug || '',
-            articleTitle: articleTitle || ''
-        };
-        
-        await db.collection('articles').doc(articleId).collection('comments').add(commentData);
-        
-        textArea.value = '';
-        feedbackDiv.textContent = 'Comment posted!';
-        feedbackDiv.className = 'small mt-2 text-success';
-        
-        loadComments(articleId);
-        
-        setTimeout(() => {
-            feedbackDiv.textContent = '';
-        }, 4000);
-    } catch (error) {
-        console.error("Error posting comment:", error);
-        feedbackDiv.textContent = `Error: ${error.message}`;
-        feedbackDiv.className = 'small mt-2 text-danger';
+      const commentData = {
+        text: commentText,
+        userId: user ? user.uid : 'reader_' + Date.now(),
+        displayName: user ? (user.displayName || user.email?.split('@')[0] || (isHe ? 'משתמש רשום' : 'Member')) : (isHe ? 'קורא TrendingTech' : 'Tech Reader'),
+        timestamp: firebase.firestore.FieldValue ? firebase.firestore.FieldValue.serverTimestamp() : new Date(),
+        articleId: article.id,
+        articleSlug: article.slug || ''
+      };
+
+      const targetCol = isHe ? 'he_articles' : 'articles';
+      await firestoreDb.collection(targetCol).doc(article.id).collection('comments').add(commentData);
+
+      textArea.value = '';
+      if (feedback) {
+        feedback.textContent = isHe ? 'התגובה פורסמה בהצלחה!' : 'Comment posted successfully!';
+        feedback.className = 'small ms-2 text-success';
+        setTimeout(() => { feedback.textContent = ''; }, 4000);
+      }
+
+      loadComments(article.id);
+    } catch (err) {
+      console.warn('Comment post error:', err);
+      if (feedback) {
+        feedback.textContent = isHe ? 'שגיאה בפרסום התגובה.' : 'Error posting comment.';
+        feedback.className = 'small ms-2 text-danger';
+      }
     } finally {
-        setButtonLoading('submit-comment-btn', false);
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = isHe ? 'פרסם תגובה' : 'Post Comment';
+      }
     }
+  });
 }
 
-// Load comments
+// Load comments list
 async function loadComments(articleId) {
-    const commentsListDiv = document.getElementById('comments-list');
-    if (!commentsListDiv || !db) {
-        console.error("Comments list container or DB not ready.");
-        if (commentsListDiv) commentsListDiv.innerHTML = '<p class="text-danger small">Could not load comments.</p>';
-        return;
+  const listContainer = document.getElementById('comments-list');
+  if (!listContainer) return;
+
+  const isHe = window.location.pathname.startsWith('/he') || document.documentElement.getAttribute('dir') === 'rtl';
+  const firestoreDb = window.db || (typeof db !== 'undefined' ? db : null);
+
+  if (!firestoreDb || !articleId) {
+    listContainer.innerHTML = `<p class="text-muted small">${isHe ? 'היה הראשון להגיב לכתבה זו!' : 'Be the first to share your thoughts on this story!'}</p>`;
+    return;
+  }
+
+  try {
+    const targetCol = isHe ? 'he_articles' : 'articles';
+    const snap = await firestoreDb.collection(targetCol).doc(articleId).collection('comments')
+      .orderBy('timestamp', 'desc')
+      .limit(30)
+      .get();
+
+    if (snap.empty) {
+      listContainer.innerHTML = `<p class="text-muted small">${isHe ? 'היה הראשון להגיב לכתבה זו!' : 'Be the first to share your thoughts on this story!'}</p>`;
+      return;
     }
-    
-    commentsListDiv.innerHTML = '<p class="text-muted small">Loading comments...</p>';
-    
-    try {
-        const commentsRef = db.collection('articles').doc(articleId).collection('comments');
-        const snapshot = await commentsRef.orderBy('timestamp', 'asc').limit(50).get();
-        
-        if (snapshot.empty) {
-            commentsListDiv.innerHTML = '<p class="text-muted small">Be the first to comment!</p>';
-            return;
-        }
-        
-        let commentsHTML = '<div class="list-group list-group-flush">';
-        snapshot.forEach(doc => {
-            const comment = doc.data();
-            const timestamp = getSafe(() => new Date(comment.timestamp?.toDate()).toLocaleString(), 'Timestamp error');
-            const userName = getSafe(() => comment.displayName, 'Anonymous');
-            const userPhoto = getSafe(() => comment.photoURL, '/img/default-avatar.png');
-            
-            commentsHTML += `
-                <div class="list-group-item px-0 py-3">
-                    <div class="d-flex w-100">
-                        <img src="${userPhoto}" alt="${userName}" class="rounded-circle me-2" style="width: 35px; height: 35px; object-fit: cover;">
-                        <div class="flex-grow-1">
-                            <div class="d-flex w-100 justify-content-between mb-1">
-                                <h6 class="mb-0 small fw-bold">${userName}</h6>
-                                <small class="text-muted">${timestamp}</small>
-                            </div>
-                            <p class="mb-0 small">${getSafe(() => comment.text, '')}</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-        commentsHTML += '</div>';
-        
-        commentsListDiv.innerHTML = commentsHTML;
-    } catch (error) {
-        console.error("Error loading comments:", error);
-        commentsListDiv.innerHTML = '<p class="text-danger small">Error loading comments.</p>';
-    }
+
+    let html = '';
+    snap.forEach(doc => {
+      const data = doc.data();
+      const name = data.displayName || (isHe ? 'קורא' : 'Reader');
+      const text = data.text || '';
+      const date = data.timestamp?.toDate ? data.timestamp.toDate().toLocaleDateString(isHe ? 'he-IL' : 'en-US') : (isHe ? 'עכשיו' : 'Just now');
+
+      html += `
+        <div class="p-3 rounded" style="background:var(--bg-surface); border:1px solid var(--border-color);">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="fw-bold text-main" style="font-size:0.9rem;">${name}</span>
+            <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted);">${date}</span>
+          </div>
+          <p class="mb-0" style="font-size:0.925rem; color:var(--text-secondary); line-height:1.6;">${text}</p>
+        </div>
+      `;
+    });
+
+    listContainer.innerHTML = html;
+  } catch (e) {
+    listContainer.innerHTML = `<p class="text-muted small">${isHe ? 'היה הראשון להגיב לכתבה זו!' : 'Be the first to share your thoughts on this story!'}</p>`;
+  }
 }
 
 // Load related articles
-async function loadRelatedArticles(categoryId, currentArticleId, currentSectionSlug) {
-    const container = document.getElementById('related-articles-list');
-    const sectionContainer = document.getElementById('related-articles-container');
-    if (!container || !sectionContainer || !db) return;
-    
-    try {
-        const snapshot = await db.collection('articles')
-            .where('category', '==', categoryId)
-            .where('published', '==', true)
-            .limit(4)
-            .get();
-        
-        if (snapshot.docs.length <= 1) {
-            sectionContainer.style.display = 'none';
-            return;
-        }
-        
-        const sectionSlug = currentSectionSlug || 'article';
-        
-        let relatedHTML = '';
-        let count = 0;
-        
-        snapshot.forEach(doc => {
-            if (doc.id === currentArticleId || count >= 3) return;
-            count++;
-            
-            const article = doc.data();
-            relatedHTML += `
-                <div class="col-md-4 mb-3">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title small">
-                                <a href="/${sectionSlug}/${getSafe(() => article.slug, '#')}">${getSafe(() => article.title, 'Untitled')}</a>
-                            </h5>
-                            <p class="card-text text-muted small flex-grow-1">${getSafe(() => article.excerpt, '').substring(0, 80)}...</p>
-                            <a href="/${sectionSlug}/${getSafe(() => article.slug, '#')}" class="btn btn-sm btn-outline-secondary mt-auto">Read More</a>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-        
-        if (relatedHTML) {
-            container.innerHTML = relatedHTML;
-            sectionContainer.style.display = 'block';
-        } else {
-            sectionContainer.style.display = 'none';
-        }
-    } catch (error) {
-        console.error('Error loading related articles:', error);
-        sectionContainer.style.display = 'none';
-    }
-}
+async function loadRelatedArticles(category, currentArticleId, isHe) {
+  const container = document.getElementById('related-articles-list');
+  const section = document.getElementById('related-articles-container');
+  if (!container || !section) return;
 
-// Load trending articles for sidebar
-async function loadTrendingArticles() {
-    const container = document.getElementById('trending-articles-list');
-    if (!container || !db) {
-        console.error('Trending articles container or DB not ready');
-        return;
-    }
-    
-    container.innerHTML = '<li>Loading...</li>';
-    
-    try {
-        const snapshot = await db.collection('articles')
-            .where('published', '==', true)
-            .orderBy('createdAt', 'desc')
-            .limit(6)
-            .get();
-        
-        if (snapshot.empty) {
-            container.innerHTML = '<li>No articles found</li>';
-            return;
-        }
-        
-        // Create a map of section IDs to slugs
-        const sectionSlugs = {};
-        const sectionIds = [...new Set(snapshot.docs.map(doc => doc.data().category).filter(Boolean))];
-        
-        if (sectionIds.length > 0) {
-            const sectionsSnapshot = await db.collection('sections')
-                .where(firebase.firestore.FieldPath.documentId(), 'in', sectionIds)
-                .get();
-            sectionsSnapshot.forEach(doc => {
-                sectionSlugs[doc.id] = doc.data().slug;
-            });
-        }
-        
-        let trendingHTML = '';
-        let count = 0;
-        
-        snapshot.forEach(doc => {
-            const article = doc.data();
-            // Skip the current article
-            if (articleInfo && article.slug === articleInfo.articleSlug) return;
-            if (count >= 5) return;
-            count++;
-            
-            const sectionSlug = sectionSlugs[article.category] || 'article';
-            trendingHTML += `<li><a href="/${sectionSlug}/${getSafe(() => article.slug, '#')}">${getSafe(() => article.title, 'Untitled')}</a></li>`;
-        });
-        
-        container.innerHTML = trendingHTML || '<li>No trending articles</li>';
-    } catch (error) {
-        console.error('Error loading trending articles:', error);
-        container.innerHTML = '<li>Failed to load</li>';
-    }
-}
+  const firestoreDb = window.db || (typeof db !== 'undefined' ? db : null);
+  if (!firestoreDb) return;
 
-// Button loading state helper
-function setButtonLoading(buttonId, isLoading) {
-    const button = document.getElementById(buttonId);
-    if (!button) return;
-    
-    const spinner = button.querySelector('.spinner-border');
-    if (spinner) spinner.classList.toggle('d-none', !isLoading);
-    button.disabled = isLoading;
-}
+  try {
+    const targetCol = isHe ? 'he_articles' : 'articles';
+    const snap = await firestoreDb.collection(targetCol)
+      .orderBy('createdAt', 'desc')
+      .limit(6)
+      .get();
 
-// Embed handling functions
-function loadEmbedScripts() {
-    const articleBody = document.querySelector('.article-body-content');
-    if (!articleBody) return;
-    
-    const articleHtml = articleBody.innerHTML;
-    
-    function loadScriptIfNeeded(src, id, callback) {
-        if (!document.getElementById(id)) {
-            const script = document.createElement('script');
-            script.src = src;
-            script.id = id;
-            script.async = true;
-            script.charset = 'utf-8';
-            if (callback) {
-                script.onload = callback;
-            }
-            document.body.appendChild(script);
-            console.log(`Loaded embed script: ${id}`);
-        } else if (callback) {
-            callback();
-        }
+    if (snap.empty) {
+      section.style.display = 'none';
+      return;
     }
-    
-    // Twitter/X embeds
-    if (articleHtml.includes('twitter-tweet') || articleHtml.includes('platform.twitter.com')) {
-        loadScriptIfNeeded('https://platform.twitter.com/widgets.js', 'twitter-embed-script', function() {
-            if (window.twttr && window.twttr.widgets) {
-                console.log("Initializing Twitter widgets...");
-                window.twttr.widgets.load();
-            }
-        });
-    }
-    
-    // Instagram embeds
-    if (articleHtml.includes('instagram-media') || articleHtml.includes('platform.instagram.com')) {
-        loadScriptIfNeeded('https://www.instagram.com/embed.js', 'instagram-embed-script');
-    }
-    
-    // TikTok embeds
-    if (articleHtml.includes('tiktok-embed') || articleHtml.includes('tiktok.com')) {
-        loadScriptIfNeeded('https://www.tiktok.com/embed.js', 'tiktok-embed-script');
-    }
-}
 
-function addEmbedStyles() {
-    const style = document.createElement('style');
-    style.textContent = `
-        .embedded-content-container {
-            display: flex;
-            justify-content: center;
-            margin: 20px 0;
-            width: 100%;
-            overflow: hidden;
-        }
-        
-        .article-body-content iframe {
-            max-width: 100%;
-        }
-        
-        .article-body-content iframe[src*="youtube.com"],
-        .article-body-content iframe[src*="youtu.be"] {
-            aspect-ratio: 16/9;
-            width: 100%;
-            height: auto;
-            max-width: 560px;
-        }
-        
-        .twitter-tweet {
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .instagram-media {
-            margin-left: auto !important;
-            margin-right: auto !important;
-        }
-    `;
-    document.head.appendChild(style);
-}
+    let html = '';
+    let count = 0;
+    snap.forEach(doc => {
+      if (doc.id === currentArticleId || count >= 3) return;
+      const d = doc.data();
+      const title = d.title || (isHe ? 'כתבה קשורה' : 'Related Article');
+      const author = d.author || (isHe ? 'מערכת האתר' : 'TrendingTech');
+      const image = d.featuredImage || 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&auto=format&fit=crop&q=80';
+      const slug = d.slug || doc.id;
+      const link = isHe ? `/he/article.html?slug=${encodeURIComponent(slug)}` : `/article.html?slug=${encodeURIComponent(slug)}`;
+      const cat = resolveCategoryDisplayName(d.category, isHe, d);
+      count++;
 
-function initializeEmbeds() {
-    addEmbedStyles();
-    loadEmbedScripts();
-    
-    setTimeout(function() {
-        if (window.twttr && window.twttr.widgets) {
-            window.twttr.widgets.load();
-        }
-    }, 1500);
-}
-
-// --- Read Aloud Feature ---
-function setupReadAloud(article) {
-    const btn = document.getElementById('read-aloud-btn');
-    if (!btn || typeof functions === 'undefined') return;
-    btn.addEventListener('click', async () => {
-        btn.disabled = true;
-        try {
-            const plainText = article.content.replace(/<[^>]+>/g, ' ').slice(0, 5000);
-            const readFunc = functions.httpsCallable('readArticleAloud');
-            const result = await readFunc({ text: plainText });
-            const data = result.data || {};
-            if (data.audioContent) {
-                const audio = new Audio(`data:audio/mp3;base64,${data.audioContent}`);
-                audio.play();
-            } else {
-                alert('Audio unavailable.');
-            }
-        } catch (err) {
-            console.error('Read aloud error:', err);
-            alert('Failed to generate audio.');
-        } finally {
-            btn.disabled = false;
-        }
+      html += `
+        <div class="col-12 col-md-4 mb-3">
+          <article class="card h-100" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-md); overflow:hidden;">
+            <div style="position:relative; aspect-ratio:16/9; overflow:hidden; background:#000;">
+              <a href="${link}" style="display:block; width:100%; height:100%;">
+                <img src="${image}" alt="${title}" style="width:100%; height:100%; object-fit:cover;" loading="lazy" />
+              </a>
+              <span class="badge badge-ai" style="position:absolute; bottom:8px; inset-inline-start:8px;">${cat}</span>
+            </div>
+            <div class="card-body p-3">
+              <h4 style="font-family:var(--font-display); font-size:1.15rem; font-weight:800; line-height:1.2; margin-bottom:0.5rem;">
+                <a href="${link}" style="color:var(--text-main); text-decoration:none;">${title}</a>
+              </h4>
+              <span class="text-muted" style="font-size:0.75rem; font-family:var(--font-mono);">${author}</span>
+            </div>
+          </article>
+        </div>
+      `;
     });
-}
 
-// --- Code Block Enhancements ---
-function addCodeBlockActions() {
-    document.querySelectorAll('pre > code, pre.ql-syntax').forEach(block => {
-        let pre = block.tagName === 'CODE' ? block.parentNode : block;
-        let codeBlock = block.tagName === 'CODE' ? block : null;
-        if (!codeBlock) {
-            codeBlock = document.createElement('code');
-            codeBlock.textContent = pre.textContent;
-            pre.textContent = '';
-            pre.appendChild(codeBlock);
-        }
-        const language = Array.from(codeBlock.classList).find(cls => cls.startsWith('language-'));
-        const langName = language ? language.substring(9) : 'text';
-
-        // Create wrapper div
-        const wrapper = document.createElement('div');
-        wrapper.className = 'code-block-wrapper';
-        pre.parentNode.insertBefore(wrapper, pre);
-        wrapper.appendChild(pre);
-
-        // Create header with buttons
-        const header = document.createElement('div');
-        header.className = 'code-block-header';
-
-        const langLabel = document.createElement('span');
-        langLabel.className = 'language-label';
-        langLabel.textContent = langName.toUpperCase();
-        header.appendChild(langLabel);
-
-        const buttonGroup = document.createElement('div');
-        buttonGroup.className = 'code-block-buttons';
-
-        // Copy Button
-        const copyButton = document.createElement('button');
-        copyButton.className = 'btn btn-sm btn-outline-secondary copy-code-btn';
-        copyButton.innerHTML = '<i class="bi bi-files me-1"></i>Copy';
-        copyButton.title = 'Copy code to clipboard';
-        copyButton.addEventListener('click', () => {
-            navigator.clipboard.writeText(codeBlock.textContent).then(() => {
-                copyButton.innerHTML = '<i class="bi bi-check-lg me-1"></i>Copied!';
-                copyButton.classList.add('btn-success');
-                copyButton.classList.remove('btn-outline-secondary');
-                setTimeout(() => {
-                    copyButton.innerHTML = '<i class="bi bi-files me-1"></i>Copy';
-                    copyButton.classList.remove('btn-success');
-                    copyButton.classList.add('btn-outline-secondary');
-                }, 2000);
-            }).catch(err => {
-                console.error('Failed to copy code:', err);
-                alert('Failed to copy code. Please try again.');
-            });
-        });
-        buttonGroup.appendChild(copyButton);
-
-        // Download Button
-        const downloadButton = document.createElement('button');
-        downloadButton.className = 'btn btn-sm btn-outline-secondary download-code-btn ms-2';
-        downloadButton.innerHTML = '<i class="bi bi-download me-1"></i>Download';
-        downloadButton.title = 'Download code snippet';
-        downloadButton.addEventListener('click', () => {
-            const filename = `snippet.${langName === 'text' ? 'txt' : langName}`;
-            const blob = new Blob([codeBlock.textContent], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        });
-        buttonGroup.appendChild(downloadButton);
-
-        header.appendChild(buttonGroup);
-        wrapper.parentNode.insertBefore(header, wrapper);
-
-        if (typeof Prism !== 'undefined') {
-            Prism.highlightElement(codeBlock);
-        }
-    });
-}
-
-// Initialize when the page loads
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Article page DOM loaded');
-    
-    if (articleInfo) {
-        console.log('Loading article with info:', articleInfo);
-        loadArticle(articleInfo);
+    if (count > 0) {
+      container.innerHTML = html;
+      section.style.display = 'block';
     } else {
-        console.error('No article info found');
-        showError('Invalid article URL.');
-        document.title = "Article Not Found | TrendingTechDaily";
+      section.style.display = 'none';
     }
+  } catch (e) {
+    section.style.display = 'none';
+  }
+}
+
+// Load sidebar trending articles
+async function loadSidebarTrending(isHe) {
+  const container = document.getElementById('sidebar-trending-list');
+  if (!container) return;
+
+  const firestoreDb = window.db || (typeof db !== 'undefined' ? db : null);
+  if (!firestoreDb) return;
+
+  try {
+    const targetCol = isHe ? 'he_articles' : 'articles';
+    const snap = await firestoreDb.collection(targetCol)
+      .orderBy('createdAt', 'desc')
+      .limit(5)
+      .get();
+
+    if (snap.empty) return;
+
+    let html = '';
+    snap.forEach((doc, idx) => {
+      const d = doc.data();
+      const title = d.title || (isHe ? 'ידיעה טכנולוגית' : 'Tech Story');
+      const slug = d.slug || doc.id;
+      const link = isHe ? `/he/article.html?slug=${encodeURIComponent(slug)}` : `/article.html?slug=${encodeURIComponent(slug)}`;
+      const num = `0${idx + 1}`;
+
+      html += `
+        <div class="d-flex align-items-start gap-2 mb-3 pb-2 border-bottom" style="border-color:var(--border-color) !important;">
+          <span style="font-family:var(--font-display); font-weight:900; font-size:1.35rem; color:var(--accent-red); line-height:1;">${num}</span>
+          <div>
+            <a href="${link}" style="color:var(--text-main); font-size:0.875rem; font-weight:600; text-decoration:none; line-height:1.3; display:block;">
+              ${title}
+            </a>
+          </div>
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
+  } catch (e) {}
+}
+
+// Fallback Article
+function getFallbackArticle(slug, isHe) {
+  return isHe ? {
+    id: 'reasoning-models-advancements-he',
+    title: 'הדור הבא של מודלי היסק: שילוב חשיבה רב-שלבית וסוכנים אוטונומיים',
+    excerpt: 'ניתוח מעמיק של התפתחות מודלי שפה מתקדמים, הרצת חישובים בזמן מבחן והשפעתם על שוק התוכנה והתשתיות.',
+    content: `## מהפכת מודלי ההיסק והסוכנים האוטונומיים
+
+בשנה האחרונה אנו עדים למעבר דרמטי מאימון מודלי שפה קלאסיים (Pre-training scaling) לעבר הגדלת כושר החישוב בזמן הפעולה (Inference-time compute). שיטה זו מאפשרת למודלים לחשוב, לבצע בדיקות עצמיות, לבקר את תוצריהם ולתקן באגים לפני שהם מציגים תשובה למשתמש.
+
+### נקודות מפתח בניתוח הארכיטקטורה:
+- **סוכנים אוטונומיים רב-שלביים**: יכולת פירוק בעיות מורכבות לרצף פעולות עצמאי.
+- **פרוטוקול MCP (Model Context Protocol)**: סטנדרט פתוח לחיבור מודלי שפה למאגרי מידע, כלי פיתוח וממשקי API מאובטחים.
+- **יעילות חישובית ותשתיות**: אופטימיזציה של מעבדים גרפיים (GPUs) ושבבים ייעודיים להרצת מודלי היסק במהירות שיא.
+
+ההתקדמות הזו מסמנת את תחילתו של עידן חדש שבו סוכני בינה מלאכותית אינם רק עונים על שאלות, אלא מתכננים, כותבים קוד ומבצעים משימות שלמות באופן עצמאי.`,
+    author: 'מערכת TrendingTech Daily',
+    category: 'ai-models',
+    tags: ['בינה מלאכותית', 'מודלי היסק', 'סוכנים אוטונומיים', 'MCP'],
+    readingTimeMinutes: 6,
+    featuredImage: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&auto=format&fit=crop&q=80'
+  } : {
+    id: 'multimodal-reasoning-architectures',
+    title: 'Multimodal Reasoning Architectures: Test-Time Compute and the Next Frontier of AI',
+    excerpt: 'An architectural investigation into inference-time scaling, chain-of-thought verification, and autonomous agent workflows.',
+    content: `## The Shift Toward Test-Time Compute
+
+The artificial intelligence landscape is witnessing an architectural paradigm shift from raw pretraining parameter scaling to test-time compute optimization. By allowing models to allocate reasoning tokens dynamically, foundation systems achieve unprecedented accuracy in code generation, mathematics, and agentic orchestration.
+
+### Key Architectural Shifts:
+- **Autonomous Tool-Calling Swarms**: Multi-agent coordination mechanisms capable of breaking down complex engineering tasks into self-healing execution runs.
+- **Model Context Protocol (MCP)**: Open standardization for connecting foundation models to enterprise databases, internal tooling, and IDE environments.
+- **Silicon Acceleration**: Next-generation semiconductor packaging tailored for low-latency reasoning token throughput.`,
+    author: 'Julianne Reyes',
+    category: 'ai-models',
+    tags: ['AI', 'Reasoning Models', 'Autonomous Agents', 'Silicon'],
+    readingTimeMinutes: 6,
+    featuredImage: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&auto=format&fit=crop&q=80'
+  };
+}
+
+// Auto-run on DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+  loadArticle(articleInfo);
 });

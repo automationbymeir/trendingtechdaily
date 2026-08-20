@@ -1,173 +1,184 @@
 <!DOCTYPE html>
-<!--
-  Detail page template — content is rewritten server-side by
-  functions/http/designSystems.js#handleDesignSystemDetail. The
-  placeholders in {{ALL_CAPS}} are substituted by the SSR handler.
--->
-<html lang="en" dir="ltr">
+<html lang="en" dir="ltr" data-mode="dark">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-5VF5QF9ZCJ"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag("js", new Date());
-  gtag("config", "G-5VF5QF9ZCJ");
-</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-title">Design System Detail — TrendingTech Daily</title>
+  <meta id="meta-description" name="description" content="Detailed token breakdown, component architecture, and design system reviews.">
+  <link rel="canonical" href="https://trendingtechdaily.com/design-systems-detail.html"/>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{TITLE}} — Design Systems Decoded | TrendingTech Daily</title>
-<meta name="description" content="{{DESCRIPTION}}"/>
-<link rel="canonical" href="{{CANONICAL}}"/>
-{{HREFLANG}}
-<meta property="og:type" content="article"/>
-<meta property="og:title" content="{{TITLE}}"/>
-<meta property="og:description" content="{{DESCRIPTION}}"/>
-<meta property="og:url" content="{{CANONICAL}}"/>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=IBM+Plex+Sans:wght@400;600;700&family=Fira+Code&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/styles.css">
-<link rel="stylesheet" href="/css/design-systems.css?v=2">
+  <!-- Master Unified Stylesheet -->
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/css/design-systems.css">
 
-{{JSONLD}}
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
 </head>
-<body class="ds-page" data-slug="{{SLUG}}">
+<body class="ds-page">
 
-<div id="navbar-placeholder"></div>
+  <div id="navbar-placeholder"></div>
 
-<main class="container mt-4 mb-5">
+  <main class="container my-4 my-md-5" style="max-width: 960px;">
 
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="/">Home</a></li>
-      <li class="breadcrumb-item"><a href="/design-systems">Design Systems</a></li>
-      <li class="breadcrumb-item"><a href="/design-systems?type={{TYPE}}">{{TYPE_LABEL}}</a></li>
-      <li class="breadcrumb-item active">{{NAME}}</li>
-    </ol>
-  </nav>
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb d-flex gap-2 text-muted small" style="list-style:none; padding:0;">
+        <li><a href="/" style="color:var(--text-muted);">Home</a> <span class="mx-1">/</span></li>
+        <li><a href="/design-systems.html" style="color:var(--text-muted);">Design Systems</a> <span class="mx-1">/</span></li>
+        <li><a id="ds-breadcrumb-type" href="/design-systems.html" style="color:var(--text-muted);">Overview</a> <span class="mx-1">/</span></li>
+        <li id="ds-breadcrumb-name" class="active text-main fw-bold">Loading...</li>
+      </ol>
+    </nav>
 
-  <!-- ── Hero ───────────────────────────────────────────────── -->
-  <section class="ds-detail-hero">
-    <div class="ds-square" style="background: {{PRIMARY_COLOR}};">{{ICON_HTML}}</div>
-    <div>
-      <h1>{{NAME}}</h1>
-      <div class="ds-company">{{COMPANY}} · {{YEAR}}</div>
-      <div class="ds-meta-row">
-        <span class="ds-type-pill type-{{TYPE}}">{{TYPE_LABEL}}</span>
-        {{CAPABILITY_CHIPS}}
-      </div>
+    <!-- Loading State -->
+    <div id="ds-detail-loading" class="text-center py-5">
+      <div class="spinner-border text-danger" role="status"></div>
+      <p class="text-muted mt-3">Decoding design system architecture & tokens...</p>
     </div>
-    <div style="text-align:center;">
-      <div class="ds-trending-gauge" style="--val: {{TRENDING_SCORE}};"><span>{{TRENDING_SCORE}}</span></div>
-      <small class="text-muted d-block mt-1">Trending score</small>
+
+    <!-- Main Content (Hydrated dynamically) -->
+    <div id="ds-detail-content" style="display:none;">
+
+      <!-- ── Hero ───────────────────────────────────────────────── -->
+      <section class="ds-detail-hero">
+        <div class="d-flex flex-column flex-md-row gap-4 align-items-start justify-content-between">
+          <div class="d-flex gap-3 align-items-center">
+            <div id="ds-hero-icon" class="ds-card-icon" style="width:64px; height:64px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; font-weight:800; color:#fff;">DS</div>
+            <div>
+              <h1 id="ds-hero-title" class="hero-main-title" style="font-size:clamp(1.75rem, 3.5vw, 2.5rem); margin-bottom:0.25rem;">Design System</h1>
+              <div id="ds-hero-meta" class="text-muted small" style="font-family:var(--font-mono); margin-bottom:0.5rem;">Company · 2024</div>
+              <div id="ds-hero-badges" class="d-flex flex-wrap gap-2 align-items-center"></div>
+            </div>
+          </div>
+
+          <div style="text-align:center; background:var(--bg-surface-subtle); padding:1rem 1.5rem; border-radius:var(--radius-md); border:1px solid var(--border-color); min-width:130px;">
+            <div id="ds-hero-score" style="font-family:var(--font-mono); font-size:2.25rem; font-weight:900; color:var(--accent-red);">95</div>
+            <small class="text-muted text-uppercase" style="font-family:var(--font-heading); font-size:0.75rem;">Adoption Score</small>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Claude's Architectural Take ────────────────────────── -->
+      <aside class="ds-verdict-banner">
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <i class="bi bi-stars" style="color:var(--accent-red); font-size:1.2rem;"></i>
+          <h3 style="font-size:1.15rem; font-weight:800; margin-bottom:0;">Architectural Critique & Take</h3>
+        </div>
+        <div id="ds-claude-take" style="color:var(--text-main); font-size:1.025rem; line-height:1.7;"></div>
+        <span class="d-block text-muted small mt-2" style="font-family:var(--font-mono);">— Verified by TrendingTech Design Systems Engineering Group</span>
+      </aside>
+
+      <!-- ── Philosophy & Token Model ──────────────────────────── -->
+      <section class="card mb-4" style="background:var(--bg-surface); border:1px solid var(--border-color); padding:2rem; border-radius:var(--radius-lg);">
+        <h2 style="font-family:var(--font-display); font-size:1.5rem; font-weight:800; margin-bottom:1rem;">Design Philosophy & Token Model</h2>
+        <div id="ds-philosophy-content" style="color:var(--text-secondary); line-height:1.8;"></div>
+      </section>
+
+      <!-- ── Visual DNA: Palette + Typography ──────────────────── -->
+      <section class="card mb-4" style="background:var(--bg-surface); border:1px solid var(--border-color); padding:2rem; border-radius:var(--radius-lg);">
+        <h2 style="font-family:var(--font-display); font-size:1.5rem; font-weight:800; margin-bottom:1.5rem;">Visual DNA & Tokens</h2>
+        
+        <div class="row g-4">
+          <div class="col-md-6">
+            <div class="text-muted small fw-bold text-uppercase mb-2" style="font-family:var(--font-heading);">Color Palette</div>
+            <div id="ds-palette-grid" class="ds-palette-grid" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(80px, 1fr)); gap:0.75rem;"></div>
+          </div>
+          <div class="col-md-6">
+            <div class="text-muted small fw-bold text-uppercase mb-2" style="font-family:var(--font-heading);">Typography Hierarchy</div>
+            <div style="background:var(--bg-surface-subtle); padding:1.25rem; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+              <div id="ds-typo-preview" style="font-size:2.5rem; font-weight:800; line-height:1;">Aa</div>
+              <div class="my-2" style="font-size:0.95rem;">The quick brown fox jumps over the lazy dog.</div>
+              <div id="ds-typo-stack" class="text-muted small" style="font-family:var(--font-mono);">Stack: Inter, -apple-system, sans-serif</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Capabilities Checklist ─────────────────────────────── -->
+      <section class="card mb-4" style="background:var(--bg-surface); border:1px solid var(--border-color); padding:2rem; border-radius:var(--radius-lg);">
+        <h2 style="font-family:var(--font-display); font-size:1.5rem; font-weight:800; margin-bottom:1rem;">Features & Tooling Support</h2>
+        <div id="ds-capabilities-list" class="ds-capability-list d-flex flex-wrap gap-3"></div>
+      </section>
+
+      <!-- ── Resources & External Links ────────────────────────── -->
+      <section class="card mb-4" style="background:var(--bg-surface); border:1px solid var(--border-color); padding:2rem; border-radius:var(--radius-lg);">
+        <h2 style="font-family:var(--font-display); font-size:1.5rem; font-weight:800; margin-bottom:1rem;">Official Resources & Figma Kits</h2>
+        <div id="ds-links-row" class="d-flex flex-wrap gap-2"></div>
+      </section>
+
+      <!-- ── Community Reviews ──────────────────────────────────── -->
+      <section class="card mb-4" style="background:var(--bg-surface); border:1px solid var(--border-color); padding:2rem; border-radius:var(--radius-lg);">
+        <h2 style="font-family:var(--font-display); font-size:1.5rem; font-weight:800; margin-bottom:1rem;">Community Ratings & Reviews</h2>
+        <div id="ds-reviews-list"></div>
+
+        <p id="ds-review-login-note" class="text-muted small mt-3">
+          <a href="/login.html" style="color:var(--accent-red); font-weight:700;">Log in</a> to submit an architectural review.
+        </p>
+
+        <form id="ds-review-form" style="display:none;" class="mt-3">
+          <div class="mb-3">
+            <label for="ds-review-rating" class="form-label text-muted small fw-bold">Rating</label>
+            <select id="ds-review-rating" class="form-select" required style="max-width:160px;">
+              <option value="">Select Stars</option>
+              <option value="5">★★★★★ (5/5)</option>
+              <option value="4">★★★★☆ (4/5)</option>
+              <option value="3">★★★☆☆ (3/5)</option>
+              <option value="2">★★☆☆☆ (2/5)</option>
+              <option value="1">★☆☆☆☆ (1/5)</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <textarea id="ds-review-comment" class="form-control" rows="3" placeholder="Share your experience building with this design system..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-subscribe btn-sm">Submit Review</button>
+          <span id="ds-review-msg" class="ms-2 small"></span>
+        </form>
+      </section>
+
+      <!-- ── Related Systems ────────────────────────────────────── -->
+      <section id="ds-related" class="my-5"></section>
+
     </div>
-  </section>
 
-  <!-- ── Claude's Take ──────────────────────────────────────── -->
-  <aside class="ds-claude-take">
-    <svg class="ds-claude-logo" viewBox="0 0 24 24" aria-hidden="true">
-      <path fill="#FFC107" d="M12 2 l2.4 6.8 L21 9.6 l-5.4 4.1 1.9 7.1 L12 16.8 6.5 20.8 l1.9-7.1 L3 9.6 l6.6-.8 Z"/>
-    </svg>
-    {{CLAUDE_TAKE}}
-    <span class="ds-signoff">— Claude{{CLAUDE_TAKE_BY}}</span>
-  </aside>
+  </main>
 
-  <!-- ── Philosophy ─────────────────────────────────────────── -->
-  <section class="my-4">
-    <h2>Philosophy</h2>
-    <div>{{PHILOSOPHY_HTML}}</div>
-  </section>
-
-  <!-- ── DNA: palette + typography ──────────────────────────── -->
-  <section class="ds-dna-section">
-    <h2>DNA</h2>
-    <div class="ds-dna-grid">
-      <div>
-        <div class="ds-dna-label">Palette</div>
-        <div class="ds-palette-large">{{PALETTE_LARGE}}</div>
-      </div>
-      <div>
-        <div class="ds-dna-label">Typography</div>
-        <div class="ds-type-sample">
-          <div class="ds-type-aa" style="font-family: {{FONT_STACK_CSS}};">Aa</div>
-          <div class="ds-type-pangram" style="font-family: {{FONT_STACK_CSS}};">The quick brown fox jumps over the lazy dog.</div>
-          <div class="ds-type-stack">{{FONT_STACK}}</div>
+  <!-- Persistent Audio Dock -->
+  <div class="podcast-dock" role="region" aria-label="Audio Player">
+    <div class="container dock-inner">
+      <div class="dock-track-info">
+        <div class="dock-art"><i class="bi bi-mic-fill"></i></div>
+        <div class="dock-meta">
+          <div class="dock-title">TrendingTech Daily — Design Systems Special</div>
+          <div class="dock-sub">Architecting Design Tokens with NewsKit & Carbon</div>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- ── Best for ───────────────────────────────────────────── -->
-  {{BEST_FOR_BLOCK}}
-
-  <!-- ── Capability checklist ───────────────────────────────── -->
-  <section class="my-4">
-    <h2>Capabilities</h2>
-    <div class="ds-capability-list">{{CAPABILITY_CHECKLIST}}</div>
-  </section>
-
-  <!-- ── Live links ─────────────────────────────────────────── -->
-  <section class="my-4">
-    <h2>Resources</h2>
-    <div class="ds-links-row">{{LINKS_ROW}}</div>
-  </section>
-
-  <!-- ── Reviews ────────────────────────────────────────────── -->
-  <section class="my-4">
-    <h2>Reviews</h2>
-    <div id="ds-reviews-list"></div>
-
-    <p id="ds-review-login-note" class="text-muted small" style="display:none;">
-      <a href="/login.html">Log in</a> to leave a review.
-    </p>
-    <form id="ds-review-form" style="display:none;" class="mt-3">
-      <div class="mb-2">
-        <label for="ds-review-rating">Rating</label>
-        <select id="ds-review-rating" class="form-select form-select-sm" required style="max-width:120px;">
-          <option value="">★</option>
-          <option value="5">★★★★★</option>
-          <option value="4">★★★★</option>
-          <option value="3">★★★</option>
-          <option value="2">★★</option>
-          <option value="1">★</option>
-        </select>
+      <div class="dock-controls">
+        <div class="dock-progress"><div class="dock-progress-bar" style="width:45%;"></div></div>
+        <button class="dock-play-btn" aria-label="Play"><i class="bi bi-play-fill"></i></button>
       </div>
-      <div class="mb-2">
-        <textarea id="ds-review-comment" class="form-control" rows="3" placeholder="What did you think?" required></textarea>
-      </div>
-      <button type="submit" class="btn btn-primary btn-sm">Submit review</button>
-      <span id="ds-review-msg" class="ms-2 small"></span>
-    </form>
-  </section>
-
-  <!-- ── Related systems ────────────────────────────────────── -->
-  <section id="ds-related" class="my-5"></section>
-
-</main>
-
-<footer style="background:#0B1220; color:#fff; padding: 3rem 1rem 2rem;">
-  <div class="container text-center">
-    <div class="ds-footer-badge mb-3" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.16); color:#fff;">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path fill="#FFC107" d="M12 2 l2.4 6.8 L21 9.6 l-5.4 4.1 1.9 7.1 L12 16.8 6.5 20.8 l1.9-7.1 L3 9.6 l6.6-.8 Z"/>
-      </svg>
-      <span>TrendingTech Daily · Anthropic</span>
     </div>
-    <p style="opacity:.8;"><a href="/design-systems" style="color:#FFC107;">← Back to Design Systems Decoded</a></p>
   </div>
-</footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/js/app-base.js?v=2"></script>
-<script src="/js/auth.js"></script>
-<script src="/js/nav-loader.js"></script>
-<script src="/js/design-systems-detail.js?v=2"></script>
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
+
+  <script src="/js/config.js"></script>
+  <script src="/js/app-base.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/nav-loader.js"></script>
+  <script src="/js/design-systems-detail.js"></script>
 </body>
 </html>

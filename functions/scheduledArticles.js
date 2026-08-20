@@ -132,7 +132,7 @@ async function generateArticle(newsApiKey) {
     featuredImage: imageData.imageUrl,
     imageAltText: imageData.imageAltText,
     content,
-    published: false,
+    published: true,
     readingTimeMinutes: readingTime,
   });
 

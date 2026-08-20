@@ -1,191 +1,101 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>\n
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-5VF5QF9ZCJ"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag("js", new Date());
-  gtag("config", "G-5VF5QF9ZCJ");
-</script>
+<html lang="he" dir="rtl" data-mode="dark">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5VF5QF9ZCJ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag("js", new Date());
+    gtag("config", "G-5VF5QF9ZCJ");
+  </script>
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Tools למתחילים — מדריך 10 דקות | AI Tools Pulse</title>
-<meta name="description" content="מדריך ידידותי של 10 דקות: 4 סוגי כלי ה-AI, איך לבחור את הראשון, מה להתקין, ומאילו טעויות להיזהר."/>
-<link rel="canonical" href="{{CANONICAL}}"/>
-{{HREFLANG}}
-<meta property="og:type" content="article"/>
-<meta property="og:title" content="AI Tools למתחילים — מדריך 10 דקות"/>
-<meta property="og:description" content="4 סוגי כלי ה-AI, איך לבחור את הראשון, מאילו טעויות להיזהר."/>
-<meta property="og:url" content="{{CANONICAL}}"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מדריך מעשי לכלי AI וסוכנים — TrendingTech Daily</title>
+  <meta name="description" content="מדריך מעשי ב-10 דקות: 4 סוגי כלי AI, מה להתקין, איך לבחור כלי ראשון וממה להימנע.">
+  <link rel="canonical" href="https://trendingtechdaily.com/he/ai-tools-guide.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="og:title" content="מדריך מנהלים לכלי AI — מדריך מהיר"/>
+  <meta property="og:description" content="4 סוגי כלי ה-AI, כיצד לבחור כלי ראשון וטעויות נפוצות."/>
+  <meta property="og:url" content="https://trendingtechdaily.com/he/ai-tools-guide.html"/>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/he/styles.css">
-<link rel="stylesheet" href="/css/ai-tools.css?v=4">
-<link rel="stylesheet" href="/css/ai-tools-guide.css?v=5">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Rubik:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-{{JSONLD}}
+  <!-- Master Unified Stylesheet -->
+  <link rel="stylesheet" href="/he/styles.css">
+  <link rel="stylesheet" href="/css/ai-tools.css">
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 </head>
-<body class="aip-page aig-page" data-lang="he">
+<body class="aip-page" data-lang="he">
 
-<div id="navbar-placeholder"></div>
+  <div id="navbar-placeholder"></div>
 
-<header class="aip-hero aip-hero-slim text-center">
-  <div class="container">
-    <div class="aip-poweredby">
-      <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-        <path fill="#FFC107" d="M12 2 l2.4 6.8 L21 9.6 l-5.4 4.1 1.9 7.1 L12 16.8 6.5 20.8 l1.9-7.1 L3 9.6 l6.6-.8 Z"/>
-      </svg>
-      <span>מופעל על ידי <strong>Claude</strong> · Anthropic × TrendingTech Daily</span>
-    </div>
-    <h1>AI Tools למתחילים</h1>
-    <p class="aip-sub">מדריך של 10 דקות לבחירת כלי ה-AI הראשון שלכם — גם אם "LLM" עדיין נשמע כמו טעות הקלדה.</p>
-
-    {{EXPLAINER_VIDEO}}
-  </div>
-</header>
-
-<main class="container">
-
-  <section class="aig-card aig-intro">
-    <h2><i class="bi bi-lightning-charge text-warning"></i> במשפט אחד</h2>
-    <p>כלי AI הופכים הוראות פשוטות לעבודה שימושית — כתיבה, קוד, מחקר, עיבוד תמונות. מאחורי כל אפליקציה נוצצת יושב מודל שפה גדול (המוח) וממשק דק (הכפתורים). המדריך הזה מראה את ארבעת הסוגים העיקריים, כדי שתבחרו כלי שמתאים ליום שלכם — בלי לבלות שעות ב-Product Hunt.</p>
-    <p class="text-muted small mb-0">בלי ז'רגון, בלי להתקין שום דבר הערב — מספיק כדי לקבל החלטות חכמות מחר.</p>
-  </section>
-
-  <section class="my-5">
-    <h2 class="aig-h2">4 הסוגים של כלי AI שתפגשו</h2>
-    <div class="aig-types-grid">
-      <article class="aig-type-card" data-type="llm-product">
-        <div class="aig-type-icon"><i class="bi bi-chat-square-dots"></i></div>
-        <h3>מוצרי LLM</h3>
-        <p>אפליקציות צ'אט מוכנות לשימוש כמו ChatGPT, Claude ו-Gemini. פתחו טאב, הקלידו, קבלו תשובה.</p>
-        <p class="small text-muted"><strong>מתאים ל:</strong> כתיבה, מחקר, סיעור מוחות.</p>
-        <a class="aig-type-cta" href="/he/ai-tools?type=llm-product">סקור מוצרי LLM →</a>
-      </article>
-
-      <article class="aig-type-card" data-type="claude-skill">
-        <div class="aig-type-icon"><i class="bi bi-stars"></i></div>
-        <h3>Claude Skills</h3>
-        <p>תוספים שמלמדים את Claude לבצע משימה ספציפית — כמו מתכון שאפשר להפעיל בלחיצה.</p>
-        <p class="small text-muted"><strong>מתאים ל:</strong> תהליכי עבודה חוזרים בתוך Claude.</p>
-        <a class="aig-type-cta" href="/he/ai-tools?type=claude-skill">סקור Claude Skills →</a>
-      </article>
-
-      <article class="aig-type-card" data-type="mcp-connector">
-        <div class="aig-type-icon"><i class="bi bi-plug"></i></div>
-        <h3>מחברי MCP</h3>
-        <p>תקני "USB-C" שמחברים כל עוזר AI ל-Slack, GitHub, קבצים או מסד נתונים.</p>
-        <p class="small text-muted"><strong>מתאים ל:</strong> לחבר AI לעבודה האמיתית שלכם.</p>
-        <a class="aig-type-cta" href="/he/ai-tools?type=mcp-connector">סקור מחברי MCP →</a>
-      </article>
-
-      <article class="aig-type-card" data-type="agent-framework">
-        <div class="aig-type-icon"><i class="bi bi-diagram-3"></i></div>
-        <h3>פריימוורקים ומאגרים</h3>
-        <p>קוד פתוח (LangChain, CrewAI, מאגרי GitHub) למפתחים שרוצים לבנות סוכן משלהם.</p>
-        <p class="small text-muted"><strong>מתאים ל:</strong> מפתחים שכותבים קוד.</p>
-        <a class="aig-type-cta" href="/he/ai-tools?type=agent-framework">סקור פריימוורקים →</a>
-      </article>
-    </div>
-  </section>
-
-  <section class="aig-tree my-5">
-    <h2 class="aig-h2">בחירת הכלי הראשון ב-30 שניות</h2>
-    <div class="aig-tree-flow">
-      <div class="aig-tree-q">מה המטרה שלכם היום?</div>
-      <div class="aig-tree-row">
-        <a class="aig-tree-branch" href="/he/ai-tools?type=llm-product&category=writing">
-          <strong>לכתוב או לחקור</strong>
-          <span class="text-muted">→ התחילו עם מוצר LLM (ChatGPT או Claude)</span>
-        </a>
-        <a class="aig-tree-branch" href="/he/ai-tools?type=llm-product&category=coding">
-          <strong>לכתוב קוד</strong>
-          <span class="text-muted">→ Claude Code או GitHub Copilot</span>
-        </a>
-        <a class="aig-tree-branch" href="/he/ai-tools?type=mcp-connector">
-          <strong>לחבר AI לכלים שלי</strong>
-          <span class="text-muted">→ הסתכלו על מחברי MCP</span>
-        </a>
-        <a class="aig-tree-branch" href="/he/ai-tools?type=claude-skill">
-          <strong>לאוטומט תהליך עבודה</strong>
-          <span class="text-muted">→ נסו Claude Skill</span>
-        </a>
-        <a class="aig-tree-branch" href="/he/ai-tools?type=agent-framework">
-          <strong>לבנות משהו מותאם</strong>
-          <span class="text-muted">→ בחרו פריימוורק סוכנים</span>
-        </a>
+  <header class="aip-hero text-center">
+    <div class="container">
+      <div class="aip-poweredby">
+        <i class="bi bi-book-half" style="color:var(--accent-red);"></i>
+        <span>מדריך מנהלים · <strong>TrendingTech Daily</strong></span>
       </div>
+      <h1>מדריך כלי AI למנהלים ומפתחים</h1>
+      <p class="aip-sub">מדריך של 10 דקות לבחירת תשתית ה-AI הראשונה שלכם — הבנת מודלי הסקה, שרתי MCP וסוכנים אוטונומיים.</p>
     </div>
-  </section>
+  </header>
 
-  <section class="aig-steps my-5">
-    <h2 class="aig-h2">10 הדקות הראשונות שלכם, שלב אחר שלב</h2>
-    <ol class="aig-steps-list">
-      <li><span class="aig-step-num">1</span><div><strong>בחרו כלי אחד.</strong> רק אחד. השתמשו בעץ ההחלטה למעלה — אל תפתחו חמישה טאבים.</div></li>
-      <li><span class="aig-step-num">2</span><div><strong>הירשמו ל-Free tier.</strong> כמעט לכל כלי יש כזה. שאלות על תשלום — שבוע הבא.</div></li>
-      <li><span class="aig-step-num">3</span><div><strong>נסו משימה אמיתית מהיום-יום.</strong> "סכם את המייל הזה" או "כתוב לי שאילתת SQL". בלי תרגילי צעצוע.</div></li>
-      <li><span class="aig-step-num">4</span><div><strong>קראו את התשובה בעין ביקורתית.</strong> מודלים ממציאים. בדקו פעמיים כל דבר שחשוב.</div></li>
-      <li><span class="aig-step-num">5</span><div><strong>שפצו את הפרומפט פעמיים.</strong> הוסיפו הקשר, דוגמאות, פורמט. ראו איך התשובה משתפרת.</div></li>
-      <li><span class="aig-step-num">6</span><div><strong>שמרו מה שעובד.</strong> רשמו את מבנה הפרומפט במסמך. זו ספריית הפרומפטים הראשונה שלכם.</div></li>
-    </ol>
-  </section>
+  <main class="container my-4 my-md-5" style="max-width: 900px;">
 
-  <section class="my-5">
-    <h2 class="aig-h2">טעויות שכולם עושים (דלגו עליהן)</h2>
-    <div class="aig-callouts">
-      <div class="aig-callout aig-callout-warn">
-        <i class="bi bi-exclamation-triangle"></i>
-        <div><strong>להאמין לתשובות שנשמעות בטוחות.</strong> המודל נשמע בטוח גם כשהוא טועה. ודאו עובדות, קוד, ציטוטים.</div>
+    <!-- 60-second intro -->
+    <section class="card mb-4" style="background:var(--bg-surface); border:1px solid var(--border-color); padding:2rem; border-radius:var(--radius-lg); border-inline-start:4px solid var(--accent-red);">
+      <h2 style="font-family:var(--font-display); font-size:1.4rem; font-weight:800;"><i class="bi bi-lightning-charge text-warning ms-2"></i> תקציר מנהלים ב-60 שניות</h2>
+      <p style="color:var(--text-secondary); font-size:1.05rem; line-height:1.7;">כלי בינה מלאכותית הופכים הנחיות טבעיות לתוצרי הנדסה, מחקר ויצירה מורכבים. מאחורי כל יישום איכותי עומד מודל הסקה (המוח) לצד מתאמי כלים דינמיים (הידיים). מדריך זה מפרק את 4 הקטגוריות המובילות.</p>
+    </section>
+
+    <!-- The 4 Kinds -->
+    <section class="card mb-4" style="background:var(--bg-surface); border:1px solid var(--border-color); padding:2rem; border-radius:var(--radius-lg);">
+      <h2 style="font-family:var(--font-display); font-size:1.5rem; font-weight:800; margin-bottom:1.5rem;">4 קטגוריות הכלים המרכזיות</h2>
+      
+      <div class="d-flex flex-column gap-3">
+        <div style="background:var(--bg-surface-subtle); padding:1.25rem; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+          <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main);"><span class="badge badge-ai ms-2">01</span> עוזרים אישיים וממשקי צ'אט</h3>
+          <p class="mb-0 text-muted">ממשקים ישירים (Claude, ChatGPT, Gemini) לחשיבה, ניסוח ופתרון שאלות נקודתיות.</p>
+        </div>
+
+        <div style="background:var(--bg-surface-subtle); padding:1.25rem; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+          <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main);"><span class="badge badge-dev ms-2">02</span> מתאמי MCP ופלאגינים</h3>
+          <p class="mb-0 text-muted">פרוטוקול Model Context Protocol המחבר מודלים ישירות לקבצים מקומיים, מסדי נתונים, APIs וטרמינל.</p>
+        </div>
+
+        <div style="background:var(--bg-surface-subtle); padding:1.25rem; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+          <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main);"><span class="badge badge-chips ms-2">03</span> סביבות פיתוח מבוססות סוכנים</h3>
+          <p class="mb-0 text-muted">Cursor, Windsurf ו-Claude Code המבצעים שינויי קוד רב-קובציים והרצת בדיקות עצמאית.</p>
+        </div>
+
+        <div style="background:var(--bg-surface-subtle); padding:1.25rem; border-radius:var(--radius-md); border:1px solid var(--border-color);">
+          <h3 style="font-size:1.15rem; font-weight:800; color:var(--text-main);"><span class="badge badge-security ms-2">04</span> נחילי סוכנים אוטונומיים</h3>
+          <p class="mb-0 text-muted">תשתיות מרובות סוכנים (CrewAI, LangGraph) המבצעות תהליכי עבודה ארגוניים מתמשכים ברקע.</p>
+        </div>
       </div>
-      <div class="aig-callout aig-callout-warn">
-        <i class="bi bi-exclamation-triangle"></i>
-        <div><strong>להדביק מידע רגיש לתוכניות חינמיות.</strong> תוכניות חינמיות עשויות להתאמן על הקלט שלכם. סודות ולקוחות — מחוץ לתחום.</div>
-      </div>
-      <div class="aig-callout aig-callout-warn">
-        <i class="bi bi-exclamation-triangle"></i>
-        <div><strong>להחליף כלי כל שבוע.</strong> הניצחון הוא בפרומפטים ובתהליכים. הישארו עם כלי אחד והעמיקו לפני שאתם מחליפים.</div>
-      </div>
-      <div class="aig-callout aig-callout-warn">
-        <i class="bi bi-exclamation-triangle"></i>
-        <div><strong>פרומפטים של משפט אחד.</strong> תנו תפקיד, מטרה, קהל, פורמט. שתי שורות נוספות = פי 10 שיפור.</div>
-      </div>
+    </section>
+
+    <div class="text-center mt-5">
+      <a href="/he/ai-tools" class="btn btn-subscribe">גלו את כל 1,000+ כלי ה-AI ←</a>
     </div>
-  </section>
 
-  <section class="aig-where text-center my-5">
-    <h2 class="aig-h2">לאן ממשיכים</h2>
-    <div class="aig-where-chips">
-      <a class="aip-chip aip-chip-big" href="/he/ai-tools/glossary"><i class="bi bi-book"></i> מילון מונחים (35 מונחים)</a>
-      <a class="aip-chip aip-chip-big" href="/he/ai-tools"><i class="bi bi-grid"></i> כל הכלים</a>
-      <a class="aip-chip aip-chip-big" href="/he/ai-tools?type=llm-product"><i class="bi bi-chat-square-dots"></i> התחילו עם LLM</a>
-      <a class="aip-chip aip-chip-big" href="/he/ai-tools?type=mcp-connector"><i class="bi bi-plug"></i> נסו מחבר MCP</a>
-    </div>
-  </section>
+  </main>
 
-</main>
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
 
-<footer style="background:#0B1220; color:#fff; padding: 3rem 1rem 2rem;">
-  <div class="container text-center">
-    <div class="aip-footer-badge mb-3" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.16); color:#fff;">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path fill="#FFC107" d="M12 2 l2.4 6.8 L21 9.6 l-5.4 4.1 1.9 7.1 L12 16.8 6.5 20.8 l1.9-7.1 L3 9.6 l6.6-.8 Z"/>
-      </svg>
-      <span>מופעל על ידי Claude · Anthropic</span>
-    </div>
-    <p style="opacity:.8;"><a href="/he/ai-tools" style="color:#FFC107;">← חזרה ל-AI Tools Pulse</a></p>
-  </div>
-</footer>
-
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
-<script src="/he/js/he-app.js" defer></script>
+  <script src="/js/config.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/nav-loader.js"></script>
+  <script src="/js/app-base.js"></script>
 </body>
 </html>

@@ -1,13 +1,14 @@
-// js/nav-loader.js - Updated with proper category loading
+// js/nav-loader.js — Responsive Figma Tech News Navigation & Category Loader
 
 let firebaseReadyFired = false;
-let navigationInitialized = false; // Track initialization state
+let navigationInitialized = false;
 
 /**
  * The main function to initialize the entire navigation system.
  */
 function initializeNavigation() {
-  navigationInitialized = true; // Prevent duplicate initialization calls
+  navigationInitialized = true;
+
   const loadHTML = (url, placeholderId, callback) => {
     fetch(url)
       .then(response => {
@@ -24,377 +25,268 @@ function initializeNavigation() {
       .catch(error => console.error(`Error loading content for ${placeholderId}:`, error));
   };
 
-  const navAlreadyLoaded = document.getElementById('navbarMain');
-  const navFile = '/nav.html';
+  const isHebrew = window.location.pathname.startsWith('/he');
+  const navFile = isHebrew ? '/he/nav.html' : '/nav.html';
+
+  const navAlreadyLoaded = document.getElementById('site-header');
 
   if (navAlreadyLoaded) {
-    // Navbar already exists; ensure helpers and categories are initialized
-    initializeSearch();
+    setupNavInteractions();
     initializeResponsiveCategories();
     if (window.initializeAuth) {
       window.initializeAuth();
+    } else if (window.updateAuthUI && typeof firebase !== 'undefined' && firebase.auth) {
+      window.updateAuthUI(firebase.auth().currentUser);
     }
   } else {
-    // Load the navigation, then initialize all its interactive elements
     loadHTML(navFile, 'navbar-placeholder', () => {
-      initializeSearch();
+      setupNavInteractions();
       initializeResponsiveCategories();
       if (window.initializeAuth) {
         window.initializeAuth();
+      } else if (window.updateAuthUI && typeof firebase !== 'undefined' && firebase.auth) {
+        window.updateAuthUI(firebase.auth().currentUser);
       }
     });
   }
 
-  // Load the footer
-  const footerFile = '/footer.html';
+  // Load footer based on language
+  const footerFile = isHebrew ? '/he/footer.html' : '/footer.html';
   loadHTML(footerFile, 'footer-placeholder', () => {
-    // After footer is loaded, populate categories if Firebase is ready
     if (typeof firebase !== 'undefined' && firebase.apps.length) {
       loadFooterCategories();
     }
   });
+
+  // Ensure Cookie Consent banner is initialized for new users
+  initializeCookieConsent(isHebrew);
 }
 
 /**
- * Initializes the search bar toggle functionality.
+ * Initializes the Cookie Consent banner dynamically if not yet given.
  */
-function initializeSearch() {
-  const searchToggleBtn = document.getElementById('search-toggle-btn');
-  const searchForm = document.getElementById('nav-search-form');
-  const searchInput = document.getElementById('nav-search-input');
+function initializeCookieConsent(isHebrew) {
+  try {
+    if (localStorage.getItem('cookie_consent')) return;
+  } catch (e) {}
 
-  if (!searchToggleBtn || !searchForm || !searchInput) {
-    console.warn('Search elements not found.');
-    return;
+  if (!document.getElementById('cookie-consent-css')) {
+    const link = document.createElement('link');
+    link.id = 'cookie-consent-css';
+    link.rel = 'stylesheet';
+    link.href = '/css/cookie-consent.css';
+    document.head.appendChild(link);
   }
 
-  searchToggleBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    searchForm.classList.toggle('active');
-
-    if (searchForm.classList.contains('active')) {
-      searchInput.focus();
-    }
-  });
-
-  // Close search when clicking outside
-  document.addEventListener('click', (e) => {
-    const nav = document.querySelector('.navbar');
-    if (nav && !nav.contains(e.target)) {
-      searchForm.classList.remove('active');
-    }
-  });
-  
-  // Handle search form submission
-  searchForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const query = searchInput.value.trim();
-    if (query) {
-      // For stock data page, search stocks instead of redirecting
-      if (window.location.pathname === '/stock-data.html' && typeof searchStock === 'function') {
-        searchInput.value = query.toUpperCase();
-        searchForm.classList.remove('active');
-        searchStock();
-      } else {
-        // For other pages, redirect to search page
-        window.location.href = `/search.html?q=${encodeURIComponent(query)}`;
-      }
-    }
-  });
-  
-  // Handle Enter key in search input
-  searchInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      searchForm.dispatchEvent(new Event('submit'));
-    }
-  });
+  const scriptSrc = isHebrew ? '/he/js/he-cookie-consent.js' : '/js/cookie-consent.js';
+  if (!document.querySelector('script[src*="cookie-consent.js"]')) {
+    const script = document.createElement('script');
+    script.src = scriptSrc;
+    script.defer = true;
+    document.body.appendChild(script);
+  }
 }
 
 /**
- * Initializes responsive category loading and handling from Firebase.
+ * Sets up all navigation event listeners: mobile drawer, search toggles, theme toggle.
+ */
+function setupNavInteractions() {
+  const hamburgerBtn = document.getElementById('hamburger-menu-btn');
+  const drawerCloseBtn = document.getElementById('drawer-close-btn');
+  const mobileDrawer = document.getElementById('mobile-nav-drawer');
+  const backdrop = document.getElementById('drawer-backdrop');
+  const mobileSearchBtn = document.getElementById('mobile-search-btn');
+  const navSearchForm = document.getElementById('nav-search-form');
+  const navSearchInput = document.getElementById('nav-search-input');
+  const mobileDrawerSearchForm = document.getElementById('mobile-drawer-search-form');
+  const mobileDrawerSearchInput = document.getElementById('mobile-drawer-search-input');
+  const themeToggleBtn = document.getElementById('theme-mode-toggle-btn');
+
+  // Open Drawer
+  if (hamburgerBtn && mobileDrawer && backdrop) {
+    hamburgerBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      mobileDrawer.classList.add('open');
+      backdrop.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+  }
+
+  // Close Drawer Function
+  const closeDrawer = () => {
+    if (mobileDrawer) mobileDrawer.classList.remove('open');
+    if (backdrop) backdrop.classList.remove('open');
+    document.body.style.overflow = '';
+  };
+
+  if (drawerCloseBtn) {
+    drawerCloseBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      closeDrawer();
+    });
+  }
+
+  if (backdrop) {
+    backdrop.addEventListener('click', closeDrawer);
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mobileDrawer && mobileDrawer.classList.contains('open')) {
+      closeDrawer();
+    }
+  });
+
+  // Desktop/Mobile Search Handling
+  const handleSearch = (query) => {
+    const trimmed = query.trim();
+    if (!trimmed) return;
+    const isHe = window.location.pathname.startsWith('/he');
+    const searchBase = isHe ? '/he/search.html' : '/search.html';
+    if ((window.location.pathname === '/stock-data.html' || window.location.pathname === '/he/shuk-hon.html') && typeof searchStock === 'function') {
+      if (navSearchInput) navSearchInput.value = trimmed.toUpperCase();
+      searchStock();
+    } else {
+      window.location.href = `${searchBase}?q=${encodeURIComponent(trimmed)}`;
+    }
+  };
+
+  if (navSearchForm && navSearchInput) {
+    navSearchForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      handleSearch(navSearchInput.value);
+    });
+  }
+
+  if (mobileDrawerSearchForm && mobileDrawerSearchInput) {
+    mobileDrawerSearchForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      handleSearch(mobileDrawerSearchInput.value);
+    });
+  }
+
+  if (mobileSearchBtn) {
+    mobileSearchBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (mobileDrawer && backdrop) {
+        mobileDrawer.classList.add('open');
+        backdrop.classList.add('open');
+        if (mobileDrawerSearchInput) mobileDrawerSearchInput.focus();
+      }
+    });
+  }
+
+  // Theme Toggle (Light / Dark)
+  const savedMode = localStorage.getItem('ttd-theme-mode') || 'dark';
+  document.documentElement.setAttribute('data-mode', savedMode);
+
+  if (themeToggleBtn) {
+    const updateThemeIcon = (mode) => {
+      const icon = themeToggleBtn.querySelector('i');
+      if (icon) {
+        icon.className = mode === 'dark' ? 'bi bi-sun' : 'bi bi-moon-stars';
+      }
+    };
+
+    updateThemeIcon(savedMode);
+
+    themeToggleBtn.addEventListener('click', () => {
+      const currentMode = document.documentElement.getAttribute('data-mode') || 'dark';
+      const nextMode = currentMode === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-mode', nextMode);
+      localStorage.setItem('ttd-theme-mode', nextMode);
+      updateThemeIcon(nextMode);
+    });
+  }
+}
+
+/**
+ * Initializes category loading from Firebase Firestore
  */
 function initializeResponsiveCategories() {
   const DEFAULT_CATEGORIES = [
-    { name: 'AI', slug: 'ai', order: 1 },
-    { name: 'Gadgets', slug: 'gadgets', order: 2 },
-    { name: 'Startups', slug: 'startups', order: 3 },
-    { name: 'Crypto', slug: 'crypto', order: 4 }
+    { name: 'AI', slug: 'ai', icon: 'bi-robot' },
+    { name: 'Dev', slug: 'dev', icon: 'bi-code-slash' },
+    { name: 'Computing', slug: 'computing', icon: 'bi-cpu' },
+    { name: 'Markets', slug: 'stock-data', icon: 'bi-graph-up' },
+    { name: 'Podcasts', slug: 'podcasts', icon: 'bi-headphones' },
+    { name: 'Design Systems', slug: 'design-systems', icon: 'bi-palette' },
+    { name: 'AI Tools', slug: 'ai-tools', icon: 'bi-tools' }
   ];
 
-  // Wait for Firebase to be ready before trying to fetch categories
   const waitForFirebase = () => new Promise(resolve => {
     let attempts = 0;
-    const maxAttempts = 30; // ~3 seconds total
     const interval = setInterval(() => {
-      if (typeof firebase !== 'undefined' && firebase.apps.length) {
+      if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
         clearInterval(interval);
         resolve(true);
-      } else if (++attempts >= maxAttempts) {
+      } else if (++attempts >= 25) {
         clearInterval(interval);
         resolve(false);
       }
     }, 100);
   });
 
-  const fetchCategoriesFromDB = async () => {
-    const firebaseReady = await waitForFirebase();
-    if (!firebaseReady) {
-      console.warn("Firebase not initialized yet for categories; using defaults");
-      return DEFAULT_CATEGORIES;
-    }
+  const fetchCategories = async () => {
+    const ready = await waitForFirebase();
+    if (!ready) return DEFAULT_CATEGORIES;
 
     try {
       const db = firebase.firestore();
-
-      // Try 'categories' collection first
-      let snapshot = await db.collection('categories').orderBy('order', 'asc').get();
-
-      // If categories collection is empty, try 'sections' collection
+      let snapshot = await db.collection('sections').where('active', '==', true).orderBy('order', 'asc').get();
       if (snapshot.empty) {
-        console.log("No documents in 'categories' collection, trying 'sections'");
-        snapshot = await db.collection('sections').orderBy('order', 'asc').get();
+        snapshot = await db.collection('categories').orderBy('order', 'asc').get();
       }
-
-      if (snapshot.empty) {
-        console.warn("No categories found in either 'categories' or 'sections' collections");
-        return DEFAULT_CATEGORIES;
-      }
+      if (snapshot.empty) return DEFAULT_CATEGORIES;
 
       const categories = [];
       snapshot.forEach(doc => {
         const data = doc.data();
         categories.push({
-          id: doc.id,
           name: data.name,
           slug: data.slug || data.name.toLowerCase().replace(/\s+/g, '-'),
-          order: data.order || 999
+          icon: data.icon || 'bi-newspaper'
         });
       });
-
-      console.log('Categories loaded:', categories);
       return categories;
-
-    } catch (error) {
-      console.error("Error fetching categories from Firebase:", error);
-      // Return default categories as fallback
+    } catch (e) {
+      console.warn("Using default categories due to fetch error:", e);
       return DEFAULT_CATEGORIES;
     }
   };
 
-  const renderCategories = (categories) => {
-    const navbarNav = document.querySelector('#navbarMain .navbar-nav');
-    const moreDropdownMenu = document.getElementById('more-dropdown-menu');
-    const moreDropdown = document.getElementById('more-dropdown');
-    const stocksLabel = 'Stocks';
-
-    if (!navbarNav) {
-      console.error('Navbar nav element not found');
-      return;
-    }
-
-    // First, remove any existing category items to prevent duplicates
-    navbarNav.querySelectorAll('[data-category="true"]').forEach(el => el.remove());
-
-    // Start with a generous inline count; fitCategoriesToWidth() below moves
-    // whatever doesn't actually fit into the More dropdown.
-    const maxVisibleCategories = window.innerWidth >= 1200 ? 4 : 3;
-    const visibleCategories = categories.slice(0, maxVisibleCategories);
-    const hiddenCategories = categories.slice(maxVisibleCategories);
-
-    // Find where to insert categories (before the More dropdown)
-    const insertBeforeElement = moreDropdown || navbarNav.querySelector('.nav-item:not([data-category="true"])');
-    
-    // Add visible categories
-    visibleCategories.forEach(cat => {
-      const li = document.createElement('li');
-      li.className = 'nav-item';
-      li.setAttribute('data-category', 'true'); // Mark as category item
-      const a = document.createElement('a');
-      a.className = 'nav-link';
-      a.href = `/${cat.slug}`;
-      a.textContent = cat.name;
-      li.appendChild(a);
-      
-      if (insertBeforeElement) {
-        navbarNav.insertBefore(li, insertBeforeElement);
-      } else {
-        navbarNav.appendChild(li);
-      }
-    });
-
-    // Handle overflow categories in dropdown
-    if (moreDropdownMenu && moreDropdown) {
-      moreDropdownMenu.innerHTML = '';
-
-      hiddenCategories.forEach(cat => {
-        const li = document.createElement('li');
-        const a = document.createElement('a');
-        a.className = 'dropdown-item';
-        a.href = `/${cat.slug}`;
-        a.textContent = cat.name;
-        li.appendChild(a);
-        moreDropdownMenu.appendChild(li);
-      });
-
-      // Include Stock Data link
-      const stocksLi = document.createElement('li');
-      const stocksLink = document.createElement('a');
-      stocksLink.className = 'dropdown-item';
-      stocksLink.href = '/stock-data.html';
-      stocksLink.innerHTML = `<i class="bi bi-graph-up me-1"></i>${stocksLabel}`;
-      stocksLi.appendChild(stocksLink);
-      moreDropdownMenu.appendChild(stocksLi);
-
-      if (moreDropdownMenu.children.length > 0) {
-        moreDropdown.classList.remove('d-none');
-      } else {
-        moreDropdown.classList.add('d-none');
-      }
-    }
-    
-    // Stocks lives in the More dropdown only — an inline copy just adds width.
-
-    fitCategoriesToWidth();
-  };
-
-  /**
-   * Moves inline category links into the More dropdown, last-first, until the
-   * expanded navbar no longer overflows its container. Bootstrap's collapse
-   * handles < xl widths, so this only runs when the bar is expanded.
-   */
-  const fitCategoriesToWidth = () => {
-    const collapse = document.getElementById('navbarMain');
-    const moreDropdown = document.getElementById('more-dropdown');
-    const moreDropdownMenu = document.getElementById('more-dropdown-menu');
-    const navbarNav = document.querySelector('#navbarMain .navbar-nav');
-    if (!collapse || !moreDropdown || !moreDropdownMenu || !navbarNav) return;
-    if (window.innerWidth < 1200) return; // collapsed mode stacks vertically
-
-    const overflows = () => {
-      const container = collapse.closest('.container');
-      if (!container) return collapse.scrollWidth > collapse.clientWidth;
-      const limit = container.getBoundingClientRect().right - 12;
-      const last = collapse.lastElementChild;
-      return collapse.scrollWidth > collapse.clientWidth ||
-        (last && last.getBoundingClientRect().right > limit);
-    };
-
-    let guard = 20;
-    while (overflows() && guard-- > 0) {
-      const inlineCats = navbarNav.querySelectorAll('li[data-category="true"]');
-      const lastCat = inlineCats[inlineCats.length - 1];
-      if (!lastCat) break;
-      const link = lastCat.querySelector('a');
-      const li = document.createElement('li');
-      const a = document.createElement('a');
-      a.className = 'dropdown-item';
-      a.href = link.getAttribute('href');
-      a.textContent = link.textContent;
-      li.appendChild(a);
-      moreDropdownMenu.insertBefore(li, moreDropdownMenu.firstChild);
-      lastCat.remove();
-      moreDropdown.classList.remove('d-none');
-    }
-  };
-
-  // Load and render categories
-  fetchCategoriesFromDB().then(categories => {
-    renderCategories(categories);
-
-    // Font loading can widen links after first render — re-check the fit.
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(fitCategoriesToWidth);
-    }
-
-    // Re-render on window resize
-    let resizeTimeout;
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
-        // Remove existing category items before re-rendering
-        const navbarNav = document.querySelector('#navbarMain .navbar-nav');
-        if (navbarNav) {
-          // Remove all category items
-          navbarNav.querySelectorAll('[data-category="true"]').forEach(el => el.remove());
-          // Re-render categories
-          renderCategories(categories);
-        }
-      }, 150);
-    });
+  fetchCategories().then(cats => {
+    // Categories are loaded and available
+    console.log("Navigation categories ready:", cats.length);
   });
 }
 
 /**
- * Load categories in the footer
+ * Load categories in footer
  */
 function loadFooterCategories() {
-  const footerCategoriesList = document.getElementById('footer-categories-list');
-  if (!footerCategoriesList || typeof firebase === 'undefined') return;
-  
-  const db = firebase.firestore();
-  
-  // Try categories collection first, then sections
-  db.collection('categories').orderBy('order', 'asc').get()
-    .then(snapshot => {
-      if (snapshot.empty) {
-        // Try sections collection
-        return db.collection('sections').orderBy('order', 'asc').get();
-      }
-      return snapshot;
-    })
-    .then(snapshot => {
-      if (!snapshot.empty) {
-        let categoriesHTML = '';
-        snapshot.forEach(doc => {
-          const category = doc.data();
-          const slug = category.slug || category.name.toLowerCase().replace(/\s+/g, '-');
-          const href = `/${slug}`;
-          categoriesHTML += `<li><a href="${href}">${category.name}</a></li>`;
-        });
-        footerCategoriesList.innerHTML = categoriesHTML;
-      } else {
-        // Use default categories
-        footerCategoriesList.innerHTML = `
-          <li><a href="/ai">AI</a></li>
-          <li><a href="/gadgets">Gadgets</a></li>
-          <li><a href="/startups">Startups</a></li>
-          <li><a href="/crypto">Crypto</a></li>
-        `;
-      }
-    })
-    .catch(error => {
-      console.error('Error loading footer categories:', error);
-      footerCategoriesList.innerHTML = '<li class="text-muted">Unable to load categories</li>';
-    });
+  const isHebrew = window.location.pathname.startsWith('/he');
+  const footerDesc = document.getElementById('footer-description');
+  if (footerDesc && isHebrew) {
+    footerDesc.textContent = 'מודיעין טכנולוגי בזמן אמת, פריצות דרך בבינה מלאכותית, ניתוחי חומרה ומערכות עיצוב למהנדסים ולמובילי טכנולוגיה.';
+  }
 }
 
-
-// Wait for Firebase to be ready
+// Event Listeners for Firebase initialization
 document.addEventListener('firebase-ready', () => {
   firebaseReadyFired = true;
-  console.log('Firebase ready event fired');
   if (!navigationInitialized) {
     initializeNavigation();
   }
 });
 
-// Fallback initialization methods
 document.addEventListener('DOMContentLoaded', () => {
-  // Check if Firebase is already initialized after a delay
   setTimeout(() => {
-    if (!navigationInitialized && !firebaseReadyFired && typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
-      console.log('Fallback: Initializing navigation without firebase-ready event');
+    if (!navigationInitialized && typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
+      initializeNavigation();
+    } else if (!navigationInitialized) {
       initializeNavigation();
     }
-  }, 1000);
-
-  // Also check immediately for pages that initialize Firebase synchronously
-  if (!navigationInitialized && typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length > 0) {
-    console.log('Firebase already initialized, loading navigation immediately');
-    initializeNavigation();
-  }
+  }, 300);
 });
 
-// Export for manual initialization if needed
 window.initializeNavigation = initializeNavigation;

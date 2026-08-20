@@ -1,4 +1,4 @@
-/* ── Cookie Consent Banner ─────────────────────────────────────────── */
+/* ── Cookie Consent Banner — TrendingTech Daily Obsidian & Crimson Design System ── */
 
 #cookie-consent-banner {
   position: fixed;
@@ -6,15 +6,19 @@
   left: 0;
   right: 0;
   z-index: 99999;
-  background: #1a1a2e;
-  border-top: 2px solid #6366f1;
-  padding: 1rem 1.5rem;
+  background: rgba(14, 16, 22, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 2px solid #E63946;
+  padding: 1.15rem 1.75rem;
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  justify-content: space-between;
+  gap: 1.5rem;
   flex-wrap: wrap;
-  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
-  animation: cookie-slide-up 0.35s ease-out both;
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.6);
+  animation: cookie-slide-up 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  font-family: var(--font-body, system-ui, -apple-system, sans-serif);
 }
 
 @keyframes cookie-slide-up {
@@ -28,75 +32,84 @@
 }
 
 #cookie-consent-banner .cookie-text {
-  flex: 1 1 280px;
-  font-size: 0.88rem;
-  color: #ccc;
-  line-height: 1.5;
+  flex: 1 1 300px;
+  font-size: 0.9rem;
+  color: #D1D5DB;
+  line-height: 1.55;
   margin: 0;
 }
 
 #cookie-consent-banner .cookie-text a {
-  color: #6366f1;
+  color: #E63946;
   text-decoration: underline;
+  font-weight: 600;
+  transition: color 0.15s ease;
 }
 
 #cookie-consent-banner .cookie-text a:hover {
-  color: #818cf8;
+  color: #FF6B6B;
 }
 
 #cookie-consent-banner .cookie-actions {
   display: flex;
-  gap: 0.6rem;
+  align-items: center;
+  gap: 0.75rem;
   flex-shrink: 0;
   flex-wrap: wrap;
 }
 
 #cookie-btn-accept {
-  background: #6366f1;
-  color: #fff;
-  border: none;
+  background: #E63946;
+  color: #FFFFFF;
+  border: 1px solid #E63946;
   border-radius: 6px;
-  padding: 0.5rem 1.25rem;
+  padding: 0.55rem 1.4rem;
   font-size: 0.88rem;
   font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s, transform 0.15s;
+  box-shadow: 0 2px 10px rgba(230, 57, 70, 0.3);
+  transition: all 0.2s ease;
   white-space: nowrap;
 }
 
 #cookie-btn-accept:hover {
-  background: #4f46e5;
+  background: #C92A37;
+  border-color: #C92A37;
   transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(230, 57, 70, 0.45);
 }
 
 #cookie-btn-necessary {
-  background: transparent;
-  color: #aaa;
-  border: 1.5px solid #444;
+  background: rgba(255, 255, 255, 0.05);
+  color: #9CA3AF;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 6px;
-  padding: 0.5rem 1rem;
+  padding: 0.55rem 1.15rem;
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
-  transition: border-color 0.2s, color 0.2s;
+  transition: all 0.2s ease;
   white-space: nowrap;
 }
 
 #cookie-btn-necessary:hover {
-  border-color: #aaa;
-  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #FFFFFF;
 }
 
 /* RTL adjustments for Hebrew */
 [dir="rtl"] #cookie-consent-banner {
-  flex-direction: row-reverse;
+  direction: rtl;
+  text-align: right;
 }
 
-@media (max-width: 576px) {
+@media (max-width: 768px) {
   #cookie-consent-banner {
     flex-direction: column;
     align-items: stretch;
-    padding: 1rem;
+    padding: 1.1rem 1.25rem;
+    gap: 1rem;
   }
 
   #cookie-consent-banner .cookie-actions {
@@ -107,5 +120,6 @@
   #cookie-btn-necessary {
     flex: 1;
     text-align: center;
+    padding: 0.65rem 1rem;
   }
 }

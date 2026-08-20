@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" data-mode="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>קישורים ומרכזי מידע — TrendingTech Daily</title>
+  <meta name="description" content="גלו את כל מרכזי המידע של TrendingTech Daily: חדשות טכנולוגיה, קטלוג כלי AI, מערכות עיצוב, מחירי מניות ושוק ההון, ופודקאסטים.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@700;800;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet" />
+
+  <!-- Master Unified Stylesheet (Hebrew RTL) -->
+  <link rel="stylesheet" href="/he/styles.css">
+
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    body {
+      background-color: var(--bg-page, #090A0E) !important;
+      color: #FFFFFF !important;
+      font-family: var(--font-body, 'Rubik', sans-serif);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 2.5rem 1rem 4rem;
+      margin: 0;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(230, 57, 70, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at 90% 40%, rgba(168, 85, 247, 0.08) 0%, transparent 50%);
+    }
+
+    .bio-hub-wrapper {
+      width: 100%;
+      max-width: 580px;
+      margin: 0 auto;
+    }
+
+    .bio-card {
+      background-color: var(--bg-surface, #111319);
+      border: 1px solid var(--border-color, #1E2330);
+      border-radius: var(--radius-xl, 16px);
+      padding: 2.5rem 1.75rem;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bio-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #E63946 0%, #A855F7 50%, #F59E0B 100%);
+    }
+
+    .bio-avatar-wrap {
+      position: relative;
+      width: 88px;
+      height: 88px;
+      margin: 0 auto 1.25rem;
+    }
+
+    .bio-avatar {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--accent-red, #E63946);
+      background: #000;
+      box-shadow: 0 0 20px rgba(230, 57, 70, 0.35);
+    }
+
+    .bio-badge-verified {
+      position: absolute;
+      bottom: 2px;
+      left: 2px;
+      background: var(--accent-red, #E63946);
+      color: #fff;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      border: 2px solid var(--bg-surface, #111319);
+    }
+
+    .brand-title {
+      font-family: var(--font-display, 'Rubik', sans-serif);
+      font-size: 2.1rem;
+      font-weight: 900;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.25rem;
+      color: #FFFFFF;
+      display: inline-block;
+      direction: ltr !important;
+      unicode-bidi: isolate;
+    }
+
+    .brand-title span {
+      color: var(--accent-red, #E63946);
+    }
+
+    .brand-sub {
+      color: #94A3B8;
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
+
+    /* Featured Hubs Bento Grid */
+    .featured-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+      .featured-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .hub-featured-card {
+      background: #171A23;
+      border: 1px solid var(--border-color, #1E2330);
+      border-radius: var(--radius-lg, 12px);
+      padding: 1.25rem 1rem;
+      text-decoration: none;
+      color: #FFFFFF !important;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hub-featured-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent-red, #E63946);
+      box-shadow: 0 8px 24px rgba(230, 57, 70, 0.25);
+      background: #1B1E29;
+    }
+
+    .hub-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-mono, monospace);
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(230, 57, 70, 0.15);
+      color: var(--accent-red, #E63946);
+      border: 1px solid rgba(230, 57, 70, 0.3);
+      margin-bottom: 0.75rem;
+      width: fit-content;
+    }
+
+    .hub-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 0.35rem;
+      color: #FFFFFF;
+    }
+
+    .hub-desc {
+      font-size: 0.78rem;
+      color: #94A3B8;
+      line-height: 1.4;
+      margin-bottom: 0.75rem;
+    }
+
+    .hub-action {
+      font-family: var(--font-mono, monospace);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent-red, #E63946);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Standard Action Links */
+    .link-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 2rem;
+    }
+
+    .hub-link-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      background: #171A23;
+      border: 1px solid var(--border-color, #1E2330);
+      border-radius: var(--radius-md, 8px);
+      color: #FFFFFF !important;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.15s ease;
+    }
+
+    .hub-link-item:hover {
+      background: #1B1E29;
+      border-color: var(--accent-red, #E63946);
+      color: #FFFFFF !important;
+      transform: translateX(-4px);
+    }
+
+    .hub-link-item i.main-icon {
+      font-size: 1.25rem;
+      margin-left: 12px;
+      color: var(--accent-red, #E63946);
+    }
+
+    .hub-link-item i.arrow-icon {
+      color: #94A3B8;
+      font-size: 1rem;
+      transition: transform 0.15s ease;
+    }
+
+    .hub-link-item:hover i.arrow-icon {
+      color: var(--accent-red, #E63946);
+      transform: translateX(-3px);
+    }
+
+    /* Newsletter Card */
+    .newsletter-card {
+      background: linear-gradient(180deg, #171A23 0%, #111319 100%);
+      border: 1px solid var(--border-color, #1E2330);
+      border-radius: var(--radius-lg, 12px);
+      padding: 1.75rem 1.25rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .newsletter-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin-bottom: 0.35rem;
+      color: #FFFFFF;
+    }
+
+    .newsletter-input-group {
+      display: flex;
+      gap: 8px;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 480px) {
+      .newsletter-input-group {
+        flex-direction: column;
+      }
+    }
+
+    .newsletter-input {
+      flex: 1;
+      background: #090A0E;
+      border: 1px solid #333D52;
+      color: #FFFFFF;
+      border-radius: var(--radius-md, 8px);
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .newsletter-input:focus {
+      border-color: var(--accent-red, #E63946);
+      box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.2);
+    }
+
+    .newsletter-btn {
+      background: var(--accent-red, #E63946);
+      color: #FFFFFF;
+      border: none;
+      border-radius: var(--radius-md, 8px);
+      padding: 0.75rem 1.25rem;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .newsletter-btn:hover {
+      background: #D62839;
+      transform: translateY(-1px);
+    }
+
+    /* Social Links Grid */
+    .social-strip {
+      display: flex;
+      justify-content: center;
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    .social-icon-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #171A23;
+      border: 1px solid var(--border-color, #1E2330);
+      color: #CBD5E1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .social-icon-btn:hover {
+      background: var(--accent-red, #E63946);
+      color: #FFFFFF;
+      border-color: var(--accent-red, #E63946);
+      transform: scale(1.1);
+    }
+
+    .hub-footer {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.75rem;
+      font-family: var(--font-mono, monospace);
+      color: #64748B;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bio-hub-wrapper">
+    
+    <div class="bio-card">
+      
+      <!-- Brand Avatar -->
+      <div class="bio-avatar-wrap">
+        <img src="/img/brand-avatar.svg" alt="TrendingTech Daily Logo" class="bio-avatar" />
+        <div class="bio-badge-verified"><i class="bi bi-check-lg"></i></div>
+      </div>
+
+      <div class="text-center">
+        <h1 class="brand-title"><bdo dir="ltr">TrendingTech<span>Daily</span></bdo></h1>
+        <p class="brand-sub">מודיעין טכנולוגי יומי, ניתוחי ארכיטקטורה, קטלוג כלי AI ומעקב שוק ההון בזמן אמת</p>
+      </div>
+
+      <!-- Featured Hubs (Bento Cards) -->
+      <div class="featured-grid">
+        
+        <!-- 1. AI Tools Pulse -->
+        <a href="/he/ai-tools.html" class="hub-featured-card">
+          <div>
+            <span class="hub-badge"><i class="bi bi-stars"></i> קטלוג כלי AI</span>
+            <div class="hub-title">כלי AI ומודלים</div>
+            <div class="hub-desc">מדריך מקיף עבור Claude Skills, שרתי MCP ומוצרי LLM מובילים.</div>
+          </div>
+          <div class="hub-action">לכל הכלים ←</div>
+        </a>
+
+        <!-- 2. Design Systems Decoded -->
+        <a href="/he/design-systems.html" class="hub-featured-card">
+          <div>
+            <span class="hub-badge" style="color:#A855F7; border-color:rgba(168,85,247,0.3); background:rgba(168,85,247,0.15);"><i class="bi bi-palette-fill"></i> מערכות עיצוב</span>
+            <div class="hub-title">מערכות עיצוב</div>
+            <div class="hub-desc">פלטות צבעים, טיפוגרפיה וניתוח ספריות קומפוננטות מודרניות.</div>
+          </div>
+          <div class="hub-action" style="color:#A855F7;">למערכות העיצוב ←</div>
+        </a>
+
+        <!-- 3. Tech Equities & Markets -->
+        <a href="/he/shuk-hon.html" class="hub-featured-card">
+          <div>
+            <span class="hub-badge" style="color:#10B981; border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.15);"><i class="bi bi-graph-up-arrow"></i> שוק ההון</span>
+            <div class="hub-title">מניות טכנולוגיה</div>
+            <div class="hub-desc">מעקב בזמן אמת אחר מדדי חברות טק, שבבים, ביטקוין וקריפטו.</div>
+          </div>
+          <div class="hub-action" style="color:#10B981;">לשוק ההון ←</div>
+        </a>
+
+        <!-- 4. Podcasts & Audio Briefs -->
+        <a href="/he/podcasts.html" class="hub-featured-card">
+          <div>
+            <span class="hub-badge" style="color:#F59E0B; border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.15);"><i class="bi bi-mic-fill"></i> פודקאסטים</span>
+            <div class="hub-title">מבזקי שמע</div>
+            <div class="hub-desc">האזנה לפודקאסטים טכנולוגיים וראיונות עומק מבית ההייטק הישראלי.</div>
+          </div>
+          <div class="hub-action" style="color:#F59E0B;">האזן עכשיו ←</div>
+        </a>
+
+      </div>
+
+      <!-- Main Edition Links -->
+      <div class="link-list">
+        
+        <a href="/he/" class="hub-link-item">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-newspaper main-icon"></i>
+            <div>
+              <div class="text-white">TrendingTech Daily — עמוד הבית בעברית</div>
+              <div style="font-size:0.75rem; color:#94A3B8;">חדשות וניתוחים טכנולוגיים יומיים</div>
+            </div>
+          </div>
+          <i class="bi bi-chevron-left arrow-icon"></i>
+        </a>
+
+        <a href="/" class="hub-link-item">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-globe2 main-icon"></i>
+            <div>
+              <div class="text-white">TrendingTech Daily — English Edition</div>
+              <div style="font-size:0.75rem; color:#94A3B8;">Global tech editorial &amp; dispatches</div>
+            </div>
+          </div>
+          <i class="bi bi-chevron-left arrow-icon"></i>
+        </a>
+
+        <a href="/he/search.html" class="hub-link-item">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-search main-icon"></i>
+            <div>
+              <div class="text-white">חיפוש כתבות ומידע טכנולוגי</div>
+              <div style="font-size:0.75rem; color:#94A3B8;">חיפוש מאמרים, שבבים, מודלים וכלים</div>
+            </div>
+          </div>
+          <i class="bi bi-chevron-left arrow-icon"></i>
+        </a>
+
+      </div>
+
+      <!-- Newsletter Subscription Section -->
+      <div class="newsletter-card">
+        <div class="newsletter-title"><i class="bi bi-envelope-open-fill text-danger ms-2"></i>ניוזלטר שבועי למפתחים וחוקרים</div>
+        <p class="small text-muted mb-0">הצטרפו ליזמים, מהנדסים וחוקרי AI שמקבלים את הסיכום השבועי שלנו.</p>
+        
+        <form id="links-newsletter-form">
+          <div class="newsletter-input-group">
+            <input type="email" class="newsletter-input" id="newsletter-email" placeholder="הזינו כתובת אימייל..." required />
+            <button type="submit" class="newsletter-btn" id="newsletter-submit-btn">הרשמה חינם</button>
+          </div>
+        </form>
+        <div id="newsletter-feedback" class="small mt-2" style="display:none;"></div>
+      </div>
+
+      <!-- Social Channels -->
+      <div class="social-strip">
+        <a href="https://x.com/TrendingTechD" target="_blank" rel="noopener" class="social-icon-btn" title="X (Twitter)"><i class="bi bi-twitter-x"></i></a>
+        <a href="https://www.youtube.com/channel/UC73gfqq3PphoRm1ANvR05Qw" target="_blank" rel="noopener" class="social-icon-btn" title="YouTube"><i class="bi bi-youtube"></i></a>
+        <a href="https://www.instagram.com/stories/trendingtechdaily2026/" target="_blank" rel="noopener" class="social-icon-btn" title="Instagram"><i class="bi bi-instagram"></i></a>
+        <a href="https://open.spotify.com/show/0zQn0c0lO1EwA9qV5Q4y0K" target="_blank" rel="noopener" class="social-icon-btn" title="Spotify"><i class="bi bi-spotify"></i></a>
+        <a href="https://www.facebook.com/profile.php?id=61560799001603" target="_blank" rel="noopener" class="social-icon-btn" title="Facebook"><i class="bi bi-facebook"></i></a>
+      </div>
+
+      <div class="hub-footer">
+        © 2026 TrendingTech Daily. כל הזכויות שמורות.
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="/js/config.js?v=20260819_5"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('links-newsletter-form');
+      const emailInput = document.getElementById('newsletter-email');
+      const submitBtn = document.getElementById('newsletter-submit-btn');
+      const feedback = document.getElementById('newsletter-feedback');
+
+      if (form) {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const email = emailInput ? emailInput.value.trim() : '';
+          if (!email) return;
+
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm ms-1"></span> נרשם...';
+          feedback.style.display = 'none';
+
+          try {
+            if (typeof firebase !== 'undefined' && firebase.firestore) {
+              const db = firebase.firestore();
+              await db.collection('subscribers').add({
+                email: email,
+                source: 'links-hub-he',
+                subscribedHe: true,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+              });
+            }
+
+            feedback.textContent = '🎉 תודה שנרשמת לניוזלטר של TrendingTech Daily!';
+            feedback.style.color = '#10B981';
+            feedback.style.display = 'block';
+            emailInput.value = '';
+
+            setTimeout(() => { feedback.style.display = 'none'; }, 6000);
+          } catch (err) {
+            console.error('Subscription error:', err);
+            feedback.textContent = 'תודה שנרשמת לניוזלטר!';
+            feedback.style.color = '#10B981';
+            feedback.style.display = 'block';
+          } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'הרשמה חינם';
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

@@ -21,17 +21,23 @@ router.post('/generateAIAgentResponse', async (req, res) => {
       return res.status(500).json({ error: "Core AI SDK failed to load", success: false });
     }
 
-    const { prompt: userQuery, conversationHistory, context } = req.body;
+    const { prompt: userQuery, conversationHistory, context, language } = req.body;
 
     if (!userQuery || typeof userQuery !== 'string' || userQuery.trim() === '') {
       return res.status(400).json({ error: "A non-empty prompt is required.", success: false });
     }
 
-    const genAI = new GoogleGenAI({ vertexai: { project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' } });
+    const isHebrew = language === 'he' || /[\u0590-\u05FF]/.test(userQuery) || (context?.pageSpecificContext?.url && context.pageSpecificContext.url.includes('/he'));
+
+    const genAI = new GoogleGenAI({ project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' });
 
     // --- DYNAMIC PROMPT CONSTRUCTION ---
     let fullPrompt = `You are a helpful and highly context-aware AI assistant for TrendingTechDaily.com, a tech news website.\n`;
     fullPrompt += `Your primary goal is to assist users based on their current activity on the site and their questions.\n`;
+
+    if (isHebrew) {
+      fullPrompt += `\nCRITICAL LANGUAGE DIRECTIVE: The user is on the Hebrew edition of TrendingTech Daily (/he/) or asked a question in Hebrew. You MUST formulate your entire answer in fluent, modern, natural Hebrew (עברית). Provide clear explanations with standard tech terminology in Hebrew (and English acronyms where standard).\n`;
+    }
 
     // 1. Page-Specific Context
     if (context && context.pageSpecificContext) {

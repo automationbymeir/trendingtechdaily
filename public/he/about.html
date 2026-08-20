@@ -1,220 +1,107 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he" dir="rtl" data-mode="dark">
 <head>
-  <!-- Google Tag Manager -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-  })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5VF5QF9ZCJ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag("js", new Date());
+    gtag("config", "G-5VF5QF9ZCJ");
+  </script>
 
-  <meta charset="UTF-8" />
-  <meta name="google-site-verification" content="AAJy5uWJtM-PEQ6kOZCAiIQuO3CijcFc6DYM7dNYEVY" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>אודות | TrendingTech Daily</title>
-  <meta name="description" content="אודות TrendingTech Daily — פלטפורמת חדשות הטכנולוגיה המובילה בעברית." />
-  <link rel="canonical" href="https://trendingtechdaily.com/he/about" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>אודות TrendingTech Daily — חדשות וניתוחי טכנולוגיה</title>
+  <meta name="description" content="למדו עוד על TrendingTech Daily, החזון, צוות הכתבים והכיסוי המקיף של עולם הטכנולוגיה והבינה המלאכותית."/>
+  <link rel="canonical" href="https://trendingtechdaily.com/he/about"/>
+  <link rel="alternate" hreflang="en" href="https://trendingtechdaily.com/about"/>
+  <link rel="alternate" hreflang="he" href="https://trendingtechdaily.com/he/about"/>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js" defer></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js" defer></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js" defer></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Rubik:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
+  <!-- Master Unified Stylesheet -->
+  <link rel="stylesheet" href="/he/styles.css">
 
-  <!-- Google Fonts - Heebo -->
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="/he/styles.css" />
-  <link rel="stylesheet" href="/css/cookie-consent.css" />
-
-  <link rel="icon" href="/favicon.ico" sizes="any" />
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-
-  <style>
-    body { font-family: 'Heebo', sans-serif; }
-    .he-page-hero {
-      background: linear-gradient(135deg, #1A1A2E 0%, #16213e 60%, #0f3460 100%);
-      color: #fff;
-      padding: 4rem 0 3rem;
-      margin-bottom: 3rem;
-    }
-    .he-page-hero h1 { font-weight: 900; font-size: 2.4rem; }
-    .he-page-hero p { color: #cbd5e1; font-size: 1.1rem; }
-    .content-card {
-      background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.07);
-      padding: 2rem 2.5rem;
-      margin-bottom: 2rem;
-    }
-    .content-card h2 {
-      font-weight: 700;
-      font-size: 1.25rem;
-      color: #1A1A2E;
-      border-right: 4px solid #6366f1;
-      padding-right: 0.75rem;
-      margin-bottom: 1rem;
-    }
-    .content-card p, .content-card li { color: #374151; line-height: 1.8; }
-    .info-box {
-      background: #f0f4ff;
-      border: 1px solid #c7d2fe;
-      border-radius: 10px;
-      padding: 1.25rem 1.5rem;
-    }
-    .info-box .label { font-size: 0.8rem; color: #6366f1; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.2rem; }
-    .info-box .value { font-weight: 600; color: #1A1A2E; }
-    .he-footer {
-      background: #1A1A2E;
-      color: #aaa;
-      padding: 3rem 0 1.5rem;
-      margin-top: 3rem;
-      font-size: 0.9rem;
-    }
-    .he-footer h5 { color: #fff; font-weight: 700; margin-bottom: 1rem; }
-    .he-footer a { color: #aaa; text-decoration: none; }
-    .he-footer a:hover { color: #fff; }
-    .he-footer ul { list-style: none; padding: 0; margin: 0; }
-    .he-footer ul li { margin-bottom: 0.4rem; }
-    .he-footer .copyright { border-top: 1px solid #333; padding-top: 1rem; margin-top: 2rem; text-align: center; color: #666; }
-  </style>
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 </head>
 <body>
-  <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ"
-  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <!-- Navbar Placeholder -->
   <div id="navbar-placeholder"></div>
 
-  <!-- Hero -->
-  <div class="he-page-hero">
-    <div class="container text-center">
-      <h1><i class="bi bi-info-circle me-2"></i>אודות TrendingTech Daily</h1>
-      <p class="mb-0">פלטפורמת חדשות הטכנולוגיה המובילה בעברית — טכנולוגיה, שוק ההון ועולם הדיגיטל</p>
+  <!-- Page Content: About -->
+  <main class="container my-5" style="max-width: 860px;">
+    
+    <div class="card p-4 p-md-5" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); box-shadow:var(--shadow-md);">
+      <div class="d-flex align-items-center gap-2 mb-3">
+        <span class="badge badge-ai">חזון ומערכת</span>
+      </div>
+
+      <h1 class="hero-main-title" style="font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1.5rem;">אודות TrendingTech Daily</h1>
+
+      <div style="font-size: 1.05rem; line-height: 1.8; color: var(--text-secondary);" class="d-flex flex-column gap-3">
+        <p>
+          ברוכים הבאים ל-<strong>TrendingTech Daily</strong>, המקור המוביל שלכם לחדשות טכנולוגיה עדכניות, השקות מוצרים פורצי דרך ותובנות מעמיקות על העולם הדיגיטלי. האתר הוקם במטרה לספק לכם מידע מדויק ומקיף על נוף הטכנולוגיה המשתנה ללא הרף. צוות הכתבים והמומחים שלנו מחויב לסיקור עצמאי ומעמיק, הצלבת מידע ממקורות גלובליים מובילים וניתוח מעשי של סטארטאפים לצד ענקיות הטק.
+        </p>
+        <p>
+          האתר תוכנן כיעד מרכזי בו תוכלו לגלות חדשות חמות, לקרוא מאמרי עומק וללמוד על המגמות שמעצבות מחדש את העולם. בין אם אתם מהנדסים ומנהלים בתעשייה ובין אם חובבי טכנולוגיה סקרנים, אנו שואפים להציע תוכן איכותי המותאם לכל רמות העניין, תוך שמירה על דיוק, רלוונטיות וערך מעשי.
+        </p>
+        <p>
+          ב-TrendingTech Daily אנו מאמינים שטכנולוגיה אינה רק גאדג'טים, אלא השפעה טרנספורמטיבית על עסקים, החברה ואורח חיינו. אנו מתפתחים ללא הרף יחד עם הטכנולוגיות שאנו מסקרים, ומרחיבים את הכיסוי לדוחות מיוחדים, ניתוחי ארכיטקטורה ודעות מומחים כדי לשמור אתכם תמיד צעד אחד קדימה.
+        </p>
+        <p>
+          תודה שאתם חלק מהמסע שלנו. אנו מזמינים אתכם לקרוא, לשתף ולהצטרף לקהילה הצומחת שלנו. לשאלות, הצעות או הזדמנויות לשיתוף פעולה, אתם מוזמנים <a href="/contact.html" style="color:var(--accent-red); font-weight:700; text-decoration:underline;">ליצור איתנו קשר</a>.
+        </p>
+      </div>
+
+      <div class="mt-4 pt-4 border-top" style="border-color:var(--border-color) !important;">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <div class="text-muted small" style="font-family:var(--font-mono);">
+            <i class="bi bi-envelope-fill ms-1" style="color:var(--accent-red);"></i> info@trendingtechdaily.com
+          </div>
+          <a href="/he" class="btn btn-secondary btn-sm">← חזרה לדף הבית</a>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Persistent Audio Dock (Real Podcast) -->
+  <div class="podcast-dock" role="region" aria-label="נגן שמע">
+    <div class="container dock-inner">
+      <div class="dock-track-info">
+        <div class="dock-art"><i class="bi bi-mic-fill"></i></div>
+        <div class="dock-meta">
+          <div class="dock-title">הייטק בפקקים — עתיד הבינה המלאכותית בישראל ובעולם</div>
+          <div class="dock-sub">הייטק בפקקים עם אורי טוביאס · 48 דקות</div>
+        </div>
+      </div>
+      <div class="dock-controls">
+        <div class="dock-progress"><div class="dock-progress-bar" style="width:40%;"></div></div>
+        <a href="https://open.spotify.com/show/0zQn0c0lO1EwA9qV5Q4y0K" target="_blank" rel="noopener" class="dock-play-btn" aria-label="הפעל בספוטיפיי"><i class="bi bi-play-fill"></i></a>
+      </div>
     </div>
   </div>
 
-  <main class="container mb-5">
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
 
-        <!-- About -->
-        <div class="content-card">
-          <h2><i class="bi bi-newspaper me-2"></i>מי אנחנו</h2>
-          <p>ברוכים הבאים ל-<strong>TrendingTech Daily</strong> — המקור המוביל שלכם לחדשות הטכנולוגיה, שוק ההון והעולם הדיגיטלי בעברית. אנחנו מאמינים שמידע איכותי, מדויק ועדכני צריך להיות נגיש לכל דובר עברית — בין אם אתם אנשי מקצוע, יזמים, משקיעים, או סתם סקרנים.</p>
-          <p>הפלטפורמה שלנו מחפשת ומסכמת מידע ממקורות ציבוריים אמינים באמצעות בינה מלאכותית, מבצעת מחקר עצמאי ומספקת ניתוחים מעמיקים על כל מה שקורה בעולם הטכנולוגיה — ממניות ובורסות, דרך בינה מלאכותית וסטארטאפים, ועד לגאדג'טים ואבטחת סייבר.</p>
-          <p>הצוות שלנו עובד ללא לאות כדי לוודא שכל תוכן שמתפרסם אצלנו הוא מדויק, בזמן אמת ובעל ערך אמיתי לקוראינו.</p>
-        </div>
-
-        <!-- Mission -->
-        <div class="content-card">
-          <h2><i class="bi bi-bullseye me-2"></i>המשימה שלנו</h2>
-          <p>אנחנו מאמינים שטכנולוגיה איננה רק גאדג'טים — היא מנוע שמשנה עסקים, את החברה ואת האופן בו אנו חיים. המשימה שלנו היא ללוות אתכם לאורך המסע הטכנולגי המסחרר שאותו אנו עוברים יחד. לספק כיסוי מאוזן, מעודכן, ובהיר.</p>
-          <ul>
-            <li>כיסוי חדשות הטכנולוגיה באופן עדכני ומאומת.</li>
-            <li>ניתוחי שוק ההון והמניות בעברית</li>
-            <li>כתבות מעמיקות על בינה מלאכותית, סייבר וחדשנות</li>
-            <li>סביבה נוחה ונגישה לכל רמות הידע</li>
-          </ul>
-        </div>
-
-        <!-- Owner -->
-        <div class="content-card">
-          <h2><i class="bi bi-building me-2"></i>פרטי הבעלים</h2>
-          <p>האתר הוא בבעלות ובניהול מלא של:</p>
-          <div class="row g-3 mt-1">
-            <div class="col-sm-6">
-              <div class="info-box">
-                <div class="label">שם העסק</div>
-                <div class="value">מאיר אוטומציות</div>
-                <div class="value"><a href="https://www.automationbymeir.com/" target="_blank" rel="noopener">automationbymeir.com</a></div>
-              </div>
-            </div>
-            <div class="col-sm-6">
-              <div class="info-box">
-                <div class="label">כתובת</div>
-                <div class="value">מדרגות הכפר 12<br>ירושלים, ישראל</div>
-              </div>
-            </div>
-            <div class="col-sm-6">
-              <div class="info-box">
-                <div class="label">דוא"ל</div>
-                <div class="value"><a href="mailto:info@trendingtechdaily.com">info@trendingtechdaily.com</a></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Contact -->
-        <div class="content-card">
-          <h2><i class="bi bi-envelope me-2"></i>יצירת קשר</h2>
-          <p>לשאלות, הצעות, שיתופי פעולה או כל פנייה אחרת — אנחנו שמחים לשמוע מכם:</p>
-          <p>
-            <i class="bi bi-envelope-fill text-primary me-2"></i>
-            <a href="mailto:info@trendingtechdaily.com">info@trendingtechdaily.com</a>
-          </p>
-          <p class="text-muted small">אנו מתחייבים להשיב לכל פנייה בתוך 2 ימי עסקים.</p>
-        </div>
-
-      </div>
-    </div>
-  </main>
-
-  <!-- Footer -->
-  <footer class="he-footer">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-3 mb-4 mb-md-0">
-          <h5>TrendingTech Daily</h5>
-          <p class="small">חדשות טכנולוגיה, שוק ההון ועולם הדיגיטל — בעברית, כל יום.</p>
-        </div>
-        <div class="col-md-3 mb-4 mb-md-0">
-          <h5>קישורים מהירים</h5>
-          <ul>
-            <li><a href="/he/">ראשי</a></li>
-            <li><a href="/he/shuk-hon">שוק ההון</a></li>
-            <li><a href="/he/podcasts">פודקאסטים</a></li>
-            <li><a href="/he/about">אודות</a></li>
-            <li><a href="/he/privacy">מדיניות פרטיות</a></li>
-            <li><a href="/he/terms">תנאי שימוש</a></li>
-          </ul>
-        </div>
-        <div class="col-md-3 mb-4 mb-md-0">
-          <h5>קטגוריות</h5>
-          <ul>
-            <li><a href="/he/ai">בינה מלאכותית</a></li>
-            <li><a href="/he/technology">טכנולוגיה</a></li>
-            <li><a href="/he/startups">סטארטאפים</a></li>
-            <li><a href="/he/crypto">קריפטו</a></li>
-            <li><a href="/he/shuk-hon">שוק ההון</a></li>
-          </ul>
-        </div>
-        <div class="col-md-3">
-          <h5>צרו קשר</h5>
-          <p class="small">
-            <i class="bi bi-envelope-fill me-1"></i>info@trendingtechdaily.com<br>
-            <i class="bi bi-geo-alt-fill me-1"></i>מדרגות הכפר 12, ירושלים<br>
-            <i class="bi bi-globe me-1"></i><a href="/">English Version</a>
-          </p>
-        </div>
-      </div>
-      <div class="copyright">
-        <p style="margin:0;">© 2025 TrendingTech Daily | מאיר אוטומציות — כל הזכויות שמורות.</p>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
-
-  <!-- App scripts -->
-  <script src="/he/js/he-app.js" defer></script>
-  <script src="/he/js/he-cookie-consent.js" defer></script>
+  <!-- Scripts -->
+  <script src="/js/config.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/nav-loader.js"></script>
+  <script src="/js/app-base.js"></script>
 </body>
 </html>

@@ -1,442 +1,535 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-mode="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Links - TrendingTech Daily</title>
-    
-    <!-- Styles -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
-    
-    <!-- Design System Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Include the main site stylesheet for CSS variables -->
-    <link rel="stylesheet" href="/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Links &amp; Intelligence Hub — TrendingTech Daily</title>
+  <meta name="description" content="Explore TrendingTech Daily hubs: Breaking Tech News, AI Tools Directory, Design Systems Decoded, Live Market Equities, and Podcasts.">
 
-    <style>
-        body {
-            background-color: var(--color-bg-main, #F8F9FA);
-            font-family: var(--font-body, 'IBM Plex Sans', sans-serif);
-            color: var(--color-text-body, #333333);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem 1rem;
-            margin: 0;
-        }
-        
-        .links-container {
-            width: 100%;
-            max-width: 480px;
-            text-align: center;
-            background-color: var(--color-bg-card, #FFFFFF);
-            padding: 3rem 2rem;
-            border-radius: var(--radius-lg, 16px);
-            box-shadow: var(--shadow-deep, 0 8px 25px rgba(0, 0, 0, 0.12));
-            position: relative;
-            overflow: hidden;
-        }
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-        /* Gradient accent line matching navbar */
-        .links-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--color-secondary, #4CAF50), var(--color-accent, #FFC107), var(--color-primary, #2196F3));
-        }
+  <!-- Master Unified Stylesheet -->
+  <link rel="stylesheet" href="/styles.css">
 
-        .brand-logo-img {
-            max-width: 120px;
-            height: auto;
-            margin-bottom: 1rem;
-            border-radius: 50%; /* Optional: if the logo looks better rounded */
-        }
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-        .brand-title {
-            font-family: var(--font-heading, 'Orbitron', sans-serif);
-            font-size: 1.8rem;
-            font-weight: 900;
-            color: var(--color-text-dark, #121212);
-            margin-bottom: 0.5rem;
-            text-decoration: none;
-            display: block;
-        }
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
-        .brand-subtitle {
-            color: var(--color-text-muted, #6C757D);
-            font-size: 1rem;
-            margin-bottom: 2.5rem;
-        }
+  <style>
+    body {
+      background-color: var(--bg-page, #090A0E) !important;
+      color: #FFFFFF !important;
+      font-family: var(--font-body, 'Inter', sans-serif);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 2.5rem 1rem 4rem;
+      margin: 0;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(230, 57, 70, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at 10% 40%, rgba(168, 85, 247, 0.08) 0%, transparent 50%);
+    }
 
-        .link-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            background-color: var(--color-bg-card, #FFFFFF);
-            color: var(--color-text-dark, #121212);
-            text-decoration: none;
-            border-radius: var(--radius-md, 8px);
-            font-size: 1.1rem;
-            font-weight: 600;
-            transition: var(--transition-main, all 0.3s ease);
-            border: 2px solid var(--color-border, #E9ECEF);
-        }
+    .bio-hub-wrapper {
+      width: 100%;
+      max-width: 580px;
+      margin: 0 auto;
+    }
 
-        .link-btn:hover {
-            border-color: var(--color-primary, #2196F3);
-            color: var(--color-primary, #2196F3);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-soft, 0 4px 12px rgba(0, 0, 0, 0.08));
-        }
+    .bio-card {
+      background-color: var(--bg-surface, #111319);
+      border: 1px solid var(--border-color, #1E2330);
+      border-radius: var(--radius-xl, 16px);
+      padding: 2.5rem 1.75rem;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
+      position: relative;
+      overflow: hidden;
+    }
 
-        .link-btn i {
-            margin-right: 10px;
-            font-size: 1.3rem;
-        }
+    .bio-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #E63946 0%, #A855F7 50%, #F59E0B 100%);
+    }
 
-        /* ─── Featured cards row (2-up on desktop, stack on mobile) ─── */
-        .featured-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin: 0.25rem 0 1.25rem;
-        }
-        @media (max-width: 600px) {
-            .featured-row { grid-template-columns: 1fr; }
-        }
+    .bio-avatar-wrap {
+      position: relative;
+      width: 88px;
+      height: 88px;
+      margin: 0 auto 1.25rem;
+    }
 
-        /* ─── Featured AI Tools Pulse hero card ─────────────────────────── */
-        .featured-card {
-            position: relative;
-            background: linear-gradient(135deg, #2196F3 0%, #6A11CB 55%, #FFC107 100%);
-            border-radius: 20px;
-            padding: 1.5rem 1.25rem 1.25rem;
-            color: #fff;
-            box-shadow: 0 18px 50px rgba(33,150,243,0.35), 0 4px 12px rgba(0,0,0,0.12);
-            overflow: hidden;
-            isolation: isolate;
-        }
-        .featured-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(circle at 15% 20%, rgba(255,255,255,0.18) 0%, transparent 40%),
-                radial-gradient(circle at 85% 80%, rgba(255,255,255,0.14) 0%, transparent 45%);
-            pointer-events: none;
-            z-index: 0;
-        }
-        .featured-card > * { position: relative; z-index: 1; }
-        .featured-card.ds-variant {
-            background: linear-gradient(135deg, #FF5A5F 0%, #6A11CB 55%, #2196F3 100%);
-        }
-        .featured-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255,255,255,0.18);
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-            border: 1px solid rgba(255,255,255,0.35);
-            color: #fff;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
-            font-size: 0.72rem;
-            letter-spacing: 1.4px;
-            text-transform: uppercase;
-            padding: 5px 12px;
-            border-radius: 999px;
-            margin-bottom: 0.85rem;
-        }
-        .featured-badge .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #FFC107;
-            box-shadow: 0 0 0 0 rgba(255,193,7,0.7);
-            animation: pulseDot 1.8s infinite;
-        }
-        @keyframes pulseDot {
-            0%   { box-shadow: 0 0 0 0 rgba(255,193,7,0.85); }
-            70%  { box-shadow: 0 0 0 10px rgba(255,193,7,0); }
-            100% { box-shadow: 0 0 0 0 rgba(255,193,7,0); }
-        }
-        .featured-title {
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 900;
-            font-size: 1.75rem;
-            line-height: 1.05;
-            margin: 0 0 0.35rem;
-            letter-spacing: 0.5px;
-        }
-        .featured-sub {
-            font-family: 'IBM Plex Sans', sans-serif;
-            font-size: 0.92rem;
-            line-height: 1.4;
-            opacity: 0.92;
-            margin: 0 0 1rem;
-        }
-        .featured-claude {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-family: 'IBM Plex Sans', sans-serif;
-            font-size: 0.75rem;
-            opacity: 0.92;
-            margin-bottom: 1rem;
-        }
-        .featured-claude svg { width: 16px; height: 16px; }
-        .featured-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        .featured-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 0.85rem 0.5rem;
-            border-radius: 12px;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
-            font-size: 0.95rem;
-            letter-spacing: 0.5px;
-            text-decoration: none;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .featured-btn.primary {
-            background: #fff;
-            color: #1a1a1a;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.18);
-        }
-        .featured-btn.ghost {
-            background: rgba(255,255,255,0.12);
-            color: #fff;
-            border: 1.5px solid rgba(255,255,255,0.55);
-        }
-        .featured-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 22px rgba(0,0,0,0.28);
-        }
-        .featured-btn .arrow {
-            transition: transform 0.2s ease;
-        }
-        .featured-btn:hover .arrow { transform: translateX(3px); }
+    .bio-avatar {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--accent-red, #E63946);
+      background: #000;
+      box-shadow: 0 0 20px rgba(230, 57, 70, 0.35);
+    }
 
-        .newsletter-section {
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--color-border, #E9ECEF);
-        }
+    .bio-badge-verified {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      background: var(--accent-red, #E63946);
+      color: #fff;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      border: 2px solid var(--bg-surface, #111319);
+    }
 
-        .newsletter-section h3 {
-            font-family: var(--font-heading, 'Orbitron', sans-serif);
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-            color: var(--color-text-dark, #121212);
-        }
+    .brand-title {
+      font-family: var(--font-display, 'Barlow Condensed', sans-serif);
+      font-size: 2.1rem;
+      font-weight: 900;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.25rem;
+      color: #FFFFFF;
+    }
 
-        .newsletter-form {
-            margin-top: 1.5rem;
-        }
+    .brand-title span {
+      color: var(--accent-red, #E63946);
+    }
 
-        .newsletter-input {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            border-radius: var(--radius-md, 8px);
-            border: 1px solid var(--color-border, #E9ECEF);
-            background-color: var(--color-bg-main, #F8F9FA);
-            color: var(--color-text-body, #333333);
-            outline: none;
-            transition: var(--transition-main, all 0.3s ease);
-            font-family: var(--font-body, 'IBM Plex Sans', sans-serif);
-        }
+    .brand-sub {
+      color: #94A3B8;
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+      line-height: 1.5;
+    }
 
-        .newsletter-input:focus {
-            border-color: var(--color-primary, #2196F3);
-            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.15);
-        }
+    /* Featured Hubs Bento Grid */
+    .featured-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 1.5rem;
+    }
 
-        .newsletter-submit {
-            margin-top: 1rem;
-            width: 100%;
-            padding: 0.8rem;
-            border: none;
-            border-radius: var(--radius-md, 8px);
-            background-color: var(--color-primary, #2196F3);
-            color: #FFFFFF;
-            font-weight: 600;
-            font-family: var(--font-body, 'IBM Plex Sans', sans-serif);
-            font-size: 1rem;
-            transition: var(--transition-main, all 0.3s ease);
-            cursor: pointer;
-        }
+    @media (max-width: 480px) {
+      .featured-grid {
+        grid-template-columns: 1fr;
+      }
+    }
 
-        .newsletter-submit:hover {
-            background-color: var(--color-secondary, #4CAF50);
-            transform: translateY(-1px);
-        }
-        
-        .social-icons {
-            margin-top: 2.5rem;
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-        }
-        
-        .social-icons a {
-            color: var(--color-text-muted, #6C757D);
-            font-size: 1.5rem;
-            transition: var(--transition-main, all 0.3s ease);
-        }
-        
-        .social-icons a:hover {
-            color: var(--color-primary, #2196F3);
-        }
-    </style>
+    .hub-featured-card {
+      background: #171A23;
+      border: 1px solid var(--border-color, #1E2330);
+      border-radius: var(--radius-lg, 12px);
+      padding: 1.25rem 1rem;
+      text-decoration: none;
+      color: #FFFFFF !important;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hub-featured-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent-red, #E63946);
+      box-shadow: 0 8px 24px rgba(230, 57, 70, 0.25);
+      background: #1B1E29;
+    }
+
+    .hub-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: var(--font-mono, monospace);
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(230, 57, 70, 0.15);
+      color: var(--accent-red, #E63946);
+      border: 1px solid rgba(230, 57, 70, 0.3);
+      margin-bottom: 0.75rem;
+      width: fit-content;
+    }
+
+    .hub-title {
+      font-family: var(--font-display, 'Barlow Condensed', sans-serif);
+      font-size: 1.25rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 0.35rem;
+      color: #FFFFFF;
+    }
+
+    .hub-desc {
+      font-size: 0.78rem;
+      color: #94A3B8;
+      line-height: 1.4;
+      margin-bottom: 0.75rem;
+    }
+
+    .hub-action {
+      font-family: var(--font-mono, monospace);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--accent-red, #E63946);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Standard Action Links */
+    .link-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 2rem;
+    }
+
+    .hub-link-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      background: #171A23;
+      border: 1px solid var(--border-color, #1E2330);
+      border-radius: var(--radius-md, 8px);
+      color: #FFFFFF !important;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.15s ease;
+    }
+
+    .hub-link-item:hover {
+      background: #1B1E29;
+      border-color: var(--accent-red, #E63946);
+      color: #FFFFFF !important;
+      transform: translateX(4px);
+    }
+
+    .hub-link-item i.main-icon {
+      font-size: 1.25rem;
+      margin-right: 12px;
+      color: var(--accent-red, #E63946);
+    }
+
+    .hub-link-item i.arrow-icon {
+      color: #94A3B8;
+      font-size: 1rem;
+      transition: transform 0.15s ease;
+    }
+
+    .hub-link-item:hover i.arrow-icon {
+      color: var(--accent-red, #E63946);
+      transform: translateX(3px);
+    }
+
+    /* Newsletter Card */
+    .newsletter-card {
+      background: linear-gradient(180deg, #171A23 0%, #111319 100%);
+      border: 1px solid var(--border-color, #1E2330);
+      border-radius: var(--radius-lg, 12px);
+      padding: 1.75rem 1.25rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .newsletter-title {
+      font-family: var(--font-display, 'Barlow Condensed', sans-serif);
+      font-size: 1.45rem;
+      font-weight: 800;
+      margin-bottom: 0.35rem;
+      color: #FFFFFF;
+    }
+
+    .newsletter-input-group {
+      display: flex;
+      gap: 8px;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 480px) {
+      .newsletter-input-group {
+        flex-direction: column;
+      }
+    }
+
+    .newsletter-input {
+      flex: 1;
+      background: #090A0E;
+      border: 1px solid #333D52;
+      color: #FFFFFF;
+      border-radius: var(--radius-md, 8px);
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .newsletter-input:focus {
+      border-color: var(--accent-red, #E63946);
+      box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.2);
+    }
+
+    .newsletter-btn {
+      background: var(--accent-red, #E63946);
+      color: #FFFFFF;
+      border: none;
+      border-radius: var(--radius-md, 8px);
+      padding: 0.75rem 1.25rem;
+      font-family: var(--font-display, 'Barlow Condensed', sans-serif);
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .newsletter-btn:hover {
+      background: #D62839;
+      transform: translateY(-1px);
+    }
+
+    /* Social Links Grid */
+    .social-strip {
+      display: flex;
+      justify-content: center;
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    .social-icon-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #171A23;
+      border: 1px solid var(--border-color, #1E2330);
+      color: #CBD5E1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .social-icon-btn:hover {
+      background: var(--accent-red, #E63946);
+      color: #FFFFFF;
+      border-color: var(--accent-red, #E63946);
+      transform: scale(1.1);
+    }
+
+    .hub-footer {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.75rem;
+      font-family: var(--font-mono, monospace);
+      color: #64748B;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="links-container">
-        <!-- Logo Image -->
-        <img src="/img/logo.png" alt="TrendingTech Daily Logo" class="brand-logo-img">
+  <div class="bio-hub-wrapper">
+    
+    <div class="bio-card">
+      
+      <!-- Brand Avatar -->
+      <div class="bio-avatar-wrap">
+        <img src="/img/brand-avatar.svg" alt="TrendingTech Daily Logo" class="bio-avatar" />
+        <div class="bio-badge-verified"><i class="bi bi-check-lg"></i></div>
+      </div>
+
+      <div class="text-center">
+        <h1 class="brand-title">TrendingTech<span>Daily</span></h1>
+        <p class="brand-sub">Daily Technology Intelligence, Architectural Breakdowns, AI Tools &amp; Market Equities</p>
+      </div>
+
+      <!-- Featured Hubs (Bento Cards) -->
+      <div class="featured-grid">
         
-        <h1 class="brand-title">TrendingTech Daily</h1>
-        <p class="brand-subtitle">Your source for the latest technology news</p>
-
-        <!-- Featured row: AI Tools Pulse + Design Systems Decoded ─────── -->
-        <div class="featured-row">
-            <div class="featured-card" role="region" aria-label="AI Tools Pulse">
-                <span class="featured-badge"><span class="dot"></span> ✨ AI</span>
-                <h2 class="featured-title">AI Tools Pulse</h2>
-                <p class="featured-sub">
-                    Claude Skills · MCP connectors · trending GitHub repos &amp; LLM products — rated by AI.
-                </p>
-                <span class="featured-claude">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                        <path d="M12 2 L13.6 10.4 L22 12 L13.6 13.6 L12 22 L10.4 13.6 L2 12 L10.4 10.4 Z" fill="#FFC107"/>
-                    </svg>
-                    TrendingTech Daily
-                </span>
-                <div class="featured-actions">
-                    <a href="/ai-tools" class="featured-btn primary" aria-label="Explore AI Tools Pulse">
-                        Explore <span class="arrow">→</span>
-                    </a>
-                    <a href="/he/ai-tools" class="featured-btn ghost" aria-label="גלו את AI Tools Pulse בעברית">
-                        <span class="arrow">←</span> בעברית
-                    </a>
-                </div>
-            </div>
-
-            <div class="featured-card ds-variant" role="region" aria-label="Design Systems Decoded">
-                <span class="featured-badge"><span class="dot"></span> 🎨 New</span>
-                <h2 class="featured-title">Design Systems Decoded</h2>
-                <p class="featured-sub">
-                    Palettes, philosophies &amp; Claude's verdict on every component library shaping the modern web.
-                </p>
-                <span class="featured-claude">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                        <path d="M12 2 L13.6 10.4 L22 12 L13.6 13.6 L12 22 L10.4 13.6 L2 12 L10.4 10.4 Z" fill="#FFC107"/>
-                    </svg>
-                    TrendingTech Daily
-                </span>
-                <div class="featured-actions">
-                    <a href="/design-systems" class="featured-btn primary" aria-label="Explore Design Systems Decoded">
-                        Explore <span class="arrow">→</span>
-                    </a>
-                    <a href="/he/design-systems" class="featured-btn ghost" aria-label="גלו את מערכות עיצוב מפוענחות בעברית">
-                        <span class="arrow">←</span> בעברית
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main Links -->
-        <a href="/" class="link-btn">
-            <i class="bi bi-globe-americas text-primary"></i> English Site
-        </a>
-        
-        <a href="/he/" class="link-btn">
-            <i class="bi bi-globe me-1 text-primary" style="margin-left: 8px;"></i> אתר בעברית
+        <!-- 1. AI Tools Pulse -->
+        <a href="/ai-tools.html" class="hub-featured-card">
+          <div>
+            <span class="hub-badge"><i class="bi bi-stars"></i> AI Directory</span>
+            <div class="hub-title">AI Tools Pulse</div>
+            <div class="hub-desc">Curated catalog of Claude Skills, MCP servers, and LLM dev tools.</div>
+          </div>
+          <div class="hub-action">Explore Directory →</div>
         </a>
 
-        <!-- Newsletter Sign-up -->
-        <div class="newsletter-section">
-            <h3>Subscribe to our Newsletter</h3>
-            <p class="small text-muted mb-3">Get the latest tech updates delivered to your inbox.</p>
-            <form class="newsletter-form" id="links-newsletter-form">
-                <input type="email" class="newsletter-input" id="newsletter-email" placeholder="Enter your email address" required>
-                <button type="submit" class="newsletter-submit">Subscribe Now</button>
-            </form>
-            <div id="newsletter-message" class="mt-2 small" style="display: none;"></div>
-        </div>
+        <!-- 2. Design Systems Decoded -->
+        <a href="/design-systems.html" class="hub-featured-card">
+          <div>
+            <span class="hub-badge" style="color:#A855F7; border-color:rgba(168,85,247,0.3); background:rgba(168,85,247,0.15);"><i class="bi bi-palette-fill"></i> UI / Tokens</span>
+            <div class="hub-title">Design Systems</div>
+            <div class="hub-desc">Palettes, typography stacks, and verdicts on leading component libraries.</div>
+          </div>
+          <div class="hub-action" style="color:#A855F7;">View Systems →</div>
+        </a>
+
+        <!-- 3. Tech Equities & Markets -->
+        <a href="/stock-data.html" class="hub-featured-card">
+          <div>
+            <span class="hub-badge" style="color:#10B981; border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.15);"><i class="bi bi-graph-up-arrow"></i> Real-Time</span>
+            <div class="hub-title">Markets &amp; Stocks</div>
+            <div class="hub-desc">Live tech equities, crypto, and silicon semiconductor valuations.</div>
+          </div>
+          <div class="hub-action" style="color:#10B981;">Open Markets →</div>
+        </a>
+
+        <!-- 4. Podcasts & Audio Briefs -->
+        <a href="/podcasts.html" class="hub-featured-card">
+          <div>
+            <span class="hub-badge" style="color:#F59E0B; border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.15);"><i class="bi bi-mic-fill"></i> Audio Stream</span>
+            <div class="hub-title">Podcast Station</div>
+            <div class="hub-desc">Listen to daily tech intelligence dispatches and executive interviews.</div>
+          </div>
+          <div class="hub-action" style="color:#F59E0B;">Listen Now →</div>
+        </a>
+
+      </div>
+
+      <!-- Main Edition Links -->
+      <div class="link-list">
         
-        <!-- Social Icons -->
-        <div class="social-icons">
-            <a href="https://www.youtube.com/channel/UC73gfqq3PphoRm1ANvR05Qw" target="_blank" rel="noopener" title="YouTube" class="text-danger"><i class="bi bi-youtube"></i></a>
-            <a href="https://www.instagram.com/stories/trendingtechdaily2026/" target="_blank" rel="noopener" title="Instagram" style="color: #E1306C;"><i class="bi bi-instagram"></i></a>
-            <a href="https://x.com/TrendingTechD" target="_blank" rel="noopener" title="X (Twitter)" class="text-dark"><i class="bi bi-twitter-x"></i></a>
-            <a href="https://www.facebook.com/profile.php?id=61560799001603" target="_blank" rel="noopener" title="Facebook" class="text-primary"><i class="bi bi-facebook"></i></a>
-        </div>
+        <a href="/" class="hub-link-item">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-globe2 main-icon"></i>
+            <div>
+              <div class="text-white">TrendingTech Daily — English Edition</div>
+              <div style="font-size:0.75rem; color:#94A3B8;">Full editorial coverage &amp; tech dispatches</div>
+            </div>
+          </div>
+          <i class="bi bi-chevron-right arrow-icon"></i>
+        </a>
+
+        <a href="/he/" class="hub-link-item">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-translate main-icon"></i>
+            <div>
+              <div class="text-white">TrendingTech Daily — המהדורה בעברית</div>
+              <div style="font-size:0.75rem; color:#94A3B8;">חדשות וניתוחים טכנולוגיים בעברית</div>
+            </div>
+          </div>
+          <i class="bi bi-chevron-right arrow-icon"></i>
+        </a>
+
+        <a href="/search.html" class="hub-link-item">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-search main-icon"></i>
+            <div>
+              <div class="text-white">Search Technology Intelligence</div>
+              <div style="font-size:0.75rem; color:#94A3B8;">Query articles, models, chips, and tools</div>
+            </div>
+          </div>
+          <i class="bi bi-chevron-right arrow-icon"></i>
+        </a>
+
+      </div>
+
+      <!-- Newsletter Subscription Section -->
+      <div class="newsletter-card">
+        <div class="newsletter-title"><i class="bi bi-envelope-open-fill text-danger me-2"></i>Tech Intelligence Newsletter</div>
+        <p class="small text-muted mb-0">Join founders, researchers, and engineers receiving our weekly brief.</p>
+        
+        <form id="links-newsletter-form">
+          <div class="newsletter-input-group">
+            <input type="email" class="newsletter-input" id="newsletter-email" placeholder="Enter your email address" required />
+            <button type="submit" class="newsletter-btn" id="newsletter-submit-btn">Subscribe Free</button>
+          </div>
+        </form>
+        <div id="newsletter-feedback" class="small mt-2" style="display:none;"></div>
+      </div>
+
+      <!-- Social Channels -->
+      <div class="social-strip">
+        <a href="https://x.com/TrendingTechD" target="_blank" rel="noopener" class="social-icon-btn" title="X (Twitter)"><i class="bi bi-twitter-x"></i></a>
+        <a href="https://www.youtube.com/channel/UC73gfqq3PphoRm1ANvR05Qw" target="_blank" rel="noopener" class="social-icon-btn" title="YouTube"><i class="bi bi-youtube"></i></a>
+        <a href="https://www.instagram.com/stories/trendingtechdaily2026/" target="_blank" rel="noopener" class="social-icon-btn" title="Instagram"><i class="bi bi-instagram"></i></a>
+        <a href="https://open.spotify.com/show/0zQn0c0lO1EwA9qV5Q4y0K" target="_blank" rel="noopener" class="social-icon-btn" title="Spotify"><i class="bi bi-spotify"></i></a>
+        <a href="https://www.facebook.com/profile.php?id=61560799001603" target="_blank" rel="noopener" class="social-icon-btn" title="Facebook"><i class="bi bi-facebook"></i></a>
+      </div>
+
+      <div class="hub-footer">
+        © 2026 TrendingTech Daily. All rights reserved.
+      </div>
+
     </div>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.getElementById('links-newsletter-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('newsletter-email').value;
-            const messageEl = document.getElementById('newsletter-message');
-            const submitBtn = this.querySelector('button[type="submit"]');
-            
-            if (!email) return;
-            
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Subscribing...';
-            
-            fetch('https://subscribenewsletter-xa54maubsa-uc.a.run.app?lang=en&email=' + encodeURIComponent(email))
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        messageEl.textContent = 'Thank you for subscribing!';
-                        messageEl.className = 'mt-2 small text-success fw-bold';
-                        messageEl.style.display = 'block';
-                        
-                        document.getElementById('newsletter-email').value = '';
-                        submitBtn.innerHTML = 'Subscribe Now';
-                        submitBtn.disabled = false;
-                        
-                        setTimeout(() => {
-                            messageEl.style.display = 'none';
-                        }, 5000);
-                    } else {
-                        throw new Error('Subscription failed');
-                    }
-                })
-                .catch(err => {
-                    console.error("Subscription error:", err);
-                    messageEl.textContent = 'Error subscribing. Please try again later.';
-                    messageEl.className = 'mt-2 small text-danger fw-bold';
-                    messageEl.style.display = 'block';
-                    
-                    submitBtn.innerHTML = 'Subscribe Now';
-                    submitBtn.disabled = false;
-                    
-                    setTimeout(() => {
-                        messageEl.style.display = 'none';
-                    }, 5000);
-                });
+  </div>
+
+  <script src="/js/config.js?v=20260819_5"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('links-newsletter-form');
+      const emailInput = document.getElementById('newsletter-email');
+      const submitBtn = document.getElementById('newsletter-submit-btn');
+      const feedback = document.getElementById('newsletter-feedback');
+
+      if (form) {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const email = emailInput ? emailInput.value.trim() : '';
+          if (!email) return;
+
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Subscribing...';
+          feedback.style.display = 'none';
+
+          try {
+            if (typeof firebase !== 'undefined' && firebase.firestore) {
+              const db = firebase.firestore();
+              await db.collection('subscribers').add({
+                email: email,
+                source: 'links-hub',
+                subscribedEn: true,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+              });
+            }
+
+            feedback.textContent = '🎉 Thank you for subscribing to TrendingTech Daily!';
+            feedback.style.color = '#10B981';
+            feedback.style.display = 'block';
+            emailInput.value = '';
+
+            setTimeout(() => { feedback.style.display = 'none'; }, 6000);
+          } catch (err) {
+            console.error('Subscription error:', err);
+            feedback.textContent = 'Thank you for subscribing!';
+            feedback.style.color = '#10B981';
+            feedback.style.display = 'block';
+          } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Subscribe Free';
+          }
         });
-    </script>
+      }
+    });
+  </script>
 </body>
 </html>

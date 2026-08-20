@@ -1,193 +1,482 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he" dir="rtl" data-mode="dark">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, follow" />
+  <link rel="canonical" href="https://www.trendingtechdaily.com/he" />
+  <title>TrendingTech Daily - חדשות טכנולוגיה, בינה מלאכותית ומידע שוק</title>
+  
+  <meta name="google-site-verification" content="AAJy5uWJtM-PEQ6kOZCAiIQuO3CijcFc6DYM7dNYEVY" />
+  <meta name="description" content="TrendingTech Daily מביא לכם את חדשות הטכנולוגיה האחרונות, בינה מלאכותית, מחשוב, שוק ההון וכלי AI מתקדמים בעברית." />
+  <meta name="keywords" content="חדשות טכנולוגיה, בינה מלאכותית, שבבים, מניות טכנולוגיה, כלי AI" />
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="TrendingTech Daily - חדשות טכנולוגיה ובינה מלאכותית" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://trendingtechdaily.com/he/" />
+  <meta property="og:image" content="https://trendingtechdaily.com/img/logo.png" />
+  <meta property="og:description" content="TrendingTech Daily מביא לכם את חדשות הטכנולוגיה האחרונות בעברית." />
+  <meta property="og:site_name" content="TrendingTech Daily" />
+  <meta name="twitter:card" content="summary_large_image" />
+
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
   new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
   j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
   })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
-  <meta charset="UTF-8" />
-  <meta name="google-site-verification" content="AAJy5uWJtM-PEQ6kOZCAiIQuO3CijcFc6DYM7dNYEVY" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="noindex, follow" />
-  <link rel="canonical" href="https://www.trendingtechdaily.com/he" />
-  <title>TrendingTech Daily - חדשות הטכנולוגיה האחרונות</title>
-  <meta name="google-site-verification" content="AAJy5uWJtM-PEQ6kOZCAiIQuO3CijcFc6DYM7dNYEVY" />
-  <meta name="description" content="TrendingTech Daily מביא לכם את חדשות הטכנולוגיה האחרונות, עדכוני בינה מלאכותית, סקירות גאדג'טים וניתוחי טכנולוגיה מעמיקים." />
-  <meta name="keywords" content="טכנולוגיה, חדשות טכנולוגיה, בינה מלאכותית, סטארטאפים, גאדג'טים" />
-  <meta property="og:title" content="TrendingTech Daily - חדשות הטכנולוגיה האחרונות" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://trendingtechdaily.com/he/" />
-  <meta property="og:description" content="TrendingTech Daily מביא לכם את חדשות הטכנולוגיה האחרונות בעברית." />
-  <meta property="og:site_name" content="TrendingTech Daily" />
 
-  <!-- Popup close — must be synchronous (no defer) so onclick works immediately -->
-  <script>
-    window.closeHePopup = function() {
-      var overlay = document.getElementById('welcome-popup-overlay');
-      if (overlay) overlay.style.display = 'none';
-      try { localStorage.setItem('he_popup_seen', '1'); } catch(e) {}
-      window._hePopupDismissed = true;
-    };
-  </script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Rubik:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js" defer></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js" defer></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js" defer></script>
-
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;900&display=swap" rel="stylesheet">
-
+  <!-- Master Stylesheet (Figma Tech News System) -->
   <link rel="stylesheet" href="/he/styles.css">
+
+  <!-- Icons -->
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <link rel="stylesheet" href="/css/cookie-consent.css">
-  <link rel="stylesheet" href="/css/stories.css">
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js" defer></script>
 </head>
 <body>
-  <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ"
-  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- Navbar Placeholder -->
-  <div id="navbar-placeholder"></div>
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
-  <h1 class="visually-hidden">TrendingTech Daily - חדשות הטכנולוגיה האחרונות</h1>
-  <h2 class="text-center my-4">חדשות הטכנולוגיה האחרונות</h2>
-
-  <!-- Welcome Popup -->
-  <div id="welcome-popup-overlay" class="welcome-popup-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
-    <div class="welcome-popup" style="background:#fff; border-radius:16px; max-width:520px; width:90%; padding:2rem; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
-      <button id="popup-close-btn" type="button" onclick="window.closeHePopup()" style="position:absolute; top:1rem; left:1rem; background:none; border:none; font-size:1.5rem; cursor:pointer; z-index:10001;" aria-label="סגור">
-        <i class="bi bi-x"></i>
-      </button>
-      <div style="text-align:center; margin-bottom:1.5rem;">
-        <div style="font-size:3rem; color:#2196F3; margin-bottom:1rem;"><i class="bi bi-hand-thumbs-up"></i></div>
-        <h2 style="font-family:'Heebo',sans-serif; font-weight:900; color:#1A1A2E;">ברוכים הבאים לTrendingTech Daily!</h2>
-        <p style="color:#555;">הצטרפו לקהילה שלנו ופתחו תכונות בלעדיות לשיפור חוויית קריאת חדשות הטכנולוגיה שלכם.</p>
+  <!-- Live Stock & Breaking Ticker Strip (Hebrew) -->
+  <div class="ticker-strip" aria-label="מבזק חדשות ושוק ההון">
+    <div class="ticker-wrap">
+      <div class="ticker-content">
+        <span class="ticker-item">
+          <span class="ticker-badge" style="background:#E63946; color:#fff;">NVDA</span> $912.40 <span class="ticker-up">+3.2% ▲</span>
+        </span>
+        <span class="ticker-item">
+          <span class="ticker-badge" style="background:#10B981; color:#fff;">AAPL</span> $234.10 <span class="ticker-up">+0.8% ▲</span>
+        </span>
+        <span class="ticker-item">
+          <span class="ticker-badge" style="background:#F59E0B; color:#fff;">BTC</span> $96,420 <span class="ticker-down">-1.1% ▼</span>
+        </span>
+        <span class="ticker-item">
+          <span class="ticker-badge" style="background:#A855F7; color:#fff;">TSMC</span> $194.80 <span class="ticker-up">+1.9% ▲</span>
+        </span>
+        <span class="ticker-item">
+          <span class="ticker-badge" style="background:#00D2FF; color:#000;">MSFT</span> $450.20 <span class="ticker-up">+1.4% ▲</span>
+        </span>
+        <span class="ticker-item">
+          <span class="ticker-badge" style="background:#E63946; color:#fff;">מבזק</span> OpenAI מרחיבה את יכולות הסוכנים האוטונומיים ומודלי ההסקה
+        </span>
       </div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.5rem;">
-        <div style="background:#f8f9fa; border-radius:12px; padding:1rem; text-align:center;">
-          <div style="color:#2196F3; font-size:1.5rem; margin-bottom:0.5rem;"><i class="bi bi-bookmark-heart"></i></div>
-          <h4 style="font-size:0.9rem; font-weight:700; color:#1A1A2E;">שמירת מאמרים</h4>
-          <p style="font-size:0.8rem; color:#555; margin:0;">סמנו מאמרים לקריאה מאוחרת.</p>
-        </div>
-        <div style="background:#f8f9fa; border-radius:12px; padding:1rem; text-align:center;">
-          <div style="color:#4CAF50; font-size:1.5rem; margin-bottom:0.5rem;"><i class="bi bi-eye-fill"></i></div>
-          <h4 style="font-size:0.9rem; font-weight:700; color:#1A1A2E;">מעקב קריאה</h4>
-          <p style="font-size:0.8rem; color:#555; margin:0;">עקבו אחר מאמרים שקראתם.</p>
-        </div>
-        <div style="background:#f8f9fa; border-radius:12px; padding:1rem; text-align:center;">
-          <div style="color:#FFC107; font-size:1.5rem; margin-bottom:0.5rem;"><i class="bi bi-chat-dots"></i></div>
-          <h4 style="font-size:0.9rem; font-weight:700; color:#1A1A2E;">השתתפו בדיונים</h4>
-          <p style="font-size:0.8rem; color:#555; margin:0;">השאירו תגובות ושתפו תובנות.</p>
-        </div>
-        <div style="background:#f8f9fa; border-radius:12px; padding:1rem; text-align:center;">
-          <div style="color:#E91E63; font-size:1.5rem; margin-bottom:0.5rem;"><i class="bi bi-graph-up"></i></div>
-          <h4 style="font-size:0.9rem; font-weight:700; color:#1A1A2E;">רשימת מעקב</h4>
-          <p style="font-size:0.8rem; color:#555; margin:0;">עקבו אחר מניות טכנולוגיה.</p>
-        </div>
-      </div>
-      <div style="display:flex; flex-direction:column; gap:0.75rem;">
-        <a href="/he/signup" style="background:#2196F3; color:#fff; border:none; border-radius:8px; padding:0.75rem; text-align:center; font-weight:700; text-decoration:none; font-size:1rem;">
-          <i class="bi bi-person-plus me-2"></i>צרו חשבון חינם
-        </a>
-        <button id="popup-maybe-later" onclick="window.closeHePopup()" style="background:transparent; color:#555; border:2px solid #e9ecef; border-radius:8px; padding:0.75rem; font-weight:600; cursor:pointer; font-size:0.95rem;">
-          אולי מאוחר יותר
-        </button>
-      </div>
-      <p style="text-align:center; margin-top:1rem; font-size:0.85rem; color:#888;">כבר יש לכם חשבון? <a href="/he/login" style="color:#2196F3;">התחברו כאן</a></p>
     </div>
   </div>
 
-  <!-- Stories Section -->
-  <section class="container mt-4 mb-3 stories-container">
-    <div class="stories-wrapper" id="stories-wrapper">
-        <!-- Story circles will be injected here via JS -->
+  <!-- Navigation Placeholder (Loaded dynamically by nav-loader.js) -->
+  <div id="navbar-placeholder"></div>
+
+  <!-- Video Stories Ribbon -->
+  <section class="stories-ribbon" aria-label="סטוריז וסרטונים קצרים">
+    <div class="container">
+      <div class="stories-track" id="stories-wrapper">
+        <div class="story-card" data-story-index="0">
+          <div class="story-avatar">
+            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=120&auto=format&fit=crop&q=60" alt="DeepSeek" />
+            <span class="story-badge">LIVE</span>
+          </div>
+          <span class="story-title">DeepSeek V3</span>
+        </div>
+
+        <div class="story-card" data-story-index="1">
+          <div class="story-avatar">
+            <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=120&auto=format&fit=crop&q=60" alt="Figma UI" />
+            <span class="story-badge">חדש</span>
+          </div>
+          <span class="story-title">Figma UI3</span>
+        </div>
+
+        <div class="story-card" data-story-index="2">
+          <div class="story-avatar">
+            <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=120&auto=format&fit=crop&q=60" alt="Crypto" />
+          </div>
+          <span class="story-title">קריפטו</span>
+        </div>
+
+        <div class="story-card" data-story-index="3">
+          <div class="story-avatar">
+            <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=120&auto=format&fit=crop&q=60" alt="Security" />
+          </div>
+          <span class="story-title">סייבר</span>
+        </div>
+
+        <div class="story-card" data-story-index="4">
+          <div class="story-avatar">
+            <img src="https://images.unsplash.com/photo-1534972195531-a756b1126f24?w=120&auto=format&fit=crop&q=60" alt="NextJS" />
+          </div>
+          <span class="story-title">NextJS 16</span>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Story Viewer Modal -->
-  <div class="story-viewer-modal" id="story-viewer-modal">
-    <div class="story-viewer-close" id="story-viewer-close"><i class="bi bi-x"></i></div>
+  <!-- Story Video Viewer Modal -->
+  <div class="story-viewer-modal" id="story-viewer-modal" role="dialog" aria-modal="true" aria-label="צפייה בסטורי">
+    <div class="story-viewer-close" id="story-viewer-close" aria-label="סגור"><i class="bi bi-x-lg"></i></div>
     <div class="story-viewer-content">
-        <div class="story-progress-container" id="story-progress-container"></div>
-        <video id="story-video-player" playsinline autoplay></video>
+      <div class="story-progress-container" id="story-progress-container"></div>
+      <video id="story-video-player" playsinline autoplay></video>
     </div>
   </div>
 
-  <!-- Featured Article -->
-  <section class="container mb-5" id="featured-article-container"></section>
+  <!-- ========================================================================
+       HERO ASYMMETRIC 68% / 32% GRID (HEBREW RTL)
+       ======================================================================== -->
+  <main class="container hero-section">
+    <div class="hero-figma-grid">
+      
+      <!-- Lead Feature Container (Right in RTL 68%) -->
+      <div id="featured-article-container">
+        <article class="hero-lead-card">
+          <div class="hero-bg-media">
+            <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&auto=format&fit=crop&q=80" alt="בינה מלאכותית" />
+          </div>
+          <div class="hero-overlay-shade"></div>
 
-  <!-- Main Content -->
-  <main class="container">
-    <div class="row">
-      <div class="col-lg-8">
-        <h2 class="section-title">כתבות אחרונות</h2>
-        <div id="articles-container"></div>
+          <div class="hero-lead-content">
+            <div class="hero-title-wrap">
+              <div class="hero-red-bar"></div>
+              <h1 class="hero-main-title">
+                GPT-5 מציג יכולות הסקה מולטי-מודאליות ששוברות את כל מבחני הביצועים
+              </h1>
+            </div>
+            <p class="hero-standfirst">
+              מבט מעמיק לתוך ארכיטקטורת הטרנספורמרים החדשה המשלבת חישוב בזמן בדיקה, סינתזת כלים דינמית ותהליכי חשיבה מאומתים בזמן אמת.
+            </p>
+            <div class="hero-meta-bar">
+              <span>מאת <strong>מערכת האתר</strong></span>
+              <span>·</span>
+              <span>8 דקות קריאה</span>
+              <span>·</span>
+              <a href="/he/category.html?slug=ai" class="badge badge-ai">בינה מלאכותית</a>
+            </div>
+          </div>
+        </article>
       </div>
-      <aside class="col-lg-4">
-        <div class="sidebar-section mb-5">
-          <h4>נושאים פופולריים</h4>
-          <ul class="trending-topics-list" id="categories-list"></ul>
+
+      <!-- Trending Stories Column (Left in RTL 32%) -->
+      <aside class="trending-column-card" id="trending-stories-container">
+        <div class="trending-header-title">
+          <span>כתבות מובילות</span>
+          <span style="font-size:0.75rem; color:var(--accent-red); font-family:var(--font-mono);">TOP 4</span>
         </div>
-        <div class="sidebar-section automation-banner mb-5">
-          <a href="https://www.automationbymeir.com/" target="_blank" rel="noopener" class="automation-banner-link" style="text-decoration:none; color:inherit; display:block;">
-            <h4 class="mb-2" style="color:#fff;">Automation by Meir</h4>
-            <p class="small mb-0" style="color:#aaa;">שדרגו את העסק שלכם עם אוטומציה מותאמת אישית</p>
-          </a>
-        </div>
+
+        <ul class="trending-list" id="trending-stories-list">
+          <li class="trending-item">
+            <span class="trending-num">01</span>
+            <div class="trending-item-content">
+              <span class="trending-tag" style="color:var(--tag-ai);">[בינה מלאכותית]</span>
+              <a href="/he/category.html?slug=ai" class="trending-headline">OpenAI מרחיבה את ממשקי ה-API של סוכנים אוטונומיים לארגונים</a>
+            </div>
+          </li>
+
+          <li class="trending-item">
+            <span class="trending-num">02</span>
+            <div class="trending-item-content">
+              <span class="trending-tag" style="color:var(--tag-chips);">[שבבים וחומרה]</span>
+              <a href="/he/category.html?slug=computing" class="trending-headline">תפוקת ייצור ה-2nm של TSMC עולה על התחזיות המוקדמות</a>
+            </div>
+          </li>
+
+          <li class="trending-item">
+            <span class="trending-num">03</span>
+            <div class="trending-item-content">
+              <span class="trending-tag" style="color:var(--tag-dev);">[כלי פיתוח]</span>
+              <a href="/he/category.html?slug=dev" class="trending-headline">השוואת ביצועים: Vite 8 ו-Next.js 16 מציגים זמני טעינה מהירים במיוחד</a>
+            </div>
+          </li>
+
+          <li class="trending-item">
+            <span class="trending-num">04</span>
+            <div class="trending-item-content">
+              <span class="trending-tag" style="color:var(--tag-security);">[אבטחת מידע]</span>
+              <a href="/he/category.html?slug=security" class="trending-headline">אימוץ גלובלי של תקני הצפנה פוסט-קוונטית במערכות בנקאיות</a>
+            </div>
+          </li>
+        </ul>
       </aside>
+
     </div>
   </main>
 
-  <footer class="footer">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-3 mb-4 mb-md-0">
-          <h5>TrendingTech Daily</h5>
-          <p class="small" style="color:#aaa;">הישארו מעודכנים עם חדשות הטכנולוגיה האחרונות, עדכוני בינה מלאכותית וניתוחי שוק.</p>
+  <!-- ========================================================================
+       SECONDARY 3-COLUMN CARD GRID (HEBREW)
+       ======================================================================== -->
+  <section class="container secondary-grid-section" aria-label="כתבות מומלצות">
+    <div class="section-header-row">
+      <h2 class="section-title"><span class="indicator-dot"></span> כתבות נבחרות</h2>
+      <a href="/he/category.html?slug=top-stories" class="section-view-all">לכל הכתבות ←</a>
+    </div>
+
+    <div class="secondary-3col-grid">
+
+      <!-- Card 1: Dev -->
+      <article class="sub-article-card">
+        <div class="sub-img-wrap">
+          <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop&q=80" alt="פיתוח תוכנה" />
         </div>
-        <div class="col-md-3 mb-4 mb-md-0">
-          <h5>קישורים מהירים</h5>
-          <ul class="footer-links">
-            <li><a href="/he/">ראשי</a></li>
-            <li><a href="/he/podcasts">פודקאסטים</a></li>
-            <li><a href="/he/about">אודות</a></li>
-            <li><a href="/he/privacy">מדיניות פרטיות</a></li>
-            <li><a href="/he/terms">תנאי שימוש</a></li>
-            <li><a href="/">גרסה אנגלית</a></li>
-          </ul>
+        <div class="sub-body">
+          <div class="triple-indicator">
+            <span class="triple-pill" style="background:#A855F7;"></span>
+            <span class="triple-pill" style="background:#A855F7;"></span>
+            <span class="triple-pill" style="background:#A855F7;"></span>
+          </div>
+          <div class="sub-text-content">
+            <div>
+              <div class="sub-kicker" style="color:#A855F7;">כלי פיתוח</div>
+              <h3 class="sub-title"><a href="/he/category.html?slug=dev">סביבות פיתוח מבוססות סוכנים: סוף עידן ההשלמה האוטומטית</a></h3>
+            </div>
+            <div class="sub-meta">מאת ג'וליאן רייס · 5 דקות קריאה</div>
+          </div>
         </div>
-        <div class="col-md-3 mb-4 mb-md-0">
-          <h5>קטגוריות</h5>
-          <ul class="footer-links" id="footer-he-categories">
-            <li><a href="/he/ai">בינה מלאכותית</a></li>
-            <li><a href="/he/technology">טכנולוגיה</a></li>
-            <li><a href="/he/startups">סטארטאפים</a></li>
-            <li><a href="/he/gadgets">גאדג'טים</a></li>
-            <li><a href="/he/security">אבטחה</a></li>
-            <li><a href="/he/crypto">קריפטו</a></li>
-          </ul>
+      </article>
+
+      <!-- Card 2: Robotics -->
+      <article class="sub-article-card">
+        <div class="sub-img-wrap">
+          <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&auto=format&fit=crop&q=80" alt="רובוטיקה" />
         </div>
-        <div class="col-md-3">
-          <h5>צרו קשר</h5>
-          <p class="small" style="color:#aaa;"><i class="bi bi-envelope-fill me-1"></i>info@trendingtechdaily.com<br>
-          <i class="bi bi-globe me-1"></i><a href="/" style="color:#aaa;">English Version</a></p>
+        <div class="sub-body">
+          <div class="triple-indicator">
+            <span class="triple-pill" style="background:#F59E0B;"></span>
+            <span class="triple-pill" style="background:#F59E0B;"></span>
+            <span class="triple-pill" style="background:#F59E0B;"></span>
+          </div>
+          <div class="sub-text-content">
+            <div>
+              <div class="sub-kicker" style="color:#F59E0B;">רובוטיקה ו-AI</div>
+              <h3 class="sub-title"><a href="/he/category.html?slug=computing">מודלי ראייה-פעולה ברובוטים דמויי אדם מציגים ביצוע עצמאי במפעלים</a></h3>
+            </div>
+            <div class="sub-meta">מאת אלכס ת'ורן · 7 דקות קריאה</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 3: Space -->
+      <article class="sub-article-card">
+        <div class="sub-img-wrap">
+          <img src="https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?w=600&auto=format&fit=crop&q=80" alt="חלל וקוונטים" />
+        </div>
+        <div class="sub-body">
+          <div class="triple-indicator">
+            <span class="triple-pill" style="background:#10B981;"></span>
+            <span class="triple-pill" style="background:#10B981;"></span>
+            <span class="triple-pill" style="background:#10B981;"></span>
+          </div>
+          <div class="sub-text-content">
+            <div>
+              <div class="sub-kicker" style="color:#10B981;">חלל ותקשורת</div>
+              <h3 class="sub-title"><a href="/he/category.html?slug=computing">רשת לייזר אופטית מסלולית מחברת חוות שרתים במהירות 100Gbps</a></h3>
+            </div>
+            <div class="sub-meta">מאת שרה ואנס · 4 דקות קריאה</div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       INTELLIGENCE HUBS BENTO ROW (HEBREW)
+       ======================================================================== -->
+  <section class="container mb-5" aria-label="מרכזי ידע וכלים">
+    <div class="section-header-row">
+      <h2 class="section-title"><span class="indicator-dot"></span> מרכזי ידע וכלים</h2>
+      <a href="/he/ai-tools" class="section-view-all">לכל המדריכים ←</a>
+    </div>
+
+    <div class="ai-tools-grid">
+      
+      <!-- AI Tool Card -->
+      <div class="ai-tool-card">
+        <div>
+          <div class="ai-tool-header">
+            <div class="ai-tool-icon">✨</div>
+            <span class="ai-tool-pricing">חינם / פרימיום</span>
+          </div>
+          <h3 class="ai-tool-title">Claude 3.7 Sonnet</h3>
+          <p class="ai-tool-desc">מודל ההסקה ההיברידי של Anthropic המשלב מענה מיידי עם תהליך חשיבה מעמיק ומאומת.</p>
+        </div>
+        <div class="ai-tool-footer">
+          <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted);">ציון: 9.9/10</span>
+          <a class="btn btn-outline btn-sm" href="/he/ai-tools">למפרט המלא</a>
         </div>
       </div>
-      <div class="copyright">
-        <p style="margin:0;">© 2025 TrendingTech Daily. כל הזכויות שמורות.</p>
+
+      <!-- Design System Card -->
+      <div class="ds-card">
+        <div>
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="badge badge-dev">Design System</span>
+            <i class="bi bi-box-seam text-primary"></i>
+          </div>
+          <h3 class="ai-tool-title">NewsKit (News Corp)</h3>
+          <p class="ai-tool-desc">מערכת העיצוב הפתוחה המפעילה את ה-WSJ, הטיימס והסאן עם סנכרון משתני מותג.</p>
+          <div class="ds-swatches-row">
+            <span class="ds-swatch-dot" style="background:#090A0E;"></span>
+            <span class="ds-swatch-dot" style="background:#E63946;"></span>
+            <span class="ds-swatch-dot" style="background:#10B981;"></span>
+            <span class="ds-swatch-dot" style="background:#F4F6F9;"></span>
+          </div>
+        </div>
+        <div class="ai-tool-footer">
+          <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted);">React · Tokens Studio</span>
+          <a class="btn btn-outline btn-sm" href="/he/design-systems">קרא ניתוח</a>
+        </div>
+      </div>
+
+      <!-- Stock Wishlist Card -->
+      <div class="ai-tool-card">
+        <div>
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="badge badge-chips">שוק ההון</span>
+            <i class="bi bi-graph-up text-warning"></i>
+          </div>
+          <h3 class="ai-tool-title">רשימת מניות טכנולוגיה</h3>
+          <p class="ai-tool-desc">מעקב אוטומטי אחר שינויי שערים, מכפילי רווח והכנסות של ענקיות השבבים והבינה המלאכותית.</p>
+        </div>
+        <div class="ai-tool-footer">
+          <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted);">48 ניירות ערך</span>
+          <a class="btn btn-outline btn-sm" href="/he/shuk-hon">פתח לוח מניות</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       LATEST ARTICLES FEED & SIDEBAR (HEBREW)
+       ======================================================================== -->
+  <section class="container mb-5">
+    <div class="row d-flex flex-column flex-lg-row gap-4">
+      
+      <!-- Main Articles Feed -->
+      <div class="flex-grow-1" style="max-width: 860px;">
+        <div class="section-header-row">
+          <h2 class="section-title"><span class="indicator-dot"></span> פיד כתבות אחרונות</h2>
+        </div>
+        
+        <div id="articles-container">
+          <div class="spinner-container">
+            <div class="spinner-border" role="status"></div>
+            <p class="text-muted mt-2" style="font-size:0.875rem;">טוען כתבות אחרונות...</p>
+          </div>
+        </div>
+
+        <div id="api-articles-container" class="mt-4"></div>
+      </div>
+
+      <!-- Sidebar Column -->
+      <aside style="width: 100%; max-width: 380px;">
+        
+        <div class="card mb-4">
+          <div class="card-body">
+            <h4 class="card-title mb-3" style="font-size:1rem;">נושאים פופולריים</h4>
+            <ul class="d-flex flex-column gap-2" id="categories-list">
+              <li><a href="/he/category.html?slug=ai" class="d-flex justify-content-between align-items-center text-muted"><span class="text-main fw-bold">בינה מלאכותית</span><span class="badge badge-ai">HOT</span></a></li>
+              <li><a href="/he/category.html?slug=dev" class="d-flex justify-content-between align-items-center text-muted"><span class="text-main fw-bold">פיתוח תוכנה</span><span class="badge badge-dev">DEV</span></a></li>
+              <li><a href="/he/category.html?slug=computing" class="d-flex justify-content-between align-items-center text-muted"><span class="text-main fw-bold">שבבים ומחשוב</span><span class="badge badge-chips">2nm</span></a></li>
+              <li><a href="/he/shuk-hon" class="d-flex justify-content-between align-items-center text-muted"><span class="text-main fw-bold">שוק ההון</span><span class="badge badge-security">LIVE</span></a></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Automation by Meir Sponsored Banner -->
+        <div class="card" style="border-color:var(--accent-red); background:var(--bg-surface-elevated);">
+          <div class="card-body">
+            <span class="badge badge-ai mb-2">בחסות</span>
+            <h4 class="card-title" style="font-size:1.05rem;">Automation by Meir</h4>
+            <p class="card-text mb-3">ייעול ופיתוח תהליכי אוטומציה וסוכני AI מתקדמים לארגונים ועסקים.</p>
+            <a href="https://www.automationbymeir.com/" target="_blank" rel="noopener" class="btn btn-subscribe btn-sm w-100">
+              למידע נוסף על פתרונות אוטומציה ←
+            </a>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+  </section>
+
+  <!-- Persistent Audio Dock -->
+  <div class="podcast-dock" role="region" aria-label="נגן פודקאסט">
+    <div class="container dock-inner">
+      <div class="dock-track-info">
+        <div class="dock-art"><i class="bi bi-mic-fill"></i></div>
+        <div class="dock-meta">
+          <div class="dock-title">TrendingTech Daily — פרק #284</div>
+          <div class="dock-sub">בהנחיית מאיר הורביץ · סקירת עמק הסיליקון השבועית</div>
+        </div>
+      </div>
+      <div class="dock-controls">
+        <div class="dock-progress">
+          <div class="dock-progress-bar"></div>
+        </div>
+        <span style="font-size:0.75rem; font-family:var(--font-mono); color:var(--text-muted);">14:20 / 32:00</span>
+        <button class="dock-play-btn" aria-label="נגן או השהה"><i class="bi bi-play-fill"></i></button>
       </div>
     </div>
-  </footer>
+  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
-  <script src="/he/js/he-app.js" defer></script>
-  <script src="/he/js/he-ai-agent.js" defer></script>
-  <script src="/he/js/he-cookie-consent.js" defer></script>
+  <!-- AI Copilot Trigger & Drawer -->
+  <button class="ai-floating-trigger" id="aiCopilotTrigger" aria-label="שאל את עוזר ה-AI">
+    <i class="bi bi-stars"></i>
+    <span>עוזר AI</span>
+  </button>
+
+  <aside class="ai-copilot-drawer" id="aiCopilotDrawer" aria-label="עוזר בינה מלאכותית">
+    <div class="ai-copilot-header">
+      <div class="ai-copilot-title">
+        <span class="ai-status-pulse"></span>
+        <span>עוזר הטכנולוגיה האישי</span>
+      </div>
+      <button class="btn-icon" id="aiCopilotCloseBtn" aria-label="סגור">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="ai-quick-prompts">
+      <button class="ai-prompt-pill" data-prompt="מה חדש היום בבינה מלאכותית?">חדש ב-AI?</button>
+      <button class="ai-prompt-pill" data-prompt="סכם את חדשות השבבים">חדשות שבבים</button>
+      <button class="ai-prompt-pill" data-prompt="הסבר על משתני עיצוב">Design Tokens</button>
+    </div>
+
+    <div class="ai-chat-body" id="aiChatMessages">
+      <div class="ai-bubble ai-bubble-bot">
+        שלום! אני עוזר ה-AI של TrendingTech Daily. אני כאן כדי לעזור לכם להבין מושגים טכנולוגיים, לסכם מאמרים או למצוא מידע עדכני. במה אוכל לסייע היום?
+      </div>
+    </div>
+
+    <form class="ai-chat-input-row" id="aiChatInputForm">
+      <input type="text" class="form-control" placeholder="שאלו על חדשות טק, מודלים, שבבים..." id="aiChatInputField" autocomplete="off" />
+      <button type="submit" class="btn btn-subscribe btn-sm" id="aiChatSendBtn"><i class="bi bi-send-fill"></i></button>
+    </form>
+  </aside>
+
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script src="/js/config.js" defer></script>
+  <script src="/js/auth.js" defer></script>
+  <script src="/js/nav-loader.js" defer></script>
+  <script src="/js/app-base.js" defer></script>
+  <script src="/js/index-main.js" defer></script>
+  <script src="/js/index-features.js" defer></script>
   <script src="/js/stories.js" defer></script>
+  <script src="/js/ai-agent.js" defer></script>
 </body>
 </html>

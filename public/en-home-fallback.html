@@ -1,304 +1,505 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr" data-mode="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, follow" />
   <link rel="canonical" href="https://www.trendingtechdaily.com/" />
-  <title>TrendingTech Daily - Latest Tech News and Trends</title>
+  <title>TrendingTech Daily - Latest Tech News, AI Breakthroughs and Industry Intelligence</title>
+  
   <meta name="google-site-verification" content="AAJy5uWJtM-PEQ6kOZCAiIQuO3CijcFc6DYM7dNYEVY" />
-  <meta name="keywords" content="trending tech, latest tech news, technology trends, AI, gadgets" />
-  <meta name="description" content="TrendingTech Daily delivers the latest tech news, AI updates, gadget reviews, and in-depth technology analysis for enthusiasts." />
-  <meta property="og:title" content="TrendingTech Daily - Latest Tech News and Trends" />
+  <meta name="keywords" content="trending tech, latest tech news, technology trends, AI, design systems, semiconductors, gadgets" />
+  <meta name="description" content="TrendingTech Daily delivers the latest tech news, AI updates, hardware reviews, design systems decoded, and real-time market data." />
+  
+  <!-- Open Graph / Social Media -->
+  <meta property="og:title" content="TrendingTech Daily - Latest Tech News and Intelligence" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://trendingtechdaily.com/" />
   <meta property="og:image" content="https://trendingtechdaily.com/img/logo.png" />
-  <meta property="og:description" content="TrendingTech Daily delivers the latest tech news, AI updates, gadget reviews, and in-depth technology analysis for enthusiasts." />
+  <meta property="og:description" content="Delivering real-time tech intelligence, foundational AI breakthroughs, and design system analysis." />
   <meta property="og:site_name" content="TrendingTech Daily" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="TrendingTech Daily - Latest Tech News and Trends" />
-  <meta name="twitter:description" content="TrendingTech Daily delivers the latest tech news, AI updates, gadget reviews, and in-depth technology analysis for enthusiasts." />
-  <meta name="twitter:image" content="https://trendingtechdaily.com/img/logo.png" />
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "url": "https://trendingtechdaily.com/",
-    "name": "TrendingTech Daily",
-    "description": "TrendingTech Daily delivers the latest tech news, trends, and analysis for technology enthusiasts.",
-    "publisher": {
-      "@type": "Organization",
-      "name": "TrendingTech Daily",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://trendingtechdaily.com/img/logo.png"
-      }
-    }
-  }
-  </script>
+
+  <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
   new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
   j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
   })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&family=Lora:ital,wght@0,500;0,600;1,400&family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+  <!-- Master Unified Stylesheet (Figma Tech News System) -->
+  <link rel="stylesheet" href="/styles.css">
+
+  <!-- Icons -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- Firebase App & Services -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js" defer></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js" defer></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js" defer></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js" defer></script>
-
-  <link rel="canonical" href="https://trendingtechdaily.com/" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Sans:wght@400;600&family=Fira+Code&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="css/ai-agent.css">
-  <link rel="stylesheet" href="css/popup.css" />
-  <link rel="stylesheet" href="css/sidebar-podcasts.css" />
-  <link rel="stylesheet" href="css/trending-github.css" />
-  <link rel="stylesheet" href="css/stories.css" />
-
-
-
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8142734137865758"
-    crossorigin="anonymous"></script>
-    <link rel="icon" href="/favicon.ico" sizes="any"> <link rel="icon" href="/favicon.svg" type="image/svg+xml"> <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-   
-
-    <link rel="stylesheet" href="/css/cookie-consent.css">
 </head>
 <body>
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ"
-  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- Navbar Placeholder -->
-  <div id="navbar-placeholder"></div>
-  <h1 class="visually-hidden">TrendingTech Daily - Latest Tech News and Trends</h1>
-  <h2 class="text-center my-4">Latest Technology News and Insights</h2>
-  <!-- Welcome Popup -->
-  <div id="welcome-popup-overlay" class="welcome-popup-overlay">
-    <div class="welcome-popup">
-      <div class="welcome-popup-header">
-        <button class="popup-close-btn" id="popup-close-btn" type="button" aria-label="Close popup">
-          <i class="bi bi-x"></i>
-        </button>
-        <div class="welcome-icon">
-          <i class="bi bi-hand-thumbs-up"></i>
-        </div>
-        <h2>Welcome to TrendingTech Daily!</h2>
-        <p>Join our community and unlock exclusive features to enhance your tech news experience.</p>
-      </div>
-      
-      <div class="welcome-popup-body">
-        <div class="benefits-grid">
-          <div class="benefit-card">
-            <div class="benefit-icon">
-              <i class="bi bi-bookmark-heart"></i>
-            </div>
-            <h4>Save Articles</h4>
-            <p>Bookmark articles for later reading and build your personal tech knowledge library.</p>
-          </div>
-          
-          <div class="benefit-card">
-            <div class="benefit-icon">
-              <i class="bi bi-eye-fill"></i>
-            </div>
-            <h4>Track Reading</h4>
-            <p>Keep track of articles you've read and discover personalized recommendations.</p>
-          </div>
-          
-          <div class="benefit-card">
-            <div class="benefit-icon">
-              <i class="bi bi-chat-dots"></i>
-            </div>
-            <h4>Join Discussions</h4>
-            <p>Leave comments, engage with other tech enthusiasts, and share your insights.</p>
-          </div>
-          
-          <div class="benefit-card">
-            <div class="benefit-icon">
-              <i class="bi bi-graph-up"></i>
-            </div>
-            <h4>Stock Wishlist</h4>
-            <p>Create a personalized watchlist to track your favorite tech stocks and investments.</p>
-          </div>
-        </div>
-        
-        <div class="popup-actions">
-          <a href="/signup.html" class="popup-btn popup-btn-primary">
-            <i class="bi bi-person-plus"></i>
-            Create Free Account
-          </a>
-          <button class="popup-btn popup-btn-secondary" id="popup-maybe-later">
-            Maybe Later
-          </button>
-        </div>
-      </div>
-      
-      <div class="popup-footer">
-        <p>Already have an account? <a href="/login.html">Sign in here</a></p>
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+  <!-- Live Stock & Breaking Ticker Strip -->
+  <div class="ticker-strip" aria-label="Market Ticker and Breaking News">
+    <div class="ticker-wrap">
+      <div class="ticker-content">
+        <span class="ticker-item">
+          <span class="ticker-badge" style="background:#E63946; color:#fff;">NVDA</span> $912.40 <span class="ticker-up">+3.2% ▲</span>
+        </span>
+        <span class="ticker-item">
+          <span class="ticker-badge" style="background:#10B981; color:#fff;">AAPL</span> $234.10 <span class="ticker-up">+0.8% ▲</span>
+        </span>
+        <span class="ticker-item">
+          <span class="ticker-badge" style="background:#F59E0B; color:#fff;">BTC</span> $96,420 <span class="ticker-down">-1.1% ▼</span>
+        </span>
+        <span class="ticker-item">
+          <span class="ticker-badge" style="background:#A855F7; color:#fff;">TSMC</span> $194.80 <span class="ticker-up">+1.9% ▲</span>
+        </span>
+        <span class="ticker-item">
+          <span class="ticker-badge" style="background:#00D2FF; color:#000;">MSFT</span> $450.20 <span class="ticker-up">+1.4% ▲</span>
+        </span>
+        <span class="ticker-item">
+          <span class="ticker-badge" style="background:#E63946; color:#fff;">BREAKING</span> OpenAI expands autonomous agent reasoning models with dynamic tool execution
+        </span>
+        <span class="ticker-item">
+          <span class="ticker-badge" style="background:#10B981; color:#fff;">DESIGN SYSTEMS</span> News Corp rolls out NewsKit v8 with multi-brand Tokens Studio synchronization
+        </span>
       </div>
     </div>
   </div>
-  <!-- Banner location -->
-    </div>
-  </header>
 
-  <section class="container mt-4 mb-3 stories-container">
-    <div class="stories-wrapper" id="stories-wrapper">
-        <!-- Story circles will be injected here via JS -->
+  <!-- Navigation Placeholder (Loaded dynamically by nav-loader.js) -->
+  <div id="navbar-placeholder"></div>
+
+  <!-- Video Stories Ribbon -->
+  <section class="stories-ribbon" aria-label="Featured Story Reels">
+    <div class="container">
+      <div class="stories-track" id="stories-wrapper">
+        <!-- Story circles loaded dynamically via stories.js / fallback items -->
+        <div class="story-card" data-story-index="0">
+          <div class="story-avatar">
+            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=120&auto=format&fit=crop&q=60" alt="DeepSeek" />
+            <span class="story-badge">LIVE</span>
+          </div>
+          <span class="story-title">DeepSeek V3</span>
+        </div>
+
+        <div class="story-card" data-story-index="1">
+          <div class="story-avatar">
+            <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=120&auto=format&fit=crop&q=60" alt="Figma UI" />
+            <span class="story-badge">NEW</span>
+          </div>
+          <span class="story-title">Figma UI3</span>
+        </div>
+
+        <div class="story-card" data-story-index="2">
+          <div class="story-avatar">
+            <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=120&auto=format&fit=crop&q=60" alt="Crypto" />
+          </div>
+          <span class="story-title">Crypto Rally</span>
+        </div>
+
+        <div class="story-card" data-story-index="3">
+          <div class="story-avatar">
+            <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=120&auto=format&fit=crop&q=60" alt="Security" />
+          </div>
+          <span class="story-title">Cyber Shield</span>
+        </div>
+
+        <div class="story-card" data-story-index="4">
+          <div class="story-avatar">
+            <img src="https://images.unsplash.com/photo-1534972195531-a756b1126f24?w=120&auto=format&fit=crop&q=60" alt="NextJS" />
+          </div>
+          <span class="story-title">NextJS 16</span>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- Story Viewer Modal -->
-  <div class="story-viewer-modal" id="story-viewer-modal">
-    <div class="story-viewer-close" id="story-viewer-close"><i class="bi bi-x"></i></div>
+  <!-- Story Video Viewer Modal -->
+  <div class="story-viewer-modal" id="story-viewer-modal" role="dialog" aria-modal="true" aria-label="Story Viewer">
+    <div class="story-viewer-close" id="story-viewer-close" aria-label="Close Story"><i class="bi bi-x-lg"></i></div>
     <div class="story-viewer-content">
-        <div class="story-progress-container" id="story-progress-container"></div>
-        <video id="story-video-player" playsinline autoplay></video>
+      <div class="story-progress-container" id="story-progress-container"></div>
+      <video id="story-video-player" playsinline autoplay></video>
     </div>
   </div>
 
-  <section class="container mb-5" id="featured-article-container"></section>
-  <section class="container mt-5 mb-4 video-recommendations">
-    <h2 class="section-title">Recommended Videos</h2>
-    <div id="video-loader" class="spinner-container text-center py-4">
-         <div class="spinner-border text-secondary spinner-border-sm" role="status"></div>
-         <p class="text-muted small mt-2">Loading videos...</p>
-    </div>
-    <div id="video-recommendations-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
-        </div>
-
-        <div id="show-more-videos-container" class="text-center mt-4" style="display: none;">
-          <button id="show-more-videos-btn" class="btn btn-outline-secondary btn-sm">Show More Videos</button>
-          <button id="show-less-videos-btn" class="btn btn-outline-secondary btn-sm" style="display: none;">Show Less Videos</button> </div>
-    </section>
-  <main class="container">
-    <div class="row">
-      <div class="col-lg-8">
-        <h2 class="section-title">Latest Articles</h2>
-        <div id="articles-container"></div>
-        <hr class="section-divider my-5">
-        <div id="api-articles-container">
-           <div class="spinner-container text-center py-5" id="api-loading-initial"><div class="spinner-border" role="status"></div><p>Loading news feeds...</p></div>
-        </div>
-      </div>
-      <aside class="col-lg-4">
-        <div class="sidebar-section mb-5">
-          <h4>Trending Topics</h4>
-          <ul class="trending-topics-list" id="categories-list"></ul>
-        </div>
-
-
-<!-- Trending GitHub Section inserted -->
-        <div class="sidebar-section mb-5" id="trending-github-section">
-          <h4>Trending GitHub Repositories</h4>
-          <div id="trending-github-loader" class="text-center py-2">
-            <div class="spinner-border spinner-border-sm" role="status"></div>
+  <!-- ========================================================================
+       HERO ASYMMETRIC 68% / 32% GRID (FIGMA TECH NEWS SYSTEM)
+       ======================================================================== -->
+  <main class="container hero-section">
+    <div class="hero-figma-grid">
+      
+      <!-- Lead Feature Container (Left 68%) — Populated by Firebase or Static Fallback -->
+      <div id="featured-article-container">
+        <article class="hero-lead-card">
+          <div class="hero-bg-media">
+            <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&auto=format&fit=crop&q=80" alt="Neural AI Architecture" />
           </div>
-          <ul id="trending-github-list" class="list-group list-group-flush"></ul>
+          <div class="hero-overlay-shade"></div>
+
+          <div class="hero-lead-content">
+            <div class="hero-title-wrap">
+              <div class="hero-red-bar"></div>
+              <h1 class="hero-main-title">
+                GPT-5 Arrives with Native Multimodal Reasoning That Outpaces Benchmarks
+              </h1>
+            </div>
+            <p class="hero-standfirst">
+              Inside the new transformer architecture blending continuous test-time compute with dynamic tool synthesis and verifiable chain-of-thought tokens.
+            </p>
+            <div class="hero-meta-bar">
+              <span>By <strong>Julianne Reyes</strong></span>
+              <span>·</span>
+              <span>8 min read</span>
+              <span>·</span>
+              <a href="/category.html?slug=ai" class="badge badge-ai">Artificial Intelligence</a>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Trending Stories Column (Right 32%) -->
+      <aside class="trending-column-card" id="trending-stories-container">
+        <div class="trending-header-title">
+          <span>Trending Stories</span>
+          <span style="font-size:0.75rem; color:var(--accent-red); font-family:var(--font-mono);">TOP 4</span>
         </div>
 
-        <div class="sidebar-section automation-banner mb-5">
-          <a href="https://www.automationbymeir.com/" target="_blank" rel="noopener" class="automation-banner-link">
-            <h4 class="mb-2">Automation by Meir</h4>
-            <p class="small mb-0">Transform your business with custom automation</p>
-          </a>
-        </div>
+        <ul class="trending-list" id="trending-stories-list">
+          <li class="trending-item">
+            <span class="trending-num">01</span>
+            <div class="trending-item-content">
+              <span class="trending-tag" style="color:var(--tag-ai);">[AI & REASONING]</span>
+              <a href="/category.html?slug=ai" class="trending-headline">OpenAI Expands Autonomous Agent Swarm APIs for Enterprise Production</a>
+            </div>
+          </li>
+
+          <li class="trending-item">
+            <span class="trending-num">02</span>
+            <div class="trending-item-content">
+              <span class="trending-tag" style="color:var(--tag-chips);">[CHIPS & SILICON]</span>
+              <a href="/category.html?slug=computing" class="trending-headline">TSMC 2nm Production Exceeds Yield Projections as Hyperscalers Lock Wafers</a>
+            </div>
+          </li>
+
+          <li class="trending-item">
+            <span class="trending-num">03</span>
+            <div class="trending-item-content">
+              <span class="trending-tag" style="color:var(--tag-dev);">[DEV TOOLS]</span>
+              <a href="/category.html?slug=dev" class="trending-headline">Vite 8 & Next.js 16 Benchmark Comparison: Sub-Millisecond HMR Achieved</a>
+            </div>
+          </li>
+
+          <li class="trending-item">
+            <span class="trending-num">04</span>
+            <div class="trending-item-content">
+              <span class="trending-tag" style="color:var(--tag-security);">[CYBERSECURITY]</span>
+              <a href="/category.html?slug=security" class="trending-headline">Post-Quantum Cryptography Mandate Enacted Across Global Banking Networks</a>
+            </div>
+          </li>
+        </ul>
       </aside>
+
     </div>
   </main>
 
-  <footer class="footer">
-      <div class="container">
-          <div class="row">
-              <div class="col-md-3 mb-4 mb-md-0"><h5 id="footer-site-title">TrendingTech Daily</h5><p id="footer-description" class="small text-muted">Stay informed...</p></div>
-              <div class="col-md-3 mb-4 mb-md-0"><h5>Quick Links</h5><ul class="footer-links"><li><a href="/">Home</a></li><li><a href="/about.html">About Us</a></li><li><a href="/privacy.html">Privacy Policy</a></li><li><a href="/terms.html">Terms of Service</a></li></ul></div>
-              <div class="col-md-3 mb-4 mb-md-0"><h5>Categories</h5><ul class="footer-links" id="footer-categories-list"><li class="text-muted small fst-italic">Coming soon</li></ul></div>
-              <div class="col-md-3"><h5>Contact Us</h5><p class="small"><i class="bi bi-envelope-fill me-1"></i><span id="contact-email">Coming soon</span><br><i class="bi bi-geo-alt-fill me-1"></i><span id="contact-address">Coming soon</span></p><div id="footer-social-links" class="mt-2"></div></div>
+  <!-- ========================================================================
+       SECONDARY 3-COLUMN CARD GRID (FIGMA TECH NEWS SYSTEM)
+       ======================================================================== -->
+  <section class="container secondary-grid-section" aria-label="Curated Feature Stories">
+    <div class="section-header-row">
+      <h2 class="section-title"><span class="indicator-dot"></span> Featured Dispatches</h2>
+      <a href="/category.html?slug=top-stories" class="section-view-all">View All Dispatches →</a>
+    </div>
+
+    <div class="secondary-3col-grid">
+
+      <!-- Card 1: Dev Tools (Purple Indicator) -->
+      <article class="sub-article-card">
+        <div class="sub-img-wrap">
+          <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&auto=format&fit=crop&q=80" alt="Code generation" />
+        </div>
+        <div class="sub-body">
+          <div class="triple-indicator">
+            <span class="triple-pill" style="background:#A855F7;"></span>
+            <span class="triple-pill" style="background:#A855F7;"></span>
+            <span class="triple-pill" style="background:#A855F7;"></span>
           </div>
-          <div class="copyright"> <span id="footer-text">2025 TrendingTech Daily.</span></div>
+          <div class="sub-text-content">
+            <div>
+              <div class="sub-kicker" style="color:#A855F7;">Developer Tools</div>
+              <h3 class="sub-title"><a href="/category.html?slug=dev">Agentic IDEs: The Sunset of Traditional Code Autocomplete</a></h3>
+            </div>
+            <div class="sub-meta">By Julianne Reyes · 5 min read</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 2: Robotics & Silicon (Amber Indicator) -->
+      <article class="sub-article-card">
+        <div class="sub-img-wrap">
+          <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&auto=format&fit=crop&q=80" alt="Robotics" />
+        </div>
+        <div class="sub-body">
+          <div class="triple-indicator">
+            <span class="triple-pill" style="background:#F59E0B;"></span>
+            <span class="triple-pill" style="background:#F59E0B;"></span>
+            <span class="triple-pill" style="background:#F59E0B;"></span>
+          </div>
+          <div class="sub-text-content">
+            <div>
+              <div class="sub-kicker" style="color:#F59E0B;">Robotics & AI</div>
+              <h3 class="sub-title"><a href="/category.html?slug=computing">Humanoid Vision-Action Models Demonstrate Zero-Shot Factory Execution</a></h3>
+            </div>
+            <div class="sub-meta">By Alex Thorne · 7 min read</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 3: Quantum & Space (Emerald Indicator) -->
+      <article class="sub-article-card">
+        <div class="sub-img-wrap">
+          <img src="https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?w=600&auto=format&fit=crop&q=80" alt="Satellite" />
+        </div>
+        <div class="sub-body">
+          <div class="triple-indicator">
+            <span class="triple-pill" style="background:#10B981;"></span>
+            <span class="triple-pill" style="background:#10B981;"></span>
+            <span class="triple-pill" style="background:#10B981;"></span>
+          </div>
+          <div class="sub-text-content">
+            <div>
+              <div class="sub-kicker" style="color:#10B981;">Quantum & Space</div>
+              <h3 class="sub-title"><a href="/category.html?slug=computing">Orbital Optical Laser Mesh Connects Ground Datacenters at 100Gbps</a></h3>
+            </div>
+            <div class="sub-meta">By Sarah Vance · 4 min read</div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       INTELLIGENCE HUBS & CATALOGS BENTO ROW
+       ======================================================================== -->
+  <section class="container mb-5" aria-label="Intelligence Hubs">
+    <div class="section-header-row">
+      <h2 class="section-title"><span class="indicator-dot"></span> Intelligence Catalogs & Tools</h2>
+      <a href="/ai-tools" class="section-view-all">Browse All Catalogs →</a>
+    </div>
+
+    <div class="ai-tools-grid">
+      
+      <!-- AI Tool Card -->
+      <div class="ai-tool-card">
+        <div>
+          <div class="ai-tool-header">
+            <div class="ai-tool-icon">✨</div>
+            <span class="ai-tool-pricing">Freemium</span>
+          </div>
+          <h3 class="ai-tool-title">Claude 3.7 Sonnet</h3>
+          <p class="ai-tool-desc">Anthropic's hybrid reasoning model combining instantaneous response tokens with verified extended thinking.</p>
+        </div>
+        <div class="ai-tool-footer">
+          <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted);">Rating: 9.9/10</span>
+          <a class="btn btn-outline btn-sm" href="/ai-tools">View Spec</a>
+        </div>
       </div>
-  </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+      <!-- Design System Card -->
+      <div class="ds-card">
+        <div>
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="badge badge-dev">Design System</span>
+            <i class="bi bi-box-seam text-primary"></i>
+          </div>
+          <h3 class="ai-tool-title">NewsKit (News Corp)</h3>
+          <p class="ai-tool-desc">The open-source design system powering WSJ, The Times, and The Sun with multi-brand theme token orchestration.</p>
+          <div class="ds-swatches-row">
+            <span class="ds-swatch-dot" style="background:#090A0E;"></span>
+            <span class="ds-swatch-dot" style="background:#E63946;"></span>
+            <span class="ds-swatch-dot" style="background:#10B981;"></span>
+            <span class="ds-swatch-dot" style="background:#F4F6F9;"></span>
+          </div>
+        </div>
+        <div class="ai-tool-footer">
+          <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted);">React · Tokens Studio</span>
+          <a class="btn btn-outline btn-sm" href="/design-systems">Read Review</a>
+        </div>
+      </div>
 
-  <script src="js/app-base.js" defer></script>
-  <script src="js/index-main.js" defer></script>
-  <script src="js/index-features.js" defer></script>
-  <script src="js/ai-agent.js" defer></script>
+      <!-- Stock Wishlist Spotlight Card -->
+      <div class="ai-tool-card">
+        <div>
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="badge badge-chips">Market Watch</span>
+            <i class="bi bi-graph-up text-warning"></i>
+          </div>
+          <h3 class="ai-tool-title">Tech Leaders Wishlist</h3>
+          <p class="ai-tool-desc">Automated watchlist tracking price action, P/E ratios, and enterprise revenue across semiconductor and AI foundries.</p>
+        </div>
+        <div class="ai-tool-footer">
+          <span style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted);">48 Tracked Tickers</span>
+          <a class="btn btn-outline btn-sm" href="/stock-data">Open Dashboard</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       LATEST ARTICLES FEED & SIDEBAR
+       ======================================================================== -->
+  <section class="container mb-5">
+    <div class="row d-flex flex-column flex-lg-row gap-4">
+      
+      <!-- Main Articles Feed (Left 68%) -->
+      <div class="flex-grow-1" style="max-width: 860px;">
+        <div class="section-header-row">
+          <h2 class="section-title"><span class="indicator-dot"></span> Latest News Stream</h2>
+        </div>
+        
+        <!-- Firestore Articles Feed Container -->
+        <div id="articles-container">
+          <div class="spinner-container">
+            <div class="spinner-border" role="status"></div>
+            <p class="text-muted mt-2" style="font-size:0.875rem;">Loading latest news articles...</p>
+          </div>
+        </div>
+
+        <!-- API / RSS News Feed Container -->
+        <div id="api-articles-container" class="mt-4"></div>
+      </div>
+
+      <!-- Sidebar Column (Right 32%) -->
+      <aside style="width: 100%; max-width: 380px;">
+        
+        <!-- Trending Categories Widget -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <h4 class="card-title mb-3" style="font-size:1rem;">Trending Topics</h4>
+            <ul class="d-flex flex-column gap-2" id="categories-list">
+              <li><a href="/category.html?slug=ai" class="d-flex justify-content-between align-items-center text-muted"><span class="text-main fw-bold">Artificial Intelligence</span><span class="badge badge-ai">HOT</span></a></li>
+              <li><a href="/category.html?slug=dev" class="d-flex justify-content-between align-items-center text-muted"><span class="text-main fw-bold">Developer Tools</span><span class="badge badge-dev">DEV</span></a></li>
+              <li><a href="/category.html?slug=computing" class="d-flex justify-content-between align-items-center text-muted"><span class="text-main fw-bold">Computing &amp; Chips</span><span class="badge badge-chips">2nm</span></a></li>
+              <li><a href="/stock-data.html" class="d-flex justify-content-between align-items-center text-muted"><span class="text-main fw-bold">Markets &amp; Stocks</span><span class="badge badge-security">LIVE</span></a></li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Trending GitHub Repos Widget -->
+        <div class="card mb-4" id="trending-github-section">
+          <div class="card-body">
+            <h4 class="card-title mb-3" style="font-size:1rem;"><i class="bi bi-github me-1"></i> Trending GitHub Repos</h4>
+            <div id="trending-github-loader" class="text-center py-2">
+              <div class="spinner-border" style="width:1.5rem; height:1.5rem;" role="status"></div>
+            </div>
+            <ul id="trending-github-list" class="d-flex flex-column gap-2"></ul>
+          </div>
+        </div>
+
+        <!-- Automation by Meir Sponsored Banner -->
+        <div class="card" style="border-color:var(--accent-red); background:var(--bg-surface-elevated);">
+          <div class="card-body">
+            <span class="badge badge-ai mb-2">Partner Spotlight</span>
+            <h4 class="card-title" style="font-size:1.05rem;">Automation by Meir</h4>
+            <p class="card-text mb-3">Scale your engineering and business workflows with custom autonomous AI agent pipelines.</p>
+            <a href="https://www.automationbymeir.com/" target="_blank" rel="noopener" class="btn btn-subscribe btn-sm w-100">
+              Explore Automation Solutions →
+            </a>
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       PERSISTENT AUDIO DOCK
+       ======================================================================== -->
+  <div class="podcast-dock" role="region" aria-label="Persistent Audio Player">
+    <div class="container dock-inner">
+      <div class="dock-track-info">
+        <div class="dock-art"><i class="bi bi-mic-fill"></i></div>
+        <div class="dock-meta">
+          <div class="dock-title">TrendingTech Daily Audio Briefing — Episode #284</div>
+          <div class="dock-sub">Hosted by Meir Horwitz · Silicon Valley Broadsheet Review</div>
+        </div>
+      </div>
+      <div class="dock-controls">
+        <div class="dock-progress">
+          <div class="dock-progress-bar"></div>
+        </div>
+        <span style="font-size:0.75rem; font-family:var(--font-mono); color:var(--text-muted);">14:20 / 32:00</span>
+        <button class="dock-play-btn" aria-label="Play or pause audio"><i class="bi bi-play-fill"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       AI COPILOT FLOATING TRIGGER & SLIDE-OVER DRAWER
+       ======================================================================== -->
+  <button class="ai-floating-trigger" id="aiCopilotTrigger" aria-label="Ask AI Assistant">
+    <i class="bi bi-stars"></i>
+    <span>Ask Tech AI</span>
+  </button>
+
+  <aside class="ai-copilot-drawer" id="aiCopilotDrawer" aria-label="AI Tech News Assistant">
+    <div class="ai-copilot-header">
+      <div class="ai-copilot-title">
+        <span class="ai-status-pulse"></span>
+        <span>AI Tech Copilot</span>
+      </div>
+      <button class="btn-icon" id="aiCopilotCloseBtn" aria-label="Close Assistant">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="ai-quick-prompts">
+      <button class="ai-prompt-pill" data-prompt="What's trending today in AI?">Trending in AI?</button>
+      <button class="ai-prompt-pill" data-prompt="Summarize recent chip foundry news">2nm Chip News</button>
+      <button class="ai-prompt-pill" data-prompt="Explain design systems tokens">Design Tokens</button>
+    </div>
+
+    <div class="ai-chat-body" id="aiChatMessages">
+      <div class="ai-bubble ai-bubble-bot">
+        Hello! I'm your AI Tech Assistant on TrendingTech Daily. I can explain complex architectures, summarize articles, or look up market movements. How can I help you today?
+      </div>
+    </div>
+
+    <form class="ai-chat-input-row" id="aiChatInputForm">
+      <input type="text" class="form-control" placeholder="Ask about tech news, chips, AI..." id="aiChatInputField" autocomplete="off" />
+      <button type="submit" class="btn btn-subscribe btn-sm" id="aiChatSendBtn"><i class="bi bi-send-fill"></i></button>
+    </form>
+  </aside>
+
+  <!-- Footer Placeholder (Loaded dynamically by nav-loader.js) -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
   <script src="/js/config.js" defer></script>
   <script src="/js/auth.js" defer></script>
   <script src="/js/nav-loader.js" defer></script>
-<!-- SINGLE AI-AGENT CONTAINER -->
-<div class="ai-agent-container" id="aiAgentContainer">
-  <button class="ai-agent-button" id="aiAgentButton" aria-label="AI Tech News Assistant">
-    <div class="ai-agent-pulse"></div>
-    <svg class="ai-agent-icon" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-    </svg>
-  </button>
-  <div class="ai-agent-chat" id="aiAgentChat">
-    <div class="ai-chat-header">
-      <h3>
-        <span class="ai-status-indicator"></span>
-        AI Tech News Agent
-      </h3>
-      <button class="ai-chat-close" id="aiChatClose" aria-label="Close chat">
-        <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-        </svg>
-      </button>
-    </div>
-    <div class="ai-chat-content">
-      <div class="ai-chat-messages" id="aiChatMessages">
-        <div class="ai-message bot">
-          <div class="ai-message-bubble">
-            Hello! I'm your AI assistant for TrendingTech Daily. I can help you find articles, explain tech concepts, or discuss the latest tech news. How can I assist you today?
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="ai-chat-input">
-      <div class="ai-quick-actions">
-        <button class="ai-quick-action" data-action="What's trending today?">What's trending?</button>
-        <button class="ai-quick-action" data-action="Explain this article">Explain article</button>
-        <button class="ai-quick-action" data-action="Find AI news">AI news</button>
-      </div>
-      <form class="ai-input-form" id="aiInputForm">
-        <input type="text" class="ai-input-field" id="aiInputField" placeholder="Ask me anything..." autocomplete="off">
-        <button type="submit" class="ai-send-button" id="aiSendButton" disabled>
-          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-          </svg>
-        </button>
-      </form>
-    </div>
-  </div>
-</div>
-  <!-- BANNER POINTER (positioned at bottom) -->
-  <div class="ai-agent-banner-pointer" id="aiAgentBannerPointer">
-    <div class="ai-agent-banner">
-      <button class="dismiss-btn" id="aiAgentBannerDismiss" aria-label="Dismiss banner">
-        <i class="bi bi-x"></i>
-      </button>
-      <div class="banner-content">
-        <div class="banner-title">
-          <h2>AI Tech Assistant</h2>
-        </div>
-        <p class="subtitle">Your personal guide to the latest in tech.</p>
-      </div>
-      <div class="banner-arrow-container">
-        <div class="banner-arrow"></div>
-      </div>
-    </div>
-  </div>
-    <section class="container my-5">
-      <p>Learn more <a href="/about.html">about us</a> or <a href="/contact.html">get in touch</a> for the latest updates.</p>
-    </section>
-    <script src="js/github-trending.js" defer></script>
-    <script src="js/stories.js" defer></script>
-    <script async src="https://s7.addthis.com/js/300/addthis_widget.js#pubid=ra-1234567890"></script>
-
-    <script src="/js/cookie-consent.js" defer></script>
+  <script src="/js/app-base.js" defer></script>
+  <script src="/js/index-main.js" defer></script>
+  <script src="/js/index-features.js" defer></script>
+  <script src="/js/github-trending.js" defer></script>
+  <script src="/js/stories.js" defer></script>
+  <script src="/js/ai-agent.js" defer></script>
 </body>
-  </html>
+</html>

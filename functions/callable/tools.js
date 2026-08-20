@@ -19,7 +19,7 @@ async function generateAIAgentResponse(request) {
       throw new HttpsError("internal", "Core AI SDK failed to load");
     }
 
-    const genAI = new GoogleGenAI({ vertexai: { project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' } });
+    const genAI = new GoogleGenAI({ project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' });
 
     // Tools definition
     const tools = {
@@ -140,7 +140,7 @@ async function getFinnhubStockData({ data }) {
         throw new HttpsError("internal", "Core AI SDK failed to load");
       }
 
-      const genAI = new GoogleGenAI({ vertexai: { project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' } });
+      const genAI = new GoogleGenAI({ project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' });
 
       const analysisPrompt = `Analyze the following stock data and provide a brief summary of market sentiment and key trends:\n\n${JSON.stringify(stockData, null, 2)}`;
       const analysisResult = await genAI.models.generateContent(

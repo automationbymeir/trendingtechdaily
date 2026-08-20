@@ -1,167 +1,418 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he" dir="rtl" data-mode="dark">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>הפרופיל שלי — TrendingTech Daily</title>
+
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
   new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
   j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
   })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
-  <meta charset="UTF-8" />
-  <meta name="google-site-verification" content="AAJy5uWJtM-PEQ6kOZCAiIQuO3CijcFc6DYM7dNYEVY" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>הפרופיל שלי - TrendingTech Daily</title>
-  <link rel="canonical" href="https://trendingtechdaily.com/he/profile" />
+
+  <!-- Firebase Compat SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/he/styles.css" />
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet" />
+
+  <!-- Master Stylesheet (Figma Tech News Hebrew RTL) -->
+  <link rel="stylesheet" href="/he/styles.css">
+
+  <!-- Icons -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
   <style>
-    body { font-family: 'Heebo', sans-serif; background: #f7f8fc; }
-    .profile-avatar {
-      width: 80px; height: 80px; border-radius: 50%;
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2rem; font-weight: 700; color: #fff;
-      overflow: hidden; flex-shrink: 0;
+    /* High Contrast & Figma Obsidian Theme Enforcement (RTL) */
+    body {
+      background-color: var(--bg-page, #090A0E) !important;
+      color: #FFFFFF !important;
     }
-    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-    .profile-card {
-      background: #fff;
-      border-radius: 20px;
-      border: none;
-      box-shadow: 0 2px 20px rgba(0,0,0,0.07);
-      padding: 1.75rem;
+    .card {
+      background-color: var(--bg-surface, #111319) !important;
+      border: 1px solid var(--border-color, #1E2330) !important;
+      color: #FFFFFF !important;
     }
-    .stat-card {
-      background: #f3f4f6;
-      border-radius: 14px;
-      padding: 1rem;
-      text-align: center;
+    .card-body, .card-header {
+      color: #FFFFFF !important;
     }
-    .stat-card .stat-num { font-size: 1.6rem; font-weight: 700; color: #6366f1; }
-    .stat-card .stat-label { font-size: 0.8rem; color: #888; margin-top: 0.1rem; }
-    .section-title { font-size: 1rem; font-weight: 700; color: #1a1a2e; margin-bottom: 1rem; }
-    .btn-primary { border-radius: 10px; font-weight: 600; background: #6366f1; border-color: #6366f1; }
-    .btn-primary:hover { background: #4f52d6; border-color: #4f52d6; }
-    .btn-outline-danger { border-radius: 10px; font-weight: 500; }
-    .form-control { border-radius: 10px; border: 1.5px solid #e5e7eb; }
-    .form-control:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
-    .article-mini {
-      display: flex; gap: 0.75rem; align-items: flex-start;
-      padding: 0.75rem 0; border-bottom: 1px solid #f0f0f0;
+    .text-main, #profile-display-name, h1, h2, h3, h4, h5, h6 {
+      color: #FFFFFF !important;
     }
-    .article-mini:last-child { border-bottom: none; }
-    .article-mini-img {
-      width: 64px; height: 48px; border-radius: 8px;
-      object-fit: cover; flex-shrink: 0; background: #e5e7eb;
+    #profile-bio {
+      color: #E2E8F0 !important;
+      font-size: 0.95rem !important;
     }
-    .article-mini-title {
-      font-size: 0.88rem; font-weight: 600; color: #1a1a2e;
-      line-height: 1.4; text-decoration: none;
+    .text-muted, #profile-email, #profile-joined {
+      color: #94A3B8 !important;
     }
-    .article-mini-title:hover { color: #6366f1; }
-    .article-mini-meta { font-size: 0.75rem; color: #aaa; margin-top: 0.2rem; }
-    #profile-loading { min-height: 40vh; display: flex; align-items: center; justify-content: center; }
+    #saved-articles-list a, #read-history-list a {
+      color: #FFFFFF !important;
+      font-weight: 500 !important;
+      text-decoration: none !important;
+      transition: color 0.15s ease;
+    }
+    #saved-articles-list a:hover, #read-history-list a:hover {
+      color: #E63946 !important;
+    }
+    .form-check-label {
+      color: #F8FAFC !important;
+      font-weight: 600 !important;
+    }
+    .form-switch .form-check-input:checked {
+      background-color: #E63946 !important;
+      border-color: #E63946 !important;
+    }
+    .modal-content {
+      background-color: #111319 !important;
+      color: #FFFFFF !important;
+      border: 1px solid #1E2330 !important;
+    }
+    .modal-header, .modal-footer {
+      border-color: #1E2330 !important;
+    }
+    .form-control {
+      background-color: #1B1E29 !important;
+      border-color: #333D52 !important;
+      color: #FFFFFF !important;
+    }
+    .form-control:focus {
+      background-color: #1B1E29 !important;
+      border-color: #E63946 !important;
+      color: #FFFFFF !important;
+    }
   </style>
-  <link rel="stylesheet" href="/css/cookie-consent.css">
 </head>
 <body>
   <!-- Google Tag Manager (noscript) -->
-  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ"
-  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-  <div id="he-nav-placeholder"></div>
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
-  <!-- Loading state -->
-  <div id="profile-loading" class="text-center py-5">
-    <div class="spinner-border text-primary" style="width:2.5rem; height:2.5rem;"></div>
-    <p class="mt-3 text-muted">טוען פרופיל...</p>
-  </div>
+  <!-- Global Navbar Placeholder -->
+  <div id="navbar-placeholder"></div>
 
-  <!-- Profile content (hidden until loaded) -->
-  <main id="profile-content" class="container py-5 d-none" style="max-width:820px;">
-
-    <!-- User Card -->
-    <div class="profile-card mb-4">
-      <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
-        <div class="profile-avatar" id="profile-avatar-wrap">
-          <span id="profile-initials">?</span>
-        </div>
-        <div class="flex-grow-1">
-          <h2 class="mb-0" style="font-size:1.4rem; font-weight:700; color:#1a1a2e;" id="profile-display-name">—</h2>
-          <div class="text-muted small" id="profile-email">—</div>
-          <div class="text-muted small mt-1" id="profile-member-since"></div>
-        </div>
+  <!-- Main Profile Page Container -->
+  <main class="container my-4 my-md-5">
+    
+    <!-- Profile Page Loading Spinner -->
+    <div id="profile-loading" class="text-center py-5">
+      <div class="spinner-border text-danger" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">טוען...</span>
       </div>
-
-      <!-- Stats row -->
-      <div class="row g-3 mb-4" id="profile-stats-row">
-        <div class="col-4">
-          <div class="stat-card">
-            <div class="stat-num" id="stat-provider">—</div>
-            <div class="stat-label">אמצעי כניסה</div>
-          </div>
-        </div>
-        <div class="col-4">
-          <div class="stat-card">
-            <div class="stat-num text-success" id="stat-verified">—</div>
-            <div class="stat-label">אימות אימייל</div>
-          </div>
-        </div>
-        <div class="col-4">
-          <div class="stat-card">
-            <div class="stat-num text-info" id="stat-joined">—</div>
-            <div class="stat-label">הצטרפות</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Edit display name -->
-      <div>
-        <div class="section-title"><i class="bi bi-pencil-square me-2"></i>עריכת פרטים</div>
-        <div class="d-flex gap-2 flex-wrap">
-          <input type="text" id="edit-display-name" class="form-control" placeholder="שם תצוגה" style="max-width:280px;" />
-          <button id="save-display-name-btn" class="btn btn-primary px-4">שמור שם</button>
-        </div>
-        <div id="edit-name-msg" class="small mt-2" style="min-height:1.2em;"></div>
-      </div>
+      <p class="text-muted mt-3" style="font-family:var(--font-mono); font-size:0.9rem;">מתחבר לפרופיל המשתמש שלך...</p>
     </div>
 
-    <!-- Recent Articles -->
-    <div class="profile-card mb-4">
-      <div class="section-title"><i class="bi bi-newspaper me-2"></i>כתבות אחרונות באתר</div>
-      <div id="recent-articles-list">
-        <div class="text-center py-3 text-muted">
-          <div class="spinner-border spinner-border-sm me-2"></div>טוען כתבות...
+    <!-- Error Alert Container -->
+    <div id="profile-error" class="alert alert-danger my-4 d-none" role="alert"></div>
+
+    <!-- Main Profile Content (Revealed upon auth resolution) -->
+    <div id="profile-content" class="d-none">
+      
+      <!-- Top User Identity Card -->
+      <div class="card mb-4" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-lg); overflow:hidden;">
+        <div style="height:110px; background:linear-gradient(135deg, rgba(230,57,70,0.3) 0%, rgba(15,16,23,0.9) 100%); border-bottom:1px solid var(--border-color); position:relative;">
+          <span class="badge badge-ai" style="position:absolute; top:16px; inset-inline-end:16px;" id="profile-role-badge">חבר קהילה</span>
+        </div>
+        <div class="card-body p-4 pt-0">
+          <div class="d-flex flex-column flex-md-row align-items-center align-items-md-end justify-content-between gap-3" style="margin-top:-50px;">
+            
+            <!-- User Avatar with Edit Overlay -->
+            <div class="d-flex align-items-center gap-3 flex-column flex-md-row text-center text-md-end">
+              <div class="position-relative" style="width:96px; height:96px;">
+                <img id="profile-pic" src="/img/default-avatar.png" alt="Avatar" style="width:96px; height:96px; border-radius:50%; object-fit:cover; border:4px solid var(--bg-surface); background:#000; box-shadow:var(--shadow-md);">
+                <button type="button" id="change-profile-pic-btn" class="btn btn-sm btn-dark position-absolute bottom-0 start-0 rounded-circle p-1" title="החלף תמונה" data-bs-toggle="modal" data-bs-target="#profilePicModal" style="width:30px; height:30px; border:1px solid var(--border-color);">
+                  <i class="bi bi-camera-fill" style="font-size:0.75rem;"></i>
+                </button>
+              </div>
+
+              <div>
+                <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-2">
+                  <h1 id="profile-display-name" style="font-family:var(--font-display); font-size:1.75rem; font-weight:800; margin-bottom:0; color:var(--text-main);">
+                    משתמש
+                  </h1>
+                  <button type="button" class="btn-icon btn-sm" title="ערוך שם" data-bs-toggle="modal" data-bs-target="#displayNameModal">
+                    <i class="bi bi-pencil-square" style="color:var(--text-muted);"></i>
+                  </button>
+                </div>
+                <div class="d-flex align-items-center justify-content-center justify-content-md-start gap-3 mt-1 text-muted" style="font-family:var(--font-mono); font-size:0.8125rem;">
+                  <span id="profile-email">email@example.com</span>
+                  <span>·</span>
+                  <span id="profile-joined">הצטרף: אוגוסט 2026</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex align-items-center gap-2">
+              <a href="/admin/dashboard.html" class="btn btn-outline-danger btn-sm d-none" id="profile-admin-btn">
+                <i class="bi bi-shield-lock me-1"></i> פאנל ניהול
+              </a>
+              <button id="profile-logout-btn" class="btn btn-secondary btn-sm">
+                <i class="bi bi-box-arrow-right me-1"></i> התנתקות
+              </button>
+            </div>
+          </div>
+
+          <!-- Bio Section -->
+          <div class="mt-4 pt-3 border-top" style="border-color:var(--border-color) !important;">
+            <div class="d-flex align-items-start justify-content-between">
+              <div>
+                <span class="text-muted small fw-bold" style="font-family:var(--font-mono); font-size:0.75rem; text-transform:uppercase;">אודות ותחומי עניין</span>
+                <p id="profile-bio" class="mb-0 mt-1" style="font-size:0.95rem; color:var(--text-secondary); line-height:1.6;">
+                  טרם נוסף תיאור אישי. ספרו לקהילה על תחומי העניין והטכנולוגיות שאתם עובדים איתן!
+                </p>
+              </div>
+              <button type="button" class="btn-icon btn-sm" title="ערוך תיאור" data-bs-toggle="modal" data-bs-target="#bioModal">
+                <i class="bi bi-pencil-square" style="color:var(--text-muted);"></i>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="mt-3 text-center">
-        <a href="/he/" class="btn btn-outline-secondary btn-sm rounded-pill px-4">לכל הכתבות</a>
-      </div>
-    </div>
 
-    <!-- Danger zone -->
-    <div class="profile-card">
-      <div class="section-title"><i class="bi bi-box-arrow-right me-2"></i>יציאה מהחשבון</div>
-      <p class="text-muted small mb-3">לחצו כדי להתנתק מהאתר במכשיר זה.</p>
-      <button id="profile-logout-btn" class="btn btn-outline-danger px-4">
-        <i class="bi bi-box-arrow-right me-2"></i>התנתקות
-      </button>
+      <!-- Bento Grid Rows: Activity & Settings -->
+      <div class="row g-4 mb-4">
+        
+        <!-- Right 60% in RTL: Saved Bookmarks & History -->
+        <div class="col-12 col-lg-7">
+          
+          <!-- Saved Articles Section -->
+          <div class="card mb-4" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-md);">
+            <div class="card-header d-flex align-items-center justify-content-between py-3" style="background:transparent; border-bottom:1px solid var(--border-color);">
+              <h2 style="font-family:var(--font-display); font-size:1.25rem; font-weight:800; margin:0; color:var(--text-main);">
+                <i class="bi bi-bookmark-fill text-danger me-2"></i>כתבות שמורות וסימניות
+              </h2>
+            </div>
+            <div class="card-body p-3" id="saved-articles-container">
+              <div id="saved-articles-list">
+                <p class="text-muted small fst-italic mb-0">אין כתבות שמורות עדיין. לחצו על סמל הסימניה בכל כתבה כדי לשמור אותה כאן.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reading History Section -->
+          <div class="card mb-4" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-md);">
+            <div class="card-header d-flex align-items-center justify-content-between py-3" style="background:transparent; border-bottom:1px solid var(--border-color);">
+              <h2 style="font-family:var(--font-display); font-size:1.25rem; font-weight:800; margin:0; color:var(--text-main);">
+                <i class="bi bi-clock-history text-danger me-2"></i>היסטוריית קריאה
+              </h2>
+            </div>
+            <div class="card-body p-3" id="read-history-container">
+              <div id="read-history-list">
+                <p class="text-muted small fst-italic mb-0">הכתבות האחרונות שקראתם יופיעו כאן.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Comments Left -->
+          <div class="card" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-md);">
+            <div class="card-header d-flex align-items-center justify-content-between py-3" style="background:transparent; border-bottom:1px solid var(--border-color);">
+              <h2 style="font-family:var(--font-display); font-size:1.25rem; font-weight:800; margin:0; color:var(--text-main);">
+                <i class="bi bi-chat-left-text-fill text-danger me-2"></i>התגובות שלי באתר
+              </h2>
+            </div>
+            <div class="card-body p-3" id="my-comments-container">
+              <div id="my-comments-list">
+                <p class="text-muted small fst-italic mb-0">טרם השתתפתם בדיונים על כתבות באתר.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Left 40% in RTL: Watchlist & Newsletter Subscriptions -->
+        <div class="col-12 col-lg-5">
+          
+          <!-- Stock Market Watchlist -->
+          <div class="card mb-4" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-md);">
+            <div class="card-header d-flex align-items-center justify-content-between py-3" style="background:transparent; border-bottom:1px solid var(--border-color);">
+              <h2 style="font-family:var(--font-display); font-size:1.25rem; font-weight:800; margin:0; color:var(--text-main);">
+                <i class="bi bi-graph-up-arrow text-danger me-2"></i>מעקב מניות טכנולוגיה
+              </h2>
+              <a href="/he/shuk-hon.html" class="btn btn-outline-danger btn-sm" style="font-size:0.75rem;">שוק ההון ←</a>
+            </div>
+            <div class="card-body p-3">
+              <div id="stock-watchlist-content">
+                <div class="d-flex align-items-center justify-content-between py-2 border-bottom" style="border-color:var(--border-color) !important;">
+                  <div>
+                    <span class="fw-bold text-main">NVDA</span>
+                    <span class="text-muted small d-block">NVIDIA Corp</span>
+                  </div>
+                  <div class="text-end">
+                    <span class="fw-bold text-success">$138.25</span>
+                    <span class="badge bg-success-subtle text-success small d-block">+3.12%</span>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-between py-2 border-bottom" style="border-color:var(--border-color) !important;">
+                  <div>
+                    <span class="fw-bold text-main">AAPL</span>
+                    <span class="text-muted small d-block">Apple Inc</span>
+                  </div>
+                  <div class="text-end">
+                    <span class="fw-bold text-success">$234.80</span>
+                    <span class="badge bg-success-subtle text-success small d-block">+1.45%</span>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-between py-2">
+                  <div>
+                    <span class="fw-bold text-main">BTC</span>
+                    <span class="text-muted small d-block">Bitcoin</span>
+                  </div>
+                  <div class="text-end">
+                    <span class="fw-bold text-success">$96,400</span>
+                    <span class="badge bg-success-subtle text-success small d-block">+2.80%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Newsletter Intelligence Subscriptions -->
+          <div class="card" style="background:var(--bg-surface); border:1px solid var(--border-color); border-radius:var(--radius-md);">
+            <div class="card-header py-3" style="background:transparent; border-bottom:1px solid var(--border-color);">
+              <h2 style="font-family:var(--font-display); font-size:1.25rem; font-weight:800; margin:0; color:var(--text-main);">
+                <i class="bi bi-envelope-check-fill text-danger me-2"></i>הניוזלטר השבועי
+              </h2>
+            </div>
+            <div class="card-body p-3">
+              <p class="text-muted small mb-3">
+                ניתוחי עומק, סוכני AI אוטונומיים ומגמות שוק ההון בטכנולוגיה ישירות לתיבת המייל בימי שישי.
+              </p>
+              
+              <div class="form-check form-switch mb-3 p-3 rounded" style="background:var(--bg-surface-elevated); border:1px solid var(--border-color);">
+                <input class="form-check-input me-0 ms-3" type="checkbox" id="newsletter-he-toggle" checked>
+                <label class="form-check-label fw-bold text-main" for="newsletter-he-toggle">
+                  ניוזלטר שבועי בעברית
+                  <span class="text-muted fw-normal d-block small">סיכומי בינה מלאכותית, שבבים ופיתוח תוכנה.</span>
+                </label>
+              </div>
+
+              <div class="form-check form-switch mb-3 p-3 rounded" style="background:var(--bg-surface-elevated); border:1px solid var(--border-color);">
+                <input class="form-check-input me-0 ms-3" type="checkbox" id="newsletter-en-toggle">
+                <label class="form-check-label fw-bold text-main" for="newsletter-en-toggle">
+                  English Weekly Intelligence
+                  <span class="text-muted fw-normal d-block small">Top foundation models, chips, and dev tools.</span>
+                </label>
+              </div>
+
+              <button id="save-newsletter-btn" class="btn btn-subscribe btn-sm w-100">
+                שמור העדפות דיוור
+              </button>
+              <div id="newsletter-feedback" class="small text-center mt-2"></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   </main>
 
-  <footer class="py-3 mt-4" style="background:#1a1a2e; color:#888; text-align:center; font-size:0.82rem;">
-    <span>© 2025 TrendingTech Daily</span>
-    <span class="mx-2">·</span>
-    <a href="/he/" class="text-muted text-decoration-none">חזרה לראשי</a>
-  </footer>
+  <!-- ========================================================================
+       MODALS
+       ======================================================================== -->
+  
+  <!-- 1. Change Profile Picture Modal -->
+  <div class="modal fade" id="profilePicModal" tabindex="-1" aria-labelledby="profilePicModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="background:var(--bg-surface); border:1px solid var(--border-color); color:var(--text-main);">
+        <div class="modal-header" style="border-bottom:1px solid var(--border-color);">
+          <h5 class="modal-title fw-bold" id="profilePicModalLabel">החלפת תמונת פרופיל</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="profile-pic-form">
+            <div class="mb-3">
+              <label for="profile-pic-upload" class="form-label small text-muted">העלאת קובץ תמונה (JPG/PNG, עד 5MB)</label>
+              <input class="form-control" type="file" id="profile-pic-upload" accept="image/jpeg, image/png, image/webp">
+            </div>
+            <div class="mb-3">
+              <label for="profile-pic-url-input" class="form-label small text-muted">או הדבקת קישור ישיר לתמונה</label>
+              <input class="form-control" type="url" id="profile-pic-url-input" placeholder="https://example.com/avatar.jpg">
+            </div>
+            <div id="profile-pic-feedback" class="small"></div>
+          </form>
+        </div>
+        <div class="modal-footer" style="border-top:1px solid var(--border-color);">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">ביטול</button>
+          <button type="button" id="save-profile-pic-btn" class="btn btn-subscribe btn-sm">שמור תמונה</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <!-- 2. Edit Display Name Modal -->
+  <div class="modal fade" id="displayNameModal" tabindex="-1" aria-labelledby="displayNameModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="background:var(--bg-surface); border:1px solid var(--border-color); color:var(--text-main);">
+        <div class="modal-header" style="border-bottom:1px solid var(--border-color);">
+          <h5 class="modal-title fw-bold" id="displayNameModalLabel">עריכת שם תצוגה</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="display-name-form">
+            <div class="mb-3">
+              <label for="edit-display-name" class="form-label small text-muted">שם תצוגה</label>
+              <input type="text" class="form-control" id="edit-display-name" required maxlength="50">
+            </div>
+            <div id="display-name-feedback" class="small"></div>
+          </form>
+        </div>
+        <div class="modal-footer" style="border-top:1px solid var(--border-color);">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">ביטול</button>
+          <button type="button" id="save-display-name-btn" class="btn btn-subscribe btn-sm">שמור שינויים</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Edit Bio Modal -->
+  <div class="modal fade" id="bioModal" tabindex="-1" aria-labelledby="bioModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="background:var(--bg-surface); border:1px solid var(--border-color); color:var(--text-main);">
+        <div class="modal-header" style="border-bottom:1px solid var(--border-color);">
+          <h5 class="modal-title fw-bold" id="bioModalLabel">עריכת תיאור אישי</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="bio-form">
+            <div class="mb-3">
+              <label for="edit-bio" class="form-label small text-muted">על עצמי (עד 300 תווים)</label>
+              <textarea class="form-control" id="edit-bio" rows="4" maxlength="300" placeholder="מפתח תוכנה, חוקר AI, חובב טכנולוגיה..."></textarea>
+            </div>
+            <div id="bio-feedback" class="small"></div>
+          </form>
+        </div>
+        <div class="modal-footer" style="border-top:1px solid var(--border-color);">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">ביטול</button>
+          <button type="button" id="save-bio-btn" class="btn btn-subscribe btn-sm">שמור תיאור</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="/he/js/he-app.js"></script>
-  <script src="/he/js/he-profile.js"></script>
-  <script src="/he/js/he-cookie-consent.js" defer></script>
+  <script src="/js/config.js?v=20260819_5"></script>
+  <script src="/js/auth.js?v=20260819_5"></script>
+  <script src="/js/nav-loader.js?v=20260819_5"></script>
+  <script src="/js/app-base.js?v=20260819_5"></script>
+  <script src="/js/profile.js?v=20260819_5"></script>
+  <script src="/js/cookie-consent.js?v=20260819_5" defer></script>
 </body>
 </html>

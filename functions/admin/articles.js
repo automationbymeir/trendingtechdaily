@@ -74,7 +74,7 @@ exports.createArticle = async (articleData) => {
       featuredImage: getSafe(() => articleData.featuredImage, ""),
       imageAltText: getSafe(() => articleData.imageAltText, ""),
       content: getSafe(() => articleData.content, ""),
-      published: getSafe(() => articleData.published, false),
+      published: getSafe(() => articleData.published, true),
       readingTimeMinutes: (typeof articleData.readingTimeMinutes === "number" && articleData.readingTimeMinutes >= 0)
         ? articleData.readingTimeMinutes
         : 0,

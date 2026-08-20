@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Best Tech Podcasts — TrendingTech Daily</title>
-  <meta name="description" content="The best tech podcasts — handpicked recommendations for developers, founders, and engineers. AI, security, business, and developer audio feeds.">
+  <title>Best Tech Podcasts Directory — TrendingTech Daily</title>
+  <meta name="description" content="Explore 100+ curated tech podcasts covering Frontier AI, Software Architecture, Founder Stories, Venture Capital, Semiconductors, and Cybersecurity.">
   <link rel="canonical" href="https://trendingtechdaily.com/podcasts" />
 
   <!-- Google Tag Manager -->
@@ -13,6 +13,7 @@
   j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
   })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
+  <!-- End Google Tag Manager -->
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,19 +40,26 @@
 <body>
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
 
   <!-- Navbar Placeholder -->
   <div id="navbar-placeholder"></div>
 
-  <!-- Hero Banner -->
+  <!-- Hero Banner with Live Search & Category Filters -->
   <section class="container my-4 my-md-5">
     <div class="podcast-hero-banner">
       <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
-        <span class="badge badge-ai">AUDIO STUDIO & PODCASTS</span>
+        <span class="badge badge-ai"><i class="bi bi-mic-fill me-1"></i> AUDIO STUDIO & PODCASTS</span>
       </div>
       <h1>Top Curated Tech Podcasts</h1>
-      <p>Handpicked audio broadcasts, interviews with foundational researchers, deep architectural deep dives, and founder post-mortems.</p>
+      <p>100+ handpicked audio broadcasts, foundational research interviews, distributed systems deep dives, and founder post-mortems.</p>
       
+      <!-- Search Input Bar -->
+      <div class="podcast-search-bar">
+        <i class="bi bi-search podcast-search-icon"></i>
+        <input type="search" id="podcast-search-input" placeholder="Search 100+ podcasts by show name, host, or topic..." aria-label="Search tech podcasts" />
+      </div>
+
       <!-- Filter Tabs -->
       <div class="d-flex flex-wrap gap-2 justify-content-center mt-4">
         <button class="btn btn-subscribe btn-sm filter-btn active" data-filter="all">All Channels</button>
@@ -59,88 +67,25 @@
         <button class="btn btn-outline btn-sm filter-btn" data-filter="developer">Engineering</button>
         <button class="btn btn-outline btn-sm filter-btn" data-filter="business">Founders &amp; VC</button>
         <button class="btn btn-outline btn-sm filter-btn" data-filter="security">Cybersecurity</button>
+        <button class="btn btn-outline btn-sm filter-btn" data-filter="hardware">Hardware &amp; Silicon</button>
+        <button class="btn btn-outline btn-sm filter-btn" data-filter="design">Design Systems</button>
+      </div>
+
+      <div class="mt-3">
+        <span class="badge" id="podcast-count-badge" style="background:rgba(255,255,255,0.06); color:var(--text-muted); font-family:var(--font-mono); font-size:0.75rem;">
+          Loading 100+ tech podcasts...
+        </span>
       </div>
     </div>
   </section>
 
-  <!-- Main Podcasts Grid -->
+  <!-- Main Podcasts Grid (Dynamic from podcasts-data-en.js) -->
   <main class="container mb-5">
     <div class="podcast-grid" id="podcasts-container">
-
-      <!-- 1. Lex Fridman -->
-      <div class="podcast-card-item" data-category="ai-tech">
-        <div class="podcast-card-header" style="background: linear-gradient(135deg, #1E1B4B, #4338CA);">
-          <span>L</span>
-        </div>
-        <div class="podcast-card-body">
-          <div>
-            <span class="badge badge-ai mb-2">AI & Research</span>
-            <h3 class="podcast-card-title">Lex Fridman Podcast</h3>
-            <div class="podcast-card-host">Host: Lex Fridman</div>
-            <p class="podcast-card-desc">Conversations about AI, science, technology, history, philosophy, and the general nature of intelligence.</p>
-          </div>
-          <div class="podcast-card-cta">
-            <a href="https://open.spotify.com/show/2MAi0BvDc6GTFvKkRrrspL" target="_blank" rel="noopener" class="btn btn-secondary btn-sm"><i class="bi bi-spotify me-1"></i> Spotify</a>
-            <a href="https://www.youtube.com/@lexfridman" target="_blank" rel="noopener" class="btn btn-ghost btn-sm"><i class="bi bi-youtube me-1"></i> YouTube</a>
-          </div>
-        </div>
+      <div class="col-12 text-center py-5">
+        <div class="spinner-border text-danger" role="status"></div>
+        <p class="text-muted mt-2">Loading curated podcasts directory...</p>
       </div>
-
-      <!-- 2. Dwarkesh Patel -->
-      <div class="podcast-card-item" data-category="ai-tech">
-        <div class="podcast-card-header" style="background: linear-gradient(135deg, #0F766E, #0D9488);">
-          <span>D</span>
-        </div>
-        <div class="podcast-card-body">
-          <div>
-            <span class="badge badge-chips mb-2">AI Deep Dives</span>
-            <h3 class="podcast-card-title">Dwarkesh Podcast</h3>
-            <div class="podcast-card-host">Host: Dwarkesh Patel</div>
-            <p class="podcast-card-desc">In-depth technical interviews with leading AI lab leaders, chip architects, historians, and mathematicians.</p>
-          </div>
-          <div class="podcast-card-cta">
-            <a href="https://open.spotify.com/show/3d0b2fV9cT1tN5wZ1mN9jC" target="_blank" rel="noopener" class="btn btn-secondary btn-sm"><i class="bi bi-spotify me-1"></i> Spotify</a>
-            <a href="https://www.youtube.com/@DwarkeshPatel" target="_blank" rel="noopener" class="btn btn-ghost btn-sm"><i class="bi bi-youtube me-1"></i> YouTube</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- 3. Latent Space -->
-      <div class="podcast-card-item" data-category="developer">
-        <div class="podcast-card-header" style="background: linear-gradient(135deg, #7C2D12, #C2410C);">
-          <span>LS</span>
-        </div>
-        <div class="podcast-card-body">
-          <div>
-            <span class="badge badge-dev mb-2">AI Engineering</span>
-            <h3 class="podcast-card-title">Latent Space</h3>
-            <div class="podcast-card-host">Hosts: Swyx &amp; Alessio</div>
-            <p class="podcast-card-desc">The AI engineer podcast covering foundation models, autonomous agents, evals, and inference stacks.</p>
-          </div>
-          <div class="podcast-card-cta">
-            <a href="https://open.spotify.com/show/1KssRzG4Dk8iG2cRjQ1wZ" target="_blank" rel="noopener" class="btn btn-secondary btn-sm"><i class="bi bi-spotify me-1"></i> Spotify</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- 4. Darknet Diaries -->
-      <div class="podcast-card-item" data-category="security">
-        <div class="podcast-card-header" style="background: linear-gradient(135deg, #18181B, #27272A);">
-          <span>DD</span>
-        </div>
-        <div class="podcast-card-body">
-          <div>
-            <span class="badge badge-security mb-2">Cybersecurity</span>
-            <h3 class="podcast-card-title">Darknet Diaries</h3>
-            <div class="podcast-card-host">Host: Jack Rhysider</div>
-            <p class="podcast-card-desc">True stories about hackers, breaches, shadow operations, and the dark underbelly of the internet.</p>
-          </div>
-          <div class="podcast-card-cta">
-            <a href="https://open.spotify.com/show/4XPl3uEEL9hvqMkoZrzbx5" target="_blank" rel="noopener" class="btn btn-secondary btn-sm"><i class="bi bi-spotify me-1"></i> Spotify</a>
-          </div>
-        </div>
-      </div>
-
     </div>
   </main>
 
@@ -156,8 +101,7 @@
       </div>
       <div class="dock-controls">
         <div class="dock-progress"><div class="dock-progress-bar" style="width:35%;"></div></div>
-        <span style="font-size:0.75rem; font-family:var(--font-mono); color:var(--text-muted);">48:20 / 2:18:00</span>
-        <a href="https://open.spotify.com/episode/5dKfZ1i9u9H9Gk5W0f1cQY" target="_blank" rel="noopener" class="dock-play-btn" aria-label="Play on Spotify"><i class="bi bi-play-fill"></i></a>
+        <a href="https://open.spotify.com/episode/5dKfZ1i9u9H9Gk5W0f1cQY" target="_blank" rel="noopener noreferrer" class="dock-play-btn" aria-label="Play on Spotify"><i class="bi bi-play-fill"></i></a>
       </div>
     </div>
   </div>
@@ -166,35 +110,11 @@
   <div id="footer-placeholder"></div>
 
   <!-- Scripts -->
-  <script src="/js/config.js"></script>
-  <script src="/js/auth.js"></script>
-  <script src="/js/nav-loader.js"></script>
-  <script src="/js/app-base.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const filterBtns = document.querySelectorAll('.filter-btn');
-      const items = document.querySelectorAll('.podcast-card-item');
-
-      filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          filterBtns.forEach(b => {
-            b.classList.remove('active', 'btn-subscribe');
-            b.classList.add('btn-outline');
-          });
-          btn.classList.add('active', 'btn-subscribe');
-          btn.classList.remove('btn-outline');
-
-          const filter = btn.dataset.filter;
-          items.forEach(item => {
-            if (filter === 'all' || item.dataset.category === filter) {
-              item.style.display = 'flex';
-            } else {
-              item.style.display = 'none';
-            }
-          });
-        });
-      });
-    });
-  </script>
+  <script src="/js/config.js?v=20260820_podcasts"></script>
+  <script src="/js/auth.js?v=20260820_podcasts"></script>
+  <script src="/js/nav-loader.js?v=20260820_podcasts"></script>
+  <script src="/js/app-base.js?v=20260820_podcasts"></script>
+  <script src="/js/podcasts-data-en.js?v=20260820_podcasts"></script>
+  <script src="/js/podcasts-app.js?v=20260820_podcasts"></script>
 </body>
 </html>

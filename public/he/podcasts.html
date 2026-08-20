@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>פודקאסטים מובילים בטכנולוגיה — TrendingTech Daily</title>
-  <meta name="description" content="הפודקאסטים המובילים בטכנולוגיה, בינה מלאכותית, פיתוח תוכנה ואבטחת מידע בעברית ובאנגלית.">
+  <title>אינדקס הפודקאסטים המובילים בטכנולוגיה — TrendingTech Daily</title>
+  <meta name="description" content="הפודקאסטים המובילים בטכנולוגיה, בינה מלאכותית, פיתוח תוכנה, יזמות ואבטחת מידע בישראל ובעולם.">
   <link rel="canonical" href="https://trendingtechdaily.com/he/podcasts" />
 
   <!-- Google Tag Manager -->
@@ -13,6 +13,7 @@
   j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
   })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
+  <!-- End Google Tag Manager -->
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -39,6 +40,7 @@
 <body>
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
 
   <!-- Navbar Placeholder -->
   <div id="navbar-placeholder"></div>
@@ -47,11 +49,17 @@
   <section class="container my-4 my-md-5">
     <div class="podcast-hero-banner">
       <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
-        <span class="badge badge-ai">סטודיו ופודקאסטים</span>
+        <span class="badge badge-ai"><i class="bi bi-mic-fill ms-1"></i> סטודיו ופודקאסטים</span>
       </div>
-      <h1>פודקאסטים נבחרים בטכנולוגיה</h1>
-      <p>ראיונות עומק עם חוקרי בינה מלאכותית, מהנדסי מערכות, יזמי שבבים ומובילי דעה מעמק הסיליקון ומישראל.</p>
+      <h1>פודקאסטים נבחרים בטכנולוגיה ובהייטק</h1>
+      <p>30+ פודקאסטים מובילים בישראל: ראיונות עומק עם חוקרי בינה מלאכותית, מהנדסי מערכות, יזמי שבבים ומובילי דעה מעמק הסיליקון ומישראל.</p>
       
+      <!-- Search Input Bar -->
+      <div class="podcast-search-bar">
+        <i class="bi bi-search podcast-search-icon"></i>
+        <input type="search" id="he-podcast-search-input" placeholder="חיפוש פודקאסטים לפי שם, מגיש או נושא..." aria-label="חיפוש פודקאסטים" />
+      </div>
+
       <!-- Filter Tabs -->
       <div class="d-flex flex-wrap gap-2 justify-content-center mt-4">
         <button class="btn btn-subscribe btn-sm filter-btn active" data-filter="all">כל הערוצים</button>
@@ -59,88 +67,24 @@
         <button class="btn btn-outline btn-sm filter-btn" data-filter="developer">הנדסה ופיתוח</button>
         <button class="btn btn-outline btn-sm filter-btn" data-filter="business">יזמות ועסקים</button>
         <button class="btn btn-outline btn-sm filter-btn" data-filter="security">אבטחת מידע</button>
+        <button class="btn btn-outline btn-sm filter-btn" data-filter="design">מוצר ודיזיין</button>
+      </div>
+
+      <div class="mt-3">
+        <span class="badge" id="he-podcast-count-badge" style="background:rgba(255,255,255,0.06); color:var(--text-muted); font-family:var(--font-mono); font-size:0.75rem;">
+          טוען פודקאסטים נבחרים...
+        </span>
       </div>
     </div>
   </section>
 
-  <!-- Main Podcasts Grid (Hebrew) -->
+  <!-- Main Podcasts Grid (Hebrew Dynamic) -->
   <main class="container mb-5">
     <div class="podcast-grid" id="podcasts-container">
-
-      <!-- 1. Lex Fridman -->
-      <div class="podcast-card-item" data-category="ai-tech">
-        <div class="podcast-card-header" style="background: linear-gradient(135deg, #1E1B4B, #4338CA);">
-          <span>L</span>
-        </div>
-        <div class="podcast-card-body">
-          <div>
-            <span class="badge badge-ai mb-2">מחקר ו-AI</span>
-            <h3 class="podcast-card-title">Lex Fridman Podcast</h3>
-            <div class="podcast-card-host">מגיש: לקס פרידמן</div>
-            <p class="podcast-card-desc">שיחות מעמיקות על בינה מלאכותית, מדע, טכנולוגיה, היסטוריה ופילוסופיה של התודעה.</p>
-          </div>
-          <div class="podcast-card-cta">
-            <a href="https://open.spotify.com/show/2MAi0BvDc6GTFvKkRrrspL" target="_blank" rel="noopener" class="btn btn-secondary btn-sm"><i class="bi bi-spotify ms-1"></i> Spotify</a>
-            <a href="https://www.youtube.com/@lexfridman" target="_blank" rel="noopener" class="btn btn-ghost btn-sm"><i class="bi bi-youtube ms-1"></i> YouTube</a>
-          </div>
-        </div>
+      <div class="col-12 text-center py-5">
+        <div class="spinner-border text-danger" role="status"></div>
+        <p class="text-muted mt-2">טוען אינדקס פודקאסטים ישראלי...</p>
       </div>
-
-      <!-- 2. Dwarkesh Patel -->
-      <div class="podcast-card-item" data-category="ai-tech">
-        <div class="podcast-card-header" style="background: linear-gradient(135deg, #0F766E, #0D9488);">
-          <span>D</span>
-        </div>
-        <div class="podcast-card-body">
-          <div>
-            <span class="badge badge-chips mb-2">ניתוחי עומק ב-AI</span>
-            <h3 class="podcast-card-title">Dwarkesh Podcast</h3>
-            <div class="podcast-card-host">מגיש: דוורקש פאטל</div>
-            <p class="podcast-card-desc">ראיונות טכניים מקיפים עם ראשי מעבדות בינה מלאכותית, ארכיטקטי שבבים והיסטוריונים.</p>
-          </div>
-          <div class="podcast-card-cta">
-            <a href="https://open.spotify.com/show/3d0b2fV9cT1tN5wZ1mN9jC" target="_blank" rel="noopener" class="btn btn-secondary btn-sm"><i class="bi bi-spotify ms-1"></i> Spotify</a>
-            <a href="https://www.youtube.com/@DwarkeshPatel" target="_blank" rel="noopener" class="btn btn-ghost btn-sm"><i class="bi bi-youtube ms-1"></i> YouTube</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- 3. Latent Space -->
-      <div class="podcast-card-item" data-category="developer">
-        <div class="podcast-card-header" style="background: linear-gradient(135deg, #7C2D12, #C2410C);">
-          <span>LS</span>
-        </div>
-        <div class="podcast-card-body">
-          <div>
-            <span class="badge badge-dev mb-2">הנדסת AI</span>
-            <h3 class="podcast-card-title">Latent Space</h3>
-            <div class="podcast-card-host">מגישים: Swyx ו-Alessio</div>
-            <p class="podcast-card-desc">פודקאסט מהנדסי הבינה המלאכותית על מודלי שפה, סוכנים אוטונומיים והערכת ביצועים.</p>
-          </div>
-          <div class="podcast-card-cta">
-            <a href="https://open.spotify.com/show/1KssRzG4Dk8iG2cRjQ1wZ" target="_blank" rel="noopener" class="btn btn-secondary btn-sm"><i class="bi bi-spotify ms-1"></i> Spotify</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- 4. Darknet Diaries -->
-      <div class="podcast-card-item" data-category="security">
-        <div class="podcast-card-header" style="background: linear-gradient(135deg, #18181B, #27272A);">
-          <span>DD</span>
-        </div>
-        <div class="podcast-card-body">
-          <div>
-            <span class="badge badge-security mb-2">סייבר ואבטחה</span>
-            <h3 class="podcast-card-title">Darknet Diaries</h3>
-            <div class="podcast-card-host">מגיש: ג'ק רייזידר</div>
-            <p class="podcast-card-desc">סיפורים אמיתיים על האקרים, פריצות ענק, מבצעי צללים והצד האפל של האינטרנט.</p>
-          </div>
-          <div class="podcast-card-cta">
-            <a href="https://open.spotify.com/show/4XPl3uEEL9hvqMkoZrzbx5" target="_blank" rel="noopener" class="btn btn-secondary btn-sm"><i class="bi bi-spotify ms-1"></i> Spotify</a>
-          </div>
-        </div>
-      </div>
-
     </div>
   </main>
 
@@ -156,8 +100,7 @@
       </div>
       <div class="dock-controls">
         <div class="dock-progress"><div class="dock-progress-bar" style="width:40%;"></div></div>
-        <span style="font-size:0.75rem; font-family:var(--font-mono); color:var(--text-muted);">19:40 / 48:00</span>
-        <a href="https://open.spotify.com/show/0zQn0c0lO1EwA9qV5Q4y0K" target="_blank" rel="noopener" class="dock-play-btn" aria-label="הפעל בספוטיפיי"><i class="bi bi-play-fill"></i></a>
+        <a href="https://open.spotify.com/show/0zQn0c0lO1EwA9qV5Q4y0K" target="_blank" rel="noopener noreferrer" class="dock-play-btn" aria-label="הפעל בספוטיפיי"><i class="bi bi-play-fill"></i></a>
       </div>
     </div>
   </div>
@@ -166,35 +109,11 @@
   <div id="footer-placeholder"></div>
 
   <!-- Scripts -->
-  <script src="/js/config.js"></script>
-  <script src="/js/auth.js"></script>
-  <script src="/js/nav-loader.js?v=20260820_he5"></script>
-  <script src="/js/app-base.js?v=20260820_he5"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const filterBtns = document.querySelectorAll('.filter-btn');
-      const items = document.querySelectorAll('.podcast-card-item');
-
-      filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          filterBtns.forEach(b => {
-            b.classList.remove('active', 'btn-subscribe');
-            b.classList.add('btn-outline');
-          });
-          btn.classList.add('active', 'btn-subscribe');
-          btn.classList.remove('btn-outline');
-
-          const filter = btn.dataset.filter;
-          items.forEach(item => {
-            if (filter === 'all' || item.dataset.category === filter) {
-              item.style.display = 'flex';
-            } else {
-              item.style.display = 'none';
-            }
-          });
-        });
-      });
-    });
-  </script>
+  <script src="/js/config.js?v=20260820_podcasts"></script>
+  <script src="/js/auth.js?v=20260820_podcasts"></script>
+  <script src="/js/nav-loader.js?v=20260820_podcasts"></script>
+  <script src="/js/app-base.js?v=20260820_podcasts"></script>
+  <script src="/he/js/he-podcasts-data.js?v=20260820_podcasts"></script>
+  <script src="/he/js/he-podcasts-app.js?v=20260820_podcasts"></script>
 </body>
 </html>

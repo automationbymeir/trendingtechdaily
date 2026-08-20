@@ -24,7 +24,7 @@ const REDDIT_CLIENT_ID = process.env.REDDIT_CLIENT_ID || '1_Lgrxp4O_7TuQDdv-pw1w
 const REDDIT_CLIENT_SECRET = process.env.REDDIT_CLIENT_SECRET || 'rqoHs5AF7aPsoT-6rvSU7CEHZ1Kj4A';
 const REDDIT_USERNAME = process.env.REDDIT_USERNAME || 'Royal-Counter-4155';
 const REDDIT_PASSWORD = process.env.REDDIT_PASSWORD || '';
-const REDDIT_REFRESH_TOKEN = process.env.REDDIT_REFRESH_TOKEN || '';
+const REDDIT_REFRESH_TOKEN = process.env.REDDIT_REFRESH_TOKEN || '90174356784202-7o6SBkMylXSK7x5XKWF-sh1Zj2W-XA';
 
 const DEFAULT_SUBREDDIT = process.env.REDDIT_SUBREDDIT || 'TrendingTechDaily';
 const SITE_BASE_URL = 'https://trendingtechdaily.com';

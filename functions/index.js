@@ -1885,4 +1885,10 @@ exports.onEnglishArticlePublishedToTelegram = telegramPublisher.onEnglishArticle
 exports.testTelegramPost = telegramPublisher.testTelegramPost;
 exports.triggerTelegramPostHttp = telegramPublisher.triggerTelegramPostHttp;
 
+// === Real-Time Reddit Subreddit Publisher ===
+const redditPublisher = require("./redditPublisher");
+exports.onEnglishArticlePublishedToReddit = redditPublisher.onEnglishArticlePublishedToReddit;
+exports.testRedditPost = redditPublisher.testRedditPost;
+exports.triggerRedditPostHttp = redditPublisher.triggerRedditPostHttp;
+
 logger.info("All active function modules loaded and exported successfully.");

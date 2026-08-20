@@ -25,8 +25,8 @@ const admin = require('firebase-admin');
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8777608982:AAFG-sJayjNKjygzu-GUEUbUmWtwQmzqbEY';
 const TELEGRAM_API_BASE = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
 
-const DEFAULT_HEBREW_CHANNEL = process.env.TELEGRAM_HEBREW_CHANNEL || '@TrendingTechDaily_HE';
-const DEFAULT_ENGLISH_CHANNEL = process.env.TELEGRAM_ENGLISH_CHANNEL || '@TrendingTechDaily_EN';
+const DEFAULT_HEBREW_CHANNEL = process.env.TELEGRAM_HEBREW_CHANNEL || '-1003974217518';
+const DEFAULT_ENGLISH_CHANNEL = process.env.TELEGRAM_ENGLISH_CHANNEL || '-1004492428380';
 const SITE_BASE_URL = 'https://trendingtechdaily.com';
 
 /**

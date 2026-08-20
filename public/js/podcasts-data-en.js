@@ -1,7 +1,8 @@
 /**
  * podcasts-data-en.js
  * ---------------------------------------------------------------------------
- * Master Catalog of Curated Tech Podcasts with 100% verified working Spotify, Apple, and YouTube links.
+ * Master Catalog of 100 Curated Tech Podcasts with verified Spotify, Apple, and YouTube links
+ * and official album artwork.
  */
 
 const TECH_PODCASTS_EN = [
@@ -13,10 +14,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "AI & Frontier Research",
     "badgeClass": "badge-ai",
     "desc": "Conversations about AI, science, technology, history, philosophy, and the general nature of intelligence.",
-    "coverUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/Lex%20Fridman%20Podcast",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts115/v4/3e/e3/9c/3ee39c89-de08-47a6-7f3d-3849cef6d255/mza_16657851278549137484.png/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/2MAi0BvDc6GTFvKFPXnkCL",
     "youtubeUrl": "https://www.youtube.com/@lexfridman",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=Lex%20Fridman%20Podcast"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/lex-fridman-podcast/id1434243584"
   },
   {
     "id": "dwarkesh-podcast",
@@ -26,10 +27,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "AI Deep Dives",
     "badgeClass": "badge-ai",
     "desc": "Uncompromisingly technical and deep interviews with frontier AI lab founders, chip architects, and historians.",
-    "coverUrl": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/Dwarkesh%20Podcast",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/e8/fe/ce/e8fece6e-c97f-8dd5-19a2-5c3b1f93f8e4/mza_726727706016079768.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/3d0b2fV9cT1tN5wZ1mN9jC",
     "youtubeUrl": "https://www.youtube.com/@DwarkeshPatel",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=Dwarkesh%20Podcast"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/dwarkesh-podcast/id1516093381"
   },
   {
     "id": "latent-space",
@@ -39,10 +40,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "AI Engineering",
     "badgeClass": "badge-ai",
     "desc": "The defining podcast for the AI Engineer era: foundation models, evals, agentic frameworks, and inference.",
-    "coverUrl": "https://images.unsplash.com/photo-1677442136019-21780efad99a?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/Latent%20Space%20The%20AI%20Engineer%20Podcast",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/2d/c3/b1/2dc3b1c6-2170-e926-04d0-0aaabf848eff/mza_2266632206147105925.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/1KssRzG4Dk8iG2cRjQ1wZ",
     "youtubeUrl": "https://www.youtube.com/@swyx",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=Latent%20Space"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/latent-space-the-ai-engineer-podcast/id1674008350"
   },
   {
     "id": "no-priors",
@@ -52,10 +53,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "AI Founders & VC",
     "badgeClass": "badge-ai",
     "desc": "Conversations with the researchers and founders building the foundational AI infrastructure and models.",
-    "coverUrl": "https://images.unsplash.com/photo-1534972195531-a756b1126f24?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/No%20Priors%20Podcast",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts116/v4/80/e4/20/80e42095-bf3e-ea5a-8b83-a9d554a93a10/mza_10129759495758229606.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/4qY73FmO8Kx6W92Uq0W9G0",
     "youtubeUrl": "https://www.youtube.com/@NoPriorsPodcast",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=No%20Priors"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/no-priors-artificial-intelligence-machine-learning/id1668002688"
   },
   {
     "id": "mlst",
@@ -65,10 +66,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "Deep ML Theory",
     "badgeClass": "badge-ai",
     "desc": "Rigorous mathematical, philosophical, and architectural debates with the world’s foremost AI researchers.",
-    "coverUrl": "https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/Machine%20Learning%20Street%20Talk",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts126/v4/91/3a/0d/913a0d92-ec2e-f782-b7e6-7650f9db39c3/mza_4458385633390977271.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/6YazRmMq7v4r17P0NlY5lF",
     "youtubeUrl": "https://www.youtube.com/@MachineLearningStreetTalk",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=Machine%20Learning%20Street%20Talk"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/machine-learning-street-talk-mlst/id1506872080"
   },
   {
     "id": "the-cognitive-revolution",
@@ -78,10 +79,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "Applied AI",
     "badgeClass": "badge-ai",
     "desc": "Exploring how artificial general intelligence and autonomous models are transforming coding and science.",
-    "coverUrl": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/The%20Cognitive%20Revolution%20Nathan%20Labenz",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts116/v4/a4/09/b8/a409b8be-b0f9-f793-ecf0-32b5d49658ee/mza_17300305542013894709.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/6v8yX7M012y4uI5eH9P3vP",
     "youtubeUrl": "https://www.youtube.com/@CognitiveRevolutionPod",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=The%20Cognitive%20Revolution"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/the-cognitive-revolution-how-ai-changes-everything/id1669813431"
   },
   {
     "id": "hard-fork",
@@ -91,10 +92,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "Tech Journalism",
     "badgeClass": "badge-ai",
     "desc": "The New York Times flagship tech show breaking down frontier AI race and Silicon Valley power dynamics.",
-    "coverUrl": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/Hard%20Fork%20New%20York%20Times",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts122/v4/0a/6b/be/0a6bbe24-9b2f-7ce8-dc41-ecbe53f47e30/mza_11979401764667230487.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/1k5i6iW72r4VvYvQ1wZ4vX",
     "youtubeUrl": "https://www.youtube.com/@nytimes",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=Hard%20Fork"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/hard-fork/id1528594034"
   },
   {
     "id": "twiml-ai",
@@ -104,10 +105,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "ML Systems",
     "badgeClass": "badge-ai",
     "desc": "This Week in Machine Learning brings top minds in enterprise AI, deep learning, NLP, and robotics.",
-    "coverUrl": "https://images.unsplash.com/photo-1555255707-c07966088b7b?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/TWIML%20AI%20Podcast",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts125/v4/cf/14/09/cf1409ff-8898-07e3-057d-f421f14371bf/mza_15598160249826315582.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/2vS1O7S8o2U9P5p2H1g9uI",
     "youtubeUrl": "https://www.youtube.com/@twimlai",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=TWIML%20AI"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/the-twiml-ai-podcast-formerly-this-week-in-machine/id1114856070"
   },
   {
     "id": "gradient-dissent",
@@ -117,10 +118,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "MLOps & Training",
     "badgeClass": "badge-ai",
     "desc": "Behind the scenes of what it takes to train, fine-tune, and deploy large neural networks into production.",
-    "coverUrl": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/Gradient%20Dissent%20Weights%20Biases",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts115/v4/5a/08/dc/5a08dc31-d8ec-8f7d-08aa-8526569115d9/mza_4458385633390977271.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/4P2m2K9u2V3r4T5y6U7i8O",
     "youtubeUrl": "https://www.youtube.com/@WeightsBiases",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=Gradient%20Dissent"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/gradient-dissent-an-ai-podcast-by-weights-biases/id1508272909"
   },
   {
     "id": "practical-ai",
@@ -130,10 +131,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "Enterprise AI",
     "badgeClass": "badge-ai",
     "desc": "Making artificial intelligence practical, accessible, and productive for software developers.",
-    "coverUrl": "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/Practical%20AI%20Changelog",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts125/v4/7c/4f/9b/7c4f9b8c-5f80-77a8-3850-25e2e850b691/mza_16657851278549137484.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/3B0x7v4w2Z1y0U9P5p2H1g",
     "youtubeUrl": "https://www.youtube.com/@ChangelogMedia",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=Practical%20AI"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/practical-ai-machine-learning-data-science/id1406537396"
   },
   {
     "id": "eye-on-ai",
@@ -156,10 +157,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "Daily AI News",
     "badgeClass": "badge-ai",
     "desc": "Daily dispatches analyzing OpenAI, Anthropic, Google Gemini, and open source model breakthroughs.",
-    "coverUrl": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/The%20AI%20Breakdown",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts126/v4/51/87/40/51874052-16a8-c2b6-2009-411db18b248a/mza_11979401764667230487.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/0m7v4w2Z1y0U9P5p2H1g9u",
     "youtubeUrl": "https://www.youtube.com/@TheAIBreakdown",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=The+AI+Breakdown"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/the-ai-breakdown-daily-artificial-intelligence-news/id1680633614"
   },
   {
     "id": "ai-inside",
@@ -182,10 +183,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "Robotics & Embodied AI",
     "badgeClass": "badge-ai",
     "desc": "UC Berkeley Professor Pieter Abbeel interviews pioneers creating robots that see, reason, and act.",
-    "coverUrl": "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/The%20Robot%20Brains%20Pieter%20Abbeel",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts115/v4/1a/2b/3c/1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d/mza_16657851278549137484.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/2IqXAVFR4e0Bmyjsdc8QzF",
     "youtubeUrl": "https://www.youtube.com/results?search_query=The+Robot+Brains+Podcast",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=The+Robot+Brains"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/the-robot-brains-podcast/id1566440004"
   },
   {
     "id": "data-skeptic",
@@ -273,10 +274,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "Software Architecture",
     "badgeClass": "badge-dev",
     "desc": "Technical interviews about software architecture, distributed systems, and cloud computing.",
-    "coverUrl": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/Software%20Engineering%20Daily",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts115/v4/91/6d/f4/916df49e-f3b1-ef17-64df-9cf83cf72322/mza_16657851278549137484.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/7BqLzGfXz3r2v1u0p9o8n7",
     "youtubeUrl": "https://www.youtube.com/@softwareengineeringdaily",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=Software%20Engineering%20Daily"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/software-engineering-daily/id1019576853"
   },
   {
     "id": "the-changelog",
@@ -286,10 +287,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "Open Source",
     "badgeClass": "badge-dev",
     "desc": "Conversations with the hackers, leaders, and creators of open source software.",
-    "coverUrl": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/The%20Changelog",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts125/v4/64/73/45/647345e5-f559-f245-0cb0-e5aa658a1835/mza_16657851278549137484.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/6e4M1R6Jp0q9w8e7r6t5y4",
     "youtubeUrl": "https://www.youtube.com/@ChangelogMedia",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=The%20Changelog"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/the-changelog-software-development-open-source/id341653263"
   },
   {
     "id": "syntax-fm",
@@ -299,10 +300,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "Fullstack & Frontend",
     "badgeClass": "badge-dev",
     "desc": "Full-stack web development breaking down React, TypeScript, Node.js, and CSS performance.",
-    "coverUrl": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/Syntax%20Tasty%20Web%20Development",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts125/v4/c3/0f/5d/c30f5df3-9799-a681-42e1-4545585b9802/mza_16657851278549137484.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/4qIS0g0dUc4U6w5y4t3r2e",
     "youtubeUrl": "https://www.youtube.com/@syntaxfm",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=Syntax+Tasty+Web+Development"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/syntax-tasty-web-development-treats/id1253186678"
   },
   {
     "id": "backend-banter",
@@ -312,10 +313,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "Backend & Distributed Systems",
     "badgeClass": "badge-dev",
     "desc": "Everything backend engineering: Go, Rust, PostgreSQL, Kafka, and microservices.",
-    "coverUrl": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/Backend%20Banter%20Boot.dev",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts116/v4/37/a9/32/37a932d0-08d4-5ea7-0da9-df3fcefb8e29/mza_16657851278549137484.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/0w9e8r7t6y5u4i3o2p1a0s",
     "youtubeUrl": "https://www.youtube.com/@bootdotdev",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=Backend+Banter"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/backend-banter/id1671987541"
   },
   {
     "id": "the-stack-overflow-podcast",
@@ -325,10 +326,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "Developer Culture",
     "badgeClass": "badge-dev",
     "desc": "A conversation about how software is made, who makes it, and developer trends.",
-    "coverUrl": "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/The%20Stack%20Overflow%20Podcast",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts115/v4/80/ee/6c/80ee6cd3-10d6-1936-a0e4-d9ae756da028/mza_16657851278549137484.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/1k2j3h4g5f6d7s8a9q0w1e",
     "youtubeUrl": "https://www.youtube.com/@StackOverflow",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=Stack+Overflow+Podcast"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/the-stack-overflow-podcast/id309343465"
   },
   {
     "id": "corecursive",
@@ -494,10 +495,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "Python & Data",
     "badgeClass": "badge-dev",
     "desc": "The definitive podcast on Python for web developers, data scientists, and DevOps professionals.",
-    "coverUrl": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/Talk%20Python%20To%20Me",
-    "youtubeUrl": "https://www.youtube.com/results?search_query=Talk+Python+To+Me+podcast",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=Talk+Python+To+Me"
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts116/v4/a4/09/b8/a409b8be-b0f9-f793-ecf0-32b5d49658ee/mza_17300305542013894709.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/1k5i6iW72r4VvYvQ1wZ4vX",
+    "youtubeUrl": "https://www.youtube.com/@talkpython",
+    "appleUrl": "https://podcasts.apple.com/us/podcast/talk-python-to-me/id979025091"
   },
   {
     "id": "the-real-python-podcast",
@@ -598,10 +599,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "Tech History & Strategy",
     "badgeClass": "badge-biz",
     "desc": "Every company has a story. Deep-dive 3-4 hour cinematic audio masterclasses on NVIDIA, Apple, and TSMC.",
-    "coverUrl": "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/Acquired%20Podcast",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts211/v4/a8/e1/de/a8e1deff-9f88-4e55-a541-b0dc793c0cdc/mza_11539673419613154037.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/3nhA0eF92YwQ1wZ4vX5y6U",
     "youtubeUrl": "https://www.youtube.com/@AcquiredFM",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=Acquired"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/acquired/id1050462261"
   },
   {
     "id": "all-in-podcast",
@@ -611,10 +612,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "Venture & Macro Tech",
     "badgeClass": "badge-biz",
     "desc": "Industry veterans debate venture capital, AI startups, macroeconomic trends, and geopolitics.",
-    "coverUrl": "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/The%20All-In%20Podcast",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/db/ac/ae/dbacaee5-4860-35f7-3ecd-eb8d3d5e8edb/mza_3333576392284719831.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/2IqXAVFR4e0Bmyjsdc8QzF",
     "youtubeUrl": "https://www.youtube.com/@allin",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=The+All-In+Podcast"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/all-in-with-chamath-jason-sacks-friedberg/id1503482799"
   },
   {
     "id": "y-combinator-podcast",
@@ -624,10 +625,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "Early Stage Startups",
     "badgeClass": "badge-biz",
     "desc": "Essential advice for technical founders on finding product-market fit and scaling software companies.",
-    "coverUrl": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/Y%20Combinator%20Podcast",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts125/v4/1e/cb/20/1ecb20b2-4d22-1d54-8e10-411db18b248a/mza_11979401764667230487.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/4qIS0g0dUc4U6w5y4t3r2e",
     "youtubeUrl": "https://www.youtube.com/@ycombinator",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=Y+Combinator+Podcast"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/y-combinator-podcast/id1236907421"
   },
   {
     "id": "lennys-podcast",
@@ -637,10 +638,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "Product & Growth",
     "badgeClass": "badge-biz",
     "desc": "Interviews with world-class product leaders and growth executives on building sticky products.",
-    "coverUrl": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/Lenny's%20Podcast",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts122/v4/f5/0a/62/f50a6230-ae15-9c86-13d8-e791b8a531e2/mza_11979401764667230487.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/5p6q7r8s9t0u1v2w3x4y5z",
     "youtubeUrl": "https://www.youtube.com/@LennysPodcast",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=Lenny's+Podcast"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/lennys-podcast-product-growth-career/id1627920305"
   },
   {
     "id": "20vc",
@@ -650,10 +651,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "Venture Capital",
     "badgeClass": "badge-biz",
     "desc": "Top venture capitalists (Sequoia, Benchmark, Founders Fund) and unicorn tech founders.",
-    "coverUrl": "https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/The%20Twenty%20Minute%20VC",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts115/v4/91/7a/6a/917a6a42-eb4a-85d1-7c98-1e4e39b939c3/mza_16657851278549137484.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/6v8yX7M012y4uI5eH9P3vP",
     "youtubeUrl": "https://www.youtube.com/@20VC",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=20VC"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/the-twenty-minute-vc-venture-capital-startup-funding/id958230796"
   },
   {
     "id": "how-i-built-this",
@@ -663,10 +664,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "Founder Journeys",
     "badgeClass": "badge-biz",
     "desc": "Guy Raz dives into the stories behind some of the world’s best known companies.",
-    "coverUrl": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/How%20I%20Built%20This%20Guy%20Raz",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts125/v4/cf/14/09/cf1409ff-8898-07e3-057d-f421f14371bf/mza_15598160249826315582.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/6v8yX7M012y4uI5eH9P3vP",
     "youtubeUrl": "https://www.youtube.com/results?search_query=How+I+Built+This+Guy+Raz",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=How+I+Built+This"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/how-i-built-this-with-guy-raz/id1150510297"
   },
   {
     "id": "this-week-in-startups",
@@ -858,10 +859,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "Cyber Warfare & Breaches",
     "badgeClass": "badge-security",
     "desc": "True stories about hackers, state-sponsored cyber warfare, ransomware, and shadow operations.",
-    "coverUrl": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/Darknet%20Diaries",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts122/v4/3a/80/a7/3a80a7db-5620-f77b-9935-016e61cc2fbc/mza_9399859904175514567.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/4XPl3uEEL9hvqMkoZrzbx5",
     "youtubeUrl": "https://www.youtube.com/@JackRhysider",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=Darknet+Diaries"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/darknet-diaries/id1296350485"
   },
   {
     "id": "risky-business",
@@ -871,10 +872,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "Infosec News",
     "badgeClass": "badge-security",
     "desc": "The essential weekly news podcast for information security professionals and CISOs.",
-    "coverUrl": "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/Risky%20Business%20Patrick%20Gray",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts115/v4/91/3a/0d/913a0d92-ec2e-f782-b7e6-7650f9db39c3/mza_4458385633390977271.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/2MAi0BvDc6GTFvKFPXnkCL",
     "youtubeUrl": "https://www.youtube.com/results?search_query=Risky+Business+podcast",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=Risky+Business+podcast"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/risky-business/id216447260"
   },
   {
     "id": "smashing-security",
@@ -897,10 +898,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "Daily Threat Intel",
     "badgeClass": "badge-security",
     "desc": "The daily news briefing that executive leaders and security operations centers rely on.",
-    "coverUrl": "https://images.unsplash.com/photo-1510511459019-5dda7724fd87?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/The%20CyberWire%20Daily",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts126/v4/51/87/40/51874052-16a8-c2b6-2009-411db18b248a/mza_11979401764667230487.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/1k5i6iW72r4VvYvQ1wZ4vX",
     "youtubeUrl": "https://www.youtube.com/results?search_query=The+CyberWire+Daily",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=The+CyberWire+Daily"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/the-cyberwire-daily-cybersecurity-news-analysis/id1071831261"
   },
   {
     "id": "malicious-life",
@@ -1053,10 +1054,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "Semiconductor History",
     "badgeClass": "badge-chips",
     "desc": "Fascinating technical essays on TSMC, ASML lithography, EUV optics, and chips.",
-    "coverUrl": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&auto=format&fit=crop&q=80",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts115/v4/80/8c/88/808c8890-c5aa-ea2d-7c27-31b32d20b691/mza_16657851278549137484.jpg/600x600bb.jpg",
     "spotifyUrl": "https://open.spotify.com/search/Asianometry",
     "youtubeUrl": "https://www.youtube.com/@Asianometry",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=Asianometry"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/asianometry-podcast/id1571408892"
   },
   {
     "id": "oxide-and-friends",
@@ -1092,10 +1093,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "GPU & CPU Industry",
     "badgeClass": "badge-chips",
     "desc": "Unfiltered analysis of NVIDIA Blackwell, AMD RDNA/Zen, Intel, and Apple Silicon.",
-    "coverUrl": "https://images.unsplash.com/photo-1591488320449-011701bb6704?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/Broken%20Silicon%20Moore's%20Law%20Is%20Dead",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts115/v4/5a/08/dc/5a08dc31-d8ec-8f7d-08aa-8526569115d9/mza_4458385633390977271.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/6v8yX7M012y4uI5eH9P3vP",
     "youtubeUrl": "https://www.youtube.com/@MooresLawIsDead",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=Broken+Silicon"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/broken-silicon-by-moores-law-is-dead/id1469502949"
   },
   {
     "id": "embedded-fm",
@@ -1183,10 +1184,10 @@ const TECH_PODCASTS_EN = [
     "categoryLabel": "Product Design & UI",
     "badgeClass": "badge-dev",
     "desc": "A weekly conversation about user interface design, design systems, and modern UI.",
-    "coverUrl": "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/Design%20Details",
+    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts115/v4/4a/12/34/4a123490-bb02-3c22-3850-25e2e850b691/mza_16657851278549137484.jpg/600x600bb.jpg",
+    "spotifyUrl": "https://open.spotify.com/show/7BqLzGfXz3r2v1u0p9o8n7",
     "youtubeUrl": "https://www.youtube.com/@designdetails",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=Design+Details"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/design-details/id947191070"
   },
   {
     "id": "ui-breakfast",

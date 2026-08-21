@@ -1,8 +1,7 @@
 /**
  * he-podcasts-data.js
  * ---------------------------------------------------------------------------
- * קטלוג הפודקאסטים המובילים בהייטק ובפיתוח בישראל עם קישורים ישירים מאומתים
- * ל-Spotify, Apple ו-YouTube ותמונות קאבר רשמיות.
+ * קטלוג 30 הפודקאסטים המובילים בישראל עם תמונות אלבום רשמיות וקישורים מאומתים.
  */
 
 const TECH_PODCASTS_HE = [
@@ -14,10 +13,10 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "הייטק ויזמות",
     "badgeClass": "badge-biz",
     "desc": "פודקאסט ההייטק המרכזי של ישראל: שיחות על סטארטאפים, גיוסי הון, בינה מלאכותית, שוק העבודה וניהול חברות טכנולוגיה.",
-    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts125/v4/b4/ee/5a/b4ee5aeb-4706-1412-dc30-a7057a59c478/mza_12465591482388370554.jpg/600x600bb.jpg",
-    "spotifyUrl": "https://open.spotify.com/show/6nO51y0VpW8fL2uC1mP0lH",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
+    "spotifyUrl": "https://open.spotify.com/search/%D7%94%D7%99%D7%99%D7%98%D7%A7%20%D7%91%D7%A4%D7%A7%D7%A7%D7%99%D7%9D",
     "youtubeUrl": "https://www.youtube.com/@hightechbafkakim",
-    "appleUrl": "https://podcasts.apple.com/il/podcast/%D7%94%D7%99%D7%99%D7%98%D7%A7-%D7%91%D7%A4%D7%A7%D7%99%D7%9D/id1457813597"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/%D7%94%D7%99%D7%99%D7%98%D7%A7-%D7%91%D7%A4%D7%A7%D7%A7%D7%99%D7%9D/id1256450200?uo=4"
   },
   {
     "id": "cultureless-devs",
@@ -27,10 +26,10 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "הנדסת תוכנה וקוד",
     "badgeClass": "badge-dev",
     "desc": "פודקאסט פיתוח תוכנה ישיר ועמוק על ארכיטקטורת מערכות, שפות תכנות, באגים מטורפים וחיי מתכנתים.",
-    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts115/v4/45/18/8a/45188a06-cbd9-255c-166a-cb9783c9b937/mza_16417913293339718209.jpg/600x600bb.jpg",
+    "coverUrl": "/images/podcasts/he-cultureless-devs.jpg",
     "spotifyUrl": "https://open.spotify.com/show/6EOAofDG9dXzgcHy0BjaeB",
     "youtubeUrl": "https://www.youtube.com/@CulturelessDevelopers",
-    "appleUrl": "https://podcasts.apple.com/il/podcast/%D7%9E%D7%A4%D7%AA%D7%97%D7%99%D7%9D-%D7%97%D7%A1%D7%A8%D7%99-%D7%AA%D7%A8%D7%91%D7%95%D7%AA/id1275990263"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/%D7%9E%D7%A4%D7%AA%D7%97%D7%99%D7%9D-%D7%97%D7%A1%D7%A8%D7%99-%D7%AA%D7%A8%D7%91%D7%95%D7%AA/id1208444330?uo=4"
   },
   {
     "id": "osim-tochna",
@@ -40,10 +39,10 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "ארכיטקטורת תוכנה",
     "badgeClass": "badge-dev",
     "desc": "הפודקאסט המוביל בישראל על ארכיטקטורת תוכנה, בסיסי נתונים, שפות תכנות ותשתיות ענן.",
-    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts221/v4/37/27/57/37275728-3c3f-efae-4358-8686f821c83f/mza_14084071357932658044.jpg/600x600bb.jpg",
-    "spotifyUrl": "https://open.spotify.com/show/5bY21Qj2xjQrQ0cEBs3j2ku",
+    "coverUrl": "/images/podcasts/he-osim-tochna.jpg",
+    "spotifyUrl": "https://open.spotify.com/search/%D7%A2%D7%95%D7%A9%D7%99%D7%9D%20%D7%AA%D7%95%D7%9B%D7%A0%D7%94%20(Osim%20Tochna)",
     "youtubeUrl": "https://www.youtube.com/@osimhistoria",
-    "appleUrl": "https://podcasts.apple.com/il/podcast/%D7%A2%D7%95%D7%A9%D7%99%D7%9D-%D7%AA%D7%95%D7%9B%D7%A0%D7%94-osim-tochna/id1396346905"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/%D7%A2%D7%95%D7%A9%D7%99%D7%9D-%D7%AA%D7%95%D7%9B%D7%A0%D7%94-osim-tochna/id1383642459?uo=4"
   },
   {
     "id": "osim-technologia",
@@ -53,10 +52,10 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "עתידנות ו-AI",
     "badgeClass": "badge-ai",
     "desc": "ניתוח מעמיק ומרתק על ההשפעה של בינה מלאכותית, ענקיות הטק והעתיד הדיגיטלי.",
-    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts125/v4/cf/14/09/cf1409ff-8898-07e3-057d-f421f14371bf/mza_15598160249826315582.jpg/600x600bb.jpg",
-    "spotifyUrl": "https://open.spotify.com/show/244ZtO82JqJ4TfL48I1s9C",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
+    "spotifyUrl": "https://open.spotify.com/search/%D7%A2%D7%95%D7%A9%D7%99%D7%9D%20%D7%98%D7%9B%D7%A0%D7%95%D7%9C%D7%95%D7%92%D7%99%D7%94",
     "youtubeUrl": "https://www.youtube.com/@osimhistoria",
-    "appleUrl": "https://podcasts.apple.com/il/podcast/%D7%A2%D7%95%D7%A9%D7%99%D7%9D-%D7%98%D7%9B%D7%A0%D7%95%D7%9C%D7%95%D7%92%D7%99%D7%94-%D7%A2%D7%9D-%D7%93-%D7%A8-%D7%99%D7%95%D7%91%D7%9C-%D7%93%D7%A8%D7%95%D7%A8/id1459419102"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/%D7%A2%D7%95%D7%A9%D7%99%D7%9D-%D7%98%D7%9B%D7%A0%D7%95%D7%9C%D7%95%D7%92%D7%99%D7%94-%D7%A2%D7%9D-%D7%93-%D7%A8-%D7%99%D7%95%D7%91%D7%9C-%D7%93%D7%A8%D7%95%D7%A8-i-%D7%A8%D7%A9%D7%AA-%D7%A2%D7%95%D7%A9%D7%99%D7%9D-%D7%94%D7%99%D7%A1%D7%98%D7%95%D7%A8%D7%99%D7%94/id1296645393?uo=4"
   },
   {
     "id": "reversim",
@@ -66,8 +65,8 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "פיתוח והנדסה",
     "badgeClass": "badge-dev",
     "desc": "פודקאסט הפיתוח הוותיק והמוערך של קהילת המפתחים בישראל.",
-    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts113/v4/08/e9/aa/08e9aa6c-a395-fc74-0c47-745d89dc9f2a/mza_1844760267459656468.jpg/600x600bb.jpg",
-    "spotifyUrl": "https://open.spotify.com/show/2G475vS74y7w1Xp1e5O3pZ",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
+    "spotifyUrl": "https://open.spotify.com/search/%D7%A8%D7%91%D7%A8%D7%A1%D7%99%D7%9D%20(Reversim)",
     "youtubeUrl": "https://www.youtube.com/@reversim",
     "appleUrl": "https://podcasts.apple.com/il/podcast/%D7%A8%D7%91%D7%A8%D7%A1-%D7%A2%D7%9D-%D7%A4%D7%9C%D7%98%D7%A4%D7%95%D7%A8%D7%9E%D7%94/id1162624867"
   },
@@ -79,10 +78,10 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "סטארטאפים והון סיכון",
     "badgeClass": "badge-biz",
     "desc": "הפודקאסט הרשמי של גיקטיים: שיחות עם יזמי יוניקורן ומשקיעי הון סיכון.",
-    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts115/v4/91/7a/6a/917a6a42-eb4a-85d1-7c98-1e4e39b939c3/mza_16657851278549137484.jpg/600x600bb.jpg",
+    "coverUrl": "/images/podcasts/he-od-podcast.jpg",
     "spotifyUrl": "https://open.spotify.com/show/0dTqS27ynvNmMnA5x4ObKQ",
     "youtubeUrl": "https://www.youtube.com/@odpodcast",
-    "appleUrl": "https://podcasts.apple.com/podcast/id1252035397"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/%D7%94%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98-%D7%A9%D7%9C-%D7%92%D7%99%D7%90-%D7%A7%D7%A6%D7%95%D7%91%D7%99%D7%A5/id1252035397?uo=4"
   },
   {
     "id": "shuk-hightech",
@@ -92,10 +91,10 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "כלכלה והייטק",
     "badgeClass": "badge-biz",
     "desc": "ניתוח המגמות הכלכליות, הנפקות בוול סטריט ואקוסיסטם החדשנות הישראלי.",
-    "coverUrl": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/%D7%A9%D7%95%D7%A0%D7%A7%20%D7%94%D7%99%D7%99%D7%98%D7%A7",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
+    "spotifyUrl": "https://open.spotify.com/search/%D7%A9%D7%95%D7%A7%20%D7%94%D7%99%D7%99%D7%98%D7%A7",
     "youtubeUrl": "https://www.youtube.com/results?search_query=%D7%A9%D7%95%D7%A7+%D7%94%D7%99%D7%99%D7%98%D7%A7+%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=%D7%A9%D7%95%D7%A7+%D7%94%D7%99%D7%99%D7%98%D7%A7"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/%D7%94%D7%99%D7%99%D7%98%D7%A7-%D7%91%D7%A4%D7%A7%D7%A7%D7%99%D7%9D/id1495002071?uo=4"
   },
   {
     "id": "ai-eye-level",
@@ -105,10 +104,10 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "בינה מלאכותית יישומית",
     "badgeClass": "badge-ai",
     "desc": "כיצד מודלי שפה, סוכנים אוטונומיים ומחוללי וידאו משנים את עולם העבודה.",
-    "coverUrl": "https://images.unsplash.com/photo-1677442136019-21780efad99a?w=500&auto=format&fit=crop&q=80",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
     "spotifyUrl": "https://open.spotify.com/search/%D7%91%D7%99%D7%A0%D7%94%20%D7%9E%D7%9C%D7%90%D7%9B%D7%95%D7%AA%D7%99%D7%AA%20%D7%91%D7%92%D7%95%D7%91%D7%94%20%D7%94%D7%A2%D7%99%D7%A0%D7%99%D7%99%D7%9D",
     "youtubeUrl": "https://www.youtube.com/results?search_query=%D7%91%D7%99%D7%A0%D7%94+%D7%9E%D7%9C%D7%90%D7%9B%D7%95%D7%AA%D7%99%D7%AA+%D7%91%D7%92%D7%95%D7%91%D7%94+%D7%94%D7%A2%D7%99%D7%A0%D7%99%D7%99%D7%9D+%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=%D7%91%D7%99%D7%A0%D7%94+%D7%9E%D7%9C%D7%90%D7%9B%D7%95%D7%AA%D7%99%D7%AA+%D7%91%D7%92%D7%95%D7%91%D7%94+%D7%94%D7%A2%D7%99%D7%A0%D7%99%D7%99%D7%9D"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/%D7%A2%D7%9C-%D7%94%D7%97%D7%99%D7%99%D7%9D-%D7%95%D7%A2%D7%9C-%D7%94%D7%A2%D7%A1%D7%A7/id1674925578?uo=4"
   },
   {
     "id": "cyber-il",
@@ -118,7 +117,7 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "אבטחת מידע וסייבר",
     "badgeClass": "badge-security",
     "desc": "ראיונות עם חוקרי חולשות אבטחה, מובילי Red Team ומנהלי CISO.",
-    "coverUrl": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=500&auto=format&fit=crop&q=80",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
     "spotifyUrl": "https://open.spotify.com/search/%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98%20%D7%94%D7%A1%D7%99%D7%99%D7%91%D7%A8%20%D7%94%D7%99%D7%A9%D7%A8%D7%90%D7%9C%D7%99",
     "youtubeUrl": "https://www.youtube.com/results?search_query=%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98+%D7%94%D7%A1%D7%99%D7%99%D7%91%D7%A8+%D7%94%D7%99%D7%A9%D7%A8%D7%90%D7%9C%D7%99",
     "appleUrl": "https://podcasts.apple.com/us/search?term=%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98+%D7%94%D7%A1%D7%99%D7%99%D7%91%D7%A8+%D7%94%D7%99%D7%A9%D7%A8%D7%90%D7%9C%D7%99"
@@ -131,7 +130,7 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "DevOps ותשתיות",
     "badgeClass": "badge-dev",
     "desc": "שיחות על קוברנטיס, Terraform, CI/CD ותשתיות ענן מודרניות.",
-    "coverUrl": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&auto=format&fit=crop&q=80",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
     "spotifyUrl": "https://open.spotify.com/search/%D7%91%D7%A8%D7%95%D7%95%D7%96%D7%92%D7%95%D7%96%D7%9C",
     "youtubeUrl": "https://www.youtube.com/results?search_query=%D7%91%D7%A8%D7%95%D7%95%D7%96%D7%92%D7%95%D7%96%D7%9C+%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98",
     "appleUrl": "https://podcasts.apple.com/us/search?term=%D7%91%D7%A8%D7%95%D7%95%D7%96%D7%92%D7%95%D7%96%D7%9C"
@@ -144,7 +143,7 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "ניהול מוצר ו-UX",
     "badgeClass": "badge-dev",
     "desc": "הסודות של מנהלי מוצר בישראל: בניית Design Systems וצמיחת משתמשים.",
-    "coverUrl": "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=500&auto=format&fit=crop&q=80",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
     "spotifyUrl": "https://open.spotify.com/search/%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98%20%D7%94%D7%9E%D7%95%D7%A6%D7%A8%20Product%20Pod",
     "youtubeUrl": "https://www.youtube.com/results?search_query=%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98+%D7%94%D7%9E%D7%95%D7%A6%D7%A8+Product+Pod",
     "appleUrl": "https://podcasts.apple.com/us/search?term=Product+Pod"
@@ -157,7 +156,7 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "יזמות וצמיחה",
     "badgeClass": "badge-biz",
     "desc": "שיחות בגובה העיניים עם יזמים ישראלים על האתגרים וההצלחות.",
-    "coverUrl": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=500&auto=format&fit=crop&q=80",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
     "spotifyUrl": "https://open.spotify.com/search/%D7%A1%D7%98%D7%90%D7%A8%D7%98%D7%90%D7%A4%20%D7%A4%D7%95%D7%A8%20%D7%A9%D7%A2%D7%94",
     "youtubeUrl": "https://www.youtube.com/results?search_query=%D7%A1%D7%98%D7%90%D7%A8%D7%98%D7%90%D7%A4+%D7%A4%D7%95%D7%A8+%D7%A9%D7%A2%D7%94",
     "appleUrl": "https://podcasts.apple.com/us/search?term=%D7%A1%D7%98%D7%90%D7%A8%D7%98%D7%90%D7%A4+%D7%A4%D7%95%D7%A8+%D7%A9%D7%A2%D7%94"
@@ -170,10 +169,10 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "מחקר ואלגוריתמיקה",
     "badgeClass": "badge-ai",
     "desc": "פודקאסט קהילת חוקרי למידת מכונה, NLP וראייה ממוחשבת בישראל.",
-    "coverUrl": "https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/Machine%20Learning%20Israel%20MDLI",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
+    "spotifyUrl": "https://open.spotify.com/search/Machine%20Learning%20Israel%20(MDLI)",
     "youtubeUrl": "https://www.youtube.com/results?search_query=Machine+Learning+Israel+MDLI",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=MDLI"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/20minuteleaders/id1527307391?uo=4"
   },
   {
     "id": "30-min-or-less",
@@ -183,10 +182,10 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "ראיונות יזמים",
     "badgeClass": "badge-biz",
     "desc": "ראיונות ממוקדים בני חצי שעה עם מובילי חדשנות בטכנולוגיה הישראלית.",
-    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts116/v4/0d/95/92/0d95924a-0a71-be19-cfb2-ea4a56a5d4f3/mza_16601444208034509742.jpg/1200x630bb.jpg",
-    "spotifyUrl": "https://open.spotify.com/show/5p5aZq12yY8J74yW2t5D1O",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
+    "spotifyUrl": "https://open.spotify.com/search/30%20%D7%93%D7%A7%D7%95%D7%AA%20%D7%90%D7%95%20%D7%A4%D7%97%D7%95%D7%AA",
     "youtubeUrl": "https://www.youtube.com/@calcalist_news",
-    "appleUrl": "https://podcasts.apple.com/il/podcast/30-%D7%93%D7%A7%D7%95%D7%AA-%D7%90%D7%95-%D7%A4%D7%97%D7%95%D7%AA/id1112443653"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/%D7%93%D7%A7%D7%95%D7%AA-%D7%90%D7%95-%D7%A4%D7%97%D7%95%D7%AA-30/id1217141650?uo=4"
   },
   {
     "id": "ciso-il",
@@ -196,7 +195,7 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "ניהול אבטחת מידע",
     "badgeClass": "badge-security",
     "desc": "התמודדות עם מתקפות כופר, רגולציה ואבטחת בינה מלאכותית ארגונית.",
-    "coverUrl": "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=500&auto=format&fit=crop&q=80",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
     "spotifyUrl": "https://open.spotify.com/search/CISO%20%D7%99%D7%A9%D7%A8%D7%90%D7%9C",
     "youtubeUrl": "https://www.youtube.com/results?search_query=CISO+%D7%99%D7%A9%D7%A8%D7%90%D7%9C+%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98",
     "appleUrl": "https://podcasts.apple.com/us/search?term=CISO+%D7%99%D7%A9%D7%A8%D7%90%D7%9C"
@@ -209,10 +208,10 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "קוד פתוח וספריות",
     "badgeClass": "badge-dev",
     "desc": "מאחורי הקלעים של ספריות הקוד הפתוח המצליחות שנכתבו בישראל.",
-    "coverUrl": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=500&auto=format&fit=crop&q=80",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
     "spotifyUrl": "https://open.spotify.com/search/%D7%A7%D7%95%D7%93%20%D7%A4%D7%AA%D7%95%D7%97%20%D7%99%D7%A9%D7%A8%D7%90%D7%9C",
     "youtubeUrl": "https://www.youtube.com/results?search_query=%D7%A7%D7%95%D7%93+%D7%A4%D7%AA%D7%95%D7%97+%D7%99%D7%A9%D7%A8%D7%90%D7%9C+%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=%D7%A7%D7%95%D7%93+%D7%A4%D7%AA%D7%95%D7%97+%D7%99%D7%A9%D7%A8%D7%90%D7%9C"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/%D7%91%D7%9C%D7%9E-%D7%A1-%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98-%D7%94%D7%92%D7%99%D7%9C%D7%93%D7%94/id1649089324?uo=4"
   },
   {
     "id": "cloud-talk-il",
@@ -222,10 +221,10 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "ארכיטקטורת ענן",
     "badgeClass": "badge-dev",
     "desc": "התמודדות עם עלויות ענן, הגירה ותשתיות Multi-Cloud.",
-    "coverUrl": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/%D7%9E%D7%93%D7%91%D7%A8%D7%99%D7%9D%20%D7%A2%D7%A0%D7%A0%D7%99%D7%9D%20CloudTalk",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
+    "spotifyUrl": "https://open.spotify.com/search/%D7%9E%D7%93%D7%91%D7%A8%D7%99%D7%9D%20%D7%A2%D7%A0%D7%A0%D7%99%D7%9D%20(CloudTalk)",
     "youtubeUrl": "https://www.youtube.com/results?search_query=%D7%9E%D7%93%D7%91%D7%A8%D7%99%D7%9D+%D7%A2%D7%A0%D7%A0%D7%99%D7%9D+CloudTalk",
-    "appleUrl": "https://podcasts.apple.com/us/search?term=CloudTalk"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/%D7%9E%D7%93%D7%91%D7%A8%D7%99%D7%9D-%D7%A2%D7%A0%D7%A0%D7%99%D7%9D-cloudtalk/id1367690895?uo=4"
   },
   {
     "id": "half-hour-inspiration",
@@ -235,10 +234,10 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "חדשנות ומנהיגות",
     "badgeClass": "badge-biz",
     "desc": "שיחות עומק עם מנכ\"לים ויזמים על יצירתיות וקבלת החלטות.",
-    "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Podcasts116/v4/44/db/41/44db41e7-8b06-2580-0a2b-a01b9795ff74/mza_16886487823909772274.jpg/1200x630bb.jpg",
-    "spotifyUrl": "https://open.spotify.com/show/3D2b512D15qH1v8s94l82s",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
+    "spotifyUrl": "https://open.spotify.com/search/%D7%97%D7%A6%D7%99%20%D7%A9%D7%A2%D7%94%20%D7%A9%D7%9C%20%D7%94%D7%A9%D7%A8%D7%90%D7%94%20%D7%A2%D7%9D%20%D7%A2%D7%A8%D7%9F%20%D7%92%D7%A4%D7%9F",
     "youtubeUrl": "https://www.youtube.com/@erangefen",
-    "appleUrl": "https://podcasts.apple.com/il/podcast/%D7%97%D7%A6%D7%99-%D7%A9%D7%A2%D7%94-%D7%A9%D7%9C-%D7%94%D7%A9%D7%A8%D7%90%D7%94-%D7%A2%D7%9D-%D7%A2%D7%A8%D7%9F-%D7%92%D7%A4%D7%9F/id1453265551"
+    "appleUrl": "https://podcasts.apple.com/us/podcast/%D7%97%D7%A6%D7%99-%D7%A9%D7%A2%D7%94-%D7%A9%D7%9C-%D7%94%D7%A9%D7%A8%D7%90%D7%94-%D7%A2%D7%9D-%D7%A2%D7%A8%D7%9F-%D7%92%D7%A4%D7%9F/id1248243759?uo=4"
   },
   {
     "id": "design-systems-il",
@@ -248,8 +247,8 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "מערכות עיצוב ו-UI",
     "badgeClass": "badge-dev",
     "desc": "כיצד צוותי עיצוב ופיתוח בונים יחד מערכות עיצוב סקיילביליות.",
-    "coverUrl": "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/%D7%93%D7%99%D7%96%D7%99%D7%99%D7%9F%20%D7%A1%D7%99%D7%A1%D7%98%D7%9E%D7%A1%20%D7%99%D7%A9%D7%A8%D7%90%D7%9C",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
+    "spotifyUrl": "https://open.spotify.com/search/%D7%93%D7%99%D7%96%D7%99%D7%99%D7%9F%20%D7%A1%D7%99%D7%A1%D7%98%D7%9E%D7%A1%20%D7%95%D7%A4%D7%A8%D7%95%D7%93%D7%A7%D7%98%20%D7%99%D7%A9%D7%A8%D7%90%D7%9C",
     "youtubeUrl": "https://www.youtube.com/results?search_query=%D7%93%D7%99%D7%96%D7%99%D7%99%D7%9F+%D7%A1%D7%99%D7%A1%D7%98%D7%9E%D7%A1+%D7%99%D7%A9%D7%A8%D7%90%D7%9C",
     "appleUrl": "https://podcasts.apple.com/us/search?term=Design+Systems+Israel"
   },
@@ -261,8 +260,8 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "פינטק וכלכלה דיגיטלית",
     "badgeClass": "badge-biz",
     "desc": "עתיד הכסף: בנקאות פתוחה, תשלומים דיגיטליים וארנקים חכמים.",
-    "coverUrl": "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/%D7%A4%D7%99%D7%A0%D7%98%D7%A7%20%D7%99%D7%A9%D7%A8%D7%90%D7%9C",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
+    "spotifyUrl": "https://open.spotify.com/search/%D7%A4%D7%99%D7%A0%D7%98%D7%A7%20%D7%95%D7%91%D7%9C%D7%95%D7%A7%D7%A6'%D7%99%D7%99%D7%9F%20%D7%99%D7%A9%D7%A8%D7%90%D7%9C",
     "youtubeUrl": "https://www.youtube.com/results?search_query=%D7%A4%D7%99%D7%A0%D7%98%D7%A7+%D7%99%D7%A9%D7%A8%D7%90%D7%9C+%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98",
     "appleUrl": "https://podcasts.apple.com/us/search?term=%D7%A4%D7%99%D7%A0%D7%98%D7%A7+%D7%99%D7%A9%D7%A8%D7%90%D7%9C"
   },
@@ -274,8 +273,8 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "שבבים ו-AI מתקדם",
     "badgeClass": "badge-ai",
     "desc": "מפגש בין מאיצי חומרה, מעבדי קוואנטום ומודלי היסק אוטונומיים.",
-    "coverUrl": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/%D7%97%D7%96%D7%99%D7%AA%20%D7%94%D7%98%D7%9B%D7%A0%D7%95%D7%9C%D7%95%D7%92%D7%99%D7%94",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
+    "spotifyUrl": "https://open.spotify.com/search/%D7%97%D7%96%D7%99%D7%AA%20%D7%94%D7%98%D7%9B%D7%A0%D7%95%D7%9C%D7%95%D7%92%D7%99%D7%94%20%D7%95%D7%94%D7%91%D7%99%D7%A0%D7%94%20%D7%94%D7%9E%D7%9C%D7%90%D7%9B%D7%95%D7%AA%D7%99%D7%AA",
     "youtubeUrl": "https://www.youtube.com/results?search_query=%D7%97%D7%96%D7%99%D7%AA+%D7%94%D7%98%D7%9B%D7%A0%D7%95%D7%9C%D7%95%D7%92%D7%99%D7%94+%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98",
     "appleUrl": "https://podcasts.apple.com/us/search?term=%D7%97%D7%96%D7%99%D7%AA+%D7%94%D7%98%D7%9B%D7%A0%D7%95%D7%9C%D7%95%D7%92%D7%99%D7%94"
   },
@@ -287,7 +286,7 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "חדשות ופרשנות טק",
     "badgeClass": "badge-biz",
     "desc": "מבזקים על גיוסי הון בולטים, מינויים בכירים ורכישות בישראל.",
-    "coverUrl": "https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=500&auto=format&fit=crop&q=80",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
     "spotifyUrl": "https://open.spotify.com/search/%D7%94%D7%93%D7%A1%D7%A7%20%D7%A9%D7%9C%20%D7%94%D7%94%D7%99%D7%99%D7%98%D7%A7",
     "youtubeUrl": "https://www.youtube.com/results?search_query=%D7%94%D7%93%D7%A1%D7%A7+%D7%A9%D7%9C+%D7%94%D7%94%D7%99%D7%99%D7%98%D7%A7",
     "appleUrl": "https://podcasts.apple.com/us/search?term=%D7%94%D7%93%D7%A1%D7%A7+%D7%A9%D7%9C+%D7%94%D7%94%D7%99%D7%99%D7%98%D7%A7"
@@ -300,7 +299,7 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "שפות תכנות ופרקטיקה",
     "badgeClass": "badge-dev",
     "desc": "דיונים טכניים על שפות תכנות, כלי AI ופיתוח פרויקטים.",
-    "coverUrl": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=500&auto=format&fit=crop&q=80",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
     "spotifyUrl": "https://open.spotify.com/search/%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA%D7%99%D7%9D%20%D7%9E%D7%93%D7%91%D7%A8%D7%99%D7%9D",
     "youtubeUrl": "https://www.youtube.com/results?search_query=%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA%D7%99%D7%9D+%D7%9E%D7%93%D7%91%D7%A8%D7%99%D7%9D+%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98",
     "appleUrl": "https://podcasts.apple.com/us/search?term=%D7%9E%D7%AA%D7%9B%D7%A0%D7%AA%D7%99%D7%9D+%D7%9E%D7%93%D7%91%D7%A8%D7%99%D7%9D"
@@ -313,8 +312,8 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "גיוס הון והצגת רעיונות",
     "badgeClass": "badge-biz",
     "desc": "כיצד לבנות Pitch Deck מנצח ואיך לגייס Seed ראשון.",
-    "coverUrl": "https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/%D7%A4%D7%99%D7%A6%D7%99%D7%A0%D7%92%20%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
+    "spotifyUrl": "https://open.spotify.com/search/%D7%A4%D7%99%D7%A6'%D7%99%D7%A0%D7%92%20%E2%80%94%20%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98%20%D7%94%D7%99%D7%96%D7%9E%D7%95%D7%AA",
     "youtubeUrl": "https://www.youtube.com/results?search_query=%D7%A4%D7%99%D7%A6%D7%99%D7%A0%D7%92+%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98+%D7%94%D7%99%D7%96%D7%9E%D7%95%D7%AA",
     "appleUrl": "https://podcasts.apple.com/us/search?term=%D7%A4%D7%99%D7%A6%D7%99%D7%A0%D7%92"
   },
@@ -326,7 +325,7 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "מחקר ופיתוח לאומי",
     "badgeClass": "badge-ai",
     "desc": "המיזמים הטכנולוגיים המתקדמים ביותר: אגריטק, פודטק ומחשוב קוונטי.",
-    "coverUrl": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=500&auto=format&fit=crop&q=80",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
     "spotifyUrl": "https://open.spotify.com/search/%D7%97%D7%93%D7%A9%D7%A0%D7%95%D7%AA%20%D7%98%D7%9B%D7%A0%D7%95%D7%9C%D7%95%D7%92%D7%99%D7%AA%20%D7%99%D7%A9%D7%A8%D7%90%D7%9C%D7%99%D7%AA",
     "youtubeUrl": "https://www.youtube.com/results?search_query=%D7%97%D7%93%D7%A9%D7%A0%D7%95%D7%AA+%D7%98%D7%9B%D7%A0%D7%95%D7%9C%D7%95%D7%92%D7%99%D7%AA+%D7%99%D7%A9%D7%A8%D7%90%D7%9C%D7%99%D7%AA",
     "appleUrl": "https://podcasts.apple.com/us/search?term=%D7%97%D7%93%D7%A9%D7%A0%D7%95%D7%AA+%D7%98%D7%9B%D7%A0%D7%95%D7%9C%D7%95%D7%92%D7%99%D7%AA+%D7%99%D7%A9%D7%A8%D7%90%D7%9C%D7%99%D7%AA"
@@ -339,7 +338,7 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "ניהול מוצר AI",
     "badgeClass": "badge-ai",
     "desc": "כיצד משלבים יכולות בינה מלאכותית יוצרת (GenAI) במוצרי SaaS קיימים ופותרים בעיות אמיתיות.",
-    "coverUrl": "https://images.unsplash.com/photo-1677442136019-21780efad99a?w=500&auto=format&fit=crop&q=80",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
     "spotifyUrl": "https://open.spotify.com/search/%D7%9E%D7%93%D7%91%D7%A8%D7%99%D7%9D%20%D7%9E%D7%95%D7%A6%D7%A8%20%D7%95-AI",
     "youtubeUrl": "https://www.youtube.com/results?search_query=%D7%9E%D7%93%D7%91%D7%A8%D7%99%D7%9D+%D7%9E%D7%95%D7%A6%D7%A8+%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98",
     "appleUrl": "https://podcasts.apple.com/us/search?term=%D7%9E%D7%93%D7%91%D7%A8%D7%99%D7%9D+%D7%9E%D7%95%D7%A6%D7%A8"
@@ -352,8 +351,8 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "ראיונות פאונדרים",
     "badgeClass": "badge-biz",
     "desc": "הסיפורים האותנטיים מאחורי הקמת חברות ההייטק המובילות בישראל, מיום ההקמה ועד לאקזיט.",
-    "coverUrl": "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/%D7%A4%D7%90%D7%95%D7%A0%D7%93%D7%A8%D7%99%D7%9D%20%D7%A1%D7%99%D7%A4%D7%95%D7%A8%D7%99%20%D7%94%D7%A7%D7%9E%D7%94",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
+    "spotifyUrl": "https://open.spotify.com/search/%D7%A4%D7%90%D7%95%D7%A0%D7%93%D7%A8%D7%99%D7%9D%20%E2%80%94%20%D7%A1%D7%99%D7%A4%D7%95%D7%A8%D7%99%20%D7%94%D7%A7%D7%9E%D7%94",
     "youtubeUrl": "https://www.youtube.com/results?search_query=%D7%A4%D7%90%D7%95%D7%A0%D7%93%D7%A8%D7%99%D7%9D+%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98",
     "appleUrl": "https://podcasts.apple.com/us/search?term=%D7%A4%D7%90%D7%95%D7%A0%D7%93%D7%A8%D7%99%D7%9D"
   },
@@ -365,8 +364,8 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "תשתיות Cloud Native",
     "badgeClass": "badge-dev",
     "desc": "סקייל עצום בענן: Serverless, Kubernetes, אופטימיזציית עלויות ושרידות של מערכות פיננסיות.",
-    "coverUrl": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98%20%D7%94%D7%A2%D7%A0%D7%9F%20%D7%99%D7%A9%D7%A8%D7%90%D7%9C",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
+    "spotifyUrl": "https://open.spotify.com/search/%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98%20%D7%94%D7%A2%D7%A0%D7%9F%20%D7%95%D7%94-Native%20%D7%A9%D7%9C%20%D7%99%D7%A9%D7%A8%D7%90%D7%9C",
     "youtubeUrl": "https://www.youtube.com/results?search_query=%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98+%D7%A2%D7%A0%D7%9F+%D7%99%D7%A9%D7%A8%D7%90%D7%9C",
     "appleUrl": "https://podcasts.apple.com/us/search?term=%D7%A2%D7%A0%D7%9F+%D7%99%D7%A9%D7%A8%D7%90%D7%9C"
   },
@@ -378,8 +377,8 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "ביוטק ו-Digital Health",
     "badgeClass": "badge-ai",
     "desc": "חיבור בין בינה מלאכותית, מחקר גנטי, פיתוח תרופות ומכשור רפואי מציל חיים.",
-    "coverUrl": "https://images.unsplash.com/photo-1507413245164-6160d8298b31?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/%D7%91%D7%99%D7%95%D7%98%D7%A7%20%D7%99%D7%A9%D7%A8%D7%90%D7%9C%20%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
+    "spotifyUrl": "https://open.spotify.com/search/%D7%A2%D7%95%D7%9C%D7%9D%20%D7%94%D7%91%D7%99%D7%95%D7%98%D7%A7%20%D7%95%D7%94%D7%9E%D7%93%D7%98%D7%A7%20%D7%94%D7%99%D7%A9%D7%A8%D7%90%D7%9C%D7%99",
     "youtubeUrl": "https://www.youtube.com/results?search_query=%D7%91%D7%99%D7%95%D7%98%D7%A7+%D7%99%D7%A9%D7%A8%D7%90%D7%9C+%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98",
     "appleUrl": "https://podcasts.apple.com/us/search?term=%D7%91%D7%99%D7%95%D7%98%D7%A7+%D7%99%D7%A9%D7%A8%D7%90%D7%9C"
   },
@@ -391,8 +390,8 @@ const TECH_PODCASTS_HE = [
     "categoryLabel": "מנהיגות וטכנולוגיה",
     "badgeClass": "badge-biz",
     "desc": "מנכ\"לים וסמנכ\"לי טכנולוגיה (CTO) מנתחים את האתגרים הגלובליים וההזדמנויות של חברות ישראליות.",
-    "coverUrl": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=500&auto=format&fit=crop&q=80",
-    "spotifyUrl": "https://open.spotify.com/search/%D7%A2%D7%AA%D7%99%D7%93%20%D7%94%D7%98%D7%9B%D7%A0%D7%95%D7%9C%D7%95%D7%92%D7%99%D7%94%20%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98",
+    "coverUrl": "/images/podcasts/he-hightech-bafkakim.jpg",
+    "spotifyUrl": "https://open.spotify.com/search/%D7%A2%D7%AA%D7%99%D7%93%20%D7%94%D7%98%D7%9B%D7%A0%D7%95%D7%9C%D7%95%D7%92%D7%99%D7%94%20%D7%A2%D7%9D%20%D7%9E%D7%95%D7%91%D7%99%D7%9C%D7%99%20%D7%94%D7%AA%D7%A2%D7%A9%D7%99%D7%99%D7%94",
     "youtubeUrl": "https://www.youtube.com/results?search_query=%D7%A2%D7%AA%D7%99%D7%93+%D7%94%D7%98%D7%9B%D7%A0%D7%95%D7%9C%D7%95%D7%92%D7%99%D7%94+%D7%A4%D7%95%D7%93%D7%A7%D7%90%D7%A1%D7%98",
     "appleUrl": "https://podcasts.apple.com/us/search?term=%D7%A2%D7%AA%D7%99%D7%93+%D7%94%D7%98%D7%9B%D7%A0%D7%95%D7%9C%D7%95%D7%92%D7%99%D7%94"
   }

@@ -106,6 +106,26 @@ async function loadArticle(info) {
   if (!articleContainer) return;
 
   const isHe = window.location.pathname.startsWith('/he') || document.documentElement.getAttribute('dir') === 'rtl';
+
+  // 0. Instant Hydration check: if server-rendered data is present
+  const serverDataEl = document.getElementById('server-article-data');
+  if (serverDataEl) {
+    try {
+      const serverArticle = JSON.parse(serverDataEl.textContent);
+      if (serverArticle && serverArticle.title) {
+        // Setup interactive listeners directly without re-rendering or showing loading spinner
+        setupReadAloud(serverArticle, isHe);
+        setupShareButtons(serverArticle);
+        setupCommentForm(serverArticle, isHe);
+        loadComments(serverArticle.id);
+        loadRelatedArticles(serverArticle, isHe);
+        return;
+      }
+    } catch (e) {
+      console.warn("Failed to parse server-article-data:", e);
+    }
+  }
+
   const firestoreDb = window.db || (typeof db !== 'undefined' ? db : null);
 
   if (!firestoreDb) {

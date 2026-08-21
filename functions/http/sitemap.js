@@ -4,36 +4,41 @@ const { db, logger } = require('../config');
 const { getSafe } = require('../utils');
 
 /**
- * Generates and serves a sitemap.xml for SEO purposes.
+ * Generates and serves a complete sitemap.xml for SEO purposes.
  */
 async function serveSitemap(req, res) {
   try {
     const baseUrl = "https://trendingtechdaily.com";
-    let xml = '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+    let xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
     
-    // Static pages
-    xml += `<url><loc>${baseUrl}/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>`;
-    xml += `<url><loc>${baseUrl}/about</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>`;
-    xml += `<url><loc>${baseUrl}/privacy</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>`;
-    xml += `<url><loc>${baseUrl}/terms</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>`;
+    // Core English Static Pages
+    xml += `  <url><loc>${baseUrl}/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>\n`;
+    xml += `  <url><loc>${baseUrl}/about</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>\n`;
+    xml += `  <url><loc>${baseUrl}/podcasts</loc><changefreq>daily</changefreq><priority>0.8</priority></url>\n`;
+    xml += `  <url><loc>${baseUrl}/stock-data</loc><changefreq>daily</changefreq><priority>0.8</priority></url>\n`;
+    xml += `  <url><loc>${baseUrl}/ai-tools</loc><changefreq>daily</changefreq><priority>0.8</priority></url>\n`;
+    xml += `  <url><loc>${baseUrl}/design-systems</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>\n`;
+    xml += `  <url><loc>${baseUrl}/privacy</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>\n`;
+    xml += `  <url><loc>${baseUrl}/terms</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>\n`;
     
-    // Load sections from database and create a map of section IDs to slugs
-    const sectionsSnapshot = await db.collection('sections')
-      .where('active', '==', true)
-      .get();
+    // Core Hebrew Static Pages
+    xml += `  <url><loc>${baseUrl}/he</loc><changefreq>daily</changefreq><priority>1.0</priority></url>\n`;
+    xml += `  <url><loc>${baseUrl}/he/about</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>\n`;
+    xml += `  <url><loc>${baseUrl}/he/podcasts</loc><changefreq>daily</changefreq><priority>0.8</priority></url>\n`;
+    xml += `  <url><loc>${baseUrl}/he/shuk-hon</loc><changefreq>daily</changefreq><priority>0.8</priority></url>\n`;
+    xml += `  <url><loc>${baseUrl}/he/ai-tools</loc><changefreq>daily</changefreq><priority>0.8</priority></url>\n`;
+    xml += `  <url><loc>${baseUrl}/he/design-systems</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>\n`;
+    xml += `  <url><loc>${baseUrl}/he/privacy</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>\n`;
+    xml += `  <url><loc>${baseUrl}/he/terms</loc><changefreq>yearly</changefreq><priority>0.5</priority></url>\n`;
     
-    const sectionMap = {};
-    
-    // Add category pages to sitemap
-    sectionsSnapshot.forEach(doc => {
-      const section = doc.data();
-      const slug = getSafe(() => section.slug, doc.id.toLowerCase());
-      sectionMap[doc.id] = slug; // Store for article URL generation
-      
-      xml += `<url><loc>${baseUrl}/${slug}</loc><changefreq>daily</changefreq><priority>0.9</priority></url>`;
+    // Load categories
+    const KNOWN_CATS = ['ai', 'ai-models', 'autonomous-agents', 'dev', 'computing', 'chips', 'markets', 'startups', 'cybersecurity', 'top-stories', 'gadgets'];
+    KNOWN_CATS.forEach(slug => {
+      xml += `  <url><loc>${baseUrl}/${slug}</loc><changefreq>daily</changefreq><priority>0.9</priority></url>\n`;
+      xml += `  <url><loc>${baseUrl}/he/${slug}</loc><changefreq>daily</changefreq><priority>0.9</priority></url>\n`;
     });
     
-    // Dynamic article pages
+    // Dynamic Published Articles (Clean canonical URLs)
     const articlesSnap = await db.collection('articles')
         .where('published', '==', true)
         .orderBy('createdAt', 'desc')
@@ -42,26 +47,32 @@ async function serveSitemap(req, res) {
         
     articlesSnap.forEach(doc => {
       const article = doc.data();
-      const slug = getSafe(() => article.slug);
-      const categoryId = getSafe(() => article.category);
-      const updatedAt = getSafe(() => article.updatedAt?.toDate().toISOString());
+      const slug = article.slug || doc.id;
+      const category = article.category || article.section || 'ai';
+      const catSlug = (typeof category === 'string' && !/^[A-Za-z0-9_-]{16,}$/.test(category)) ? category.toLowerCase() : 'ai';
       
-      if (slug && categoryId) {
-        // Use the section slug from our map, fallback to category ID lowercase if not found
-        const categorySlug = sectionMap[categoryId] || categoryId.toLowerCase();
-        
-        xml += `<url><loc>${baseUrl}/${categorySlug}/${slug}</loc>`;
-        if (updatedAt) {
-          xml += `<lastmod>${updatedAt}</lastmod>`;
-        }
-        xml += `<changefreq>monthly</changefreq><priority>0.8</priority></url>`;
+      let updatedAt = null;
+      if (article.updatedAt) {
+        updatedAt = article.updatedAt.toDate ? article.updatedAt.toDate().toISOString() : new Date(article.updatedAt).toISOString();
+      } else if (article.createdAt) {
+        updatedAt = article.createdAt.toDate ? article.createdAt.toDate().toISOString() : new Date(article.createdAt).toISOString();
       }
+      
+      const isHe = article.language === 'he' || article.language === 'iw' || article.isHebrew === true;
+      const pathPrefix = isHe ? `${baseUrl}/he/${catSlug}/${slug}` : `${baseUrl}/${catSlug}/${slug}`;
+      
+      xml += `  <url><loc>${pathPrefix}</loc>`;
+      if (updatedAt) {
+        xml += `<lastmod>${updatedAt}</lastmod>`;
+      }
+      xml += `<changefreq>weekly</changefreq><priority>0.85</priority></url>\n`;
     });
 
     xml += '</urlset>';
     
-    res.set('Content-Type', 'application/xml');
-    res.status(200).send(xml);
+    res.set('Content-Type', 'application/xml; charset=utf-8');
+    res.set('Cache-Control', 'public, max-age=3600, s-maxage=86400');
+    return res.status(200).send(xml);
     
   } catch (error) {
     logger.error("Error generating sitemap:", error);

@@ -12,4 +12,5 @@ Disallow: /he/login
 Disallow: /he/signup
 Disallow: /he/profile
 
+Sitemap: https://trendingtechdaily.com/sitemap.xml
 Sitemap: https://www.trendingtechdaily.com/sitemap.xml

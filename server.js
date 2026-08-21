@@ -364,7 +364,26 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
-  // ── Static Files Router ─────────────────────────────────────────
+  // ── 301 Legacy Redirects for SEO ──────────────────────────────
+  if (reqPath === '/article.html' || reqPath === '/he/article.html') {
+    const slug = parsedUrl.searchParams.get('slug') || parsedUrl.searchParams.get('article') || parsedUrl.searchParams.get('id');
+    const isHe = reqPath.startsWith('/he');
+    if (slug) {
+      const target = isHe ? `/he/article/${encodeURIComponent(slug)}` : `/article/${encodeURIComponent(slug)}`;
+      res.writeHead(301, { 'Location': target });
+      return res.end();
+    }
+  }
+
+  if (reqPath === '/category.html' || reqPath === '/he/category.html') {
+    const slug = parsedUrl.searchParams.get('slug') || 'ai';
+    const isHe = reqPath.startsWith('/he');
+    const target = isHe ? `/he/${encodeURIComponent(slug)}` : `/${encodeURIComponent(slug)}`;
+    res.writeHead(301, { 'Location': target });
+    return res.end();
+  }
+
+  // ── Static Files Router & Clean Path Resolution ─────────────────
   let targetPath = reqPath;
   if (targetPath === '/') targetPath = '/index.html';
   if (targetPath === '/he' || targetPath === '/he/') targetPath = '/he/index.html';
@@ -375,10 +394,25 @@ const server = http.createServer(async (req, res) => {
     filePath = filePath + '.html';
   }
 
+  // If path is a dynamic clean article route (e.g. /ai/some-slug or /article/some-slug or /he/ai/some-slug)
+  const segments = reqPath.split('/').filter(Boolean);
+  const isHeRoute = segments[0] === 'he';
+  const effectiveSegments = isHeRoute ? segments.slice(1) : segments;
+
+  if (!fs.existsSync(filePath) && effectiveSegments.length === 2) {
+    filePath = path.join(PUBLIC_DIR, isHeRoute ? 'he/article.html' : 'article.html');
+  } else if (!fs.existsSync(filePath) && effectiveSegments.length === 1 && !path.extname(reqPath)) {
+    // Dynamic category page fallback
+    const catHtml = path.join(PUBLIC_DIR, isHeRoute ? 'he/category.html' : 'category.html');
+    if (fs.existsSync(catHtml)) {
+      filePath = catHtml;
+    }
+  }
+
   fs.stat(filePath, (err, stats) => {
     if (err || !stats.isFile()) {
       res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
-      const notFoundPath = path.join(PUBLIC_DIR, '404.html');
+      const notFoundPath = path.join(PUBLIC_DIR, isHeRoute ? 'he/404.html' : '404.html');
       if (fs.existsSync(notFoundPath)) {
         return fs.createReadStream(notFoundPath).pipe(res);
       }

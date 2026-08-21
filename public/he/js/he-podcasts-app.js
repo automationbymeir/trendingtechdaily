@@ -52,7 +52,7 @@
     const countBadge = document.getElementById('he-podcast-count-badge') || document.getElementById('podcast-count-badge');
     if (!container) return;
 
-    const allPodcasts = window.TECH_PODCASTS_HE || [];
+    const allPodcasts = (typeof window !== 'undefined' && window.TECH_PODCASTS_HE) || (typeof TECH_PODCASTS_HE !== 'undefined' ? TECH_PODCASTS_HE : []);
 
     // סינון לפי קטגוריה ושאילתת חיפוש
     const filtered = allPodcasts.filter(p => {

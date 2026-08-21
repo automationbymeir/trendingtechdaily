@@ -4,7 +4,7 @@
  * Master Catalog of Hebrew Tech Podcasts with verified direct artwork and links.
  */
 
-const TECH_PODCASTS_HE = [
+var TECH_PODCASTS_HE = [
   {
     "id": "hightech-bafkakim",
     "title": "הייטק בפקקים",
@@ -396,6 +396,10 @@ const TECH_PODCASTS_HE = [
     "appleUrl": "https://podcasts.apple.com/us/search?term=%D7%A2%D7%AA%D7%99%D7%93+%D7%94%D7%98%D7%9B%D7%A0%D7%95%D7%9C%D7%95%D7%92%D7%99%D7%94"
   }
 ];
+
+if (typeof window !== 'undefined') {
+  window.TECH_PODCASTS_HE = TECH_PODCASTS_HE;
+}
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { TECH_PODCASTS_HE };

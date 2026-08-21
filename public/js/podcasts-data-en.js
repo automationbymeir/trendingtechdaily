@@ -5,7 +5,7 @@
  * and working direct Spotify, Apple, and YouTube links.
  */
 
-const TECH_PODCASTS_EN = [
+var TECH_PODCASTS_EN = [
   {
     "id": "lex-fridman-podcast",
     "title": "Lex Fridman Podcast",
@@ -1368,6 +1368,10 @@ const TECH_PODCASTS_EN = [
     "appleUrl": "https://podcasts.apple.com/us/search?term=Non+Breaking+Space+Show"
   }
 ];
+
+if (typeof window !== 'undefined') {
+  window.TECH_PODCASTS_EN = TECH_PODCASTS_EN;
+}
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { TECH_PODCASTS_EN };

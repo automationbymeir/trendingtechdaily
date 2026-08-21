@@ -54,7 +54,7 @@
     const countBadge = document.getElementById('podcast-count-badge');
     if (!container) return;
 
-    const allPodcasts = window.TECH_PODCASTS_EN || [];
+    const allPodcasts = (typeof window !== 'undefined' && window.TECH_PODCASTS_EN) || (typeof TECH_PODCASTS_EN !== 'undefined' ? TECH_PODCASTS_EN : []);
 
     // Filter by Category and Search Query
     const filtered = allPodcasts.filter(p => {

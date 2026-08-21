@@ -352,8 +352,8 @@ function renderLeadHeroFeature(article, isHe) {
   `;
 }
 
-// 2. Render Numbered Trending List (Right 32% Column)
-function renderTrendingStories(articles, isHe) {
+// 2. Render Trending Top 4 List (Right 32% Column)
+function renderTrendingTop4(articles, isHe) {
   const container = document.getElementById('trending-stories-list');
   if (!container || !articles || articles.length === 0) return;
 
@@ -386,6 +386,7 @@ function renderTrendingStories(articles, isHe) {
 
   container.innerHTML = html;
 }
+const renderTrendingStories = renderTrendingTop4;
 
 // 3. Render Secondary 3-Column Dispatches (מבזקים)
 function renderSecondaryDispatches(articles, isHe) {

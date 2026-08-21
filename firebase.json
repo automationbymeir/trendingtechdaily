@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "trendingtech-daily",
     "public": "public",
     "trailingSlash": false,
     "ignore": [
@@ -28,7 +29,11 @@
       { "source": "/he/signup.html", "destination": "/he/signup", "type": 301 },
       { "source": "/he/profile.html", "destination": "/he/profile", "type": 301 },
       { "source": "/he/links.html", "destination": "/he/links", "type": 301 },
-      { "source": "/he/newsletter.html", "destination": "/he/newsletter", "type": 301 }
+      { "source": "/he/newsletter.html", "destination": "/he/newsletter", "type": 301 },
+      { "source": "/article.html", "destination": "/article", "type": 301 },
+      { "source": "/he/article.html", "destination": "/he/article", "type": 301 },
+      { "source": "/category.html", "destination": "/", "type": 301 },
+      { "source": "/he/category.html", "destination": "/he", "type": 301 }
     ],
     "rewrites": [
       { "source": "/admin/components/components/email/**", "destination": "/admin/components/email/**" },
@@ -87,5 +92,17 @@
       { "source": "/:category/:article", "run": { "serviceId": "handlearticlerouting", "region": "us-central1" } },
       { "source": "/:category", "run": { "serviceId": "handlearticlerouting", "region": "us-central1" } }
     ]
-  }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log"
+      ]
+    }
+  ]
 }

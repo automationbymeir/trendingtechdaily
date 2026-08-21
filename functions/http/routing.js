@@ -161,8 +161,10 @@ async function renderArticleSSR(req, res, isHe = false) {
     const canonicalUrl = `${baseUrl}${canonicalPath}`;
     const readingTime = articleData.readingTimeMinutes || Math.max(3, Math.ceil((articleData.content || '').length / 1000)) || 5;
 
-    // Load base HTML template
-    const templatePath = path.resolve(__dirname, isHe ? '../../public/he/article.html' : '../../public/article.html');
+    // Load base HTML template (bundled in functions/templates or public)
+    const bundledPath = path.resolve(__dirname, isHe ? '../templates/he-article.html' : '../templates/article.html');
+    const publicPath = path.resolve(__dirname, isHe ? '../../public/he/article.html' : '../../public/article.html');
+    const templatePath = fs.existsSync(bundledPath) ? bundledPath : publicPath;
     let html = fs.existsSync(templatePath) 
       ? fs.readFileSync(templatePath, 'utf-8') 
       : getFallbackArticleHtml(isHe);
@@ -325,7 +327,9 @@ async function renderArticleSSR(req, res, isHe = false) {
 }
 
 function serve404(res, isHe) {
-  const notFoundPath = path.resolve(__dirname, isHe ? '../../public/he/404.html' : '../../public/404.html');
+  const bundledPath = path.resolve(__dirname, '../templates/404.html');
+  const publicPath = path.resolve(__dirname, '../../public/404.html');
+  const notFoundPath = fs.existsSync(bundledPath) ? bundledPath : publicPath;
   if (fs.existsSync(notFoundPath)) {
     res.set('Content-Type', 'text/html; charset=utf-8');
     return res.status(404).send(fs.readFileSync(notFoundPath, 'utf-8'));

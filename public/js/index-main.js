@@ -289,9 +289,7 @@ function updateBreakingNewsTicker(articles, isHe) {
   const topNews = articles.slice(0, 3);
   const flashItemsHtml = topNews.map((art, idx) => {
     const title = art.title || (isHe ? 'מבזק חדשות טכנולוגיה' : 'Breaking Tech Dispatch');
-    const slug = art.slug || art.id;
-    const artId = art.id || '';
-    const link = `${isHe ? '/he' : ''}/article.html?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(artId)}`;
+    const link = getArticleCleanUrl(art, isHe);
     const badgeText = idx === 0 ? (isHe ? 'מבזק חם' : 'BREAKING') : (isHe ? 'עדכון' : 'FLASH');
     return `
       <span class="ticker-item" style="cursor:pointer;" onclick="window.location.href='${link}'">
@@ -323,9 +321,7 @@ function renderLeadHeroFeature(article, isHe) {
   const author = article.author || (isHe ? 'מערכת האתר' : 'Julianne Reyes');
   const readingTime = article.readingTimeMinutes || 6;
   const image = article.featuredImage || 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&auto=format&fit=crop&q=80';
-  const slug = article.slug || article.id;
-  const artId = article.id || '';
-  const link = `${isHe ? '/he' : ''}/article.html?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(artId)}`;
+  const link = getArticleCleanUrl(article, isHe);
   const cat = resolveCategoryDisplayName(article.category, isHe, article);
   const badgeClass = getCategoryBadgeClass(article.category);
 
@@ -338,25 +334,26 @@ function renderLeadHeroFeature(article, isHe) {
       <div class="hero-lead-content">
         <div class="hero-title-wrap">
           <div class="hero-red-bar"></div>
-          <h1 class="hero-main-title">
-            <a href="${link}" style="color:#FFFFFF; text-decoration:none;">${title}</a>
-          </h1>
+          <div class="hero-title-inner">
+            <span class="badge ${badgeClass} mb-2">${cat}</span>
+            <h1 class="hero-lead-title">
+              <a href="${link}">${title}</a>
+            </h1>
+          </div>
         </div>
-        <p class="hero-standfirst">${excerpt}</p>
-        <div class="hero-meta-bar">
-          <span>${isHe ? 'מאת' : 'By'} <strong>${author}</strong></span>
+        <p class="hero-lead-excerpt">${excerpt}</p>
+        <div class="hero-lead-meta">
+          <span>${author}</span>
           <span>·</span>
-          <span>${readingTime} ${isHe ? 'דקות קריאה' : 'min read'}</span>
-          <span>·</span>
-          <span class="badge ${badgeClass}">${cat}</span>
+          <span><i class="bi bi-clock me-1"></i>${readingTime} ${isHe ? 'דקות קריאה' : 'min read'}</span>
         </div>
       </div>
     </article>
   `;
 }
 
-// 2. Render Trending Top 4 List (Right 32% Column)
-function renderTrendingTop4(articles, isHe) {
+// 2. Render Numbered Trending List (Right 32% Column)
+function renderTrendingStories(articles, isHe) {
   const container = document.getElementById('trending-stories-list');
   if (!container || !articles || articles.length === 0) return;
 
@@ -367,9 +364,7 @@ function renderTrendingTop4(articles, isHe) {
     const num = numbers[index] || `0${index + 1}`;
     const title = art.title || (isHe ? 'ידיעה טכנולוגית חמה' : 'Breaking Tech Dispatch');
     const author = art.author || (isHe ? 'מערכת האתר' : 'Staff');
-    const slug = art.slug || art.id;
-    const artId = art.id || '';
-    const link = `${isHe ? '/he' : ''}/article.html?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(artId)}`;
+    const link = getArticleCleanUrl(art, isHe);
     const cat = resolveCategoryDisplayName(art.category, isHe, art);
     const badgeClass = getCategoryBadgeClass(art.category);
 
@@ -409,9 +404,7 @@ function renderSecondaryDispatches(articles, isHe) {
     const excerpt = art.excerpt || art.summary || (isHe ? 'קרא עוד על מחקר והתפתחויות טכנולוגיות...' : 'Read full technology analysis and architectural breakdown...');
     const author = art.author || (isHe ? 'מערכת האתר' : 'TrendingTech');
     const image = art.featuredImage || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80';
-    const slug = art.slug || art.id;
-    const artId = art.id || '';
-    const link = `${isHe ? '/he' : ''}/article.html?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(artId)}`;
+    const link = getArticleCleanUrl(art, isHe);
     const cat = resolveCategoryDisplayName(art.category, isHe, art);
     const badgeClass = getCategoryBadgeClass(art.category);
     const pill = pillVariants[index % pillVariants.length];
@@ -455,9 +448,7 @@ function renderLatestNewsStream(articles, isHe) {
     const readingTime = art.readingTimeMinutes || 5;
     const date = art.createdAt?.toDate ? art.createdAt.toDate().toLocaleDateString(isHe ? 'he-IL' : 'en-US', { month: 'short', day: 'numeric' }) : 'Today';
     const image = art.featuredImage || 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop&q=80';
-    const slug = art.slug || art.id;
-    const artId = art.id || '';
-    const link = `${isHe ? '/he' : ''}/article.html?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(artId)}`;
+    const link = getArticleCleanUrl(art, isHe);
     const cat = resolveCategoryDisplayName(art.category, isHe, art);
     const badgeClass = getCategoryBadgeClass(art.category);
 
@@ -498,6 +489,7 @@ function loadAutonomousAgentsSpotlight(isHe) {
       title: 'סוכני קוד ו-Claude 3.7 Sonnet: מעבר מחיפוש להרצה אוטונומית',
       excerpt: 'ניתוח ארכיטקטורות Tool-Calling, פרוטוקול MCP והרצת קוד עצמאית בסביבות פיתוח מקומיות.',
       tag: 'סוכנים אוטונומיים',
+      category: 'ai',
       slug: 'claude-3-7-sonnet-agentic-execution',
       image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80'
     },
@@ -505,6 +497,7 @@ function loadAutonomousAgentsSpotlight(isHe) {
       title: 'רשת סוכני בינה מלאכותית: תיאום משימות מקביליות ומנגנוני קונצנזוס',
       excerpt: 'כיצד ארגונים רב-לאומיים מיישמים מערכי סוכנים עצמאיים לניהול שרשראות אספקה ופיתוח תוכנה.',
       tag: 'ארכיטקטורת סוכנים',
+      category: 'ai',
       slug: 'multi-agent-swarms-consensus',
       image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&auto=format&fit=crop&q=80'
     }
@@ -513,6 +506,7 @@ function loadAutonomousAgentsSpotlight(isHe) {
       title: 'Claude 3.7 Sonnet & Autonomous Code Execution: Moving from Search to Action',
       excerpt: 'Deep breakdown of Tool-Calling architectures, the Model Context Protocol (MCP), and self-healing execution runs.',
       tag: 'Autonomous Agents',
+      category: 'ai',
       slug: 'claude-3-7-sonnet-agentic-execution',
       image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80'
     },
@@ -527,7 +521,7 @@ function loadAutonomousAgentsSpotlight(isHe) {
 
   let html = '<div class="row g-4">';
   spotlightData.forEach(item => {
-    const link = isHe ? `/he/article.html?slug=${encodeURIComponent(item.slug)}` : `/article.html?slug=${encodeURIComponent(item.slug)}`;
+    const link = getArticleCleanUrl(item, isHe);
     html += `
       <div class="col-12 col-md-6">
         <div class="dispatch-card" style="background:var(--bg-surface-elevated); border-color:var(--accent-red);">

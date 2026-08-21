@@ -326,7 +326,7 @@ function renderArticlesGrid(container, articles, isHe, taxonomyItem) {
     const image = art.featuredImage || 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&auto=format&fit=crop&q=80';
     const slug = art.slug || art.id;
     const artId = art.id || '';
-    const link = `${isHe ? '/he' : ''}/article.html?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(artId)}`;
+    const link = getArticleCleanUrl(art, isHe);
     const badgeClass = taxonomyItem?.tagClass || 'badge-ai';
     const categoryLabel = resolveCategoryDisplayName(art.category, isHe, art);
 
@@ -389,8 +389,7 @@ async function loadCategorySidebar(isHe) {
         snap.forEach(doc => {
           const d = doc.data();
           const title = d.title || (isHe ? 'כתבה חדשה' : 'Recent Article');
-          const slug = d.slug || doc.id;
-          const link = isHe ? `/he/article.html?slug=${encodeURIComponent(slug)}` : `/article.html?slug=${encodeURIComponent(slug)}`;
+          const link = getArticleCleanUrl({ id: doc.id, slug: d.slug, category: d.category }, isHe);
           recHtml += `
             <li class="mb-2 pb-2 border-bottom" style="border-color:var(--border-color) !important;">
               <a href="${link}" style="color:var(--text-main); font-size:0.9rem; font-weight:600; text-decoration:none; line-height:1.3; display:block;">

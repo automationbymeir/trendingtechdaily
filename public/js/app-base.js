@@ -41,6 +41,18 @@ function getCategoryBadgeClass(category) {
 }
 window.getCategoryBadgeClass = getCategoryBadgeClass;
 
+// Clean SEO URL builder for articles
+function getArticleCleanUrl(article, isHe = false) {
+  if (!article) return isHe ? '/he' : '/';
+  const slug = (article.slug || article.id || '').trim();
+  let cat = 'ai';
+  if (article.category && typeof article.category === 'string' && !/^[A-Za-z0-9_-]{16,}$/.test(article.category)) {
+    cat = article.category.toLowerCase().trim().replace(/[^a-z0-9-]/g, '-');
+  }
+  return isHe ? `/he/${cat}/${slug}` : `/${cat}/${slug}`;
+}
+window.getArticleCleanUrl = getArticleCleanUrl;
+
 // Auth State Listener
 function setupAuthListener() {
   if (typeof auth === 'undefined') return;

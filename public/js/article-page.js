@@ -671,8 +671,7 @@ async function loadRelatedArticles(category, currentArticleId, isHe) {
       const title = d.title || (isHe ? 'כתבה קשורה' : 'Related Article');
       const author = d.author || (isHe ? 'מערכת האתר' : 'TrendingTech');
       const image = d.featuredImage || 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&auto=format&fit=crop&q=80';
-      const slug = d.slug || doc.id;
-      const link = isHe ? `/he/article.html?slug=${encodeURIComponent(slug)}` : `/article.html?slug=${encodeURIComponent(slug)}`;
+      const link = getArticleCleanUrl({ id: doc.id, slug: d.slug, category: d.category }, isHe);
       const cat = resolveCategoryDisplayName(d.category, isHe, d);
       count++;
 
@@ -728,8 +727,7 @@ async function loadSidebarTrending(isHe) {
     snap.forEach((doc, idx) => {
       const d = doc.data();
       const title = d.title || (isHe ? 'ידיעה טכנולוגית' : 'Tech Story');
-      const slug = d.slug || doc.id;
-      const link = isHe ? `/he/article.html?slug=${encodeURIComponent(slug)}` : `/article.html?slug=${encodeURIComponent(slug)}`;
+      const link = getArticleCleanUrl({ id: doc.id, slug: d.slug, category: d.category }, isHe);
       const num = `0${idx + 1}`;
 
       html += `

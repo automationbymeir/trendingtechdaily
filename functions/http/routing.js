@@ -371,8 +371,9 @@ function serve404(res, isHe) {
   const bundledPath = path.resolve(__dirname, '../templates/404.html');
   const publicPath = path.resolve(__dirname, '../../public/404.html');
   const notFoundPath = fs.existsSync(bundledPath) ? bundledPath : publicPath;
+  res.set('Content-Type', 'text/html; charset=utf-8');
+  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
   if (fs.existsSync(notFoundPath)) {
-    res.set('Content-Type', 'text/html; charset=utf-8');
     return res.status(404).send(fs.readFileSync(notFoundPath, 'utf-8'));
   }
   return res.status(404).send('<h1>404 Not Found</h1>');

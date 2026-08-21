@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
     articles.forEach(article => {
       const slug = article.slug || article.id;
       const artId = article.id || '';
-      const link = `${articleBaseUrl}?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(artId)}`;
+      const link = typeof getArticleCleanUrl === 'function' ? getArticleCleanUrl(article, isHe) : `${articleBaseUrl}?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(artId)}`;
       const title = article.title || (isHe ? 'ללא כותרת' : 'Untitled Article');
       const excerpt = article.excerpt || (article.content ? article.content.replace(/<[^>]+>/g, ' ').slice(0, 160) + '...' : '');
       const image = article.featuredImage || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80';

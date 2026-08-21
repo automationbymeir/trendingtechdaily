@@ -311,8 +311,7 @@ document.addEventListener('DOMContentLoaded', () => {
       snap.forEach(doc => {
         const d = doc.data();
         const title = d.title || (isHe ? 'כתבה שמורה' : 'Saved Article');
-        const slug = d.slug || doc.id;
-        const link = isHe ? `/he/article.html?slug=${encodeURIComponent(slug)}&id=${doc.id}` : `/article.html?slug=${encodeURIComponent(slug)}&id=${doc.id}`;
+        const link = typeof getArticleCleanUrl === 'function' ? getArticleCleanUrl({ id: doc.id, slug: d.slug, category: d.category }, isHe) : (isHe ? `/he/article.html?slug=${encodeURIComponent(d.slug || doc.id)}` : `/article.html?slug=${encodeURIComponent(d.slug || doc.id)}`);
         html += `
           <div class="d-flex align-items-center justify-content-between p-3 rounded" style="background:#1B1E29; border:1px solid #1E2330; transition:border-color 0.15s ease;">
             <a href="${link}" class="fw-bold small" style="color:#FFFFFF !important; text-decoration:none; font-size:0.9rem;">${title}</a>
@@ -344,8 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
       snap.forEach(doc => {
         const d = doc.data();
         const title = d.articleTitle || d.title || (isHe ? 'כתבה שנקראה' : 'Read Article');
-        const slug = d.articleSlug || d.slug || doc.id;
-        const link = isHe ? `/he/article.html?slug=${encodeURIComponent(slug)}&id=${doc.id}` : `/article.html?slug=${encodeURIComponent(slug)}&id=${doc.id}`;
+        const link = typeof getArticleCleanUrl === 'function' ? getArticleCleanUrl({ id: doc.id, slug: d.articleSlug || d.slug, category: d.category }, isHe) : (isHe ? `/he/article.html?slug=${encodeURIComponent(d.articleSlug || d.slug || doc.id)}` : `/article.html?slug=${encodeURIComponent(d.articleSlug || d.slug || doc.id)}`);
         html += `
           <div class="d-flex align-items-center justify-content-between p-3 rounded" style="background:#1B1E29; border:1px solid #1E2330; transition:border-color 0.15s ease;">
             <a href="${link}" class="small" style="color:#FFFFFF !important; text-decoration:none; font-size:0.875rem;">${title}</a>

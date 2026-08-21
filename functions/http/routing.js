@@ -79,59 +79,90 @@ async function renderArticleSSR(req, res, isHe = false) {
 
     let categorySlug = 'ai';
     let articleSlug = '';
+    let docId = '';
 
-    if (pathSegments.length >= 2) {
-      // Handles /:category/:article or /article/:slug
-      categorySlug = pathSegments[0];
-      articleSlug = pathSegments[1];
-    } else if (pathSegments.length === 1) {
-      // Could be /:category or /:slug
-      articleSlug = pathSegments[0];
-    }
-
-    // Fallback to query parameter if direct slug not found
-    if (!articleSlug && req.query.slug) {
+    // Check query parameters (?slug=... &id=... &article=...)
+    if (req.query.slug) {
       articleSlug = String(req.query.slug).trim();
     }
-    if (!articleSlug && req.query.article) {
+    if (req.query.id) {
+      docId = String(req.query.id).trim();
+    }
+    if (req.query.article) {
       articleSlug = String(req.query.article).trim();
     }
-    if (!articleSlug && req.query.id) {
-      articleSlug = String(req.query.id).trim();
+
+    // Check path segments if not provided via query
+    if (!articleSlug && !docId) {
+      if (pathSegments.length >= 2) {
+        if (pathSegments[0] === 'article') {
+          articleSlug = pathSegments[1];
+        } else {
+          categorySlug = pathSegments[0];
+          articleSlug = pathSegments[1];
+        }
+      } else if (pathSegments.length === 1 && pathSegments[0] !== 'article') {
+        articleSlug = pathSegments[0];
+      }
     }
 
-    if (!articleSlug) {
-      logger.warn("No article slug provided in request:", req.path);
+    if (!articleSlug && !docId) {
+      logger.warn("No article slug or docId provided in request:", req.path);
       return serve404(res, isHe);
     }
 
-    logger.info(`[SSR] Fetching article: "${articleSlug}" (isHe: ${isHe})`);
+    logger.info(`[SSR] Fetching article: slug="${articleSlug}", docId="${docId}" (isHe: ${isHe})`);
 
     // Fetch article from Firestore
     let articleData = null;
     let articleId = null;
 
-    // 1. Try finding by slug
-    const slugSnap = await db.collection("articles")
-      .where("slug", "==", articleSlug)
-      .limit(1)
-      .get();
+    // 1. Try finding by document ID if docId is provided
+    if (docId) {
+      try {
+        const docSnap = await db.collection("articles").doc(docId).get();
+        if (docSnap.exists) {
+          articleData = docSnap.data();
+          articleId = docSnap.id;
+        }
+      } catch (err) {
+        logger.warn(`[SSR] Error finding by docId "${docId}":`, err.message);
+      }
+    }
 
-    if (!slugSnap.empty) {
-      const doc = slugSnap.docs[0];
-      articleData = doc.data();
-      articleId = doc.id;
-    } else {
-      // 2. Try finding by document ID
-      const docSnap = await db.collection("articles").doc(articleSlug).get();
-      if (docSnap.exists) {
-        articleData = docSnap.data();
-        articleId = docSnap.id;
+    // 2. Try finding by slug
+    if (!articleData && articleSlug) {
+      try {
+        const slugSnap = await db.collection("articles")
+          .where("slug", "==", articleSlug)
+          .limit(1)
+          .get();
+
+        if (!slugSnap.empty) {
+          const doc = slugSnap.docs[0];
+          articleData = doc.data();
+          articleId = doc.id;
+        }
+      } catch (err) {
+        logger.warn(`[SSR] Error finding by slug "${articleSlug}":`, err.message);
+      }
+    }
+
+    // 3. Try finding by articleSlug as document ID
+    if (!articleData && articleSlug) {
+      try {
+        const docSnap = await db.collection("articles").doc(articleSlug).get();
+        if (docSnap.exists) {
+          articleData = docSnap.data();
+          articleId = docSnap.id;
+        }
+      } catch (err) {
+        logger.warn(`[SSR] Error finding by slug-as-docId:`, err.message);
       }
     }
 
     if (!articleData) {
-      logger.warn(`[SSR] Article not found: "${articleSlug}"`);
+      logger.warn(`[SSR] Article not found: slug="${articleSlug}", docId="${docId}"`);
       return serve404(res, isHe);
     }
 

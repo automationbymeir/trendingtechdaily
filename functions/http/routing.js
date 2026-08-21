@@ -113,51 +113,61 @@ async function renderArticleSSR(req, res, isHe = false) {
 
     logger.info(`[SSR] Fetching article: slug="${articleSlug}", docId="${docId}" (isHe: ${isHe})`);
 
-    // Fetch article from Firestore
+    // Fetch article from Firestore (scanning he_articles and articles)
     let articleData = null;
     let articleId = null;
+    const collectionsToScan = isHe ? ['he_articles', 'articles'] : ['articles', 'he_articles'];
 
     // 1. Try finding by document ID if docId is provided
     if (docId) {
-      try {
-        const docSnap = await db.collection("articles").doc(docId).get();
-        if (docSnap.exists) {
-          articleData = docSnap.data();
-          articleId = docSnap.id;
+      for (const col of collectionsToScan) {
+        if (articleData) break;
+        try {
+          const docSnap = await db.collection(col).doc(docId).get();
+          if (docSnap.exists) {
+            articleData = docSnap.data();
+            articleId = docSnap.id;
+          }
+        } catch (err) {
+          logger.warn(`[SSR] Error finding by docId "${docId}" in ${col}:`, err.message);
         }
-      } catch (err) {
-        logger.warn(`[SSR] Error finding by docId "${docId}":`, err.message);
       }
     }
 
     // 2. Try finding by slug
     if (!articleData && articleSlug) {
-      try {
-        const slugSnap = await db.collection("articles")
-          .where("slug", "==", articleSlug)
-          .limit(1)
-          .get();
+      for (const col of collectionsToScan) {
+        if (articleData) break;
+        try {
+          const slugSnap = await db.collection(col)
+            .where("slug", "==", articleSlug)
+            .limit(1)
+            .get();
 
-        if (!slugSnap.empty) {
-          const doc = slugSnap.docs[0];
-          articleData = doc.data();
-          articleId = doc.id;
+          if (!slugSnap.empty) {
+            const doc = slugSnap.docs[0];
+            articleData = doc.data();
+            articleId = doc.id;
+          }
+        } catch (err) {
+          logger.warn(`[SSR] Error finding by slug "${articleSlug}" in ${col}:`, err.message);
         }
-      } catch (err) {
-        logger.warn(`[SSR] Error finding by slug "${articleSlug}":`, err.message);
       }
     }
 
     // 3. Try finding by articleSlug as document ID
     if (!articleData && articleSlug) {
-      try {
-        const docSnap = await db.collection("articles").doc(articleSlug).get();
-        if (docSnap.exists) {
-          articleData = docSnap.data();
-          articleId = docSnap.id;
+      for (const col of collectionsToScan) {
+        if (articleData) break;
+        try {
+          const docSnap = await db.collection(col).doc(articleSlug).get();
+          if (docSnap.exists) {
+            articleData = docSnap.data();
+            articleId = docSnap.id;
+          }
+        } catch (err) {
+          logger.warn(`[SSR] Error finding by slug-as-docId in ${col}:`, err.message);
         }
-      } catch (err) {
-        logger.warn(`[SSR] Error finding by slug-as-docId:`, err.message);
       }
     }
 

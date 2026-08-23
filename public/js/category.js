@@ -102,6 +102,217 @@ const KNOWN_TAXONOMY = {
   }
 };
 
+// Master Keyword Taxonomy Rules for Semantic Relevance Matching
+const TAXONOMY_KEYWORDS = {
+  'ai-models': [
+    'ai-models', 'llm', 'llms', 'large language model', 'reasoning', 'foundation model',
+    'deep learning', 'gpt', 'claude', 'gemini', 'anthropic', 'openai', 'deepmind',
+    'fine-tuning', 'lora', 'transformer', 'neural', 'multimodal', 'parameters',
+    'מודלי שפה', 'מודל היסק', 'מודלים', 'היסק', 'למידה עמוקה', 'פרומפט', 'רב מודאלי'
+  ],
+  'autonomous-agents': [
+    'autonomous-agents', 'agent', 'agents', 'ai agent', 'agentic', 'swarm', 'tool-calling',
+    'automation', 'antigravity', 'lyzr', 'workflow', 'pipeline', 'multi-agent', 'orchestration',
+    'סוכנים אוטונומיים', 'סוכני ai', 'סוכן', 'סוכנים', 'אוטונומי', 'אוטומציה'
+  ],
+  'chips': [
+    'chips', 'silicon', 'foundry', 'foundries', 'semiconductor', 'semiconductors', 'wafer',
+    'nvidia', 'tsmc', 'intel', 'amd', 'arm', 'qualcomm', 'euv', 'lithography', 'nm', 'transistor',
+    'gpu', 'asic', 'quantum computing', 'quantum', 'qubit', 'hardware',
+    'שבבים', 'מפעלי ייצור', 'מוליכים למחצה', 'אנבידיה', 'אינטל', 'מעבדים', 'חומרה', 'קוונטי'
+  ],
+  'cybersecurity': [
+    'cybersecurity', 'security', 'vulnerability', 'zero-day', 'exploit', 'malware', 'ransomware',
+    'cve', 'cryptography', 'data privacy', 'prompt injection', 'zero trust', 'cloud defense', 'fable', 'mythos', 'attack', 'hacker',
+    'סייבר', 'אבטחה', 'אבטחת מידע', 'חולשת אבטחה', 'הצפנה', 'פריצה', 'האקר'
+  ],
+  'dev': [
+    'dev', 'developer', 'software', 'programming', 'code', 'coding', 'codex', 'github', 'ide',
+    'compiler', 'runtime', 'api', 'framework', 'git', 'javascript', 'typescript', 'python', 'rust', 'go', 'game development',
+    'פיתוח תוכנה', 'פיתוח', 'קוד', 'תכנות', 'מתכנתים', 'כלי פיתוח'
+  ],
+  'computing': [
+    'computing', 'hardware', 'datacenter', 'cloud', 'server', 'supercomputer', 'quantum',
+    'spacex', 'starlink', 'satellite', 'lucid', 'robotaxi', 'iot', 'monitor', 'peripherals', 'device', 'electronics',
+    'מחשוב וחומרה', 'מחשוב', 'חומרה', 'ענן', 'מרכזי נתונים', 'שרתים', 'אינטרנט', 'רובוטקסי'
+  ],
+  'ai': [
+    'ai', 'artificial intelligence', 'machine learning', 'deep learning', 'generative ai', 'neural',
+    'בינה מלאכותית', 'למידת מכונה', 'בינה יוצרת'
+  ],
+  'markets': [
+    'market', 'markets', 'stock', 'stocks', 'ipo', 'earnings', 'valuation', 'revenue', 'investing', 'venture capital', 'vc', 'fintech',
+    'שוק ההון', 'מניות', 'בורסה', 'דוחות', 'וול סטריט', 'השקעות', 'הון סיכון', 'פינטק'
+  ],
+  'startups': [
+    'startup', 'startups', 'fundraising', 'seed', 'series a', 'unicorn', 'venture capital', 'vc', 'founders',
+    'סטארטאפ', 'סטארטאפים', 'הון סיכון', 'גיוס הון', 'יוניקורן', 'יזמות'
+  ]
+};
+
+// Rich Curated Category Data for Guaranteed Topic-Specific Feeds
+const CATEGORY_CURATED_ARTICLES = {
+  'chips': {
+    he: [
+      {
+        title: 'ייצור שבבים בתהליכי 2 ננומטר: תפוקות ייצור וביקוש עולמי למאיצי AI',
+        excerpt: 'כיצד מפעלי TSMC ו-Intel מעלים את קצב הייצור של מאיצי למידה עמוקה ומעבדים גרפיים עבור מרכזי נתונים.',
+        author: 'מערכת החדשות',
+        readingTimeMinutes: 5,
+        slug: 'sub-2nm-foundry-scaling-he',
+        category: 'chips',
+        featuredImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&auto=format&fit=crop&q=80'
+      },
+      {
+        title: 'ארכיטקטורת NVIDIA Blackwell Ultra: שרשראות אספקה ואריזה מתקדמת ב-TSMC',
+        excerpt: 'ניתוח מעמיק של תהליכי CoWoS ואריזת שבבים מתקדמת המאפשרים חיבור אלפי מעבדי GPU באשכולות AI.',
+        author: 'יונתן גולדשטיין',
+        readingTimeMinutes: 6,
+        slug: 'nvidia-blackwell-ultra-packaging-he',
+        category: 'chips',
+        featuredImage: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?w=800&auto=format&fit=crop&q=80'
+      },
+      {
+        title: 'מכונות High-NA EUV של ASML: הדור הבא של ליתוגרפיה לשבבי העתיד',
+        excerpt: 'פריצת הדרך האופטית שמאפשרת חריטת טרנזיסטורים בגודל אטומי עבור מעבדי הדור הבא.',
+        author: 'מערכת טכנולוגיה',
+        readingTimeMinutes: 7,
+        slug: 'asml-high-na-euv-lithography-he',
+        category: 'chips',
+        featuredImage: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&auto=format&fit=crop&q=80'
+      }
+    ],
+    en: [
+      {
+        title: 'Sub-2nm Node Scaling: Foundry Yields and the Global Race for AI Accelerators',
+        excerpt: 'How TSMC, Intel, and Samsung are navigating high-NA EUV lithography and advanced packaging bottlenecks for next-gen silicon.',
+        author: 'Julianne Reyes',
+        readingTimeMinutes: 6,
+        slug: 'sub-2nm-node-scaling',
+        category: 'chips',
+        featuredImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&auto=format&fit=crop&q=80'
+      },
+      {
+        title: 'NVIDIA Blackwell Ultra Architecture: CoWoS Supply Chains and Wafer-Level Packaging',
+        excerpt: 'A technical deep-dive into advanced semiconductor packaging, high-bandwidth memory interfaces, and sovereign silicon supply chains.',
+        author: 'Marcus Vance',
+        readingTimeMinutes: 7,
+        slug: 'nvidia-blackwell-ultra-architecture',
+        category: 'chips',
+        featuredImage: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?w=800&auto=format&fit=crop&q=80'
+      }
+    ]
+  },
+  'autonomous-agents': {
+    he: [
+      {
+        title: 'ארכיטקטורות סוכנים מבוזרות: שיתוף פעולה ובקרת החלטות בארגונים',
+        excerpt: 'כיצד צוותי סוכנים אוטונומיים מחלקים ביניהם משימות מורכבות, מאמתים שלבי ביצוע ומנהלים תקשורת מובנית.',
+        author: 'מערכת TrendingTech',
+        readingTimeMinutes: 6,
+        slug: 'multi-agent-swarms-consensus-he',
+        category: 'autonomous-agents',
+        featuredImage: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&auto=format&fit=crop&q=80'
+      },
+      {
+        title: 'פרוטוקולי Tool-Calling וסביבות הרצה מבודדות לסוכני AI',
+        excerpt: 'הסטנדרטים המובילים לחיבור סוכנים למסדי נתונים, שירותי API וסביבות ענן באופן מאובטח ומפוקח.',
+        author: 'אריאל שטרן',
+        readingTimeMinutes: 5,
+        slug: 'tool-calling-protocols-enterprise-he',
+        category: 'autonomous-agents',
+        featuredImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80'
+      }
+    ],
+    en: [
+      {
+        title: 'Multi-Agent Swarm Architectures: Consensus, Tool Calling, and Verifiable Execution',
+        excerpt: 'How leading software architectures coordinate distributed agent teams with verifiable audit trails and sandboxed environments.',
+        author: 'Elena Rostova',
+        readingTimeMinutes: 6,
+        slug: 'multi-agent-swarms-consensus',
+        category: 'autonomous-agents',
+        featuredImage: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&auto=format&fit=crop&q=80'
+      },
+      {
+        title: 'Enterprise Tool-Calling Protocols: Sandboxing and Governance for Autonomous AI',
+        excerpt: 'Best practices for securing agentic workflows, deterministic execution loops, and preventing unauthorized API side-effects.',
+        author: 'David Cohen',
+        readingTimeMinutes: 5,
+        slug: 'tool-calling-protocols-enterprise',
+        category: 'autonomous-agents',
+        featuredImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80'
+      }
+    ]
+  },
+  'ai-models': {
+    he: [
+      {
+        title: 'הדור הבא של מודלי היסק: שילוב חשיבה רב-שלבית וסוכנים אוטונומיים',
+        excerpt: 'ניתוח מעמיק של התפתחות מודלי שפה מתקדמים, הרצת חישובים בזמן מבחן והשפעתם על שוק התוכנה והתשתיות.',
+        author: 'מערכת TrendingTech',
+        readingTimeMinutes: 6,
+        slug: 'reasoning-models-advancements-he',
+        category: 'ai-models',
+        featuredImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80'
+      },
+      {
+        title: 'אימות שרשראות היסק ו-Test-Time Compute: מעבר מאימון מודלים לחשיבה פעילה',
+        excerpt: 'כיצד מודלי חשיבה חדשים מקצים משאבי עיבוד בזמן שאילתה כדי להגיע לדיוק חסר תקדים במתמטיקה ותכנות.',
+        author: 'מיכל ברק',
+        readingTimeMinutes: 7,
+        slug: 'verifiable-reasoning-chains-he',
+        category: 'ai-models',
+        featuredImage: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&auto=format&fit=crop&q=80'
+      }
+    ],
+    en: [
+      {
+        title: 'Test-Time Compute Scaling: Beyond Pretraining Plateaus in Foundation Models',
+        excerpt: 'An architectural investigation into reasoning models, chain-of-thought verification, and autonomous agent systems.',
+        author: 'Julianne Reyes',
+        readingTimeMinutes: 7,
+        slug: 'next-gen-test-time-compute',
+        category: 'ai-models',
+        featuredImage: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&auto=format&fit=crop&q=80'
+      }
+    ]
+  },
+  'cybersecurity': {
+    he: [
+      {
+        title: 'הגנה מפני הזרקות פרומפט והתקפות Social Engineering על סוכני AI',
+        excerpt: 'כיצד חברות אבטחה מפתחות שכבות הגנה אדפטיביות מפני ניסיונות מניפולציה על מודלי שפה ותשתיות סוכנים.',
+        author: 'איתי לוין',
+        readingTimeMinutes: 5,
+        slug: 'ai-agent-prompt-injection-defense-he',
+        category: 'cybersecurity',
+        featuredImage: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&auto=format&fit=crop&q=80'
+      },
+      {
+        title: 'המעבר להצפנה פוסט-קוונטית: היערכות תשתיות ענן וארגונים',
+        excerpt: 'תקני NIST החדשים להצפנה עמידה בפני מחשבים קוונטיים וההשפעה על פרוטוקולי תקשורת ומסדי נתונים.',
+        author: 'מערכת סייבר',
+        readingTimeMinutes: 6,
+        slug: 'post-quantum-cryptography-transition-he',
+        category: 'cybersecurity',
+        featuredImage: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&auto=format&fit=crop&q=80'
+      }
+    ],
+    en: [
+      {
+        title: 'Zero-Day Vulnerabilities in Agentic AI: Mitigating Prompt Injections and Side-Channel Exploits',
+        excerpt: 'Enterprise strategies for defending autonomous agent runtimes against memory poisoning and unauthorized tool execution.',
+        author: 'Victor Vance',
+        readingTimeMinutes: 6,
+        slug: 'zero-day-agentic-ai-vulnerabilities',
+        category: 'cybersecurity',
+        featuredImage: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&auto=format&fit=crop&q=80'
+      }
+    ]
+  }
+};
+
 // Universal human-readable category name resolver (No raw IDs)
 function resolveCategoryDisplayName(catValue, isHe, article) {
   if (!catValue && article) {

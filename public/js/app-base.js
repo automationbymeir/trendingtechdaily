@@ -89,35 +89,41 @@ function loadSections() {
     return Promise.resolve();
   }
 
-  const collectionName = isHe ? 'he_sections' : 'sections';
+  const sectionsCol = isHe ? 'he_sections' : 'sections';
 
-  return db.collection(collectionName)
-    .where('active', '==', true)
-    .orderBy('order')
-    .limit(10)
+  db.collection(sectionsCol)
+    .limit(25)
     .get()
     .then(snap => {
       let footerHTML = '';
       let sideHTML = '';
 
       if (!snap.empty) {
+        const sections = [];
         snap.forEach(doc => {
-          const section = { id: doc.id, ...doc.data() };
-          const slug = section.slug || doc.id;
+          const d = doc.data();
+          if (d.active !== false) {
+            sections.push({ id: doc.id, ...d });
+          }
+        });
+        sections.sort((a, b) => (a.order || 0) - (b.order || 0));
+
+        sections.forEach(section => {
+          const slug = section.slug || section.id;
           const name = section.name || (isHe ? (BASE_TAXONOMY[slug]?.nameHe || slug) : (BASE_TAXONOMY[slug]?.name || slug));
-          const url = isHe ? `/he/category.html?slug=${encodeURIComponent(slug)}` : `/category.html?slug=${encodeURIComponent(slug)}`;
+          const url = isHe ? `/he/${encodeURIComponent(slug)}` : `/${encodeURIComponent(slug)}`;
 
           footerHTML += `<li><a href="${url}">${name}</a></li>`;
           sideHTML += `<li><a href="${url}" class="d-flex justify-content-between align-items-center"><span class="text-main fw-bold">${name}</span></a></li>`;
 
-          categoryCache[doc.id] = { name: name, slug: slug, nameHe: section.nameHe || name };
+          categoryCache[section.id] = { name: name, slug: slug, nameHe: section.nameHe || name };
           categoryCache[slug] = { name: name, slug: slug, nameHe: section.nameHe || name };
         });
       } else {
         // Fallback default taxonomy items
         Object.entries(BASE_TAXONOMY).forEach(([k, item]) => {
           const name = isHe ? item.nameHe : item.name;
-          const url = isHe ? `/he/category.html?slug=${item.slug}` : `/category.html?slug=${item.slug}`;
+          const url = isHe ? `/he/${item.slug}` : `/${item.slug}`;
           footerHTML += `<li><a href="${url}">${name}</a></li>`;
           sideHTML += `<li><a href="${url}" class="d-flex justify-content-between align-items-center"><span class="text-main fw-bold">${name}</span></a></li>`;
           categoryCache[item.slug] = item;

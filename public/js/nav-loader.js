@@ -34,6 +34,7 @@ function initializeNavigation() {
   if (navAlreadyLoaded) {
     setupNavInteractions();
     initializeResponsiveCategories();
+    highlightActiveNavigationLinks();
     if (window.initializeAuth) {
       window.initializeAuth();
     } else if (window.updateAuthUI && typeof firebase !== 'undefined' && firebase.auth) {
@@ -43,6 +44,7 @@ function initializeNavigation() {
     loadHTML(navFile, 'navbar-placeholder', () => {
       setupNavInteractions();
       initializeResponsiveCategories();
+      highlightActiveNavigationLinks();
       if (window.initializeAuth) {
         window.initializeAuth();
       } else if (window.updateAuthUI && typeof firebase !== 'undefined' && firebase.auth) {
@@ -269,6 +271,44 @@ function loadFooterCategories() {
   const footerDesc = document.getElementById('footer-description');
   if (footerDesc && isHebrew) {
     footerDesc.textContent = 'מודיעין טכנולוגי בזמן אמת, פריצות דרך בבינה מלאכותית, ניתוחי חומרה ומערכות עיצוב למהנדסים ולמובילי טכנולוגיה.';
+  }
+}
+
+/**
+ * Highlights active navigation links across header, subnav ribbon, and mobile drawer
+ */
+function highlightActiveNavigationLinks() {
+  const path = window.location.pathname;
+  const urlParams = new URLSearchParams(window.location.search);
+  const slug = urlParams.get('slug') || urlParams.get('category');
+
+  const links = document.querySelectorAll('.nav-link, .subnav-link, .drawer-nav-link');
+  if (!links || links.length === 0) return;
+
+  links.forEach(link => {
+    const href = link.getAttribute('href');
+    if (!href) return;
+
+    link.classList.remove('active');
+
+    // 1. Exact match with query or path
+    if (href === path || href === window.location.pathname + window.location.search) {
+      link.classList.add('active');
+    }
+    // 2. Slug match (e.g. /chips, /he/chips, ?slug=chips)
+    else if (slug && href.includes(slug)) {
+      link.classList.add('active');
+    }
+    // 3. Subtopic match in clean URLs
+    else if (path.includes(href) && href !== '/' && href !== '/he') {
+      link.classList.add('active');
+    }
+  });
+
+  // If no link is active on the homepage, activate the Home link
+  if (path === '/' || path === '/he' || path === '/index.html' || path === '/he/index.html') {
+    const homeLinks = document.querySelectorAll('a[href="/"], a[href="/he"]');
+    homeLinks.forEach(l => l.classList.add('active'));
   }
 }
 

@@ -445,6 +445,15 @@ function renderFallbackCategoryArticles(container, categorySlug, taxonomyItem, i
 // Auto-run on load
 document.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
-  const slug = urlParams.get('slug') || urlParams.get('category') || 'ai';
-  loadCategory(slug);
+  let slug = urlParams.get('slug') || urlParams.get('category');
+  if (!slug) {
+    const pathSegments = window.location.pathname.split('/').filter(Boolean);
+    if (pathSegments[0] === 'he') pathSegments.shift();
+    if (pathSegments.length > 0 && !pathSegments[0].includes('.html') && pathSegments[0] !== 'category') {
+      slug = pathSegments[0];
+    } else if (pathSegments.length >= 2 && pathSegments[0] === 'category') {
+      slug = pathSegments[1];
+    }
+  }
+  loadCategory(slug || 'ai');
 });

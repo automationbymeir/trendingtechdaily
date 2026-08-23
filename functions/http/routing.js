@@ -4,18 +4,90 @@ const { db, logger } = require("../config");
 
 // Master Category Taxonomy
 const KNOWN_TAXONOMY = {
-  'ai': { name: 'Artificial Intelligence', nameHe: 'בינה מלאכותית' },
-  'ai-models': { name: 'Reasoning Models & LLMs', nameHe: 'מודלי היסק ו-LLM' },
-  'autonomous-agents': { name: 'Autonomous AI Agents', nameHe: 'סוכנים אוטונומיים' },
-  'dev': { name: 'Developer Tools', nameHe: 'כלי פיתוח' },
-  'computing': { name: 'Computing & Hardware', nameHe: 'מחשוב וחומרה' },
-  'chips': { name: 'Silicon & Foundries', nameHe: 'שבבים ומפעלי ייצור' },
-  'markets': { name: 'Tech Equities & Markets', nameHe: 'שוק ההון ומניות' },
-  'startups': { name: 'VC & Tech Startups', nameHe: 'סטארטאפים והון סיכון' },
-  'cybersecurity': { name: 'Cybersecurity & Defense', nameHe: 'סייבר ואבטחה' },
-  'security': { name: 'Cybersecurity & Defense', nameHe: 'סייבר ואבטחה' },
-  'top-stories': { name: 'Top Tech Stories', nameHe: 'חדשות מובילות' },
-  'gadgets': { name: 'Consumer Tech', nameHe: 'גאדגטים וחומרה' }
+  'ai': {
+    name: 'Artificial Intelligence',
+    nameHe: 'בינה מלאכותית',
+    description: 'Latest breakthroughs in large language models, multimodal reasoning systems, deep learning architectures, and agentic workflows.',
+    descriptionHe: 'ההתפתחויות והחידושים האחרונים במודלי שפה גדולים, מערכות היסק רב-מודאליות, ארכיטקטורות למידה עמוקה וסוכנים אוטונומיים.',
+    tagClass: 'badge-ai'
+  },
+  'ai-models': {
+    name: 'Reasoning Models & LLMs',
+    nameHe: 'מודלי שפה והיסק',
+    description: 'Deep architectural dives into test-time compute scaling, verifiable chain-of-thought tokens, and foundation model benchmarks.',
+    descriptionHe: 'ניתוחים מעמיקים של ארכיטקטורות חישוב בזמן מבחן, מודלי היסק מתקדמים ומבחני ביצועים של מודלי תשתית.',
+    tagClass: 'badge-ai'
+  },
+  'autonomous-agents': {
+    name: 'Autonomous AI Agents',
+    nameHe: 'סוכנים אוטונומיים',
+    description: 'Autonomous execution pipelines, tool-calling swarms, multi-agent coordination frameworks, and enterprise runtime environments.',
+    descriptionHe: 'צינורות הרצה אוטונומיים, סביבות ריבוי סוכנים, חיבורי כלים (Tool-calling) ותשתיות סוכנים בארגונים.',
+    tagClass: 'badge-ai'
+  },
+  'dev': {
+    name: 'Developer Tools & Architecture',
+    nameHe: 'פיתוח תוכנה',
+    description: 'Next-gen toolchains, compiler innovations, agentic IDEs, web runtimes, and high-performance software engineering patterns.',
+    descriptionHe: 'סביבות פיתוח מבוססות AI, קומפיילרים חדישים, ארכיטקטורת תוכנה וביצועים של מערכות קוד פתוח.',
+    tagClass: 'badge-dev'
+  },
+  'computing': {
+    name: 'Computing & Hardware',
+    nameHe: 'מחשוב וחומרה',
+    description: 'Semiconductor scaling, datacenter superclusters, optical interconnects, serverless hardware, and quantum processors.',
+    descriptionHe: 'טכנולוגיות שבבים, אשכולות שרתים עתירי עיבוד, חיבורים אופטיים מהירים ומחשוב קוונטי.',
+    tagClass: 'badge-chips'
+  },
+  'chips': {
+    name: 'Silicon & Foundries',
+    nameHe: 'שבבים ומפעלי ייצור',
+    description: 'Advanced packaging, TSMC/Intel/NVIDIA wafer yields, sub-2nm nodes, EUV lithography, and sovereign chip supply chains.',
+    descriptionHe: 'ייצור שבבים בתהליכי 2nm ומטה, נתוני תפוקה במפעלי ייצור, ליתוגרפיה מתקדמת ושרשראות אספקה גלובליות.',
+    tagClass: 'badge-chips'
+  },
+  'markets': {
+    name: 'Tech Equities & Markets',
+    nameHe: 'שוק ההון ומניות',
+    description: 'Financial analysis, public tech company earnings, semiconductor valuation multiples, and market momentum indicators.',
+    descriptionHe: 'ניתוח מניות טכנולוגיה מובילות, דוחות רווח והפסד, מדדי תעשיית השבבים ומגמות בוול סטריט.',
+    tagClass: 'badge-purple'
+  },
+  'startups': {
+    name: 'VC & Tech Startups',
+    nameHe: 'סטארטאפים והון סיכון',
+    description: 'Venture funding trends, AI unicorn valuations, seed rounds, growth acceleration, and founder post-mortems.',
+    descriptionHe: 'גיוסי הון סיכון, סטארטאפים בתחום ה-AI, חברות יוניקורן ומגמות בהשקעות טכנולוגיות.',
+    tagClass: 'badge-ai'
+  },
+  'cybersecurity': {
+    name: 'Cybersecurity & Defense',
+    nameHe: 'סייבר ואבטחה',
+    description: 'Zero-day vulnerability tracking, post-quantum cryptographic standards, cloud defense posture, and autonomous threat mitigation.',
+    descriptionHe: 'חקר חולשות אבטחה, הצפנה פוסט-קוונטית, אבטחת ענן והגנה מבוססת מערכות למידה.',
+    tagClass: 'badge-security'
+  },
+  'security': {
+    name: 'Cybersecurity & Defense',
+    nameHe: 'סייבר ואבטחה',
+    description: 'Zero-day vulnerability tracking, post-quantum cryptographic standards, cloud defense posture, and autonomous threat mitigation.',
+    descriptionHe: 'חקר חולשות אבטחה, הצפנה פוסט-קוונטית, אבטחת ענן והגנה מבוססת מערכות למידה.',
+    tagClass: 'badge-security'
+  },
+  'top-stories': {
+    name: 'Top Tech Stories',
+    nameHe: 'כתבות מובילות',
+    description: 'The most impactful technology stories, major corporate shifts, breakthrough research papers, and breaking dispatches.',
+    descriptionHe: 'הידיעות המשפיעות ביותר בעולם הטכנולוגיה, מחקרים פורצי דרך ועדכונים שוטפים בזמן אמת.',
+    tagClass: 'badge-ai'
+  },
+  'gadgets': {
+    name: 'Consumer Tech & Hardware',
+    nameHe: 'גאדגטים וחומרה',
+    description: 'Spatial computing, smart wearables, next-gen display tech, and consumer electronics teardowns.',
+    descriptionHe: 'מכשירי מחשוב מרחבי, מחשוב לביש, מסכי הדור הבא וגאדגטים טכנולוגיים מתקדמים.',
+    tagClass: 'badge-dev'
+  }
 };
 
 function resolveCategoryName(catValue, isHe) {
@@ -66,6 +138,55 @@ function renderTagsHtml(tags, isHe) {
 }
 
 /**
+ * Universal SSR Renderer for Category Pages (English & Hebrew)
+ */
+async function renderCategorySSR(req, res, categorySlug, isHe = false) {
+  try {
+    const cleanSlug = (categorySlug || req.query.slug || 'ai').toLowerCase().trim();
+    const taxonomyItem = KNOWN_TAXONOMY[cleanSlug] || {
+      name: cleanSlug.charAt(0).toUpperCase() + cleanSlug.slice(1),
+      nameHe: cleanSlug,
+      description: 'Curated technology articles and dispatches from TrendingTech Daily.',
+      descriptionHe: 'מאמרים וניתוחים טכנולוגיים מקיפים מבית TrendingTech Daily.',
+      tagClass: 'badge-ai'
+    };
+
+    const displayName = isHe ? (taxonomyItem.nameHe || taxonomyItem.name) : taxonomyItem.name;
+    const displayDesc = isHe ? (taxonomyItem.descriptionHe || taxonomyItem.description) : taxonomyItem.description;
+    const canonicalPath = isHe ? `/he/${cleanSlug}` : `/${cleanSlug}`;
+    const canonicalUrl = `https://trendingtechdaily.com${canonicalPath}`;
+
+    const bundledPath = path.resolve(__dirname, isHe ? '../templates/he-category.html' : '../templates/category.html');
+    const publicPath = path.resolve(__dirname, isHe ? '../../public/he/category.html' : '../../public/category.html');
+    const templatePath = fs.existsSync(bundledPath) ? bundledPath : publicPath;
+    let html = fs.existsSync(templatePath) ? fs.readFileSync(templatePath, 'utf-8') : '';
+
+    if (!html) {
+      return serve404(res, isHe);
+    }
+
+    // Inject title and metadata
+    html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${displayName} — TrendingTech Daily</title>`);
+    html = html.replace(/<link id="canonicalLink"[\s\S]*?>/i, `<link id="canonicalLink" rel="canonical" href="${canonicalUrl}" />`);
+    html = html.replace(/<meta name="description"[\s\S]*?>/i, `<meta name="description" content="${displayDesc}" />`);
+    html = html.replace(/<meta property="og:title" id="ogTitle"[\s\S]*?>/i, `<meta property="og:title" id="ogTitle" content="${displayName} — TrendingTech Daily" />`);
+    html = html.replace(/<meta property="og:description" id="ogDescription"[\s\S]*?>/i, `<meta property="og:description" id="ogDescription" content="${displayDesc}" />`);
+    html = html.replace(/<meta property="og:url" id="ogUrl"[\s\S]*?>/i, `<meta property="og:url" id="ogUrl" content="${canonicalUrl}" />`);
+    
+    // Inject rendered category title and description into hero
+    html = html.replace(/<h1 class="hero-main-title" id="category-title"[\s\S]*?>[\s\S]*?<\/h1>/i, `<h1 class="hero-main-title" id="category-title" style="font-size:clamp(1.75rem, 3.5vw, 2.5rem); margin-bottom:0.5rem;">${displayName}</h1>`);
+    html = html.replace(/<p id="category-description"[\s\S]*?>[\s\S]*?<\/p>/i, `<p id="category-description" style="color:var(--text-muted); font-size:1.05rem; margin-bottom:0; max-width:750px;">${displayDesc}</p>`);
+
+    res.set('Content-Type', 'text/html; charset=utf-8');
+    res.set('Cache-Control', 'public, max-age=600, s-maxage=3600');
+    return res.status(200).send(html);
+  } catch (err) {
+    logger.error("Error in renderCategorySSR:", err);
+    return serve404(res, isHe);
+  }
+}
+
+/**
  * Universal SSR Renderer for Articles (English & Hebrew)
  */
 async function renderArticleSSR(req, res, isHe = false) {
@@ -75,6 +196,25 @@ async function renderArticleSSR(req, res, isHe = false) {
     if (pathSegments[0] === 'he') {
       pathSegments.shift();
       isHe = true;
+    }
+
+    // 0. Check if this is a Category Page request
+    const isExplicitCategory = (pathSegments.length > 0 && (pathSegments[0] === 'category' || pathSegments[0] === 'category.html')) || 
+                               req.path.includes('category.html') || 
+                               req.path.includes('/category');
+    const isKnownTaxonomySlug = (pathSegments.length === 1 && KNOWN_TAXONOMY[pathSegments[0].toLowerCase()]) ||
+                                (req.query.slug && KNOWN_TAXONOMY[req.query.slug.toLowerCase()] && !req.query.id);
+
+    if (isExplicitCategory || (isKnownTaxonomySlug && !req.query.id)) {
+      let targetCat = req.query.slug || req.query.category;
+      if (!targetCat || !KNOWN_TAXONOMY[targetCat.toLowerCase()]) {
+        if (pathSegments.length >= 2 && pathSegments[0] === 'category') {
+          targetCat = pathSegments[1];
+        } else if (pathSegments.length >= 1 && KNOWN_TAXONOMY[pathSegments[0].toLowerCase()]) {
+          targetCat = pathSegments[0].toLowerCase();
+        }
+      }
+      return renderCategorySSR(req, res, targetCat || 'ai', isHe);
     }
 
     let categorySlug = 'ai';

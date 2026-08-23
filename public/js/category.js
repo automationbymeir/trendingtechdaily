@@ -173,7 +173,35 @@ function loadCategory(slug) {
   loadCategorySidebar(isHe);
 }
 
-// Load articles for category with language filter & real Firestore collections
+// Calculate relevance score for an article given a category
+function scoreArticleForCategory(art, categorySlug) {
+  if (!categorySlug || categorySlug === 'all' || categorySlug === 'top-stories') return 1;
+
+  const keywords = TAXONOMY_KEYWORDS[categorySlug] || [categorySlug];
+  let score = 0;
+
+  const title = String(art.title || '').toLowerCase();
+  const cat = String(art.category || '').toLowerCase();
+  const section = String(art.section || '').toLowerCase();
+  const tags = Array.isArray(art.tags) ? art.tags.map(t => String(t).toLowerCase()) : [];
+  const content = String(art.content || '').toLowerCase();
+  const excerpt = String(art.excerpt || art.summary || '').toLowerCase();
+  const fullText = title + ' ' + cat + ' ' + section + ' ' + tags.join(' ') + ' ' + content + ' ' + excerpt;
+
+  if (cat === categorySlug || section === categorySlug) score += 25;
+
+  keywords.forEach(kw => {
+    const k = kw.toLowerCase();
+    if (tags.some(t => t === k || t.includes(k))) score += 10;
+    if (title.includes(k)) score += 8;
+    if (cat.includes(k) || section.includes(k)) score += 6;
+    if (fullText.includes(k)) score += 2;
+  });
+
+  return score;
+}
+
+// Load articles for category with semantic relevance & Firestore integration
 async function loadCategoryArticles(categorySlug, taxonomyItem) {
   const container = document.getElementById('articles-container');
   if (!container) return;
@@ -195,7 +223,7 @@ async function loadCategoryArticles(categorySlug, taxonomyItem) {
       try {
         const heSnap = await firestoreDb.collection('he_articles')
           .orderBy('createdAt', 'desc')
-          .limit(40)
+          .limit(50)
           .get();
 
         heSnap.forEach(doc => {
@@ -208,11 +236,11 @@ async function loadCategoryArticles(categorySlug, taxonomyItem) {
         console.warn('he_articles query warning:', err);
       }
 
-      // 2. Also fetch from articles where language == 'he'
+      // 2. Also fetch Hebrew articles from articles collection
       try {
         const artSnap = await firestoreDb.collection('articles')
           .where('published', '==', true)
-          .limit(30)
+          .limit(40)
           .get();
 
         artSnap.forEach(doc => {
@@ -229,22 +257,22 @@ async function loadCategoryArticles(categorySlug, taxonomyItem) {
       }
 
     } else {
-      // English category articles with resilient multi-tier fallback
+      // English category articles
       let snap;
       try {
         snap = await firestoreDb.collection('articles')
           .orderBy('createdAt', 'desc')
-          .limit(50)
+          .limit(60)
           .get();
       } catch (e1) {
         try {
           snap = await firestoreDb.collection('articles')
             .where('published', '==', true)
-            .limit(50)
+            .limit(60)
             .get();
         } catch (e2) {
           snap = await firestoreDb.collection('articles')
-            .limit(50)
+            .limit(60)
             .get();
         }
       }
@@ -260,48 +288,36 @@ async function loadCategoryArticles(categorySlug, taxonomyItem) {
       }
     }
 
-    // Sort all articles chronologically descending (NEWEST FIRST)
-    allArticles.sort((a, b) => {
-      const getTimestamp = (item) => {
-        if (!item) return 0;
-        if (item.createdAt?.toMillis) return item.createdAt.toMillis();
-        if (item.createdAt?.toDate) return item.createdAt.toDate().getTime();
-        if (item.createdAt?._seconds) return item.createdAt._seconds * 1000;
-        if (typeof item.createdAt === 'number') return item.createdAt;
-        if (typeof item.createdAt === 'string') {
-          const t = new Date(item.createdAt).getTime();
-          if (!isNaN(t)) return t;
-        }
-        return 0;
-      };
-      return getTimestamp(b) - getTimestamp(a);
-    });
+    // Semantic relevance scoring and ranking
+    let scoredArticles = allArticles
+      .map(art => ({ article: art, score: scoreArticleForCategory(art, categorySlug) }))
+      .filter(item => item.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .map(item => item.article);
 
-    if (allArticles.length === 0) {
+    // Merge in high-value curated category articles if fewer than 4 items exist
+    const curatedForCat = CATEGORY_CURATED_ARTICLES[categorySlug];
+    if (curatedForCat) {
+      const curatedList = (isHe ? curatedForCat.he : curatedForCat.en) || [];
+      curatedList.forEach(curated => {
+        if (!seenIds.has(curated.slug)) {
+          scoredArticles.push(curated);
+          seenIds.add(curated.slug);
+        }
+      });
+    }
+
+    // Top stories: if top-stories requested, show top 10 newest articles
+    if (categorySlug === 'top-stories' || categorySlug === 'all') {
+      scoredArticles = allArticles.slice(0, 10);
+    }
+
+    if (scoredArticles.length === 0) {
       renderFallbackCategoryArticles(container, categorySlug, taxonomyItem, isHe);
       return;
     }
 
-    // Filter by category relevance
-    let matching = allArticles.filter(art => {
-      if (!categorySlug || categorySlug === 'all' || categorySlug === 'top-stories') return true;
-      const cat = String(art.category || '').toLowerCase();
-      const section = String(art.section || '').toLowerCase();
-      const tags = Array.isArray(art.tags) ? art.tags.map(t => String(t).toLowerCase()) : [];
-      const title = String(art.title || '').toLowerCase();
-      
-      return cat.includes(categorySlug) || 
-             section.includes(categorySlug) ||
-             tags.includes(categorySlug) || 
-             title.includes(categorySlug);
-    });
-
-    // If specific filter yielded 0 results, show recent articles so page is never empty
-    if (matching.length === 0) {
-      matching = allArticles.slice(0, 8);
-    }
-
-    renderArticlesGrid(container, matching, isHe, taxonomyItem);
+    renderArticlesGrid(container, scoredArticles, isHe, taxonomyItem);
 
   } catch (err) {
     console.error('Error in loadCategoryArticles:', err);
@@ -324,8 +340,6 @@ function renderArticlesGrid(container, articles, isHe, taxonomyItem) {
     const readingTime = art.readingTimeMinutes || Math.max(3, Math.ceil((art.content || '').length / 1000)) || 5;
     const date = art.createdAt?.toDate ? art.createdAt.toDate().toLocaleDateString(isHe ? 'he-IL' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '2026';
     const image = art.featuredImage || 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&auto=format&fit=crop&q=80';
-    const slug = art.slug || art.id;
-    const artId = art.id || '';
     const link = getArticleCleanUrl(art, isHe);
     const badgeClass = taxonomyItem?.tagClass || 'badge-ai';
     const categoryLabel = resolveCategoryDisplayName(art.category, isHe, art);
@@ -370,7 +384,7 @@ async function loadCategorySidebar(isHe) {
     let catHtml = '';
     Object.entries(KNOWN_TAXONOMY).slice(0, 6).forEach(([key, item]) => {
       const name = isHe ? item.nameHe : item.name;
-      const url = isHe ? `/he/category.html?slug=${key}` : `/category.html?slug=${key}`;
+      const url = isHe ? `/he/${key}` : `/${key}`;
       catHtml += `<li><a href="${url}" class="d-flex justify-content-between align-items-center text-muted"><span class="text-main fw-bold">${name}</span><span class="badge ${item.tagClass}">HOT</span></a></li>`;
     });
     catContainer.innerHTML = catHtml;
@@ -406,8 +420,17 @@ async function loadCategorySidebar(isHe) {
   }
 }
 
-// Fallback articles in respective language
+// Fallback articles in respective language if completely empty
 function renderFallbackCategoryArticles(container, categorySlug, taxonomyItem, isHe) {
+  const curated = CATEGORY_CURATED_ARTICLES[categorySlug];
+  if (curated) {
+    const list = (isHe ? curated.he : curated.en) || [];
+    if (list.length > 0) {
+      renderArticlesGrid(container, list, isHe, taxonomyItem);
+      return;
+    }
+  }
+
   const fallbackList = isHe ? [
     {
       title: 'הדור הבא של מודלי היסק: שילוב חשיבה רב-שלבית וסוכנים אוטונומיים',
@@ -415,16 +438,16 @@ function renderFallbackCategoryArticles(container, categorySlug, taxonomyItem, i
       author: 'מערכת TrendingTech',
       readingTimeMinutes: 6,
       slug: 'reasoning-models-advancements-he',
-      category: 'ai',
+      category: categorySlug || 'ai',
       featuredImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80'
     },
     {
       title: 'ייצור שבבים בתהליכי 2 ננומטר: תפוקות ייצור וביקוש עולמי למאיצי AI',
-      excerpt: 'כיצד מפעלי הייצור המובילים מעלים את קצב הייצור של מאיצי למידה עמוקה ומעבדים גרפיים עבור מרכזי נתונים.',
+      excerpt: 'כיצד מפעלי TSMC ו-Intel מעלים את קצב הייצור של מאיצי למידה עמוקה ומעבדים גרפיים עבור מרכזי נתונים.',
       author: 'מערכת החדשות',
       readingTimeMinutes: 5,
       slug: 'sub-2nm-foundry-scaling-he',
-      category: 'chips',
+      category: categorySlug || 'chips',
       featuredImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&auto=format&fit=crop&q=80'
     }
   ] : [

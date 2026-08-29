@@ -10,7 +10,7 @@
 const { logger, db } = require('./config');
 const { loadGeminiSDK, getSafetySettings, getSafe, getGeminiSDK } = require('./utils');
 const articlesAdmin = require('./admin/articles');
-const { fetchImageFromUnsplash } = require('./services/unsplashService');
+const { resolveEditorialArticleImage } = require('./services/editorialImageService');
 
 const GEMINI_PRIMARY_MODEL = 'gemini-1.5-flash';
 const BATCH_JOBS_COLLECTION = 'batchJobs';
@@ -20,25 +20,30 @@ const BATCH_SIZE = 24; // one article per hour of the day
 // Prompt builder — same structure as generateArticleContent
 // ---------------------------------------------------------------------------
 function buildArticlePrompt(topic) {
-  return `Write a professional tech/finance news article about "${topic}" in the style of Yahoo Finance or Bloomberg.
+  return `Write an authoritative, high-impact tech/finance news article about "${topic}" in the style of Bloomberg, Reuters, or The Information.
 
 Requirements:
-- Write in a journalistic style with clear paragraphs.
-- Use factual, analytical tone without marketing language.
-- Include relevant data, trends, and market impact where applicable.
-- Structure with natural paragraphs (no bullet points or lists).
-- Mention specific companies or technologies when relevant.
-- Length: 400-600 words.
+- Write in a professional journalistic style with engaging, analytical paragraphs.
+- Include factual data, technical nuances, market trends, and industry implications.
+- Seamlessly integrate inline hyperlinks to authoritative sources (e.g. arXiv research papers, official corporate press releases, SEC filings, GitHub repositories, or Reuters/Bloomberg reports) using clean HTML anchor tags: <a href="URL" target="_blank" rel="noopener noreferrer">anchor text</a>.
+- Include 1-2 insightful quotes or social discussion mentions from industry leaders, engineers, or founders on X (Twitter), LinkedIn, or GitHub.
+- Length: 450-700 words.
 
 Output MUST be ONLY a raw JSON object with these exact keys:
 {
 "title": "string, max 70 chars, professional headline",
 "slug": "string, lowercase, hyphenated, based on title",
-"content": "string, HTML with <p> tags for paragraphs, 400-600 words",
+"content": "string, rich HTML with <p> tags and inline <a href='...'> source links, 450-700 words",
 "excerpt": "string, informative summary, max 160 chars",
 "tags": ["array", "of", "relevant", "tags"],
+"sources": [
+  { "title": "string, title of primary source or paper", "url": "string, direct canonical URL", "publisher": "string, e.g. arXiv, Reuters, OpenAI Blog, Bloomberg" }
+],
+"socialMentions": [
+  { "platform": "X", "author": "string, full name", "handle": "@handle", "quote": "string, key quote or insight", "link": "https://x.com/...", "context": "string, e.g. Lead AI Researcher" }
+],
 "imagePrompt": "string, professional image description for article illustration",
-"mentionedCompanies": ["array", "of", "publicly traded company names mentioned"],
+"mentionedCompanies": ["array", "of", "publicly traded company names mentioned (e.g., Apple, Microsoft, NVIDIA)"],
 "imageAltText": "string, descriptive alt text for the image"
 }
 
@@ -229,19 +234,22 @@ async function _createArticlesFromBatchResults(batchJob, topics, unsplashKey) {
 
       const parsed = parseArticleJson(rawText);
 
-      // Fetch image (Unsplash, no AI call needed)
+      // Resolve authentic, high-relevance editorial image
       let featuredImage = '';
       let imageAltText = parsed.imageAltText || parsed.title;
-      if (unsplashKey && parsed.imagePrompt) {
-        try {
-          const img = await fetchImageFromUnsplash(parsed.imagePrompt, unsplashKey);
-          if (img?.imageUrl) {
-            featuredImage = img.imageUrl;
-            imageAltText = img.altText || imageAltText;
-          }
-        } catch (e) {
-          logger.warn(`Image fetch failed for "${parsed.title}"`, e.message);
+      try {
+        const img = await resolveEditorialArticleImage({
+          topic: parsed.title,
+          imagePrompt: parsed.imagePrompt,
+          category: 'news',
+          tags: parsed.tags || []
+        }, unsplashKey);
+        if (img?.imageUrl) {
+          featuredImage = img.imageUrl;
+          imageAltText = img.altText || imageAltText;
         }
+      } catch (e) {
+        logger.warn(`Image resolution note for "${parsed.title}"`, e.message);
       }
 
       const wordCount = (parsed.content || '').replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
@@ -253,6 +261,8 @@ async function _createArticlesFromBatchResults(batchJob, topics, unsplashKey) {
         excerpt: getSafe(() => parsed.excerpt),
         category: 'news',
         tags: getSafe(() => parsed.tags, []),
+        sources: getSafe(() => parsed.sources, []),
+        socialMentions: getSafe(() => parsed.socialMentions, []),
         featuredImage,
         imageAltText,
         content: parsed.content,
@@ -261,7 +271,7 @@ async function _createArticlesFromBatchResults(batchJob, topics, unsplashKey) {
         source: 'batch',
       });
 
-      logger.info(`Created article: "${parsed.title}"`);
+      logger.info(`Created article with citations: "${parsed.title}"`);
       created++;
     } catch (err) {
       logger.error(`Failed to create article for topic "${topic}"`, err.message);

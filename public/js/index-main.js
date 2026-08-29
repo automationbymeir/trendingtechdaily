@@ -543,81 +543,325 @@ function loadAutonomousAgentsSpotlight(isHe) {
   container.innerHTML = html;
 }
 
-// 6. Dynamic Bento Intelligence Hubs with Real-Time Snapshots
+// 6. Dynamic Bento Intelligence Hubs with Live Rotating Catalogs
+const BENTO_AI_TOOLS_CATALOG = [
+  {
+    name: 'Claude 3.7 Sonnet',
+    name_he: 'Claude 3.7 Sonnet',
+    tagline: "Anthropic's hybrid reasoning model combining instantaneous response tokens with verified extended thinking.",
+    tagline_he: 'מודל ההיסק ההיברידי של Anthropic המשלב חשיבה מהירה עם אימות שלבי היסק מתקדמים.',
+    pricing: 'Freemium',
+    pricing_he: 'חינם / פרימיום',
+    score: '9.9',
+    icon: '✨',
+    slug: 'claude-3-7-sonnet'
+  },
+  {
+    name: 'Cursor AI IDE',
+    name_he: 'Cursor AI IDE',
+    tagline: 'AI-native code editor built on VS Code with whole-codebase indexing, multi-file Composer, and autonomous linting.',
+    tagline_he: 'עורך קוד מבוסס AI עם אינדוקס מלא של כל הקוד, מחולל קבצים רב-שכבתי ותיקון שגיאות אוטונומי.',
+    pricing: 'Freemium',
+    pricing_he: 'חינם / פרימיום',
+    score: '9.8',
+    icon: '⚡',
+    slug: 'cursor-ai-ide'
+  },
+  {
+    name: 'v0 by Vercel',
+    name_he: 'v0 מבית Vercel',
+    tagline: 'Generative UI development platform that turns natural language prompts into production React & Tailwind components.',
+    tagline_he: 'פלטפורמת UI גנרטיבית הממירה פרומפטים בעברית ובאנגלית לקומפוננטות React ו-Tailwind מוכנות לפרודקשן.',
+    pricing: 'Freemium',
+    pricing_he: 'חינם / פרימיום',
+    score: '9.7',
+    icon: '🎨',
+    slug: 'v0-vercel'
+  },
+  {
+    name: 'Devin AI Engineer',
+    name_he: 'Devin AI מהנדס תוכנה',
+    tagline: 'Autonomous AI software engineer by Cognition Labs capable of building, testing, and debugging complex GitHub repositories.',
+    tagline_he: 'מהנדס תוכנה אוטונומי המסוגל לתכנת, לבדוק ולתקן ריפוזיטורים שלמים ב-GitHub באופן עצמאי.',
+    pricing: 'Enterprise',
+    pricing_he: 'ארגוני',
+    score: '9.6',
+    icon: '🤖',
+    slug: 'devin-ai-engineer'
+  },
+  {
+    name: 'DeepSeek R1',
+    name_he: 'DeepSeek R1',
+    tagline: 'Open-weights reasoning model matching closed frontier benchmarks across mathematics, competitive coding, and logic.',
+    tagline_he: 'מודל היסק בקוד פתוח המשתווה לביצועי המודלים המובילים בעולם במתמטיקה, קוד ולוגיקה מורכבת.',
+    pricing: 'Open Source',
+    pricing_he: 'קוד פתוח',
+    score: '9.8',
+    icon: '🧠',
+    slug: 'deepseek-r1'
+  }
+];
+
+const BENTO_DESIGN_SYSTEMS_CATALOG = [
+  {
+    name: 'NewsKit',
+    name_he: 'NewsKit',
+    company: 'News Corp',
+    company_he: 'News Corp',
+    tagline: 'The open-source design system powering WSJ, The Times, and The Sun with multi-brand theme token orchestration.',
+    tagline_he: 'מערכת העיצוב בקוד פתוח המניעה את הוול סטריט ג׳ורנל והטיימס עם סנכרון טוקנים רב-מותגי.',
+    framework: 'React · Tokens Studio',
+    framework_he: 'React · Tokens Studio',
+    colors: ['#090A0E', '#E63946', '#10B981', '#F4F6F9'],
+    slug: 'newskit'
+  },
+  {
+    name: 'Material Design 3',
+    name_he: 'Material Design 3',
+    company: 'Google',
+    company_he: 'Google',
+    tagline: "Google's open-source design system featuring dynamic color extraction, tonal palettes, and cross-platform tokens.",
+    tagline_he: 'מערכת העיצוב של גוגל הכוללת הפקת צבעים דינמית, פלטות גוונים וטוקנים מותאמים לכל פלטפורמה.',
+    framework: 'Flutter · Jetpack · Web',
+    framework_he: 'Flutter · Jetpack · Web',
+    colors: ['#6750A4', '#D0BCFF', '#625B71', '#CCC2DC'],
+    slug: 'material-design-3'
+  },
+  {
+    name: 'Carbon Design System',
+    name_he: 'Carbon Design System',
+    company: 'IBM',
+    company_he: 'IBM',
+    tagline: "IBM's open-source design system built with rigorous accessibility standards, data visualization patterns, and tokens.",
+    tagline_he: 'מערכת העיצוב של IBM שנבנתה בסטנדרטים מחמירים של נגישות, ויזואליזציית נתונים וטוקנים.',
+    framework: 'React · Vue · Web Components',
+    framework_he: 'React · Vue · Web Components',
+    colors: ['#0F62FE', '#393939', '#8D8D8D', '#F4F4F4'],
+    slug: 'carbon'
+  },
+  {
+    name: 'Apple Human Interface',
+    name_he: 'Apple HIG',
+    company: 'Apple',
+    company_he: 'Apple',
+    tagline: 'Spatial design paradigms, Liquid Glass surfaces, typography hierarchies, and tactile feedback patterns.',
+    tagline_he: 'עקרונות עיצוב מרחבי, משטחי זכוכית נוזלית, היררכיית טיפוגרפיה ומשוב מגע ב-iOS ו-macOS.',
+    framework: 'SwiftUI · UIKit · HIG',
+    framework_he: 'SwiftUI · UIKit · HIG',
+    colors: ['#0071E3', '#000000', '#F5F5F7', '#86868B'],
+    slug: 'apple-hig'
+  },
+  {
+    name: 'Polaris',
+    name_he: 'Polaris',
+    company: 'Shopify',
+    company_he: 'Shopify',
+    tagline: 'Design system designed for high-conversion commerce, merchant workflow ergonomics, and micro-interactions.',
+    tagline_he: 'מערכת עיצוב לאתרי מסחר עתירי המרות, ארגונומיית עבודה לסוחרים ומיקרו-אינטראקציות.',
+    framework: 'React · Polaris Tokens',
+    framework_he: 'React · Polaris Tokens',
+    colors: ['#008060', '#202223', '#F6F6F7', '#5C5F62'],
+    slug: 'polaris'
+  }
+];
+
+const BENTO_MARKETS_CATALOG = [
+  {
+    title: 'Tech Leaders Wishlist',
+    title_he: 'רשימת המעקב של ענקיות הטק',
+    desc: 'Automated watchlist tracking price action, P/E ratios, and enterprise revenue across semiconductor and AI foundries.',
+    desc_he: 'רשימת מעקב אוטומטית אחר ביצועי מניות, מכפילי רווח והכנסות מפעלי שבבים ומאיצי AI.',
+    badge: 'Market Watch',
+    badge_he: 'שוק ההון',
+    count: '48 Equities',
+    count_he: '48 מניות מובילות',
+    icon: 'bi-graph-up',
+    link: '/stock-data.html',
+    link_he: '/he/shuk-hon.html'
+  },
+  {
+    title: 'AI Foundry & Silicon Titans',
+    title_he: 'ענקיות השבבים והתשתיות',
+    desc: 'Live tracking NVDA, TSM, ASML, AMD & AVGO wafer allocation, gross margins, and next-gen node roadmaps.',
+    desc_he: 'מעקב חי אחר מניות אנבידיה, TSMC, ASML, אינטל ומפת הדרכים למפעלי 2 ננומטר.',
+    badge: 'Semiconductors',
+    badge_he: 'שבבים ומוליכים',
+    count: 'NVDA · TSM · ASML',
+    count_he: 'NVDA · TSM · ASML',
+    icon: 'bi-cpu',
+    link: '/stock-data.html',
+    link_he: '/he/shuk-hon.html'
+  },
+  {
+    title: 'Hyperscale Cloud & Infrastructure',
+    title_he: 'תשתיות ענן ודאטה סנטרס',
+    desc: 'Financial velocity tracking Microsoft Azure, Google Cloud, and Amazon AWS enterprise Capex deployment.',
+    desc_he: 'מעקב אחר השקעות עתק בחוות שרתים ומרכזי נתונים של מיקרוסופט, גוגל ואמזון.',
+    badge: 'Cloud Giants',
+    badge_he: 'ענקיות הענן',
+    count: 'MSFT · GOOGL · AMZN',
+    count_he: 'MSFT · GOOGL · AMZN',
+    icon: 'bi-cloud-check',
+    link: '/stock-data.html',
+    link_he: '/he/shuk-hon.html'
+  }
+];
+
+let bentoCurrentAiIndex = 0;
+let bentoCurrentDsIndex = 0;
+let bentoCurrentMarketIndex = 0;
+let bentoRotationTimer = null;
+
 function loadBentoIntelligenceHubs(isHe) {
   const grid = document.getElementById('bento-intelligence-grid');
   if (!grid) return;
 
-  const db = window.db || (typeof firebase !== 'undefined' && firebase.firestore ? firebase.firestore() : null);
-  if (!db) return;
+  function renderBentoCards(aiItem, dsItem, marketItem) {
+    const aiCard = document.getElementById('bento-ai-tool-card');
+    const dsCard = document.getElementById('bento-ds-card');
+    const marketCard = document.getElementById('bento-market-card');
 
-  try {
-    // 1. Real-time listener for latest AI Tool
-    db.collection('ai_tools')
-      .where('published', '==', true)
-      .orderBy('createdAt', 'desc')
-      .limit(1)
-      .onSnapshot(aiSnap => {
-        if (aiSnap && !aiSnap.empty) {
-          const toolDoc = aiSnap.docs[0].data();
-          const toolTitle = isHe ? (toolDoc.name_he || toolDoc.name) : toolDoc.name;
-          const toolDesc = isHe ? (toolDoc.tagline_he || toolDoc.description_he || toolDoc.tagline || toolDoc.description) : (toolDoc.tagline || toolDoc.description);
-          const toolPricing = isHe ? (toolDoc.pricing === 'Free' ? 'חינם / קוד פתוח' : (toolDoc.pricing_he || 'חינם / פרימיום')) : (toolDoc.pricing || 'Freemium');
-          const toolScore = toolDoc.score || '9.8';
-          const toolSlug = toolDoc.slug || aiSnap.docs[0].id;
-          const toolLink = isHe ? `/he/ai-tools-detail.html?tool=${encodeURIComponent(toolSlug)}` : `/ai-tools-detail.html?tool=${encodeURIComponent(toolSlug)}`;
+    // 1. AI Tool Card Update
+    if (aiCard && aiItem) {
+      const titleEl = document.getElementById('bento-ai-title');
+      const descEl = document.getElementById('bento-ai-desc');
+      const pricingEl = document.getElementById('bento-ai-pricing');
+      const ratingEl = document.getElementById('bento-ai-rating');
+      const iconEl = document.getElementById('bento-ai-icon');
+      const linkEl = document.getElementById('bento-ai-link');
 
-          const titleEl = document.getElementById('bento-ai-title');
-          const descEl = document.getElementById('bento-ai-desc');
-          const pricingEl = document.getElementById('bento-ai-pricing');
-          const ratingEl = document.getElementById('bento-ai-rating');
-          const linkEl = document.getElementById('bento-ai-link');
+      const toolTitle = isHe ? (aiItem.name_he || aiItem.name) : aiItem.name;
+      const toolDesc = isHe ? (aiItem.tagline_he || aiItem.description_he || aiItem.tagline || aiItem.description) : (aiItem.tagline || aiItem.description);
+      const toolPricing = isHe ? (aiItem.pricing_he || aiItem.pricing || 'חינם / פרימיום') : (aiItem.pricing || 'Freemium');
+      const toolScore = aiItem.score || '9.8';
+      const toolSlug = aiItem.slug || 'ai-tools';
+      const toolLink = isHe ? `/he/ai-tools-detail.html?tool=${encodeURIComponent(toolSlug)}` : `/ai-tools-detail.html?tool=${encodeURIComponent(toolSlug)}`;
 
-          if (titleEl && toolTitle) titleEl.textContent = toolTitle;
-          if (descEl && toolDesc) descEl.textContent = toolDesc;
-          if (pricingEl && toolPricing) pricingEl.textContent = toolPricing;
-          if (ratingEl) ratingEl.textContent = isHe ? `ציון: ${toolScore}/10` : `Rating: ${toolScore}/10`;
-          if (linkEl) linkEl.href = toolLink;
-        }
-      }, () => {});
+      if (titleEl) titleEl.textContent = toolTitle;
+      if (descEl) descEl.textContent = toolDesc;
+      if (pricingEl) pricingEl.textContent = toolPricing;
+      if (ratingEl) ratingEl.textContent = isHe ? `ציון: ${toolScore}/10` : `Rating: ${toolScore}/10`;
+      if (iconEl && aiItem.icon) iconEl.textContent = aiItem.icon;
+      if (linkEl) {
+        linkEl.href = toolLink;
+        linkEl.textContent = isHe ? 'צפה במפרט' : 'View Spec';
+      }
+    }
 
-    // 2. Real-time listener for latest Design System
-    db.collection('design_systems')
-      .where('published', '==', true)
-      .orderBy('createdAt', 'desc')
-      .limit(1)
-      .onSnapshot(dsSnap => {
-        if (dsSnap && !dsSnap.empty) {
-          const dsDoc = dsSnap.docs[0].data();
-          const dsTitle = isHe ? (dsDoc.name_he || dsDoc.name) : dsDoc.name;
-          const dsCompany = isHe ? (dsDoc.company_he || dsDoc.company || '') : (dsDoc.company || '');
-          const fullDsTitle = dsCompany ? `${dsTitle} (${dsCompany})` : dsTitle;
-          const dsDesc = isHe ? (dsDoc.tagline_he || dsDoc.description_he || dsDoc.tagline || dsDoc.description) : (dsDoc.tagline || dsDoc.description);
-          const dsFramework = dsDoc.framework || (isHe ? 'React · Design Tokens' : 'React · Design Tokens');
-          const dsSlug = dsDoc.slug || dsSnap.docs[0].id;
-          const dsLink = isHe ? `/he/design-systems-detail.html?slug=${encodeURIComponent(dsSlug)}` : `/design-systems-detail.html?slug=${encodeURIComponent(dsSlug)}`;
+    // 2. Design System Card Update
+    if (dsCard && dsItem) {
+      const dsTitleEl = document.getElementById('bento-ds-title');
+      const dsDescEl = document.getElementById('bento-ds-desc');
+      const dsFrameworkEl = document.getElementById('bento-ds-framework');
+      const dsLinkEl = document.getElementById('bento-ds-link');
+      const swatchesEl = document.getElementById('bento-ds-swatches');
 
-          const dsTitleEl = document.getElementById('bento-ds-title');
-          const dsDescEl = document.getElementById('bento-ds-desc');
-          const dsFrameworkEl = document.getElementById('bento-ds-framework');
-          const dsLinkEl = document.getElementById('bento-ds-link');
-          const swatchesEl = document.getElementById('bento-ds-swatches');
+      const dsTitle = isHe ? (dsItem.name_he || dsItem.name) : dsItem.name;
+      const dsCompany = isHe ? (dsItem.company_he || dsItem.company || '') : (dsItem.company || '');
+      const fullDsTitle = dsCompany ? `${dsTitle} (${dsCompany})` : dsTitle;
+      const dsDesc = isHe ? (dsItem.tagline_he || dsItem.description_he || dsItem.tagline || dsItem.description) : (dsItem.tagline || dsItem.description);
+      const dsFramework = isHe ? (dsItem.framework_he || dsItem.framework || 'React · Design Tokens') : (dsItem.framework || 'React · Design Tokens');
+      const dsSlug = dsItem.slug || 'design-systems';
+      const dsLink = isHe ? `/he/design-systems-detail.html?slug=${encodeURIComponent(dsSlug)}` : `/design-systems-detail.html?slug=${encodeURIComponent(dsSlug)}`;
 
-          if (dsTitleEl && fullDsTitle) dsTitleEl.textContent = fullDsTitle;
-          if (dsDescEl && dsDesc) dsDescEl.textContent = dsDesc;
-          if (dsFrameworkEl && dsFramework) dsFrameworkEl.textContent = dsFramework;
-          if (dsLinkEl) dsLinkEl.href = dsLink;
+      if (dsTitleEl) dsTitleEl.textContent = fullDsTitle;
+      if (dsDescEl) dsDescEl.textContent = dsDesc;
+      if (dsFrameworkEl) dsFrameworkEl.textContent = dsFramework;
+      if (dsLinkEl) {
+        dsLinkEl.href = dsLink;
+        dsLinkEl.textContent = isHe ? 'קרא ניתוח' : 'Read Review';
+      }
 
-          if (swatchesEl && Array.isArray(dsDoc.colors) && dsDoc.colors.length > 0) {
-            swatchesEl.innerHTML = dsDoc.colors.slice(0, 4).map(c => 
-              `<span class="ds-swatch-dot" style="background:${c};"></span>`
-            ).join('');
+      if (swatchesEl && Array.isArray(dsItem.colors) && dsItem.colors.length > 0) {
+        swatchesEl.innerHTML = dsItem.colors.slice(0, 4).map(c => 
+          `<span class="ds-swatch-dot" style="background:${c};"></span>`
+        ).join('');
+      }
+    }
+
+    // 3. Market Watch Spotlight Card Update
+    if (marketCard && marketItem) {
+      const mTitleEl = document.getElementById('bento-market-title');
+      const mDescEl = document.getElementById('bento-market-desc');
+      const mCountEl = document.getElementById('bento-market-count');
+      const mBadgeEl = marketCard.querySelector('.badge');
+      const mLinkEl = marketCard.querySelector('.ai-tool-footer a');
+
+      const mTitle = isHe ? (marketItem.title_he || marketItem.title) : marketItem.title;
+      const mDesc = isHe ? (marketItem.desc_he || marketItem.desc) : marketItem.desc;
+      const mCount = isHe ? (marketItem.count_he || marketItem.count) : marketItem.count;
+      const mBadge = isHe ? (marketItem.badge_he || marketItem.badge) : marketItem.badge;
+      const mLink = isHe ? (marketItem.link_he || marketItem.link) : marketItem.link;
+
+      if (mTitleEl) mTitleEl.textContent = mTitle;
+      if (mDescEl) mDescEl.textContent = mDesc;
+      if (mCountEl) mCountEl.textContent = mCount;
+      if (mBadgeEl) mBadgeEl.textContent = mBadge;
+      if (mLinkEl) {
+        mLinkEl.href = mLink;
+        mLinkEl.textContent = isHe ? 'פתח לוח נתונים' : 'Open Board';
+      }
+    }
+  }
+
+  // Initial render
+  renderBentoCards(
+    BENTO_AI_TOOLS_CATALOG[bentoCurrentAiIndex],
+    BENTO_DESIGN_SYSTEMS_CATALOG[bentoCurrentDsIndex],
+    BENTO_MARKETS_CATALOG[bentoCurrentMarketIndex]
+  );
+
+  // Auto-rotate every 7.5 seconds
+  if (bentoRotationTimer) clearInterval(bentoRotationTimer);
+  bentoRotationTimer = setInterval(() => {
+    bentoCurrentAiIndex = (bentoCurrentAiIndex + 1) % BENTO_AI_TOOLS_CATALOG.length;
+    bentoCurrentDsIndex = (bentoCurrentDsIndex + 1) % BENTO_DESIGN_SYSTEMS_CATALOG.length;
+    bentoCurrentMarketIndex = (bentoCurrentMarketIndex + 1) % BENTO_MARKETS_CATALOG.length;
+
+    // Smooth subtle transition
+    [document.getElementById('bento-ai-tool-card'), document.getElementById('bento-ds-card'), document.getElementById('bento-market-card')].forEach(card => {
+      if (card) {
+        card.style.opacity = '0.75';
+        card.style.transition = 'opacity 0.25s ease';
+      }
+    });
+
+    setTimeout(() => {
+      renderBentoCards(
+        BENTO_AI_TOOLS_CATALOG[bentoCurrentAiIndex],
+        BENTO_DESIGN_SYSTEMS_CATALOG[bentoCurrentDsIndex],
+        BENTO_MARKETS_CATALOG[bentoCurrentMarketIndex]
+      );
+      [document.getElementById('bento-ai-tool-card'), document.getElementById('bento-ds-card'), document.getElementById('bento-market-card')].forEach(card => {
+        if (card) card.style.opacity = '1';
+      });
+    }, 250);
+  }, 7500);
+
+  // Optional: Merge real Firestore published items if available
+  const firestoreDb = window.db || (typeof firebase !== 'undefined' && firebase.firestore ? firebase.firestore() : null);
+  if (firestoreDb) {
+    firestoreDb.collection('ai_tools').limit(5).get().then(snap => {
+      if (!snap.empty) {
+        snap.forEach(doc => {
+          const d = doc.data();
+          if (d.published !== false) {
+            BENTO_AI_TOOLS_CATALOG.unshift({ id: doc.id, ...d });
           }
-        }
-      }, () => {});
+        });
+      }
+    }).catch(() => {});
 
-  } catch (err) {
-    console.warn("Bento Hubs dynamic hydration note:", err);
+    firestoreDb.collection('design_systems').limit(5).get().then(snap => {
+      if (!snap.empty) {
+        snap.forEach(doc => {
+          const d = doc.data();
+          if (d.published !== false) {
+            BENTO_DESIGN_SYSTEMS_CATALOG.unshift({ id: doc.id, ...d });
+          }
+        });
+      }
+    }).catch(() => {});
   }
 }
 

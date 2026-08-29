@@ -1,10 +1,8 @@
-// functions/callable/ai.js
-
 const { HttpsError } = require("firebase-functions/v2/https");
 const { logger, db, CONFIG } = require('../config');
 const { loadGeminiSDK, getSafetySettings, getSafe, getGeminiSDK, getStockMappingCacheDuration, buildGenerateContentRequest } = require('../utils');
 const fetch = require('node-fetch');
-const { fetchImageFromUnsplash } = require('../services/unsplashService');
+const { resolveEditorialArticleImage } = require('../services/editorialImageService');
 
 const GEMINI_PRIMARY_MODEL = "gemini-1.5-flash";
 
@@ -63,25 +61,30 @@ async function generateArticleContent(request) { // request contains { auth, dat
       const genAI = new GoogleGenAI({ project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' });
 
       const structuredPrompt = `
-Write a professional tech/finance news article about "${topic}" in the style of Yahoo Finance or Bloomberg.
+Write an authoritative, high-impact tech/finance news article about "${topic}" in the style of Bloomberg, Reuters, or The Information.
 
 Requirements:
-- Write in a journalistic style with clear paragraphs.
-- Use factual, analytical tone without marketing language.
-- Include relevant data, trends, and market impact where applicable.
-- Structure with natural paragraphs (no bullet points or lists).
-- Mention specific companies or technologies when relevant.
-- Length: 400-600 words.
+- Write in a professional journalistic style with engaging, analytical paragraphs.
+- Include factual data, technical nuances, market trends, and industry implications.
+- Seamlessly integrate inline hyperlinks to authoritative sources (e.g. arXiv research papers, official corporate press releases, SEC filings, GitHub repositories, or Reuters/Bloomberg reports) using clean HTML anchor tags: <a href="URL" target="_blank" rel="noopener noreferrer">anchor text</a>.
+- Include 1-2 insightful quotes or social discussion mentions from industry leaders, engineers, or founders on X (Twitter), LinkedIn, or GitHub.
+- Length: 450-700 words.
 
 Output MUST be ONLY a raw JSON object with these exact keys:
 {
 "title": "string, max 70 chars, professional headline",
 "slug": "string, lowercase, hyphenated, based on title",
-"content": "string, HTML with <p> tags for paragraphs, 400-600 words",
+"content": "string, rich HTML with <p> tags and inline <a href='...'> source links, 450-700 words",
 "excerpt": "string, informative summary, max 160 chars",
 "tags": ["array", "of", "relevant", "tags"],
+"sources": [
+  { "title": "string, title of primary source or paper", "url": "string, direct canonical URL", "publisher": "string, e.g. arXiv, Reuters, OpenAI Blog, Bloomberg" }
+],
+"socialMentions": [
+  { "platform": "X", "author": "string, full name", "handle": "@handle", "quote": "string, key quote or insight", "link": "https://x.com/...", "context": "string, e.g. Lead AI Researcher" }
+],
 "imagePrompt": "string, professional image description for article illustration, suitable for AI image generator",
-"mentionedCompanies": ["array", "of", "publicly traded company names mentioned (e.g., Apple, Microsoft)"],
+"mentionedCompanies": ["array", "of", "publicly traded company names mentioned (e.g., Apple, Microsoft, NVIDIA)"],
 "imageAltText": "string, descriptive alt text for the image, based on imagePrompt"
 }
 
@@ -269,17 +272,19 @@ async function generateArticleImage(request) {
     let message = '';
 
     try {
-        // First try Unsplash for a high quality photo
-        const unsplashKey = process.env.UNSPLASH_ACCESS_KEY;
-        if (unsplashKey) {
-            const unsplashImage = await fetchImageFromUnsplash(prompt, unsplashKey);
-            if (unsplashImage && unsplashImage.imageUrl) {
-                imageUrl = unsplashImage.imageUrl;
-                imageAltText = unsplashImage.altText || imageAltText;
-                source = 'unsplash';
-                message = 'Image fetched from Unsplash';
-                return { success: true, imageUrl, imageAltText, source, message };
-            }
+        // High-precision editorial image resolution
+        const editorialImage = await resolveEditorialArticleImage({
+          topic: articleTitle || prompt,
+          imagePrompt: prompt,
+          category: 'tech'
+        }, process.env.UNSPLASH_ACCESS_KEY);
+
+        if (editorialImage && editorialImage.imageUrl) {
+            imageUrl = editorialImage.imageUrl;
+            imageAltText = editorialImage.altText || imageAltText;
+            source = editorialImage.source || 'editorial';
+            message = 'High-precision editorial image matched';
+            return { success: true, imageUrl, imageAltText, source, message };
         }
 
         // Try to use Gemini to generate a base64 encoded SVG or simple image

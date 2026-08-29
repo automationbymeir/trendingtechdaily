@@ -835,8 +835,10 @@
   width: 100%;
 }
 
-/* Google Auto-Ads Containment Rules:
-   Strictly prevent Auto-Ads from disrupting navigation, stories, hero grid, audio player, or drawers */
+/* ==========================================================================
+   GOOGLE AUTO-ADS SHIELDING & AD CONTAINMENT RULES
+   Prevents Auto-Ads from breaking headlines, hero grids, navigation, or reading flow
+   ========================================================================== */
 body > .google-auto-placed,
 .site-header .google-auto-placed,
 .subnav-ribbon .google-auto-placed,
@@ -848,15 +850,234 @@ body > .google-auto-placed,
 .drawer-backdrop .google-auto-placed,
 .article-featured-media .google-auto-placed,
 .telegram-cta-card .google-auto-placed,
+.article-sources-card .google-auto-placed,
+.article-social-quote .google-auto-placed,
+.bento-intelligence-grid .google-auto-placed,
+.read-aloud-bar .google-auto-placed,
+h1 .google-auto-placed,
+h2 .google-auto-placed,
+h3 .google-auto-placed,
+h4 .google-auto-placed,
+.article-header .google-auto-placed,
+.article-title .google-auto-placed,
+.section-title .google-auto-placed,
+.card-title .google-auto-placed,
 nav .google-auto-placed,
 header .google-auto-placed,
 footer .google-auto-placed {
   display: none !important;
 }
 
-/* Auto-collapse unfilled ad slots completely */
+/* Clean, isolated ad containers */
+.ad-unit {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin-block: 28px;
+  padding: 14px 10px;
+  background: var(--bg-surface, #12151E);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+  border-radius: var(--radius-md, 8px);
+  text-align: center;
+  overflow: hidden;
+  contain: layout style;
+  box-sizing: border-box;
+  clear: both;
+}
+
+.ad-unit .ad-label {
+  display: block;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted, #717A8A);
+  margin-bottom: 8px;
+  user-select: none;
+}
+
+.ad-unit ins.adsbygoogle {
+  display: block;
+  margin: 0 auto;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+/* In-Article Specific Constraints */
+.ad-in-article {
+  margin-block: 32px;
+  border-inline-start: 3px solid var(--accent-red, #E63946);
+}
+
+/* Sidebar Specific Constraints */
+.ad-sidebar {
+  margin-block: 20px;
+}
+
+/* Auto-collapse unfilled ad slots completely without CLS */
 ins.adsbygoogle[data-ad-status="unfilled"],
 .ad-unit:has(ins.adsbygoogle[data-ad-status="unfilled"]) {
   display: none !important;
 }
+
+/* Responsive Mobile Adjustments for Ads */
+@media (max-width: 768px) {
+  .ad-unit {
+    margin-block: 20px;
+    padding: 10px 4px;
+    border-radius: 6px;
+  }
+  .ad-in-article {
+    margin-block: 22px;
+  }
+}
+
+/* ==========================================================================
+   ARTICLE SOCIAL POST EMBEDS & SOURCES CITATIONS
+   ========================================================================== */
+.article-social-quote {
+  position: relative;
+  background: rgba(18, 21, 30, 0.95);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  border-inline-start: 4px solid #1DA1F2;
+  border-radius: var(--radius-md, 8px);
+  padding: 18px 20px;
+  margin-block: 26px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.article-social-quote.quote-x {
+  border-inline-start-color: #E63946;
+}
+
+.article-social-quote.quote-github {
+  border-inline-start-color: #A371F7;
+}
+
+.article-social-quote.quote-linkedin {
+  border-inline-start-color: #0A66C2;
+}
+
+.social-quote-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.social-quote-author {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.social-quote-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-main, #FFFFFF);
+}
+
+.social-quote-handle {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.8rem;
+  color: var(--text-muted, #717A8A);
+}
+
+.social-quote-platform-icon {
+  font-size: 1.15rem;
+  color: var(--text-secondary, #9DA6B8);
+}
+
+.social-quote-body {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--text-main, #E2E8F0);
+  font-style: italic;
+  margin-bottom: 10px;
+}
+
+.social-quote-footer {
+  font-size: 0.78rem;
+  font-family: var(--font-mono, monospace);
+  color: var(--text-muted, #717A8A);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.social-quote-link {
+  color: #38BDF8;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.social-quote-link:hover {
+  text-decoration: underline;
+}
+
+/* Sources & Citations Box */
+.article-sources-card {
+  background: var(--bg-surface, #12151E);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  border-radius: var(--radius-md, 8px);
+  padding: 20px;
+  margin-block: 30px;
+}
+
+.article-sources-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display, sans-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main, #FFFFFF);
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+}
+
+.article-sources-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.article-source-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.875rem;
+}
+
+.article-source-link {
+  color: #38BDF8;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  word-break: break-word;
+}
+
+.article-source-link:hover {
+  color: #7DD3FC;
+  text-decoration: underline;
+}
+
+.article-source-publisher {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  color: var(--text-secondary, #9DA6B8);
+  white-space: nowrap;
+}
+
 

@@ -107,26 +107,41 @@ async function loadArticle(info) {
 
   const isHe = window.location.pathname.startsWith('/he') || document.documentElement.getAttribute('dir') === 'rtl';
 
+  if (window.ensureFirebaseInitialized) {
+    window.ensureFirebaseInitialized();
+  }
+
   // 0. Instant Hydration check: if server-rendered data is present
   const serverDataEl = document.getElementById('server-article-data');
-  if (serverDataEl) {
+  if (serverDataEl && serverDataEl.textContent.trim()) {
     try {
       const serverArticle = JSON.parse(serverDataEl.textContent);
       if (serverArticle && serverArticle.title) {
-        // Setup interactive listeners directly without re-rendering or showing loading spinner
-        setupReadAloud(serverArticle, isHe);
-        setupShareButtons(serverArticle);
-        setupCommentForm(serverArticle, isHe);
-        loadComments(serverArticle.id);
-        loadRelatedArticles(serverArticle, isHe);
-        return;
+        if (articleContainer.querySelector('.article-main-heading') && articleContainer.querySelector('.article-sources-card')) {
+          setupReadAloud(serverArticle, isHe);
+          setupShareButtons(serverArticle);
+          setupCommentForm(serverArticle, isHe);
+          loadComments(serverArticle.id);
+          loadRelatedArticles(serverArticle.category, serverArticle.id, isHe);
+          loadSidebarTrending(isHe);
+          return;
+        } else {
+          renderArticle(serverArticle, isHe);
+          setupReadAloud(serverArticle, isHe);
+          setupShareButtons(serverArticle);
+          setupCommentForm(serverArticle, isHe);
+          loadComments(serverArticle.id);
+          loadRelatedArticles(serverArticle.category, serverArticle.id, isHe);
+          loadSidebarTrending(isHe);
+          return;
+        }
       }
     } catch (e) {
       console.warn("Failed to parse server-article-data:", e);
     }
   }
 
-  const firestoreDb = window.db || (typeof db !== 'undefined' ? db : null);
+  const firestoreDb = window.db || (typeof firebase !== 'undefined' && firebase.firestore ? firebase.firestore() : null);
 
   if (!firestoreDb) {
     setTimeout(() => loadArticle(info), 200);

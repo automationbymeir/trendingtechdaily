@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" data-mode="dark">
+<html lang="he" dir="rtl" data-mode="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Article - TrendingTech Daily</title>
+  <title>מאמר - TrendingTech Daily</title>
   
   <!-- Google Tag Manager -->
   <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -25,23 +25,23 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&family=Lora:ital,wght@0,500;0,600;1,400&family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-  <!-- Master Unified Stylesheet (Figma Tech News System) -->
-  <link rel="stylesheet" href="/styles.css">
+  <!-- Master Stylesheet (Figma Tech News System) -->
+  <link rel="stylesheet" href="/he/styles.css">
 
   <!-- Prism.js Syntax Theme -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
 
   <!-- SEO Meta Tags -->
-  <link id="canonicalLink" rel="canonical" href="https://trendingtechdaily.com/" />
-  <meta name="description" content="Latest technology news and intelligence" />
+  <link id="canonicalLink" rel="canonical" href="https://trendingtechdaily.com/he" />
+  <meta name="description" content="חדשות טכנולוגיה, בינה מלאכותית ומידע שוק" />
   <meta property="og:title" id="ogTitle" content="TrendingTech Daily" />
-  <meta property="og:description" id="ogDescription" content="Latest technology news and intelligence" />
-  <meta property="og:url" id="ogUrl" content="https://trendingtechdaily.com/" />
+  <meta property="og:description" id="ogDescription" content="חדשות טכנולוגיה ובינה מלאכותית בעברית" />
+  <meta property="og:url" id="ogUrl" content="https://trendingtechdaily.com/he" />
   <meta name="twitter:title" id="twitterTitle" content="TrendingTech Daily" />
-  <meta name="twitter:description" id="twitterDescription" content="Latest technology news and intelligence" />
+  <meta name="twitter:description" id="twitterDescription" content="חדשות טכנולוגיה ובינה מלאכותית בעברית" />
 
   <!-- Icons -->
   <link rel="icon" href="/favicon.ico" sizes="any">
@@ -50,15 +50,15 @@
 
   <script>
   function updateMetaTags(articleData) {
-      const baseUrl = 'https://trendingtechdaily.com';
+      const baseUrl = 'https://trendingtechdaily.com/he';
       const articleUrl = `${baseUrl}/${articleData.category}/${articleData.slug}`;
       document.getElementById('canonicalLink').href = articleUrl;
       document.title = `${articleData.title} - TrendingTech Daily`;
       document.getElementById('ogTitle').content = articleData.title;
-      document.getElementById('ogDescription').content = articleData.description || 'Read the latest technology news and insights on TrendingTech Daily';
+      document.getElementById('ogDescription').content = articleData.description || 'קראו את חדשות הטכנולוגיה והבינה המלאכותית האחרונות ב-TrendingTech Daily';
       document.getElementById('ogUrl').content = articleUrl;
       document.getElementById('twitterTitle').content = articleData.title;
-      document.getElementById('twitterDescription').content = articleData.description || 'Read the latest technology news and insights on TrendingTech Daily';
+      document.getElementById('twitterDescription').content = articleData.description || 'קראו את חדשות הטכנולוגיה והבינה המלאכותית האחרונות ב-TrendingTech Daily';
   }
   </script>
 </head>
@@ -69,27 +69,27 @@
   <!-- Navbar Placeholder -->
   <div id="navbar-placeholder"></div>
 
-  <!-- Main Article Content Container -->
+  <!-- Main Article Content Container (Hebrew RTL) -->
   <div class="container my-4 my-md-5">
     <div class="feed-sidebar-layout">
       
-      <!-- Article Column (Left 68%) -->
+      <!-- Article Column (Right in RTL 68%) -->
       <main class="feed-main-col">
         
         <!-- Dynamic Article Container -->
         <article id="article-container">
           <div class="spinner-container">
             <div class="spinner-border" role="status">
-              <span class="visually-hidden">Loading...</span>
+              <span class="visually-hidden">טוען...</span>
             </div>
-            <p class="text-muted mt-2" style="font-size:0.875rem;">Loading article content...</p>
+            <p class="text-muted mt-2" style="font-size:0.875rem;">טוען את תוכן המאמר...</p>
           </div>
         </article>
 
         <!-- Related Articles Section -->
         <section class="related-articles mt-5" id="related-articles-container" style="display: none;">
           <div class="section-header-row">
-            <h3 class="section-title"><span class="indicator-dot"></span> Related Articles</h3>
+            <h3 class="section-title"><span class="indicator-dot"></span> כתבות קשורות</h3>
           </div>
           <div class="secondary-3col-grid" id="related-articles-list"></div>
         </section>
@@ -97,25 +97,25 @@
         <!-- Sponsored Partner Banner -->
         <div class="card mt-4 mb-4" style="border-color:var(--border-color); background:var(--bg-surface-elevated);">
           <div class="card-body text-center py-4">
-            <span class="badge badge-ai mb-2">Partner Intelligence</span>
-            <h4 class="card-title mb-2">Automate Your Data &amp; AI Infrastructure</h4>
-            <p class="card-text mb-3" style="max-width:500px; margin-inline:auto;">Deploy autonomous agent pipelines and custom data integrations with Automation by Meir.</p>
+            <span class="badge badge-ai mb-2">פתרונות טכנולוגיים</span>
+            <h4 class="card-title mb-2">אוטומציה ופיתוח סוכני AI מתקדמים</h4>
+            <p class="card-text mb-3" style="max-width:500px; margin-inline:auto;">בניית סוכנים אוטונומיים ואינטגרציות דאטה מותאמות אישית לעסקים עם Automation by Meir.</p>
             <a href="https://www.automationbymeir.com/" target="_blank" rel="noopener" class="btn btn-subscribe btn-sm">
-              Discover AI Solutions →
+              למידע נוסף על פתרונות אוטומציה ←
             </a>
           </div>
         </div>
       </main>
 
-      <!-- Sidebar Column (Right 32%) -->
+      <!-- Sidebar Column (Left in RTL 32%) -->
       <aside class="feed-sidebar-col">
         
         <!-- Trending Articles Widget -->
         <div class="card mb-4">
           <div class="card-body">
-            <h4 class="card-title mb-3" style="font-size:1rem;">Trending Articles</h4>
+            <h4 class="card-title mb-3" style="font-size:1rem;">כתבות מובילות</h4>
             <ul class="d-flex flex-column gap-2" id="trending-articles-list">
-              <li class="text-muted small">Loading trending articles...</li>
+              <li class="text-muted small">טוען כתבות מובילות...</li>
             </ul>
           </div>
         </div>
@@ -123,16 +123,16 @@
         <!-- Topic Categories Widget -->
         <div class="card mb-4">
           <div class="card-body">
-            <h4 class="card-title mb-3" style="font-size:1rem;">Topic Categories</h4>
+            <h4 class="card-title mb-3" style="font-size:1rem;">נושאים פופולריים</h4>
             <ul class="d-flex flex-column gap-2" id="categories-list">
-              <li class="text-muted small">Loading categories...</li>
+              <li class="text-muted small">טוען קטגוריות...</li>
             </ul>
           </div>
         </div>
 
-        <!-- AdSense Sidebar Unit -->
+        <!-- AdSense Sidebar Unit (Hebrew) -->
         <div class="ad-unit ad-sidebar">
-          <span class="ad-label">ADVERTISEMENT</span>
+          <span class="ad-label">תוכן ממומן</span>
           <ins class="adsbygoogle"
                style="display:block;"
                data-ad-client="ca-pub-8142734137865758"
@@ -145,49 +145,49 @@
   </div>
 
   <!-- Persistent Podcast Audio Dock -->
-  <div class="podcast-dock" role="region" aria-label="Audio Player">
+  <div class="podcast-dock" role="region" aria-label="נגן פודקאסט">
     <div class="container dock-inner">
       <div class="dock-track-info">
         <div class="dock-art"><i class="bi bi-mic-fill"></i></div>
         <div class="dock-meta">
-          <div class="dock-title">Lex Fridman Podcast #419 — Sam Altman: OpenAI, GPT-5 &amp; AGI</div>
-          <div class="dock-sub">Lex Fridman &amp; Sam Altman · 2 hr 18 min</div>
+          <div class="dock-title">הייטק בפקקים — עתיד הבינה המלאכותית בישראל ובעולם</div>
+          <div class="dock-sub">הייטק בפקקים עם אורי טוביאס · 48 דקות</div>
         </div>
       </div>
       <div class="dock-controls">
-        <div class="dock-progress"><div class="dock-progress-bar" style="width:35%;"></div></div>
-        <a href="https://open.spotify.com/episode/5dKfZ1i9u9H9Gk5W0f1cQY" target="_blank" rel="noopener" class="dock-play-btn" aria-label="Play on Spotify"><i class="bi bi-play-fill"></i></a>
+        <div class="dock-progress"><div class="dock-progress-bar" style="width:40%;"></div></div>
+        <a href="https://open.spotify.com/show/0zQn0c0lO1EwA9qV5Q4y0K" target="_blank" rel="noopener" class="dock-play-btn" aria-label="הפעל בספוטיפיי"><i class="bi bi-play-fill"></i></a>
       </div>
     </div>
   </div>
 
   <!-- AI Copilot Trigger & Drawer -->
-  <button class="ai-floating-trigger" id="aiCopilotTrigger" aria-label="Ask AI Assistant">
+  <button class="ai-floating-trigger" id="aiCopilotTrigger" aria-label="שאל את עוזר ה-AI">
     <i class="bi bi-stars"></i>
-    <span>Ask Tech AI</span>
+    <span>עוזר AI</span>
   </button>
 
-  <aside class="ai-copilot-drawer" id="aiCopilotDrawer" aria-label="AI Assistant">
+  <aside class="ai-copilot-drawer" id="aiCopilotDrawer" aria-label="עוזר בינה מלאכותית">
     <div class="ai-copilot-header">
       <div class="ai-copilot-title">
         <span class="ai-status-pulse"></span>
-        <span>AI Tech Copilot</span>
+        <span>עוזר הטכנולוגיה האישי</span>
       </div>
-      <button class="btn-icon" id="aiCopilotCloseBtn" aria-label="Close">
+      <button class="btn-icon" id="aiCopilotCloseBtn" aria-label="סגור">
         <i class="bi bi-x-lg"></i>
       </button>
     </div>
     <div class="ai-quick-prompts">
-      <button class="ai-prompt-pill" data-prompt="Summarize this article for me">Summarize Article</button>
-      <button class="ai-prompt-pill" data-prompt="Explain the key technical takeaways">Key Takeaways</button>
+      <button class="ai-prompt-pill" data-prompt="סכם לי את המאמר הזה">סכם מאמר</button>
+      <button class="ai-prompt-pill" data-prompt="מהן התובנות המרכזיות כאן?">תובנות מפתח</button>
     </div>
     <div class="ai-chat-body" id="aiChatMessages">
       <div class="ai-bubble ai-bubble-bot">
-        Hello! I can explain anything in this article or answer any technical follow-up questions.
+        שלום! אני כאן לענות על שאלות בנוגע למאמר הזה, להסביר מושגים או להרחיב על הנושא.
       </div>
     </div>
     <form class="ai-chat-input-row" id="aiChatInputForm">
-      <input type="text" class="form-control" placeholder="Ask about this article..." id="aiChatInputField" autocomplete="off" />
+      <input type="text" class="form-control" placeholder="שאלו כל דבר על המאמר..." id="aiChatInputField" autocomplete="off" />
       <button type="submit" class="btn btn-subscribe btn-sm" id="aiChatSendBtn"><i class="bi bi-send-fill"></i></button>
     </form>
   </aside>

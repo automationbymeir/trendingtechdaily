@@ -578,7 +578,19 @@ async function renderArticleSSR(req, res, isHe = false) {
     }
 
     if (!articleData) {
-      logger.warn(`[SSR] Article not found: slug="${articleSlug}", docId="${docId}"`);
+      logger.warn(`[SSR] Article not found in SSR: slug="${articleSlug}", docId="${docId}", falling back to client-side hydration template`);
+      const clientTemplatePath = isHe 
+        ? path.resolve(__dirname, '../../public/he/article.html')
+        : path.resolve(__dirname, '../../public/article.html');
+      const bundledTemplatePath = isHe
+        ? path.resolve(__dirname, '../templates/he/article.html')
+        : path.resolve(__dirname, '../templates/article.html');
+      const templateToUse = fs.existsSync(clientTemplatePath) ? clientTemplatePath : (fs.existsSync(bundledTemplatePath) ? bundledTemplatePath : null);
+
+      if (templateToUse && fs.existsSync(templateToUse)) {
+        res.set('Content-Type', 'text/html; charset=utf-8');
+        return res.status(200).send(fs.readFileSync(templateToUse, 'utf-8'));
+      }
       return serve404(res, isHe);
     }
 

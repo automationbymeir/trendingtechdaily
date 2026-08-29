@@ -8,8 +8,10 @@ const logger = require("firebase-functions/logger");
 
 // Initialize Firebase Admin SDK only once.
 if (admin.apps.length === 0) {
-  admin.initializeApp();
-  logger.info("Firebase Admin SDK initialized.");
+  admin.initializeApp({
+    projectId: process.env.GCLOUD_PROJECT || process.env.GOOGLE_CLOUD_PROJECT || 'trendingtech-daily'
+  });
+  logger.info("Firebase Admin SDK initialized with project ID:", admin.app().options.projectId);
 }
 
 // Centralized Firestore DB instance.

@@ -625,12 +625,22 @@ async function renderArticleSSR(req, res, isHe = false) {
     const readingTime = articleData.readingTimeMinutes || Math.max(3, Math.ceil((articleData.content || '').length / 1000)) || 5;
 
     // Load base HTML template (bundled in functions/templates or public)
-    const bundledPath = path.resolve(__dirname, isHe ? '../templates/he-article.html' : '../templates/article.html');
-    const publicPath = path.resolve(__dirname, isHe ? '../../public/he/article.html' : '../../public/article.html');
-    const templatePath = fs.existsSync(bundledPath) ? bundledPath : publicPath;
-    let html = fs.existsSync(templatePath) 
-      ? fs.readFileSync(templatePath, 'utf-8') 
-      : getFallbackArticleHtml(isHe);
+    const candidates = [
+      isHe ? path.resolve(__dirname, '../templates/he/article.html') : path.resolve(__dirname, '../templates/article.html'),
+      isHe ? path.resolve(__dirname, '../../public/he/article.html') : path.resolve(__dirname, '../../public/article.html'),
+      path.resolve(__dirname, '../templates/article.html'),
+      path.resolve(__dirname, '../../public/article.html')
+    ];
+    let html = '';
+    for (const p of candidates) {
+      if (fs.existsSync(p)) {
+        html = fs.readFileSync(p, 'utf-8');
+        break;
+      }
+    }
+    if (!html) {
+      html = getFallbackArticleHtml(isHe);
+    }
 
     // Build Server-Rendered Article HTML for #article-container
     const articleInnerHtml = `
@@ -788,7 +798,8 @@ async function renderArticleSSR(req, res, isHe = false) {
 
   } catch (error) {
     logger.error("Error in renderArticleSSR:", error);
-    return serve404(res, isHe);
+    res.set('Content-Type', 'text/html; charset=utf-8');
+    return res.status(200).send(getFallbackArticleHtml(isHe));
   }
 }
 

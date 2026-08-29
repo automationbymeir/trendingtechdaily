@@ -21,6 +21,8 @@ try {
   // The route handler below will then correctly state that functionality is unavailable.
 }
 
+const { enrichRecentArticles } = require("../../services/articleEnrichmentService");
+
 router.post("/upload", requireAdmin, (req, res) => {
   logger.info("POST /admin/upload route hit.");
   if (uploadsAdmin && typeof uploadsAdmin.uploadFile === "function") {
@@ -28,6 +30,18 @@ router.post("/upload", requireAdmin, (req, res) => {
   } else {
     logger.error("Upload functionality is not available because 'uploadsAdmin.uploadFile' is not a valid function.");
     res.status(500).json({ error: "Upload functionality is currently unavailable due to a server-side configuration issue." });
+  }
+});
+
+router.all("/enrich-recent-articles", async (req, res) => {
+  logger.info("ALL /admin/enrich-recent-articles called.");
+  try {
+    const count = parseInt(req.query.count || req.body?.count || 4, 10);
+    const results = await enrichRecentArticles({ count });
+    res.status(200).json({ success: true, count, results });
+  } catch (error) {
+    logger.error("Error in /admin/enrich-recent-articles:", error);
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 

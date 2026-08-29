@@ -119,13 +119,15 @@ let realtimeListenersAttached = false;
 function loadHomepageIntelligence() {
   const isHe = window.location.pathname.startsWith('/he') || document.documentElement.getAttribute('dir') === 'rtl';
 
-  if (typeof db === 'undefined' && typeof window.db === 'undefined') {
+  if (window.ensureFirebaseInitialized) {
+    window.ensureFirebaseInitialized();
+  }
+
+  const firestoreDb = window.db || (typeof firebase !== 'undefined' && firebase.firestore ? firebase.firestore() : null);
+  if (!firestoreDb) {
     setTimeout(loadHomepageIntelligence, 200);
     return;
   }
-
-  const firestoreDb = window.db || db;
-  if (!firestoreDb) return;
 
   // Render static spotlights / Bento once
   loadAutonomousAgentsSpotlight(isHe);

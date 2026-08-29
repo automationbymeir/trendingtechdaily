@@ -11,16 +11,29 @@ window.firebaseConfig = window.firebaseConfig || {
 };
 
 // Initialize Firebase once and expose helpers globally
-if (typeof firebase !== 'undefined') {
-  if (!firebase.apps.length) {
-    try {
-      firebase.initializeApp(window.firebaseConfig);
-    } catch (e) {
-      console.warn("Firebase initializeApp note:", e);
+window.ensureFirebaseInitialized = function() {
+  if (typeof firebase !== 'undefined') {
+    if (!firebase.apps || !firebase.apps.length) {
+      try {
+        firebase.initializeApp(window.firebaseConfig);
+      } catch (e) {
+        console.warn("Firebase initializeApp note:", e);
+      }
     }
+    window.db = window.db || (firebase.firestore ? firebase.firestore() : null);
+    window.functions = window.functions || (firebase.functions ? firebase.functions() : null);
+    window.auth = window.auth || (firebase.auth ? firebase.auth() : null);
+    return true;
   }
+  return false;
+};
 
-  window.db = window.db || (firebase.firestore ? firebase.firestore() : null);
-  window.functions = window.functions || (firebase.functions ? firebase.functions() : null);
-  window.auth = window.auth || (firebase.auth ? firebase.auth() : null);
+// Initialize immediately
+window.ensureFirebaseInitialized();
+
+// Also attempt initialization on DOM ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', window.ensureFirebaseInitialized);
+} else {
+  window.ensureFirebaseInitialized();
 }

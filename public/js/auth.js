@@ -145,21 +145,32 @@ function updateAuthUI(user) {
 
 window.updateAuthUI = updateAuthUI;
 window.initializeAuth = function() {
+  if (window.ensureFirebaseInitialized) {
+    window.ensureFirebaseInitialized();
+  }
   if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
-    const auth = firebase.auth();
-    updateAuthUI(auth.currentUser);
-    auth.onAuthStateChanged(user => {
-      updateAuthUI(user);
-    });
+    try {
+      const auth = firebase.auth();
+      updateAuthUI(auth.currentUser);
+      auth.onAuthStateChanged(user => {
+        updateAuthUI(user);
+      });
+    } catch (e) {
+      console.warn("Auth initialization note:", e);
+    }
   }
 };
 
 // Initialize auth listeners as soon as Firebase is ready
 document.addEventListener('DOMContentLoaded', () => {
+  if (window.ensureFirebaseInitialized) {
+    window.ensureFirebaseInitialized();
+  }
   if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
     window.initializeAuth();
   } else {
     const checkInterval = setInterval(() => {
+      if (window.ensureFirebaseInitialized) window.ensureFirebaseInitialized();
       if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
         clearInterval(checkInterval);
         window.initializeAuth();

@@ -107,8 +107,21 @@ function renderSingleSocialEmbedHtml(item, isHe) {
   const platform = (item.platform || 'X').toLowerCase();
   const author = item.author || (isHe ? 'מומחה טכנולוגיה' : 'Tech Analyst');
   const handle = item.handle || '@techdispatch';
-  const quote = item.quote || '';
-  const link = item.link || item.url || (handle.startsWith('@') ? `https://x.com/${handle.replace('@','')}` : 'https://x.com');
+  let link = item.link || item.url || '';
+  if (platform === 'x' || platform === 'twitter') {
+    if (!link || (!link.startsWith('https://x.com/') && !link.startsWith('https://twitter.com/'))) {
+      const cleanHandle = (handle || '').replace('@', '').trim();
+      link = cleanHandle ? `https://x.com/${cleanHandle}` : 'https://x.com';
+    }
+  } else if (platform === 'github') {
+    if (!link || !link.startsWith('https://github.com/')) {
+      link = 'https://github.com';
+    }
+  } else if (platform === 'linkedin') {
+    if (!link || (!link.startsWith('https://www.linkedin.com/') && !link.startsWith('https://linkedin.com/'))) {
+      link = 'https://www.linkedin.com';
+    }
+  }
   const context = item.context || '';
   const avatar = item.avatar || item.avatarUrl || '';
   const mediaUrl = item.mediaUrl || item.image || '';

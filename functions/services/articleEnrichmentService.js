@@ -29,7 +29,7 @@ function getTopicCitations(title = '', isHe = false) {
           author: 'Dario Amodei',
           handle: '@DarioAmodei',
           quote: 'Scalable oversight and automated alignment verification are critical as frontier models gain test-time reasoning depth.',
-          link: 'https://darioamodei.com/machines-of-loving-grace',
+          link: 'https://x.com/AnthropicAI/status/1603417726359556096',
           context: 'CEO & Co-founder, Anthropic',
           avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
           mediaUrl: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&auto=format&fit=crop&q=80'
@@ -60,7 +60,7 @@ function getTopicCitations(title = '', isHe = false) {
           author: 'Bryan Catanzaro',
           handle: '@ctnzr',
           quote: isHe ? 'המטרה של גרפיקה נוירונלית היא לא רק יצירת פיקסלים אלא שחזור סצנה מלאה בזמן אמת עם שיהוי אפסי.' : 'Neural rendering allows us to generate coherent high-fidelity frames with zero perceptual latency overhead.',
-          link: 'https://www.eurogamer.net/digitalfoundry-2023-nvidia-interview-bryan-catanzaro-on-dlss-ray-reconstruction-and-the-future-of-neural-rendering',
+          link: 'https://x.com/ctnzr/status/1694380629471727725',
           context: 'VP of Applied Deep Learning, NVIDIA',
           avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
           mediaUrl: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?w=800&auto=format&fit=crop&q=80'

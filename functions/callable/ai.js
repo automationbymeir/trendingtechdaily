@@ -68,7 +68,7 @@ Requirements:
 - Include factual data, technical nuances, market trends, and industry implications.
 - Seamlessly integrate inline hyperlinks to authoritative sources (e.g. arXiv research papers, official corporate press releases, SEC filings, GitHub repositories, or Reuters/Bloomberg reports) using clean HTML anchor tags: <a href="URL" target="_blank" rel="noopener noreferrer">anchor text</a>.
 - Include 1-2 insightful quotes or social discussion mentions from industry leaders, engineers, or founders on X (Twitter), LinkedIn, or GitHub.
-- For all sources and social mentions, provide DIRECT DEEP LINKS (e.g. specific arXiv paper `https://arxiv.org/abs/...`, specific blog post `https://.../blog/...`, specific tweet/status `https://x.com/username/status/...`, or specific GitHub release/PR `https://github.com/.../releases`). NEVER provide homepage or root domain links.
+- For all sources and social mentions, provide DIRECT DEEP LINKS (e.g. specific arXiv paper "https://arxiv.org/abs/...", specific blog post "https://.../blog/...", specific tweet/status "https://x.com/username/status/...", or specific GitHub release/PR "https://github.com/.../releases"). NEVER provide homepage or root domain links.
 - Length: 450-700 words.
 
 Output MUST be ONLY a raw JSON object with these exact keys:

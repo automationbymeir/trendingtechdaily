@@ -578,20 +578,24 @@ async function renderArticleSSR(req, res, isHe = false) {
     }
 
     if (!articleData) {
-      logger.warn(`[SSR] Article not found in SSR: slug="${articleSlug}", docId="${docId}", falling back to client-side hydration template`);
-      const clientTemplatePath = isHe 
-        ? path.resolve(__dirname, '../../public/he/article.html')
-        : path.resolve(__dirname, '../../public/article.html');
-      const bundledTemplatePath = isHe
-        ? path.resolve(__dirname, '../templates/he/article.html')
-        : path.resolve(__dirname, '../templates/article.html');
-      const templateToUse = fs.existsSync(clientTemplatePath) ? clientTemplatePath : (fs.existsSync(bundledTemplatePath) ? bundledTemplatePath : null);
+      logger.warn(`[SSR] Article not found in SSR: slug="${articleSlug}", docId="${docId}", serving client-side SPA hydration template`);
+      const candidates = [
+        isHe ? path.resolve(__dirname, '../templates/he/article.html') : path.resolve(__dirname, '../templates/article.html'),
+        isHe ? path.resolve(__dirname, '../../public/he/article.html') : path.resolve(__dirname, '../../public/article.html'),
+        path.resolve(__dirname, '../templates/article.html'),
+        path.resolve(__dirname, '../../public/article.html')
+      ];
 
-      if (templateToUse && fs.existsSync(templateToUse)) {
-        res.set('Content-Type', 'text/html; charset=utf-8');
-        return res.status(200).send(fs.readFileSync(templateToUse, 'utf-8'));
+      for (const p of candidates) {
+        if (fs.existsSync(p)) {
+          res.set('Content-Type', 'text/html; charset=utf-8');
+          res.set('Cache-Control', 'public, max-age=60');
+          return res.status(200).send(fs.readFileSync(p, 'utf-8'));
+        }
       }
-      return serve404(res, isHe);
+      res.set('Content-Type', 'text/html; charset=utf-8');
+      res.set('Cache-Control', 'public, max-age=60');
+      return res.status(200).send(getFallbackArticleHtml(isHe));
     }
 
     // Prepare metadata
@@ -806,13 +810,59 @@ function getFallbackArticleHtml(isHe) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Article - TrendingTech Daily</title>
-  <link rel="stylesheet" href="/styles.css">
+  <title>${isHe ? 'מאמר - TrendingTech Daily' : 'Article - TrendingTech Daily'}</title>
+  
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&family=Rubik:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Master Unified Stylesheet -->
+  <link rel="stylesheet" href="${isHe ? '/he/styles.css' : '/styles.css'}">
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 </head>
 <body>
-  <div class="container my-4">
-    <article id="article-container"></article>
+  <!-- Navbar Placeholder -->
+  <div id="navbar-placeholder"></div>
+
+  <!-- Main Article Content Container -->
+  <div class="container my-4 my-md-5">
+    <div class="feed-sidebar-layout">
+      <!-- Article Column -->
+      <main class="feed-main-col">
+        <article id="article-container">
+          <div class="spinner-container">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">${isHe ? 'טוען...' : 'Loading...'}</span>
+            </div>
+            <p class="text-muted mt-2" style="font-size:0.875rem;">${isHe ? 'טוען את תוכן המאמר...' : 'Loading article content...'}</p>
+          </div>
+        </article>
+      </main>
+    </div>
   </div>
+
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Core Scripts -->
+  <script src="/js/config.js?v=20260829_v17"></script>
+  <script src="/js/auth.js?v=20260829_v17"></script>
+  <script src="/js/nav-loader.js?v=20260829_v17"></script>
+  <script src="/js/app-base.js?v=20260829_v17"></script>
+  <script src="/js/category-helper.js?v=20260829_v17"></script>
+  <script src="/js/article-page.js?v=20260829_v17"></script>
 </body>
 </html>`;
 }

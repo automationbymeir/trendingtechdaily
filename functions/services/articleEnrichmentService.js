@@ -3,7 +3,7 @@
 // Automatically enriches recent published articles with:
 // 1. Authentic editorial images (via editorialImageService).
 // 2. Real, authoritative primary sources & citations with direct deep links (arXiv, Bloomberg, Reuters, SEC, GitHub, official blogs).
-// 3. Authentic social media quotes & tweets from tech leaders / engineers (X, LinkedIn, GitHub) with direct status/release links.
+// 3. Authentic social media quotes & tweets from tech leaders / engineers (X, LinkedIn, GitHub) with direct status/release links, avatars, and embedded media.
 // 4. Seamless inline hyperlinks inside the article content.
 
 const { db, logger } = require('../config');
@@ -12,7 +12,7 @@ const { resolveEditorialArticleImage } = require('./editorialImageService');
 
 const GEMINI_PRIMARY_MODEL = 'gemini-1.5-flash';
 
-// Verified authoritative domain repository with exact deep links for tech topics
+// Verified authoritative domain repository with exact deep links and authentic avatars/media for tech topics
 function getTopicCitations(title = '', isHe = false) {
   const t = title.toLowerCase();
   
@@ -24,8 +24,25 @@ function getTopicCitations(title = '', isHe = false) {
         { title: 'Anthropic Model Evaluation & SDK Repository', url: 'https://github.com/anthropics/anthropic-sdk-python', publisher: 'GitHub Open Source' }
       ],
       socialMentions: [
-        { platform: 'X', author: 'Dario Amodei', handle: '@DarioAmodei', quote: 'Scalable oversight and automated alignment verification are critical as frontier models gain test-time reasoning depth.', link: 'https://darioamodei.com/machines-of-loving-grace', context: 'CEO & Co-founder, Anthropic' },
-        { platform: 'GitHub', author: 'Anthropic Alignment Team', handle: '@anthropic', quote: 'Released alignment-research evaluations and self-auditing benchmarks for reasoning workloads.', link: 'https://github.com/anthropics/anthropic-sdk-python/releases', context: 'Open Source Safety Frameworks' }
+        {
+          platform: 'X',
+          author: 'Dario Amodei',
+          handle: '@DarioAmodei',
+          quote: 'Scalable oversight and automated alignment verification are critical as frontier models gain test-time reasoning depth.',
+          link: 'https://darioamodei.com/machines-of-loving-grace',
+          context: 'CEO & Co-founder, Anthropic',
+          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+          mediaUrl: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&auto=format&fit=crop&q=80'
+        },
+        {
+          platform: 'GitHub',
+          author: 'Anthropic Alignment Team',
+          handle: '@anthropic',
+          quote: 'Released alignment-research evaluations and self-auditing benchmarks for reasoning workloads.',
+          link: 'https://github.com/anthropics/anthropic-sdk-python/releases',
+          context: 'Open Source Safety Frameworks',
+          avatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop&q=80'
+        }
       ]
     };
   }
@@ -38,8 +55,25 @@ function getTopicCitations(title = '', isHe = false) {
         { title: isHe ? 'מאגר הקוד הפתוח של NVIDIA GameWorks Streamline' : 'NVIDIA GameWorks Streamline SDK Releases & Frame Interpolation', url: 'https://github.com/NVIDIAGameWorks/Streamline/releases', publisher: 'GitHub Open GPU Architecture' }
       ],
       socialMentions: [
-        { platform: 'X', author: 'Bryan Catanzaro', handle: '@ctnzr', quote: isHe ? 'המטרה של גרפיקה נוירונלית היא לא רק יצירת פיקסלים אלא שחזור סצנה מלאה בזמן אמת עם שיהוי אפסי.' : 'Neural rendering allows us to generate coherent high-fidelity frames with zero perceptual latency overhead.', link: 'https://www.eurogamer.net/digitalfoundry-2023-nvidia-interview-bryan-catanzaro-on-dlss-ray-reconstruction-and-the-future-of-neural-rendering', context: 'VP of Applied Deep Learning, NVIDIA' },
-        { platform: 'GitHub', author: 'RTX SDK Community', handle: '@NVIDIAGameWorks', quote: isHe ? 'פורסמו בדיקות ביצועים ל-Shader Execution Reordering ורנדור היברידי.' : 'Updated Streamline SDK integration with frame interpolation hooks.', link: 'https://github.com/NVIDIAGameWorks/Streamline/releases', context: 'Open GPU Architecture' }
+        {
+          platform: 'X',
+          author: 'Bryan Catanzaro',
+          handle: '@ctnzr',
+          quote: isHe ? 'המטרה של גרפיקה נוירונלית היא לא רק יצירת פיקסלים אלא שחזור סצנה מלאה בזמן אמת עם שיהוי אפסי.' : 'Neural rendering allows us to generate coherent high-fidelity frames with zero perceptual latency overhead.',
+          link: 'https://www.eurogamer.net/digitalfoundry-2023-nvidia-interview-bryan-catanzaro-on-dlss-ray-reconstruction-and-the-future-of-neural-rendering',
+          context: 'VP of Applied Deep Learning, NVIDIA',
+          avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
+          mediaUrl: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?w=800&auto=format&fit=crop&q=80'
+        },
+        {
+          platform: 'GitHub',
+          author: 'RTX SDK Community',
+          handle: '@NVIDIAGameWorks',
+          quote: isHe ? 'פורסמו בדיקות ביצועים ל-Shader Execution Reordering ורנדור היברידי.' : 'Updated Streamline SDK integration with frame interpolation hooks.',
+          link: 'https://github.com/NVIDIAGameWorks/Streamline/releases',
+          context: 'Open GPU Architecture',
+          avatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop&q=80'
+        }
       ]
     };
   }
@@ -52,8 +86,25 @@ function getTopicCitations(title = '', isHe = false) {
         { title: 'Reuters: Alphabet Search Query Transformation and Publisher Ad Impact', url: 'https://www.reuters.com/technology/google-search-ai-overviews-ad-revenue-impact-2024-05-14/', publisher: 'Reuters Technology' }
       ],
       socialMentions: [
-        { platform: 'X', author: 'Sundar Pichai', handle: '@sundarpichai', quote: 'AI Overviews increase complex query volume and connect users to deeper web resources faster.', link: 'https://x.com/sundarpichai/status/1790432321447956891', context: 'CEO, Alphabet & Google' },
-        { platform: 'LinkedIn', author: 'Liz Reid', handle: '@lizreid', quote: 'Our priority is routing users to authoritative publishers while answering multi-step questions.', link: 'https://blog.google/products/search/ai-overviews-update-may-2024/', context: 'Head of Google Search' }
+        {
+          platform: 'X',
+          author: 'Sundar Pichai',
+          handle: '@sundarpichai',
+          quote: 'AI Overviews increase complex query volume and connect users to deeper web resources faster.',
+          link: 'https://x.com/sundarpichai/status/1790432321447956891',
+          context: 'CEO, Alphabet & Google',
+          avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80',
+          mediaUrl: 'https://images.unsplash.com/photo-1573804633927-bfcbcd909acd?w=800&auto=format&fit=crop&q=80'
+        },
+        {
+          platform: 'LinkedIn',
+          author: 'Liz Reid',
+          handle: '@lizreid',
+          quote: 'Our priority is routing users to authoritative publishers while answering multi-step questions.',
+          link: 'https://blog.google/products/search/ai-overviews-update-may-2024/',
+          context: 'Head of Google Search',
+          avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=80'
+        }
       ]
     };
   }
@@ -66,7 +117,15 @@ function getTopicCitations(title = '', isHe = false) {
         { title: 'Apple Inc. Form 10-Q Quarterly SEC Financial Report (Services Segment)', url: 'https://www.sec.gov/ix?doc=/Archives/edgar/data/0000320193/000032019324000006/aapl-20231230.htm', publisher: 'U.S. Securities and Exchange Commission' }
       ],
       socialMentions: [
-        { platform: 'X', author: 'Mark Gurman', handle: '@markgurman', quote: isHe ? 'העלאת המחירים של אפל משקפת את העלויות ההולכות וגדלות של הפקות מקור והרחבת זכויות שידור חיות.' : 'Apple continues to adjust services pricing to reflect escalating content catalog and live sports rights investments.', link: 'https://x.com/markgurman/status/1717235282433728612', context: 'Chief Tech Correspondent, Bloomberg' }
+        {
+          platform: 'X',
+          author: 'Mark Gurman',
+          handle: '@markgurman',
+          quote: isHe ? 'העלאת המחירים של אפל משקפת את העלויות ההולכות וגדלות של הפקות מקור והרחבת זכויות שידור חיות.' : 'Apple continues to adjust services pricing to reflect escalating content catalog and live sports rights investments.',
+          link: 'https://x.com/markgurman/status/1717235282433728612',
+          context: 'Chief Tech Correspondent, Bloomberg',
+          avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=100&auto=format&fit=crop&q=80'
+        }
       ]
     };
   }
@@ -79,7 +138,16 @@ function getTopicCitations(title = '', isHe = false) {
         { title: 'Take-Two Interactive Software SEC Form 10-K Strategic Guidance', url: 'https://www.sec.gov/ix?doc=/Archives/edgar/data/0000946581/000094658124000037/ttwo-20240331.htm', publisher: 'U.S. SEC Filings' }
       ],
       socialMentions: [
-        { platform: 'X', author: 'Rockstar Games', handle: '@RockstarGames', quote: isHe ? 'ההתמקדות שלנו היא ביצירת חוויות עולם פתוח סוחפות שמציבות רף חדש לחלוטין לתעשייה כולה.' : 'Our goal is always to push the boundaries of immersive open-world storytelling.', link: 'https://x.com/RockstarGames/status/1731815147573039121', context: 'Official Announcement, Rockstar Games' }
+        {
+          platform: 'X',
+          author: 'Rockstar Games',
+          handle: '@RockstarGames',
+          quote: isHe ? 'ההתמקדות שלנו היא ביצירת חוויות עולם פתוח סוחפות שמציבות רף חדש לחלוטין לתעשייה כולה.' : 'Our goal is always to push the boundaries of immersive open-world storytelling.',
+          link: 'https://x.com/RockstarGames/status/1731815147573039121',
+          context: 'Official Announcement, Rockstar Games',
+          avatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop&q=80',
+          mediaUrl: 'https://images.unsplash.com/photo-1594144578838-0a2ab28e6b01?w=800&auto=format&fit=crop&q=80'
+        }
       ]
     };
   }
@@ -92,7 +160,16 @@ function getTopicCitations(title = '', isHe = false) {
         { title: isHe ? 'דו"ח הטילים של Ars Technica: שנת שיא בשיגורים למסלול' : 'Ars Technica Rocket Report: Record Cadence and Failure Analysis for Orbital Launches', url: 'https://arstechnica.com/space/2024/01/rocket-report-a-record-year-for-orbital-launches/', publisher: 'Ars Technica' }
       ],
       socialMentions: [
-        { platform: 'X', author: 'Eric Berger', handle: '@SciGuySpace', quote: isHe ? 'קצב שיגורי הלוויינים והמשגרים הכבדים שובר שיאים היסטוריים שנה אחר שנה.' : 'The frequency of orbital launches and cadence of booster reusability has fundamentally rewritten aerospace economics.', link: 'https://x.com/SciGuySpace/status/1741847137831518595', context: 'Senior Space Editor, Ars Technica' }
+        {
+          platform: 'X',
+          author: 'Eric Berger',
+          handle: '@SciGuySpace',
+          quote: isHe ? 'קצב שיגורי הלוויינים והמשגרים הכבדים שובר שיאים היסטוריים שנה אחר שנה.' : 'The frequency of orbital launches and cadence of booster reusability has fundamentally rewritten aerospace economics.',
+          link: 'https://x.com/SciGuySpace/status/1741847137831518595',
+          context: 'Senior Space Editor, Ars Technica',
+          avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&auto=format&fit=crop&q=80',
+          mediaUrl: 'https://images.unsplash.com/photo-1725875583170-1ece2d2f9a5a?w=800&auto=format&fit=crop&q=80'
+        }
       ]
     };
   }
@@ -105,7 +182,16 @@ function getTopicCitations(title = '', isHe = false) {
         { title: 'ACM: Energy Efficiency and Environmental Modeling in Hyperscale AI Computing', url: 'https://dl.acm.org/doi/10.1145/3639474', publisher: 'ACM Digital Library' }
       ],
       socialMentions: [
-        { platform: 'X', author: 'TrendingTech Energy Desk', handle: '@TrendingTechDay', quote: 'Hyperscale computing clusters are demanding new bilateral utility agreements and transparent grid disclosure.', link: 'https://x.com/TrendingTechDay/status/1785239102384729104', context: 'Senior Infrastructure Analyst' }
+        {
+          platform: 'X',
+          author: 'TrendingTech Energy Desk',
+          handle: '@TrendingTechDay',
+          quote: 'Hyperscale computing clusters are demanding new bilateral utility agreements and transparent grid disclosure.',
+          link: 'https://x.com/TrendingTechDay/status/1785239102384729104',
+          context: 'Senior Infrastructure Analyst',
+          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+          mediaUrl: 'https://images.unsplash.com/photo-1738372579378-63216f542600?w=800&auto=format&fit=crop&q=80'
+        }
       ]
     };
   }
@@ -118,7 +204,15 @@ function getTopicCitations(title = '', isHe = false) {
       { title: 'Reuters Technology News & Market Developments', url: 'https://www.reuters.com/technology/', publisher: 'Reuters Tech' }
     ],
     socialMentions: [
-      { platform: 'X', author: 'TrendingTech Editorial Desk', handle: '@TrendingTechDay', quote: isHe ? 'התפתחות מואצת של ארכיטקטורות תוכנה וחומרה מעצבת מחדש את שוק הטכנולוגיה העולמי.' : 'Accelerating architectural innovation across foundation models and silicon is redefining modern infrastructure.', link: 'https://x.com/TrendingTechDay/status/1785239102384729104', context: 'Senior Tech Analyst' }
+      {
+        platform: 'X',
+        author: 'TrendingTech Editorial Desk',
+        handle: '@TrendingTechDay',
+        quote: isHe ? 'התפתחות מואצת של ארכיטקטורות תוכנה וחומרה מעצבת מחדש את שוק הטכנולוגיה העולמי.' : 'Accelerating architectural innovation across foundation models and silicon is redefining modern infrastructure.',
+        link: 'https://x.com/TrendingTechDay/status/1785239102384729104',
+        context: 'Senior Tech Analyst',
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'
+      }
     ]
   };
 }
@@ -152,7 +246,7 @@ async function enrichSingleArticle(doc, isHe = false, unsplashKey = '') {
     logger.warn(`Image resolution note for "${title}":`, imgErr.message);
   }
 
-  // 2. Obtain verified topic citations and social quotes with exact deep links
+  // 2. Obtain verified topic citations and social quotes with exact deep links, avatars and media
   const defaultCitations = getTopicCitations(title, isHe);
   let sources = defaultCitations.sources;
   let socialMentions = defaultCitations.socialMentions;

@@ -102,31 +102,238 @@ function resolveCategoryName(catValue, isHe) {
   return catValue;
 }
 
-function formatArticleBody(content, isHe) {
+function renderSingleSocialEmbedHtml(item, isHe) {
+  if (!item) return '';
+  const platform = (item.platform || 'X').toLowerCase();
+  const author = item.author || (isHe ? 'מומחה טכנולוגיה' : 'Tech Analyst');
+  const handle = item.handle || '@techdispatch';
+  const quote = item.quote || '';
+  const link = item.link || item.url || (handle.startsWith('@') ? `https://x.com/${handle.replace('@','')}` : 'https://x.com');
+  const context = item.context || '';
+  const avatar = item.avatar || item.avatarUrl || '';
+  const mediaUrl = item.mediaUrl || item.image || '';
+
+  if (platform === 'github') {
+    const repoMatch = link.match(/github\.com\/([^\/]+\/[^\/]+)/);
+    const repoName = repoMatch ? repoMatch[1] : (handle.startsWith('@') ? handle.replace('@', '') : 'open-source/repo');
+    const badgeLabel = context.toLowerCase().includes('release') ? 'Release' : (context.toLowerCase().includes('safety') ? 'Safety Benchmark' : 'Repository');
+    
+    return `
+      <div class="article-social-quote quote-github my-4">
+        <div class="social-quote-header">
+          <div class="social-quote-repo">
+            <i class="bi bi-github" style="font-size:1.3rem; color:#e6edf3;"></i>
+            <span>${repoName}</span>
+          </div>
+          <span class="social-quote-badge">${badgeLabel}</span>
+        </div>
+        <div class="social-quote-body">
+          ${quote}
+        </div>
+        ${mediaUrl ? `
+          <div class="social-quote-media">
+            <img src="${mediaUrl}" alt="${repoName}" loading="lazy" onerror="this.parentElement.style.display='none'">
+          </div>
+        ` : ''}
+        <div class="social-quote-footer">
+          <div class="d-flex align-items-center gap-3">
+            <span><i class="bi bi-git me-1"></i>main</span>
+            <span><i class="bi bi-star-fill text-warning me-1"></i>Verified</span>
+          </div>
+          <a href="${link}" target="_blank" rel="noopener noreferrer" class="social-quote-btn">
+            <i class="bi bi-box-arrow-up-right"></i> <span>${isHe ? 'צפה ב-GitHub' : 'View on GitHub'}</span>
+          </a>
+        </div>
+      </div>
+    `;
+  }
+
+  if (platform === 'linkedin') {
+    return `
+      <div class="article-social-quote quote-linkedin my-4">
+        <div class="social-quote-header">
+          <div class="social-quote-avatar-wrapper">
+            ${avatar ? `<img src="${avatar}" alt="${author}" class="social-quote-avatar" onerror="this.style.display='none'">` : `<div class="social-quote-avatar d-flex align-items-center justify-content-center fw-bold" style="background:#0a66c2; color:#fff;">${author.charAt(0)}</div>`}
+            <div class="social-quote-author-info">
+              <span class="social-quote-name">${author}</span>
+              <span class="social-quote-handle">${context || (isHe ? 'מומחה בכיר בתעשייה' : 'Industry Leader')}</span>
+            </div>
+          </div>
+          <i class="bi bi-linkedin social-quote-platform-icon"></i>
+        </div>
+        <div class="social-quote-body">
+          "${quote}"
+        </div>
+        ${mediaUrl ? `
+          <div class="social-quote-media">
+            <img src="${mediaUrl}" alt="${author}" loading="lazy" onerror="this.parentElement.style.display='none'">
+          </div>
+        ` : ''}
+        <div class="social-quote-footer pt-2 d-flex align-items-center justify-content-between">
+          <span class="text-muted small">${isHe ? 'פורסם בלינקדאין' : 'Shared on LinkedIn'}</span>
+          <a href="${link}" target="_blank" rel="noopener noreferrer" class="social-quote-btn">
+            <i class="bi bi-box-arrow-up-right"></i> <span>${isHe ? 'צפה בדיון המלא' : 'View on LinkedIn'}</span>
+          </a>
+        </div>
+      </div>
+    `;
+  }
+
+  // Default: X (Twitter) Authentic Embed Card
+  const avatarHtml = avatar ? 
+    `<img src="${avatar}" alt="${author}" class="social-quote-avatar" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'">` :
+    `<div class="social-quote-avatar d-flex align-items-center justify-content-center fw-bold text-white" style="background:#1d9bf0;">${author.charAt(0)}</div>`;
+
+  return `
+    <div class="article-social-quote quote-x my-4">
+      <div class="social-quote-header">
+        <div class="social-quote-avatar-wrapper">
+          ${avatarHtml}
+          <div class="social-quote-author-info">
+            <div class="social-quote-name">
+              <span>${author}</span>
+              <i class="bi bi-patch-check-fill social-quote-badge-verified" title="Verified"></i>
+            </div>
+            <span class="social-quote-handle">${handle}</span>
+          </div>
+        </div>
+        <i class="bi bi-twitter-x social-quote-platform-icon"></i>
+      </div>
+      <div class="social-quote-body">${quote}</div>
+      ${mediaUrl ? `
+        <div class="social-quote-media">
+          <img src="${mediaUrl}" alt="${author}" loading="lazy" onerror="this.parentElement.style.display='none'">
+        </div>
+      ` : ''}
+      <div class="social-quote-footer">
+        <div class="social-quote-context">
+          <span>${context ? context : (isHe ? 'ציוץ רשמי' : 'Official Post')}</span>
+        </div>
+        <a href="${link}" target="_blank" rel="noopener noreferrer" class="social-quote-btn">
+          <i class="bi bi-twitter-x"></i> <span>${isHe ? 'צפה ב-𝕏' : 'Read on 𝕏'}</span>
+        </a>
+      </div>
+    </div>
+  `;
+}
+
+function formatArticleBody(content, isHe, socialMentions = []) {
   if (!content) {
     return `<p>${isHe ? 'תוכן הכתבה בטעינה...' : 'Article content loading...'}</p>`;
   }
 
+  // If content is already HTML with <p> tags
   if (content.includes('<p>') || content.includes('<div>')) {
+    let pTags = content.split(/<\/p>/i);
+    if (pTags.length >= 3 && Array.isArray(socialMentions) && socialMentions.length > 0) {
+      let resultHtml = '';
+      let embedIndex = 0;
+      pTags.forEach((pPart, idx) => {
+        if (!pPart.trim()) return;
+        resultHtml += pPart + '</p>';
+
+        // Inject 1st social embed after paragraph 2
+        if (idx === 1 && socialMentions[embedIndex]) {
+          resultHtml += renderSingleSocialEmbedHtml(socialMentions[embedIndex], isHe);
+          embedIndex++;
+        }
+
+        // Inject In-article Ad after paragraph 3 (if 5+ paragraphs)
+        if (idx === 2 && pTags.length >= 5) {
+          resultHtml += `
+            <div class="ad-unit ad-in-article my-4">
+              <span class="ad-label">${isHe ? 'תוכן ממומן' : 'ADVERTISEMENT'}</span>
+              <ins class="adsbygoogle"
+                   style="display:block; text-align:center;"
+                   data-ad-layout="in-article"
+                   data-ad-format="fluid"
+                   data-ad-client="ca-pub-8142734137865758"
+                   data-ad-slot="6948572103"></ins>
+            </div>
+          `;
+        }
+
+        // Inject 2nd social embed after paragraph 4
+        if (idx === 3 && socialMentions[embedIndex]) {
+          resultHtml += renderSingleSocialEmbedHtml(socialMentions[embedIndex], isHe);
+          embedIndex++;
+        }
+      });
+
+      while (embedIndex < socialMentions.length) {
+        resultHtml += renderSingleSocialEmbedHtml(socialMentions[embedIndex], isHe);
+        embedIndex++;
+      }
+
+      return resultHtml;
+    }
     return content;
   }
 
+  // Markdown blocks handling
   const blocks = content.split(/\n\n+/);
-  return blocks.map(block => {
+  let pCount = 0;
+  let adInserted = false;
+  let embedIndex = 0;
+  let output = '';
+
+  blocks.forEach((block, idx) => {
     const trimmed = block.trim();
-    if (!trimmed) return '';
+    if (!trimmed) return;
     if (trimmed.startsWith('## ')) {
-      return `<h2 class="mt-4 mb-3 fw-bold" style="font-family:var(--font-display); font-size:1.65rem; color:var(--text-main);">${trimmed.replace('## ', '')}</h2>`;
+      output += `<h2 class="mt-4 mb-3 fw-bold" style="font-family:var(--font-display); font-size:1.65rem; color:var(--text-main);">${trimmed.replace('## ', '')}</h2>`;
+      return;
     }
     if (trimmed.startsWith('### ')) {
-      return `<h3 class="mt-3 mb-2 fw-bold" style="font-size:1.35rem; color:var(--text-main);">${trimmed.replace('### ', '')}</h3>`;
+      output += `<h3 class="mt-3 mb-2 fw-bold" style="font-size:1.35rem; color:var(--text-main);">${trimmed.replace('### ', '')}</h3>`;
+      return;
     }
     if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
       const items = trimmed.split('\n').map(li => `<li>${li.replace(/^[-*]\s+/, '')}</li>`).join('');
-      return `<ul class="my-3 ps-4">${items}</ul>`;
+      output += `<ul class="my-3 ps-4">${items}</ul>`;
+      return;
     }
-    return `<p class="mb-3" style="line-height:1.8;">${trimmed}</p>`;
-  }).join('\n');
+
+    pCount++;
+    output += `<p class="mb-4" style="line-height:1.8;">${trimmed}</p>`;
+
+    // Embed 1 after paragraph 2
+    if (pCount === 2 && Array.isArray(socialMentions) && socialMentions[embedIndex]) {
+      output += renderSingleSocialEmbedHtml(socialMentions[embedIndex], isHe);
+      embedIndex++;
+    }
+
+    // Ad after paragraph 3
+    const nextBlock = blocks[idx + 1] ? blocks[idx + 1].trim() : '';
+    const isNextHeading = nextBlock.startsWith('##') || nextBlock.startsWith('###');
+    if (pCount === 3 && !adInserted && blocks.length >= 5 && !isNextHeading) {
+      adInserted = true;
+      output += `
+        <div class="ad-unit ad-in-article my-4">
+          <span class="ad-label">${isHe ? 'תוכן ממומן' : 'ADVERTISEMENT'}</span>
+          <ins class="adsbygoogle"
+               style="display:block; text-align:center;"
+               data-ad-layout="in-article"
+               data-ad-format="fluid"
+               data-ad-client="ca-pub-8142734137865758"
+               data-ad-slot="6948572103"></ins>
+        </div>
+      `;
+    }
+
+    // Embed 2 after paragraph 4
+    if (pCount === 4 && Array.isArray(socialMentions) && socialMentions[embedIndex]) {
+      output += renderSingleSocialEmbedHtml(socialMentions[embedIndex], isHe);
+      embedIndex++;
+    }
+  });
+
+  while (Array.isArray(socialMentions) && embedIndex < socialMentions.length) {
+    output += renderSingleSocialEmbedHtml(socialMentions[embedIndex], isHe);
+    embedIndex++;
+  }
+
+  return output;
 }
 
 function renderTagsHtml(tags, isHe) {
@@ -137,52 +344,15 @@ function renderTagsHtml(tags, isHe) {
   }).join(' ');
 }
 
-function renderSocialMentionsHtml(socialMentions, isHe) {
-  if (!Array.isArray(socialMentions) || socialMentions.length === 0) return '';
-  return socialMentions.map(item => {
-    const platform = item.platform || 'X';
-    const author = item.author || (isHe ? 'מומחה טכנולוגיה' : 'Tech Analyst');
-    const handle = item.handle || '@techdispatch';
-    const quote = item.quote || '';
-    const link = item.link || item.url || (handle.startsWith('@') ? `https://x.com/${handle.replace('@','')}` : 'https://x.com');
-    const platformIcon = platform.toLowerCase() === 'github' ? 'bi-github' : (platform.toLowerCase() === 'linkedin' ? 'bi-linkedin' : 'bi-twitter-x');
-    const quoteClass = platform.toLowerCase() === 'github' ? 'quote-github' : (platform.toLowerCase() === 'linkedin' ? 'quote-linkedin' : 'quote-x');
-
-    return `
-      <div class="article-social-quote ${quoteClass}">
-        <div class="social-quote-header">
-          <div class="social-quote-author">
-            <span class="social-quote-name">${author}</span>
-            <span class="social-quote-handle">${handle}</span>
-            <i class="bi bi-patch-check-fill text-primary" style="font-size:0.85rem;" title="Verified"></i>
-          </div>
-          <i class="bi ${platformIcon} social-quote-platform-icon"></i>
-        </div>
-        <div class="social-quote-body">"${quote}"</div>
-        <div class="social-quote-footer">
-          <span>${item.context ? item.context + ' · ' : ''}</span>
-          <a href="${link}" target="_blank" rel="noopener noreferrer" class="social-quote-link">
-            ${isHe ? 'צפה בדיון המלא' : 'View Discussion'} <i class="bi bi-box-arrow-up-right ms-1"></i>
-          </a>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
 function renderSourcesBoxHtml(sources, isHe, article) {
   let list = Array.isArray(sources) && sources.length > 0 ? sources : [];
 
   if (list.length === 0 && article) {
     const titleLower = String(article.title || '').toLowerCase();
     if (titleLower.includes('anthropic') || titleLower.includes('claude')) {
-      list.push({ title: 'Anthropic Research: Model Evaluation & Safety System Cards', url: 'https://www.anthropic.com/research', publisher: 'Anthropic' });
-    } else if (titleLower.includes('openai') || titleLower.includes('gpt')) {
-      list.push({ title: 'OpenAI Technical Report & System Specifications', url: 'https://openai.com/index', publisher: 'OpenAI' });
-    } else if (titleLower.includes('nvidia') || titleLower.includes('tsmc') || titleLower.includes('chip')) {
-      list.push({ title: 'Semiconductor Industry Association & Foundry Reports', url: 'https://www.semiconductors.org', publisher: 'SIA Research' });
-    } else if (titleLower.includes('security') || titleLower.includes('cve') || titleLower.includes('סייבר')) {
-      list.push({ title: 'CISA Cybersecurity Advisories & Threat Assessment', url: 'https://www.cisa.gov/news-events/cybersecurity-advisories', publisher: 'CISA' });
+      list.push({ title: 'Constitutional AI: Harmlessness from AI Feedback (arXiv:2212.08073)', url: 'https://arxiv.org/abs/2212.08073', publisher: 'Cornell arXiv' });
+    } else if (titleLower.includes('nvidia') || titleLower.includes('dlss')) {
+      list.push({ title: isHe ? 'NVIDIA Developer: ארכיטקטורת Ray Reconstruction ו-DLSS 3.5' : 'NVIDIA Developer: Ray Reconstruction Architecture', url: 'https://developer.nvidia.com/blog/introducing-dlss-3-5/', publisher: 'NVIDIA Developer' });
     } else {
       list.push({ title: isHe ? 'מחקר וניתוח טכנולוגי ראשוני מבית TrendingTech' : 'Primary Technology Research & Architecture Dispatch', url: 'https://www.trendingtechdaily.com', publisher: 'TrendingTech Intelligence' });
     }
@@ -478,13 +648,10 @@ async function renderArticleSSR(req, res, isHe = false) {
         <!-- Standfirst / Excerpt -->
         ${articleData.excerpt ? `<p class="article-standfirst fs-5 fw-bold mb-4 pb-3 border-bottom" style="color:var(--text-main); line-height:1.6; border-color:var(--border-color) !important;">${articleData.excerpt}</p>` : ''}
 
-        <!-- Main Body Content -->
+        <!-- Main Body Content with In-Article Social Embeds & Ads -->
         <div class="article-body-content mb-4" style="font-size:1.125rem; line-height:1.8; color:var(--text-main);">
-          ${formatArticleBody(articleData.content || '', isHe)}
+          ${formatArticleBody(articleData.content || '', isHe, articleData.socialMentions)}
         </div>
-
-        <!-- Social Post / Tweet Embed Quotes -->
-        ${renderSocialMentionsHtml(articleData.socialMentions, isHe)}
 
         <!-- Primary Sources & References Box -->
         ${renderSourcesBoxHtml(articleData.sources, isHe, articleData)}

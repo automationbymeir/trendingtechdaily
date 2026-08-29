@@ -27,6 +27,7 @@ Requirements:
 - Include factual data, technical nuances, market trends, and industry implications.
 - Seamlessly integrate inline hyperlinks to authoritative sources (e.g. arXiv research papers, official corporate press releases, SEC filings, GitHub repositories, or Reuters/Bloomberg reports) using clean HTML anchor tags: <a href="URL" target="_blank" rel="noopener noreferrer">anchor text</a>.
 - Include 1-2 insightful quotes or social discussion mentions from industry leaders, engineers, or founders on X (Twitter), LinkedIn, or GitHub.
+- For all sources and social mentions, provide DIRECT DEEP LINKS (e.g. specific arXiv paper `https://arxiv.org/abs/...`, specific blog post `https://.../blog/...`, specific tweet/status `https://x.com/username/status/...`, or specific GitHub release/PR `https://github.com/.../releases`). NEVER provide homepage or root domain links.
 - Length: 450-700 words.
 
 Output MUST be ONLY a raw JSON object with these exact keys:
@@ -37,10 +38,10 @@ Output MUST be ONLY a raw JSON object with these exact keys:
 "excerpt": "string, informative summary, max 160 chars",
 "tags": ["array", "of", "relevant", "tags"],
 "sources": [
-  { "title": "string, title of primary source or paper", "url": "string, direct canonical URL", "publisher": "string, e.g. arXiv, Reuters, OpenAI Blog, Bloomberg" }
+  { "title": "string, title of primary source or paper", "url": "string, specific canonical deep URL", "publisher": "string, e.g. arXiv, Reuters, OpenAI Blog, Bloomberg" }
 ],
 "socialMentions": [
-  { "platform": "X", "author": "string, full name", "handle": "@handle", "quote": "string, key quote or insight", "link": "https://x.com/...", "context": "string, e.g. Lead AI Researcher" }
+  { "platform": "X", "author": "string, full name", "handle": "@handle", "quote": "string, key quote or insight", "link": "string, specific direct post URL https://x.com/.../status/...", "context": "string, e.g. Lead AI Researcher" }
 ],
 "imagePrompt": "string, professional image description for article illustration",
 "mentionedCompanies": ["array", "of", "publicly traded company names mentioned (e.g., Apple, Microsoft, NVIDIA)"],

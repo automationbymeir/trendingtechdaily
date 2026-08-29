@@ -109,8 +109,8 @@ function renderSingleSocialEmbedHtml(item, isHe) {
   const handle = item.handle || '@techdispatch';
   let link = item.link || item.url || '';
   if (platform === 'x' || platform === 'twitter') {
-    if (!link || (!link.startsWith('https://x.com/') && !link.startsWith('https://twitter.com/'))) {
-      const cleanHandle = (handle || '').replace('@', '').trim();
+    const cleanHandle = (handle || '').replace('@', '').trim();
+    if (!link || (!link.startsWith('https://x.com/') && !link.startsWith('https://twitter.com/')) || link.includes('/status/')) {
       link = cleanHandle ? `https://x.com/${cleanHandle}` : 'https://x.com';
     }
   } else if (platform === 'github') {

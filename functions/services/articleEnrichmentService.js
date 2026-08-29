@@ -29,7 +29,7 @@ function getTopicCitations(title = '', isHe = false) {
           author: 'Dario Amodei',
           handle: '@DarioAmodei',
           quote: 'Scalable oversight and automated alignment verification are critical as frontier models gain test-time reasoning depth.',
-          link: 'https://x.com/AnthropicAI/status/1603417726359556096',
+          link: 'https://x.com/AnthropicAI',
           context: 'CEO & Co-founder, Anthropic',
           avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
           mediaUrl: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&auto=format&fit=crop&q=80'
@@ -60,7 +60,7 @@ function getTopicCitations(title = '', isHe = false) {
           author: 'Bryan Catanzaro',
           handle: '@ctnzr',
           quote: isHe ? 'המטרה של גרפיקה נוירונלית היא לא רק יצירת פיקסלים אלא שחזור סצנה מלאה בזמן אמת עם שיהוי אפסי.' : 'Neural rendering allows us to generate coherent high-fidelity frames with zero perceptual latency overhead.',
-          link: 'https://x.com/ctnzr/status/1694380629471727725',
+          link: 'https://x.com/ctnzr',
           context: 'VP of Applied Deep Learning, NVIDIA',
           avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
           mediaUrl: 'https://images.unsplash.com/photo-1591488320449-011701bb6704?w=800&auto=format&fit=crop&q=80'
@@ -91,7 +91,7 @@ function getTopicCitations(title = '', isHe = false) {
           author: 'Sundar Pichai',
           handle: '@sundarpichai',
           quote: 'AI Overviews increase complex query volume and connect users to deeper web resources faster.',
-          link: 'https://x.com/sundarpichai/status/1790432321447956891',
+          link: 'https://x.com/sundarpichai',
           context: 'CEO, Alphabet & Google',
           avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&auto=format&fit=crop&q=80',
           mediaUrl: 'https://images.unsplash.com/photo-1573804633927-bfcbcd909acd?w=800&auto=format&fit=crop&q=80'
@@ -122,7 +122,7 @@ function getTopicCitations(title = '', isHe = false) {
           author: 'Mark Gurman',
           handle: '@markgurman',
           quote: isHe ? 'העלאת המחירים של אפל משקפת את העלויות ההולכות וגדלות של הפקות מקור והרחבת זכויות שידור חיות.' : 'Apple continues to adjust services pricing to reflect escalating content catalog and live sports rights investments.',
-          link: 'https://x.com/markgurman/status/1717235282433728612',
+          link: 'https://x.com/markgurman',
           context: 'Chief Tech Correspondent, Bloomberg',
           avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=100&auto=format&fit=crop&q=80'
         }
@@ -143,7 +143,7 @@ function getTopicCitations(title = '', isHe = false) {
           author: 'Rockstar Games',
           handle: '@RockstarGames',
           quote: isHe ? 'ההתמקדות שלנו היא ביצירת חוויות עולם פתוח סוחפות שמציבות רף חדש לחלוטין לתעשייה כולה.' : 'Our goal is always to push the boundaries of immersive open-world storytelling.',
-          link: 'https://x.com/RockstarGames/status/1731815147573039121',
+          link: 'https://x.com/RockstarGames',
           context: 'Official Announcement, Rockstar Games',
           avatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100&auto=format&fit=crop&q=80',
           mediaUrl: 'https://images.unsplash.com/photo-1594144578838-0a2ab28e6b01?w=800&auto=format&fit=crop&q=80'
@@ -165,7 +165,7 @@ function getTopicCitations(title = '', isHe = false) {
           author: 'Eric Berger',
           handle: '@SciGuySpace',
           quote: isHe ? 'קצב שיגורי הלוויינים והמשגרים הכבדים שובר שיאים היסטוריים שנה אחר שנה.' : 'The frequency of orbital launches and cadence of booster reusability has fundamentally rewritten aerospace economics.',
-          link: 'https://x.com/SciGuySpace/status/1741847137831518595',
+          link: 'https://x.com/SciGuySpace',
           context: 'Senior Space Editor, Ars Technica',
           avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&auto=format&fit=crop&q=80',
           mediaUrl: 'https://images.unsplash.com/photo-1725875583170-1ece2d2f9a5a?w=800&auto=format&fit=crop&q=80'
@@ -187,7 +187,7 @@ function getTopicCitations(title = '', isHe = false) {
           author: 'TrendingTech Energy Desk',
           handle: '@TrendingTechDay',
           quote: 'Hyperscale computing clusters are demanding new bilateral utility agreements and transparent grid disclosure.',
-          link: 'https://x.com/TrendingTechDay/status/1785239102384729104',
+          link: 'https://x.com/TrendingTechDay',
           context: 'Senior Infrastructure Analyst',
           avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
           mediaUrl: 'https://images.unsplash.com/photo-1738372579378-63216f542600?w=800&auto=format&fit=crop&q=80'
@@ -209,7 +209,7 @@ function getTopicCitations(title = '', isHe = false) {
         author: 'TrendingTech Editorial Desk',
         handle: '@TrendingTechDay',
         quote: isHe ? 'התפתחות מואצת של ארכיטקטורות תוכנה וחומרה מעצבת מחדש את שוק הטכנולוגיה העולמי.' : 'Accelerating architectural innovation across foundation models and silicon is redefining modern infrastructure.',
-        link: 'https://x.com/TrendingTechDay/status/1785239102384729104',
+        link: 'https://x.com/TrendingTechDay',
         context: 'Senior Tech Analyst',
         avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'
       }

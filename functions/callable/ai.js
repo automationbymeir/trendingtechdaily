@@ -149,6 +149,8 @@ Generate the article about: "${topic}". Output ONLY the JSON object.
           content: getSafe(() => generatedJson.content),
           excerpt: getSafe(() => generatedJson.excerpt),
           tags: getSafe(() => generatedJson.tags, []),
+          sources: getSafe(() => generatedJson.sources, []),
+          socialMentions: getSafe(() => generatedJson.socialMentions, []),
           imagePrompt: getSafe(() => generatedJson.imagePrompt),
           imageAltText: getSafe(() => generatedJson.imageAltText, getSafe(() => generatedJson.title)),
           mentionedCompanies: getSafe(() => generatedJson.mentionedCompanies, [])

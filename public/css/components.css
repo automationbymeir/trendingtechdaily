@@ -1024,6 +1024,9 @@ ins.adsbygoogle[data-ad-status="unfilled"],
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-size: 0.85rem;
   color: #71767b;
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: inline-block;
 }
 
 .quote-x .social-quote-platform-icon {

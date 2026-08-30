@@ -176,28 +176,32 @@ function calculateMatchScore(discTitle, discText, article) {
 }
 
 /**
- * Match trending discussions against Firestore articles
+ * Match trending discussions against Firestore articles (bilingual aware)
  */
-async function findDiscussionMatches(discussions, isHe = true) {
-  const colName = isHe ? 'he_articles' : 'articles';
-  const snap = await db.collection(colName)
-    .where('published', '==', true)
-    .orderBy('createdAt', 'desc')
-    .limit(25)
-    .get();
+async function findDiscussionMatches(discussions, forceLanguage = null) {
+  // Fetch both English and Hebrew recent articles
+  const [enSnap, heSnap] = await Promise.all([
+    db.collection('articles').where('published', '==', true).orderBy('createdAt', 'desc').limit(30).get(),
+    db.collection('he_articles').where('published', '==', true).orderBy('createdAt', 'desc').limit(30).get().catch(() => ({ empty: true, forEach: () => {} }))
+  ]);
 
-  if (snap.empty) return [];
+  const enArticles = [];
+  if (!enSnap.empty) enSnap.forEach(doc => enArticles.push({ id: doc.id, isHe: false, ...doc.data() }));
 
-  const articles = [];
-  snap.forEach(doc => articles.push({ id: doc.id, ...doc.data() }));
+  const heArticles = [];
+  if (!heSnap.empty) heSnap.forEach(doc => heArticles.push({ id: doc.id, isHe: true, ...doc.data() }));
 
   const matchedResults = [];
 
   for (const disc of discussions) {
+    // English platforms (Hacker News, Reddit) ALWAYS match to English articles and generate English replies
+    const isDiscHe = forceLanguage !== null ? forceLanguage : (disc.platform.toLowerCase().includes('israel') || disc.platform.toLowerCase().includes('hebrew'));
+    const candidateArticles = isDiscHe ? heArticles : enArticles;
+
     let bestArticle = null;
     let highestScore = 0;
 
-    for (const art of articles) {
+    for (const art of candidateArticles) {
       const score = calculateMatchScore(disc.title, disc.text, art);
       if (score > highestScore && score >= 0.35) {
         highestScore = score;
@@ -209,18 +213,19 @@ async function findDiscussionMatches(discussions, isHe = true) {
       matchedResults.push({
         discussion: disc,
         matchedArticle: bestArticle,
+        isHeResponse: isDiscHe,
         matchScore: highestScore
       });
     }
   }
 
-  return matchedResults.slice(0, 3); // Return top 3 highest-confidence opportunities
+  return matchedResults.slice(0, 4); // Return top 4 highest-confidence opportunities
 }
 
 /**
  * Generate Value-First Expert Response with Gemini AI
  */
-async function generateExpertCommunityResponse(discussion, article, isHe = true) {
+async function generateExpertCommunityResponse(discussion, article, isHe = false) {
   const slug = article.slug || article.id;
   const articleUrl = isHe 
     ? `${SITE_BASE_URL}/he/article.html?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(article.id)}`
@@ -231,11 +236,10 @@ async function generateExpertCommunityResponse(discussion, article, isHe = true)
     if (loaded) {
       const genAI = getGeminiSDK();
       if (genAI) {
-        const prompt = `You are a distinguished senior technology researcher & engineer writing an authoritative, highly respectful, value-first response to an online tech discussion.
+        const prompt = `You are a distinguished senior technology researcher & engineer writing an authoritative, highly respectful, value-first response to an online tech discussion on ${discussion.platform}.
 
 Discussion Title: "${discussion.title}"
-Discussion Platform: "${discussion.platform}"
-Context: "${discussion.text}"
+Discussion Context: "${discussion.text}"
 
 Relevant Deep-Dive Article from TrendingTech Daily:
 Title: "${article.title}"
@@ -243,13 +247,13 @@ Summary: "${article.excerpt || article.description || ''}"
 URL: "${articleUrl}"
 
 Rules for the response:
-1. Provide GENUINE TECHNICAL VALUE: Directly answer the question or analyze the architectural trade-offs in 2 clear, insightful paragraphs.
-2. Tone: Highly professional, objective, collegial, and non-promotional.
-3. Natural Citation: At the very end of the second paragraph, naturally mention the source:
+1. Language: ${isHe ? 'HEBREW' : 'ENGLISH (Must be 100% natural, fluent American English)'}.
+2. Provide GENUINE TECHNICAL VALUE: Directly answer the question or analyze the architectural trade-offs in 2 clear, insightful paragraphs.
+3. Tone: Highly professional, objective, collegial, and non-promotional.
+4. Natural Citation: At the very end of the second paragraph, naturally mention the source:
    ${isHe 
      ? `(הרחבה טכנית ומבחני בנצ'מרק מלאים פורסמו בניתוח המקיף ב-TrendingTech Daily: ${articleUrl})` 
      : `(For a detailed architectural breakdown and benchmark metrics, see the deep-dive analysis on TrendingTech Daily: ${articleUrl})`}
-4. Language: ${isHe ? 'Hebrew' : 'English'}
 
 Output ONLY the plain text response without code blocks or meta notes.`;
 
@@ -279,38 +283,39 @@ Output ONLY the plain text response without code blocks or meta notes.`;
 /**
  * Dispatch Social Radar Alert to Admin Telegram Channel / Chat
  */
-async function sendRadarAlertToTelegram(opportunity, expertResponse, isHe = true, targetChannel = DEFAULT_ADMIN_CHANNEL) {
-  const { discussion, matchedArticle } = opportunity;
+async function sendRadarAlertToTelegram(opportunity, expertResponse, isHeUI = true, targetChannel = DEFAULT_ADMIN_CHAT_ID) {
+  const { discussion, matchedArticle, isHeResponse } = opportunity;
+  const isHeArt = matchedArticle.isHe === true || isHeResponse === true;
   const slug = matchedArticle.slug || matchedArticle.id;
-  const articleUrl = isHe 
+  const articleUrl = isHeArt 
     ? `${SITE_BASE_URL}/he/article.html?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(matchedArticle.id)}`
     : `${SITE_BASE_URL}/article.html?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(matchedArticle.id)}`;
 
-  const alertText = isHe 
+  const alertText = isHeUI 
     ? `🎯 <b>Social Radar — הזדמנות אינטראקציה חדשה</b>\n\n` +
-      `📍 <b>פלטפורמה:</b> ${discussion.platform}\n` +
+      `📍 <b>פלטפורמה:</b> ${discussion.platform} (English)\n` +
       `💬 <b>דיון חם:</b> <i>${discussion.title}</i>\n` +
       `🔥 <b>תגובות / ציון:</b> ${discussion.commentsCount} תגובות · ${discussion.score} נקודות\n\n` +
-      `📰 <b>כתבה תואמת באתר:</b> <a href="${articleUrl}">${matchedArticle.title}</a>\n\n` +
-      `💡 <b>טיוטת תגובת מומחה מוכנה (מבוססת Gemini):</b>\n` +
-      `<blockquote>${expertResponse.slice(0, 500)}...</blockquote>\n\n` +
-      `⚡ לחצו להלן למעבר ישיר לדיון כדי לפרסם את התגובה:`
+      `📰 <b>כתבה תואמת (English Dispatch):</b> <a href="${articleUrl}">${matchedArticle.title}</a>\n\n` +
+      `💡 <b>טיוטת תגובה באנגלית להעתקה והדבקה בדיון:</b>\n` +
+      `<blockquote>${expertResponse}</blockquote>\n\n` +
+      `⚡ לחצו על הכפתור למטה למעבר ישיר לדיון כדי להדביק את התגובה:`
     : `🎯 <b>Social Radar — Community Engagement Opportunity</b>\n\n` +
       `📍 <b>Platform:</b> ${discussion.platform}\n` +
       `💬 <b>Discussion:</b> <i>${discussion.title}</i>\n` +
       `🔥 <b>Engagement:</b> ${discussion.commentsCount} comments · ${discussion.score} score\n\n` +
       `📰 <b>Matched Dispatch:</b> <a href="${articleUrl}">${matchedArticle.title}</a>\n\n` +
-      `💡 <b>AI Expert Response Draft:</b>\n` +
-      `<blockquote>${expertResponse.slice(0, 500)}...</blockquote>\n\n` +
-      `⚡ Click below to navigate directly to discussion and share value:`;
+      `💡 <b>Ready-to-Paste AI Expert Response (English):</b>\n` +
+      `<blockquote>${expertResponse}</blockquote>\n\n` +
+      `⚡ Click below to navigate directly to discussion:`;
 
   const replyMarkup = {
     inline_keyboard: [
       [
-        { text: isHe ? '🔗 פתח את הדיון המקורי' : '🔗 Open Original Discussion', url: discussion.discussionUrl }
+        { text: '🔗 Open Discussion & Paste Reply', url: discussion.discussionUrl }
       ],
       [
-        { text: isHe ? '🌐 פתח כתבה באתר' : '🌐 View Article on Site', url: articleUrl }
+        { text: '🌐 View English Article on Site', url: articleUrl }
       ]
     ]
   };
@@ -336,26 +341,28 @@ async function sendRadarAlertToTelegram(opportunity, expertResponse, isHe = true
 /**
  * Full Pipeline Execution
  */
-async function runSocialRadarPipeline(isHe = true, customChannel = null) {
+async function runSocialRadarPipeline(forceLanguage = null, customChannel = null) {
   const config = await getRadarConfig();
-  const targetChannel = customChannel || config.adminChatId || DEFAULT_ADMIN_CHANNEL;
+  const targetChannel = customChannel || config.adminChatId || DEFAULT_ADMIN_CHAT_ID;
   logger.info(`[Social Radar] Starting discussion scan pipeline targeting ${targetChannel}...`);
 
   const discussions = await fetchTrendingDiscussions();
   logger.info(`[Social Radar] Fetched ${discussions.length} active discussions`);
 
-  const matches = await findDiscussionMatches(discussions, isHe);
+  const matches = await findDiscussionMatches(discussions, forceLanguage);
   logger.info(`[Social Radar] Found ${matches.length} high-confidence matches with site articles`);
 
   const alertsSent = [];
 
   for (const match of matches) {
-    const expertResponse = await generateExpertCommunityResponse(match.discussion, match.matchedArticle, isHe);
-    const alertRes = await sendRadarAlertToTelegram(match, expertResponse, isHe, targetChannel);
+    const isHeResp = match.isHeResponse || false;
+    const expertResponse = await generateExpertCommunityResponse(match.discussion, match.matchedArticle, isHeResp);
+    const alertRes = await sendRadarAlertToTelegram(match, expertResponse, true, targetChannel);
     alertsSent.push({
       discussionTitle: match.discussion.title,
       articleTitle: match.matchedArticle.title,
       platform: match.discussion.platform,
+      isHeResponse: isHeResp,
       success: alertRes.success
     });
   }

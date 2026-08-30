@@ -16,6 +16,7 @@ const { logger, db } = require('../config');
 const { loadGeminiSDK, getSafetySettings, getGeminiSDK, buildGenerateContentRequest } = require('../utils');
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8777608982:AAFG-sJayjNKjygzu-GUEUbUmWtwQmzqbEY';
+const DEFAULT_ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID || '1041616345';
 const DEFAULT_ADMIN_CHANNEL = process.env.TELEGRAM_HEBREW_CHANNEL || '-1003974217518';
 const SITE_BASE_URL = 'https://trendingtechdaily.com';
 
@@ -28,7 +29,7 @@ async function getRadarConfig() {
     if (snap.exists) {
       const data = snap.data() || {};
       return {
-        adminChatId: data.adminChatId || data.adminChannel || process.env.TELEGRAM_ADMIN_CHAT_ID || DEFAULT_ADMIN_CHANNEL,
+        adminChatId: data.adminChatId || data.adminChannel || DEFAULT_ADMIN_CHAT_ID,
         botToken: data.botToken || TELEGRAM_BOT_TOKEN
       };
     }
@@ -36,7 +37,7 @@ async function getRadarConfig() {
     logger.warn('Error reading settings/telegram:', err.message);
   }
   return {
-    adminChatId: process.env.TELEGRAM_ADMIN_CHAT_ID || DEFAULT_ADMIN_CHANNEL,
+    adminChatId: DEFAULT_ADMIN_CHAT_ID,
     botToken: TELEGRAM_BOT_TOKEN
   };
 }

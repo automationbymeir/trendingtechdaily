@@ -100,37 +100,88 @@ async function fetchTrendingDiscussions() {
     logger.warn('[Social Radar] Hacker News fetch error:', err.message);
   }
 
-  // 2. Fetch Reddit Tech, AI, Hardware, Singularity, Dev discussions
+  // 2. Fetch Lobsters Tech & AI Discussions (High engineering quality)
   try {
-    const subreddits = 'artificial+hardware+technology+singularity+MachineLearning+webdev+programming';
-    const redditRes = await fetch(`https://www.reddit.com/r/${subreddits}/hot.json?limit=30`, {
-      headers: { 'User-Agent': 'TrendingTechDaily-Radar/3.0' },
-      timeout: 8000
-    });
-    if (redditRes.ok) {
-      const data = await redditRes.json();
-      const posts = data?.data?.children || [];
-      posts.forEach(p => {
-        const post = p.data;
-        const isFresh = post && post.created_utc && (nowInSec - post.created_utc) <= maxAgeSec;
-        if (post && !post.stickied && isFresh && post.title && post.num_comments >= 3) {
+    const lobstersRes = await fetch('https://lobste.rs/hottest.json', { timeout: 6000 });
+    if (lobstersRes.ok) {
+      const posts = await lobstersRes.json();
+      (posts || []).slice(0, 15).forEach(post => {
+        if (post && post.title && (post.score >= 5 || post.comment_count >= 2)) {
           discussions.push({
-            id: `reddit-${post.id}`,
-            platform: `Reddit (r/${post.subreddit})`,
+            id: `lobsters-${post.short_id}`,
+            platform: 'Lobsters (Eng Community)',
             title: post.title,
-            url: post.url,
-            discussionUrl: `https://reddit.com${post.permalink}`,
+            url: post.url || post.comments_url,
+            discussionUrl: post.comments_url || post.url,
             score: post.score || 0,
-            commentsCount: post.num_comments || 0,
-            author: post.author || 'Redditor',
-            text: post.selftext ? post.selftext.slice(0, 500) : post.title,
-            createdAt: post.created_utc
+            commentsCount: post.comment_count || 0,
+            author: post.submitter_user?.username || 'Engineer',
+            text: post.description || post.title,
+            createdAt: nowInSec
           });
         }
       });
     }
   } catch (err) {
-    logger.warn('[Social Radar] Reddit fetch error:', err.message);
+    logger.warn('[Social Radar] Lobsters fetch error:', err.message);
+  }
+
+  // 3. Fetch Dev.to Top Trending AI & Engineering Questions
+  try {
+    const devRes = await fetch('https://dev.to/api/articles?tag=ai&top=2', { timeout: 6000 });
+    if (devRes.ok) {
+      const articles = await devRes.json();
+      (articles || []).slice(0, 10).forEach(post => {
+        if (post && post.title && post.comments_count >= 1) {
+          discussions.push({
+            id: `devto-${post.id}`,
+            platform: 'Dev.to (Community)',
+            title: post.title,
+            url: post.url,
+            discussionUrl: post.url,
+            score: post.positive_reactions_count || 0,
+            commentsCount: post.comments_count || 0,
+            author: post.user?.name || 'Dev Author',
+            text: post.description || post.title,
+            createdAt: nowInSec
+          });
+        }
+      });
+    }
+  } catch (err) {
+    logger.warn('[Social Radar] Dev.to fetch error:', err.message);
+  }
+
+  // 4. Fetch Reddit Tech Discussions via RSS
+  try {
+    const redditRes = await fetch('https://www.reddit.com/r/technology/hot/.rss', {
+      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+      timeout: 6000
+    });
+    if (redditRes.ok) {
+      const xml = await redditRes.text();
+      const entries = [...xml.matchAll(/<entry>[\s\S]*?<title>([^<]+)<\/title>[\s\S]*?<link href=\"([^\"]+)\"[\s\S]*?<\/entry>/g)];
+      entries.slice(0, 10).forEach((entry, idx) => {
+        const title = entry[1].replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&#39;/g, "'");
+        const link = entry[2];
+        if (title && !title.includes('Daily Discussion')) {
+          discussions.push({
+            id: `reddit-rss-${idx}`,
+            platform: 'Reddit (r/technology)',
+            title: title,
+            url: link,
+            discussionUrl: link,
+            score: 50,
+            commentsCount: 20,
+            author: 'Reddit User',
+            text: title,
+            createdAt: nowInSec
+          });
+        }
+      });
+    }
+  } catch (err) {
+    logger.warn('[Social Radar] Reddit RSS fetch error:', err.message);
   }
 
   return discussions;

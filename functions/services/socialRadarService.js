@@ -43,49 +43,60 @@ async function getRadarConfig() {
 }
 
 /**
- * Fetch latest tech discussions from Hacker News & Reddit
+ * Fetch latest tech discussions from Hacker News & Reddit across multiple vibrant tech categories
  */
 async function fetchTrendingDiscussions() {
   const discussions = [];
 
-  // 1. Fetch Hacker News Top Stories
+  // 1. Fetch Hacker News Top Stories & Ask HN
   try {
-    const hnRes = await fetch('https://hacker-news.firebaseio.com/v0/topstories.json', { timeout: 8000 });
-    if (hnRes.ok) {
-      const topIds = await hnRes.json();
-      const selectedIds = (topIds || []).slice(0, 10);
-      
-      const itemPromises = selectedIds.map(id => 
-        fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`, { timeout: 5000 })
-          .then(r => r.ok ? r.json() : null)
-          .catch(() => null)
-      );
+    const [topRes, askRes] = await Promise.all([
+      fetch('https://hacker-news.firebaseio.com/v0/topstories.json', { timeout: 8000 }),
+      fetch('https://hacker-news.firebaseio.com/v0/askstories.json', { timeout: 8000 }).catch(() => null)
+    ]);
 
-      const items = await Promise.all(itemPromises);
-      items.filter(Boolean).forEach(item => {
-        if (item.title && (item.score > 20 || item.descendants > 5)) {
-          discussions.push({
-            id: `hn-${item.id}`,
-            platform: 'Hacker News',
-            title: item.title,
-            url: item.url || `https://news.ycombinator.com/item?id=${item.id}`,
-            discussionUrl: `https://news.ycombinator.com/item?id=${item.id}`,
-            score: item.score || 0,
-            commentsCount: item.descendants || 0,
-            author: item.by || 'HN User',
-            text: item.text || item.title
-          });
-        }
-      });
+    let topIds = [];
+    if (topRes && topRes.ok) {
+      const ids = await topRes.json();
+      topIds = topIds.concat((ids || []).slice(0, 15));
     }
+    if (askRes && askRes.ok) {
+      const ids = await askRes.json();
+      topIds = topIds.concat((ids || []).slice(0, 10));
+    }
+
+    const uniqueIds = Array.from(new Set(topIds)).slice(0, 20);
+    const itemPromises = uniqueIds.map(id => 
+      fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`, { timeout: 5000 })
+        .then(r => r.ok ? r.json() : null)
+        .catch(() => null)
+    );
+
+    const items = await Promise.all(itemPromises);
+    items.filter(Boolean).forEach(item => {
+      if (item.title && (item.score >= 10 || item.descendants >= 3)) {
+        discussions.push({
+          id: `hn-${item.id}`,
+          platform: 'Hacker News',
+          title: item.title,
+          url: item.url || `https://news.ycombinator.com/item?id=${item.id}`,
+          discussionUrl: `https://news.ycombinator.com/item?id=${item.id}`,
+          score: item.score || 0,
+          commentsCount: item.descendants || 0,
+          author: item.by || 'HN User',
+          text: item.text || item.title
+        });
+      }
+    });
   } catch (err) {
     logger.warn('[Social Radar] Hacker News fetch error:', err.message);
   }
 
-  // 2. Fetch Reddit Tech / AI discussions (JSON feed)
+  // 2. Fetch Reddit Tech, AI, Hardware, and Dev discussions
   try {
-    const redditRes = await fetch('https://www.reddit.com/r/artificial+hardware+technology/hot.json?limit=10', {
-      headers: { 'User-Agent': 'TrendingTechDaily-Radar/1.0' },
+    const subreddits = 'artificial+hardware+technology+singularity+MachineLearning+programming+stocks';
+    const redditRes = await fetch(`https://www.reddit.com/r/${subreddits}/hot.json?limit=25`, {
+      headers: { 'User-Agent': 'TrendingTechDaily-Radar/2.0' },
       timeout: 8000
     });
     if (redditRes.ok) {
@@ -103,7 +114,7 @@ async function fetchTrendingDiscussions() {
             score: post.score || 0,
             commentsCount: post.num_comments || 0,
             author: post.author || 'Redditor',
-            text: post.selftext ? post.selftext.slice(0, 300) : post.title
+            text: post.selftext ? post.selftext.slice(0, 400) : post.title
           });
         }
       });
@@ -115,23 +126,53 @@ async function fetchTrendingDiscussions() {
   return discussions;
 }
 
+// Tech entity mapping for cross-lingual English-Hebrew matching
+const TECH_ENTITY_MAP = {
+  'nvidia': ['nvidia', 'אנבידיה', 'gpu', 'dlss', 'שבב', 'כרטיס מסך', 'rtx'],
+  'dlss': ['dlss', 'nvidia', 'אנבידיה', 'rendering', 'רנדור', 'frames'],
+  'ai': ['ai', 'בינה מלאכותית', 'llm', 'model', 'מודל', 'gpt', 'claude', 'gemini', 'openai', 'anthropic'],
+  'anthropic': ['anthropic', 'אנתרופיק', 'claude', 'קלוד', 'safety', 'בטיחות'],
+  'claude': ['claude', 'קלוד', 'anthropic', 'אנתרופיק', 'ai'],
+  'apple': ['apple', 'אפל', 'iphone', 'mac', 'services', 'streaming', 'מנוי'],
+  'gta': ['gta', 'rockstar', 'רוקסטאר', 'gaming', 'משחק', 'גיימינג', 'take-two'],
+  'rockstar': ['rockstar', 'רוקסטאר', 'gta', 'gaming', 'גיימינג'],
+  'google': ['google', 'גוגל', 'gemini', 'search', 'חיפוש', 'overviews'],
+  'space': ['space', 'חלל', 'rocket', 'טילים', 'שיגור', 'spacex', 'nasa', 'faa'],
+  'cyber': ['cyber', 'סייבר', 'security', 'אבטחה', 'vulnerability', 'חולשה', 'hack'],
+  'chips': ['chips', 'שבבים', 'semiconductor', 'סמיקונדקטור', 'hardware', 'חומרה', 'tsmc', 'intel']
+};
+
 /**
- * Tokenize and match keywords between discussion and articles
+ * Tokenize and match keywords between discussion and articles (bilingual aware)
  */
 function calculateMatchScore(discTitle, discText, article) {
   const query = `${discTitle} ${discText}`.toLowerCase();
   const target = `${article.title} ${article.excerpt || ''} ${article.category || ''} ${(article.tags || []).join(' ')}`.toLowerCase();
 
-  const stopWords = new Set(['the', 'and', 'for', 'with', 'that', 'this', 'from', 'have', 'what', 'about', 'של', 'על', 'עם', 'את', 'זה']);
-  const words = query.split(/[\s,.:;!?"'()\[\]{}]+/).filter(w => w.length > 3 && !stopWords.has(w));
+  let score = 0;
 
+  // 1. Check entity clusters
+  for (const [entity, keywords] of Object.entries(TECH_ENTITY_MAP)) {
+    const queryHasEntity = keywords.some(k => query.includes(k));
+    const targetHasEntity = keywords.some(k => target.includes(k));
+    if (queryHasEntity && targetHasEntity) {
+      score += 0.45; // High weight for entity match
+    }
+  }
+
+  // 2. Word overlap
+  const stopWords = new Set(['the', 'and', 'for', 'with', 'that', 'this', 'from', 'have', 'what', 'about', 'your', 'just', 'more', 'how', 'why', 'של', 'על', 'עם', 'את', 'זה', 'כל', 'רק']);
+  const words = query.split(/[\s,.:;!?"'()\[\]{}]+/).filter(w => w.length > 3 && !stopWords.has(w));
   let matchedWords = 0;
   words.forEach(w => {
     if (target.includes(w)) matchedWords++;
   });
 
-  if (words.length === 0) return 0;
-  return matchedWords / Math.min(words.length, 8);
+  if (words.length > 0) {
+    score += (matchedWords / Math.min(words.length, 6)) * 0.55;
+  }
+
+  return score;
 }
 
 /**
@@ -142,7 +183,7 @@ async function findDiscussionMatches(discussions, isHe = true) {
   const snap = await db.collection(colName)
     .where('published', '==', true)
     .orderBy('createdAt', 'desc')
-    .limit(20)
+    .limit(25)
     .get();
 
   if (snap.empty) return [];
@@ -158,7 +199,7 @@ async function findDiscussionMatches(discussions, isHe = true) {
 
     for (const art of articles) {
       const score = calculateMatchScore(disc.title, disc.text, art);
-      if (score > highestScore && score >= 0.25) {
+      if (score > highestScore && score >= 0.35) {
         highestScore = score;
         bestArticle = art;
       }
@@ -173,7 +214,7 @@ async function findDiscussionMatches(discussions, isHe = true) {
     }
   }
 
-  return matchedResults.slice(0, 5); // Return top 5 opportunities
+  return matchedResults.slice(0, 3); // Return top 3 highest-confidence opportunities
 }
 
 /**

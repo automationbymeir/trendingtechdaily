@@ -24,6 +24,7 @@ const { onCall, onRequest, HttpsError } = require('firebase-functions/v2/https')
 const { onSchedule } = require('firebase-functions/v2/scheduler');
 const { logger, db } = require('./config');
 const { loadGeminiSDK, getSafetySettings, getGeminiSDK, buildGenerateContentRequest } = require('./utils');
+const { resolveEditorialArticleImage } = require('./services/editorialImageService');
 const admin = require('firebase-admin');
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8777608982:AAFG-sJayjNKjygzu-GUEUbUmWtwQmzqbEY';
@@ -658,14 +659,29 @@ exports.triggerTelegramPostHttp = onRequest(
       return res.json({ success: true, digestRes });
     }
 
+    const title = req.body?.title || (isHe ? '🚀 שידור ראשון: ערוץ הטלגרם של TrendingTech Daily פעיל!' : '🚀 First Broadcast: TrendingTech Daily Telegram Channel is LIVE!');
+    const category = req.body?.category || 'ai';
+    let resolvedImage = req.body?.featuredImage || req.body?.imageUrl;
+    if (!resolvedImage) {
+      try {
+        resolvedImage = await resolveEditorialArticleImage({
+          title,
+          category,
+          imagePrompt: title
+        });
+      } catch (imgErr) {
+        logger.warn('Failed to resolve dynamic editorial image:', imgErr.message);
+      }
+    }
+
     const testArticle = {
       id: req.body?.articleId || 'test-article-http',
-      title: req.body?.title || (isHe ? '🚀 שידור ראשון: ערוץ הטלגרם של TrendingTech Daily פעיל!' : '🚀 First Broadcast: TrendingTech Daily Telegram Channel is LIVE!'),
+      title,
       excerpt: req.body?.excerpt || (isHe ? 'ברוכים הבאים לערוץ הרשמי! כאן תקבלו בזמן אמת ניתוחים מעמיקים, עדכוני בינה מלאכותית, שבבים, שוק ההון ומערכות עיצוב ישירות מהמגזין.' : 'Welcome to our official Telegram channel! Get real-time AI updates, semiconductor breakthroughs, market watch, and design systems analysis.'),
-      category: req.body?.category || 'ai',
+      category,
       author: 'TrendingTech Bot',
       slug: req.body?.slug || 'welcome-telegram',
-      featuredImage: req.body?.featuredImage || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1080&auto=format&fit=crop&q=80',
+      featuredImage: resolvedImage || 'https://images.unsplash.com/photo-1677442136019-21780efad99a?w=1400&auto=format&fit=crop&q=85',
       readingTimeMinutes: 2
     };
 

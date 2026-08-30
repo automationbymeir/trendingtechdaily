@@ -20,6 +20,28 @@ const DEFAULT_ADMIN_CHANNEL = process.env.TELEGRAM_HEBREW_CHANNEL || '-100397421
 const SITE_BASE_URL = 'https://trendingtechdaily.com';
 
 /**
+ * Fetch dynamic Telegram & Admin configuration from Firestore
+ */
+async function getRadarConfig() {
+  try {
+    const snap = await db.doc('settings/telegram').get();
+    if (snap.exists) {
+      const data = snap.data() || {};
+      return {
+        adminChatId: data.adminChatId || data.adminChannel || process.env.TELEGRAM_ADMIN_CHAT_ID || DEFAULT_ADMIN_CHANNEL,
+        botToken: data.botToken || TELEGRAM_BOT_TOKEN
+      };
+    }
+  } catch (err) {
+    logger.warn('Error reading settings/telegram:', err.message);
+  }
+  return {
+    adminChatId: process.env.TELEGRAM_ADMIN_CHAT_ID || DEFAULT_ADMIN_CHANNEL,
+    botToken: TELEGRAM_BOT_TOKEN
+  };
+}
+
+/**
  * Fetch latest tech discussions from Hacker News & Reddit
  */
 async function fetchTrendingDiscussions() {
@@ -273,8 +295,9 @@ async function sendRadarAlertToTelegram(opportunity, expertResponse, isHe = true
  * Full Pipeline Execution
  */
 async function runSocialRadarPipeline(isHe = true, customChannel = null) {
-  const targetChannel = customChannel || DEFAULT_ADMIN_CHANNEL;
-  logger.info('[Social Radar] Starting discussion scan pipeline...');
+  const config = await getRadarConfig();
+  const targetChannel = customChannel || config.adminChatId || DEFAULT_ADMIN_CHANNEL;
+  logger.info(`[Social Radar] Starting discussion scan pipeline targeting ${targetChannel}...`);
 
   const discussions = await fetchTrendingDiscussions();
   logger.info(`[Social Radar] Fetched ${discussions.length} active discussions`);

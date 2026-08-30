@@ -211,7 +211,11 @@ async function findDiscussionMatches(discussions, forceLanguage = null) {
 
   // Try to use Gemini for strict semantic matching
   const loaded = await loadGeminiSDK();
-  const genAI = loaded ? getGeminiSDK() : null;
+  const { GoogleGenAI } = getGeminiSDK();
+  const genAI = (loaded && GoogleGenAI) ? new GoogleGenAI({
+    project: process.env.GCLOUD_PROJECT || 'trendingtech-daily',
+    location: process.env.GCLOUD_LOCATION || 'us-central1'
+  }) : null;
 
   if (genAI && discussions.length > 0) {
     for (const disc of discussions.slice(0, 15)) {
@@ -296,10 +300,13 @@ async function generateExpertCommunityResponse(discussion, article, isHe = false
 
   try {
     const loaded = await loadGeminiSDK();
-    if (loaded) {
-      const genAI = getGeminiSDK();
-      if (genAI) {
-        const prompt = `You are a distinguished, hands-on senior software engineer and researcher answering an authentic technical discussion on ${discussion.platform}.
+    const { GoogleGenAI } = getGeminiSDK();
+    if (loaded && GoogleGenAI) {
+      const genAI = new GoogleGenAI({
+        project: process.env.GCLOUD_PROJECT || 'trendingtech-daily',
+        location: process.env.GCLOUD_LOCATION || 'us-central1'
+      });
+      const prompt = `You are a distinguished, hands-on senior software engineer and researcher answering an authentic technical discussion on ${discussion.platform}.
 
 Discussion Title: "${discussion.title}"
 Discussion Context / OP Question: "${discussion.text}"
@@ -336,10 +343,9 @@ Output ONLY the final comment text without greetings or markdown code fences.`;
         const text = (typeof result.text === 'function' ? result.text() : result.text) || '';
         return text.trim();
       }
+    } catch (err) {
+      logger.warn('[Social Radar] Gemini custom response generation error:', err.message);
     }
-  } catch (err) {
-    logger.warn('[Social Radar] Gemini custom response generation error:', err.message);
-  }
 
   // Ultra-clean fallback
   if (isHe) {

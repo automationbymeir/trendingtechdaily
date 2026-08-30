@@ -188,10 +188,13 @@ async function generateInteractivePoll(article, isHe) {
   
   try {
     const loaded = await loadGeminiSDK();
-    if (loaded) {
-      const genAI = getGeminiSDK();
-      if (genAI) {
-        const prompt = `You are an expert tech journalist and community engagement editor for TrendingTech Daily.
+    const { GoogleGenAI } = getGeminiSDK();
+    if (loaded && GoogleGenAI) {
+      const genAI = new GoogleGenAI({
+        project: process.env.GCLOUD_PROJECT || 'trendingtech-daily',
+        location: process.env.GCLOUD_LOCATION || 'us-central1'
+      });
+      const prompt = `You are an expert tech journalist and community engagement editor for TrendingTech Daily.
 Your task is to create a dynamic, highly specific single-choice community poll based on this EXACT news story.
 
 Article Title: "${title}"
@@ -232,13 +235,12 @@ CRITICAL RULES FOR RELEVANCE & UNIQUENESS:
           };
         }
       }
+    } catch (err) {
+      logger.warn('[Telegram Poll] Gemini bespoke poll error:', err.message);
     }
-  } catch (err) {
-    logger.warn('[Telegram Poll] Gemini bespoke poll error:', err.message);
-  }
 
-  return null; // Return null so we never send generic placeholder polls
-}
+    return null; // Return null so we never send generic placeholder polls
+  }
 
 /**
  * Send interactive Telegram poll

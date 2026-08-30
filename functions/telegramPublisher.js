@@ -137,77 +137,106 @@ function formatTelegramCaption(article, isHe) {
 }
 
 /**
- * Generate an interactive Telegram poll using Gemini AI or fallback heuristics
+ * Determine whether a poll should be attached to this article.
+ * Rule: Only once every few articles (minimum 2-article cooldown) AND only when there is a real, interesting debate angle.
+ */
+async function shouldArticleHavePoll(article, isHe) {
+  try {
+    const colName = isHe ? 'he_articles' : 'articles';
+    const recentPosts = await db.collection(colName)
+      .where('telegramPosted', '==', true)
+      .orderBy('telegramPostTime', 'desc')
+      .limit(3)
+      .get();
+
+    let consecutiveRecentPolls = 0;
+    let idx = 0;
+    recentPosts.forEach(doc => {
+      const data = doc.data();
+      if (idx < 2 && data.telegramPollId) {
+        consecutiveRecentPolls++;
+      }
+      idx++;
+    });
+
+    // If any of the last 2 articles posted had a poll, skip this one to prevent poll fatigue
+    if (consecutiveRecentPolls > 0) {
+      logger.info(`[Telegram Poll] Skipping poll for article due to recent poll cooldown.`);
+      return false;
+    }
+
+    // Check if article is explicitly marked as breaking, featured, or lead story
+    if (article.breaking === true || article.isFeatured === true || article.isLeadStory === true) {
+      return true;
+    }
+
+    // Selective probabilistic cadence: roughly 1 in 3 articles
+    return Math.random() < 0.40;
+  } catch (err) {
+    logger.warn('[Telegram Poll] Error in shouldArticleHavePoll check:', err.message);
+    return false;
+  }
+}
+
+/**
+ * Generate a bespoke, story-specific Telegram poll using Gemini AI (Zero cookie-cutter templates)
  */
 async function generateInteractivePoll(article, isHe) {
   const title = cleanText(article.title || '');
-  const excerpt = cleanText(article.excerpt || article.summary || '');
+  const excerpt = cleanText(article.excerpt || article.summary || article.content || '');
+  const category = cleanText(article.category || '');
   
   try {
     const loaded = await loadGeminiSDK();
     if (loaded) {
       const genAI = getGeminiSDK();
       if (genAI) {
-        const prompt = `You are a social media engagement editor for a tech news outlet.
-Create a short, intriguing single-choice poll related to this tech news article.
+        const prompt = `You are an expert tech journalist and community engagement editor for TrendingTech Daily.
+Your task is to create a dynamic, highly specific single-choice community poll based on this EXACT news story.
 
 Article Title: "${title}"
-Summary: "${excerpt}"
-Language: ${isHe ? 'Hebrew' : 'English'}
+Category: "${category}"
+Summary / Content: "${excerpt.slice(0, 800)}"
+Language: ${isHe ? 'HEBREW (Natural, native Israeli tech community tone)' : 'ENGLISH (Fluent, engaging Silicon Valley tech community tone)'}
 
-Rules:
-1. Question must be punchy, thought-provoking, max 250 characters.
-2. Provide exactly 3 or 4 engaging response options (each max 90 characters).
-3. Return ONLY a valid JSON object in this exact format:
+CRITICAL RULES FOR RELEVANCE & UNIQUENESS:
+1. SPECIFIC TO THE STORY: The question must mention the actual technology, company, feature, architectural decision, or market dilemma described in the article.
+2. NO GENERIC BOILERPLATE: NEVER use generic, formulaic answers like:
+   - "מהלך מהפכני שישנה את השוק" / "Game changer"
+   - "משמעותי אבל דורש עוד הוכחות" / "Promising but needs proof"
+   - "הייפ מוגזם ללא ערך אמיתי" / "Overhyped"
+   - "עוקב בעניין" / "Watching closely"
+3. AUTHENTIC TECH OPTIONS: Provide 3 to 4 distinct, concrete, realistic options that represent actual technical, business, or developer stances related to the article.
+4. LENGTH CONSTRAINTS: Question max 250 chars. Each option max 80 chars.
+5. Return ONLY a valid JSON object in this format:
 {
-  "question": "The question string",
-  "options": ["Option 1", "Option 2", "Option 3", "Option 4"]
+  "question": "Story-specific question",
+  "options": ["Specific option 1", "Specific option 2", "Specific option 3", "Specific option 4"]
 }`;
 
         const result = await genAI.models.generateContent(
           buildGenerateContentRequest(prompt, {
             model: 'gemini-1.5-flash',
             safetySettings: getSafetySettings(),
+            generationConfig: { responseMimeType: 'application/json' }
           })
         );
 
         let raw = (typeof result.text === 'function' ? result.text() : result.text) || '';
-        raw = raw.replace(/```json/g, '').replace(/```/g, '').trim();
         const parsed = JSON.parse(raw);
         if (parsed.question && Array.isArray(parsed.options) && parsed.options.length >= 2) {
           return {
             question: parsed.question.slice(0, 255),
-            options: parsed.options.slice(0, 4).map(o => String(o).slice(0, 100))
+            options: parsed.options.slice(0, 4).map(o => String(o).slice(0, 85))
           };
         }
       }
     }
   } catch (err) {
-    logger.warn('[Telegram Poll] Gemini generation error, using fallback:', err.message);
+    logger.warn('[Telegram Poll] Gemini bespoke poll error:', err.message);
   }
 
-  // Fallback heuristics based on title/category
-  if (isHe) {
-    return {
-      question: `מה דעתכם על המהלך: ${title.slice(0, 180)}?`,
-      options: [
-        '🔥 מהלך מהפכני שישנה את השוק',
-        '🤔 משמעותי, אבל דורש עוד הוכחות',
-        '📉 הייפ מוגזם ללא ערך אמיתי',
-        '👀 עוקב בעניין אחרי ההתפתחויות'
-      ]
-    };
-  } else {
-    return {
-      question: `What's your take on this: ${title.slice(0, 180)}?`,
-      options: [
-        '🔥 Industry game-changer',
-        '🤔 Promising, but needs proof',
-        '📉 Overhyped developments',
-        '👀 Watching closely'
-      ]
-    };
-  }
+  return null; // Return null so we never send generic placeholder polls
 }
 
 /**
@@ -355,12 +384,17 @@ async function publishArticleToTelegram(docRef, articleData, isHe) {
   try {
     const result = await postToTelegramApi(targetChannel, { id: docRef.id, ...articleData }, isHe, config.botToken);
 
-    // Optional interactive poll generation to maximize reader retention
+    // Optional selective interactive poll generation (once every few articles, bespoke content)
     let pollResult = null;
     if (config.enablePolls) {
       try {
-        const pollData = await generateInteractivePoll(articleData, isHe);
-        pollResult = await sendTelegramPoll(targetChannel, pollData, config.botToken);
+        const eligibleForPoll = await shouldArticleHavePoll(articleData, isHe);
+        if (eligibleForPoll) {
+          const pollData = await generateInteractivePoll(articleData, isHe);
+          if (pollData && pollData.question && Array.isArray(pollData.options) && pollData.options.length >= 2) {
+            pollResult = await sendTelegramPoll(targetChannel, pollData, config.botToken);
+          }
+        }
       } catch (pollErr) {
         logger.warn('[Telegram] Non-critical poll failure:', pollErr.message);
       }

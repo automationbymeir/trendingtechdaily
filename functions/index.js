@@ -99,4 +99,18 @@ exports.scheduledNewsFetch = onSchedule({ schedule: "every 4 hours", region: 'us
   }
 });
 
+// === Telegram & Social Growth Engine ===
+const telegramPublisher = require('./telegramPublisher');
+const socialRadarCallables = require('./callable/socialRadar');
+
+exports.onHebrewArticlePublishedToTelegram = telegramPublisher.onHebrewArticlePublishedToTelegram;
+exports.onEnglishArticlePublishedToTelegram = telegramPublisher.onEnglishArticlePublishedToTelegram;
+exports.dailyTelegramDigest = telegramPublisher.dailyTelegramDigest;
+exports.testTelegramPost = telegramPublisher.testTelegramPost;
+exports.triggerTelegramPostHttp = telegramPublisher.triggerTelegramPostHttp;
+
+exports.runSocialRadarScan = socialRadarCallables.runSocialRadarScan;
+exports.triggerSocialRadarHttp = socialRadarCallables.triggerSocialRadarHttp;
+exports.scheduledSocialRadar = socialRadarCallables.scheduledSocialRadar;
+
 logger.info("All active function modules loaded and exported successfully.");

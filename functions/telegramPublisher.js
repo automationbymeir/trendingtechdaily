@@ -1,7 +1,7 @@
 /**
  * telegramPublisher.js
  * ---------------------------------------------------------------------------
- * Real-Time Automated Telegram Publishing Pipeline for TrendingTech Daily
+ * Real-Time Automated Telegram Publishing & Engagement Pipeline for TrendingTech Daily
  *
  * Posts newly published articles in real-time to:
  * - Hebrew Channel (@TrendingTechDaily_HE or configured channel)
@@ -10,8 +10,10 @@
  * Features:
  * - High-res photo upload with rich HTML caption
  * - Category-aware emojis and hashtags
- * - Inline URL button linking directly to the live article
+ * - Interactive multi-action buttons (Read Article + One-Tap Share to Telegram)
+ * - Automated Gemini-powered Interactive Polls (sendPoll) to maximize community engagement
  * - Deduplication guard (telegramPosted flag in Firestore)
+ * - Daily Intelligence Digest compiler
  * - Fallback to sendMessage if image upload fails
  * - Manual test endpoint (onCall & HTTP with admin key)
  */
@@ -19,7 +21,9 @@
 const fetch = require('node-fetch');
 const { onDocumentWritten } = require('firebase-functions/v2/firestore');
 const { onCall, onRequest, HttpsError } = require('firebase-functions/v2/https');
+const { onSchedule } = require('firebase-functions/v2/scheduler');
 const { logger, db } = require('./config');
+const { loadGeminiSDK, getSafetySettings, getGeminiSDK, buildGenerateContentRequest } = require('./utils');
 const admin = require('firebase-admin');
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8777608982:AAFG-sJayjNKjygzu-GUEUbUmWtwQmzqbEY';
@@ -39,6 +43,7 @@ async function getTelegramConfig() {
       const data = snap.data() || {};
       return {
         enabled: data.enabled !== false,
+        enablePolls: data.enablePolls !== false,
         hebrewChannel: data.hebrewChannel || DEFAULT_HEBREW_CHANNEL,
         englishChannel: data.englishChannel || DEFAULT_ENGLISH_CHANNEL,
         botToken: data.botToken || TELEGRAM_BOT_TOKEN,
@@ -49,6 +54,7 @@ async function getTelegramConfig() {
   }
   return {
     enabled: true,
+    enablePolls: true,
     hebrewChannel: DEFAULT_HEBREW_CHANNEL,
     englishChannel: DEFAULT_ENGLISH_CHANNEL,
     botToken: TELEGRAM_BOT_TOKEN,
@@ -131,7 +137,116 @@ function formatTelegramCaption(article, isHe) {
 }
 
 /**
- * Post single article payload to Telegram Bot API
+ * Generate an interactive Telegram poll using Gemini AI or fallback heuristics
+ */
+async function generateInteractivePoll(article, isHe) {
+  const title = cleanText(article.title || '');
+  const excerpt = cleanText(article.excerpt || article.summary || '');
+  
+  try {
+    const loaded = await loadGeminiSDK();
+    if (loaded) {
+      const genAI = getGeminiSDK();
+      if (genAI) {
+        const prompt = `You are a social media engagement editor for a tech news outlet.
+Create a short, intriguing single-choice poll related to this tech news article.
+
+Article Title: "${title}"
+Summary: "${excerpt}"
+Language: ${isHe ? 'Hebrew' : 'English'}
+
+Rules:
+1. Question must be punchy, thought-provoking, max 250 characters.
+2. Provide exactly 3 or 4 engaging response options (each max 90 characters).
+3. Return ONLY a valid JSON object in this exact format:
+{
+  "question": "The question string",
+  "options": ["Option 1", "Option 2", "Option 3", "Option 4"]
+}`;
+
+        const result = await genAI.models.generateContent(
+          buildGenerateContentRequest(prompt, {
+            model: 'gemini-1.5-flash',
+            safetySettings: getSafetySettings(),
+          })
+        );
+
+        let raw = (typeof result.text === 'function' ? result.text() : result.text) || '';
+        raw = raw.replace(/```json/g, '').replace(/```/g, '').trim();
+        const parsed = JSON.parse(raw);
+        if (parsed.question && Array.isArray(parsed.options) && parsed.options.length >= 2) {
+          return {
+            question: parsed.question.slice(0, 255),
+            options: parsed.options.slice(0, 4).map(o => String(o).slice(0, 100))
+          };
+        }
+      }
+    }
+  } catch (err) {
+    logger.warn('[Telegram Poll] Gemini generation error, using fallback:', err.message);
+  }
+
+  // Fallback heuristics based on title/category
+  if (isHe) {
+    return {
+      question: `מה דעתכם על המהלך: ${title.slice(0, 180)}?`,
+      options: [
+        '🔥 מהלך מהפכני שישנה את השוק',
+        '🤔 משמעותי, אבל דורש עוד הוכחות',
+        '📉 הייפ מוגזם ללא ערך אמיתי',
+        '👀 עוקב בעניין אחרי ההתפתחויות'
+      ]
+    };
+  } else {
+    return {
+      question: `What's your take on this: ${title.slice(0, 180)}?`,
+      options: [
+        '🔥 Industry game-changer',
+        '🤔 Promising, but needs proof',
+        '📉 Overhyped developments',
+        '👀 Watching closely'
+      ]
+    };
+  }
+}
+
+/**
+ * Send interactive Telegram poll
+ */
+async function sendTelegramPoll(channelTarget, pollData, botToken = TELEGRAM_BOT_TOKEN) {
+  const apiBase = `https://api.telegram.org/bot${botToken}`;
+  try {
+    const payload = {
+      chat_id: channelTarget,
+      question: pollData.question,
+      options: JSON.stringify(pollData.options),
+      is_anonymous: true,
+      allows_multiple_answers: false
+    };
+
+    const res = await fetch(`${apiBase}/sendPoll`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      timeout: 15000
+    });
+
+    const data = await res.json();
+    if (data.ok) {
+      logger.info(`[Telegram Poll] Successfully sent poll to ${channelTarget}:`, data.result?.poll?.id);
+      return { success: true, pollId: data.result?.poll?.id, messageId: data.result?.message_id };
+    } else {
+      logger.warn(`[Telegram Poll] sendPoll error (${data.description})`);
+      return { success: false, error: data.description };
+    }
+  } catch (err) {
+    logger.warn('[Telegram Poll] sendPoll exception:', err.message);
+    return { success: false, error: err.message };
+  }
+}
+
+/**
+ * Post single article payload to Telegram Bot API with enhanced interactive buttons
  */
 async function postToTelegramApi(channelTarget, article, isHe, botToken = TELEGRAM_BOT_TOKEN) {
   const slug = article.slug || article.id;
@@ -140,12 +255,18 @@ async function postToTelegramApi(channelTarget, article, isHe, botToken = TELEGR
     : `${SITE_BASE_URL}/article.html?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(article.id || '')}`;
 
   const caption = formatTelegramCaption(article, isHe);
-  const buttonText = isHe ? '🌐 לקריאת הכתבה המלאה' : '🌐 Read Full Article';
+  const readBtnText = isHe ? '🌐 לקריאת הכתבה המלאה' : '🌐 Read Full Article';
+  const shareBtnText = isHe ? '🚀 שתף מבזק' : '🚀 Share Dispatch';
+  const shareText = isHe ? `⚡ חדשות טכנולוגיה: ${cleanText(article.title)}` : `⚡ Breaking Tech: ${cleanText(article.title)}`;
+  const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(articleUrl)}&text=${encodeURIComponent(shareText)}`;
 
   const replyMarkup = {
     inline_keyboard: [
       [
-        { text: buttonText, url: articleUrl }
+        { text: readBtnText, url: articleUrl }
+      ],
+      [
+        { text: shareBtnText, url: shareUrl }
       ]
     ]
   };
@@ -209,7 +330,7 @@ async function postToTelegramApi(channelTarget, article, isHe, botToken = TELEGR
 }
 
 /**
- * Master dispatcher for publishing an article to Telegram
+ * Master dispatcher for publishing an article and poll to Telegram
  */
 async function publishArticleToTelegram(docRef, articleData, isHe) {
   if (!articleData) return { skipped: true, reason: 'No article data' };
@@ -234,19 +355,94 @@ async function publishArticleToTelegram(docRef, articleData, isHe) {
   try {
     const result = await postToTelegramApi(targetChannel, { id: docRef.id, ...articleData }, isHe, config.botToken);
 
+    // Optional interactive poll generation to maximize reader retention
+    let pollResult = null;
+    if (config.enablePolls) {
+      try {
+        const pollData = await generateInteractivePoll(articleData, isHe);
+        pollResult = await sendTelegramPoll(targetChannel, pollData, config.botToken);
+      } catch (pollErr) {
+        logger.warn('[Telegram] Non-critical poll failure:', pollErr.message);
+      }
+    }
+
     // Mark as posted in Firestore
     await docRef.update({
       telegramPosted: true,
       telegramPostTime: admin.firestore.FieldValue.serverTimestamp(),
       telegramChannel: targetChannel,
-      telegramMessageId: result.messageId || null
+      telegramMessageId: result.messageId || null,
+      telegramPollId: pollResult?.pollId || null
     });
 
-    return { success: true, channel: targetChannel, messageId: result.messageId };
+    return { success: true, channel: targetChannel, messageId: result.messageId, pollId: pollResult?.pollId };
   } catch (err) {
     logger.error(`[Telegram] Failed to post article ${docRef.id} to ${targetChannel}:`, err);
     return { success: false, error: err.message };
   }
+}
+
+/**
+ * Compile and broadcast Daily Intelligence Digest to Telegram
+ */
+async function publishDailyDigest(isHe = true) {
+  const config = await getTelegramConfig();
+  if (!config.enabled) return { skipped: true };
+
+  const colName = isHe ? 'he_articles' : 'articles';
+  const targetChannel = isHe ? config.hebrewChannel : config.englishChannel;
+  const snap = await db.collection(colName)
+    .where('published', '==', true)
+    .orderBy('createdAt', 'desc')
+    .limit(4)
+    .get();
+
+  if (snap.empty) return { skipped: true, reason: 'No articles found' };
+
+  const articles = [];
+  snap.forEach(doc => articles.push({ id: doc.id, ...doc.data() }));
+
+  const now = new Date();
+  const dateFormatted = now.toLocaleDateString(isHe ? 'he-IL' : 'en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+
+  let digestText = isHe 
+    ? `🌙 <b>מבזק ערב יומי — TrendingTech Daily</b>\n📅 <i>${dateFormatted}</i>\n\nריכזנו עבורכם את 4 הידיעות הטכנולוגיות המרכזיות של היום:\n\n`
+    : `🌙 <b>Evening Intelligence Digest — TrendingTech Daily</b>\n📅 <i>${dateFormatted}</i>\n\nTop tech developments and research breakdowns from today:\n\n`;
+
+  articles.forEach((art, idx) => {
+    const numEmoji = ['1️⃣', '2️⃣', '3️⃣', '4️⃣'][idx] || '🔹';
+    const slug = art.slug || art.id;
+    const artUrl = isHe 
+      ? `${SITE_BASE_URL}/he/article.html?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(art.id)}`
+      : `${SITE_BASE_URL}/article.html?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(art.id)}`;
+    
+    digestText += `${numEmoji} <a href="${artUrl}"><b>${escapeHtml(art.title)}</b></a>\n${escapeHtml(cleanText(art.excerpt || '').slice(0, 100))}...\n\n`;
+  });
+
+  digestText += isHe 
+    ? `🌐 לכל הכתבות והניתוחים: <a href="${SITE_BASE_URL}/he/">TrendingTech Daily</a>\n📢 שתפו את הערוץ: @TrendingTechDaily_HE`
+    : `🌐 Explore all research dispatches: <a href="${SITE_BASE_URL}">TrendingTech Daily</a>\n📢 Share our channel: @TrendingTechDaily_EN`;
+
+  const apiBase = `https://api.telegram.org/bot${config.botToken}`;
+  const res = await fetch(`${apiBase}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: targetChannel,
+      text: digestText,
+      parse_mode: 'HTML',
+      disable_web_page_preview: false,
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: isHe ? '🚀 פתח מגזין מלא' : '🚀 Open Full Magazine', url: isHe ? `${SITE_BASE_URL}/he/` : SITE_BASE_URL }]
+        ]
+      }
+    }),
+    timeout: 15000
+  });
+
+  const data = await res.json();
+  return { success: data.ok, messageId: data.result?.message_id };
 }
 
 // ── Firestore Triggers for Real-Time Telegram Broadcast ──────────────────────
@@ -262,7 +458,6 @@ exports.onHebrewArticlePublishedToTelegram = onDocumentWritten(
 
     if (!afterData) return; // Deleted doc
 
-    // Check if article became published or was created as published
     const wasPublished = beforeData && beforeData.published === true;
     const isNowPublished = afterData.published === true;
 
@@ -286,13 +481,22 @@ exports.onEnglishArticlePublishedToTelegram = onDocumentWritten(
 
     const wasPublished = beforeData && beforeData.published === true;
     const isNowPublished = afterData.published === true;
-
     const isHeArticle = afterData.language === 'he' || afterData.isHebrew === true;
 
     if (isNowPublished && (!wasPublished || !afterData.telegramPosted)) {
       logger.info(`[Telegram] Article triggered: ${event.params.articleId} (isHe: ${isHeArticle})`);
       await publishArticleToTelegram(event.data.after.ref, afterData, isHeArticle);
     }
+  }
+);
+
+// ── Scheduled Daily Intelligence Digest (Daily at 20:00 IL time) ────────────
+exports.dailyTelegramDigest = onSchedule(
+  { schedule: '0 17 * * *', timeZone: 'UTC', region: 'us-central1', memory: '256MiB' },
+  async () => {
+    logger.info('[Telegram] Running daily digest scheduled task');
+    await publishDailyDigest(true);
+    await publishDailyDigest(false);
   }
 );
 
@@ -346,6 +550,12 @@ exports.triggerTelegramPostHttp = onRequest(
 
     const channel = req.body?.channel || req.query.channel || DEFAULT_HEBREW_CHANNEL;
     const isHe = req.body?.isHebrew !== 'false' && req.query.isHebrew !== 'false';
+    const action = req.body?.action || req.query?.action || 'post';
+
+    if (action === 'digest') {
+      const digestRes = await publishDailyDigest(isHe);
+      return res.json({ success: true, digestRes });
+    }
 
     const testArticle = {
       id: req.body?.articleId || 'test-article-http',
@@ -360,10 +570,17 @@ exports.triggerTelegramPostHttp = onRequest(
 
     try {
       const result = await postToTelegramApi(channel, testArticle, isHe, TELEGRAM_BOT_TOKEN);
-      return res.json({ success: true, channel, result });
+      const pollData = await generateInteractivePoll(testArticle, isHe);
+      const pollRes = await sendTelegramPoll(channel, pollData, TELEGRAM_BOT_TOKEN);
+      return res.json({ success: true, channel, result, pollRes });
     } catch (err) {
       logger.error('triggerTelegramPostHttp error:', err);
       return res.status(500).json({ success: false, error: err.message });
     }
   }
 );
+
+exports.publishDailyDigest = publishDailyDigest;
+exports.generateInteractivePoll = generateInteractivePoll;
+exports.sendTelegramPoll = sendTelegramPoll;
+exports.postToTelegramApi = postToTelegramApi;

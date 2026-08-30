@@ -368,11 +368,14 @@ async function postToTelegramApi(channelTarget, article, isHe, botToken = TELEGR
     ]
   };
 
-  const imageUrl = article.featuredImage || article.imageUrl;
+  let imageUrl = article.featuredImage || article.imageUrl;
+  if (imageUrl && typeof imageUrl === 'object') {
+    imageUrl = imageUrl.imageUrl || imageUrl.url || null;
+  }
   const apiBase = `https://api.telegram.org/bot${botToken}`;
 
   // 1. Try sending with photo if featuredImage is present
-  if (imageUrl && (imageUrl.startsWith('http://') || imageUrl.startsWith('https://'))) {
+  if (typeof imageUrl === 'string' && (imageUrl.startsWith('http://') || imageUrl.startsWith('https://'))) {
     try {
       const photoPayload = {
         chat_id: channelTarget,
@@ -664,11 +667,12 @@ exports.triggerTelegramPostHttp = onRequest(
     let resolvedImage = req.body?.featuredImage || req.body?.imageUrl;
     if (!resolvedImage) {
       try {
-        resolvedImage = await resolveEditorialArticleImage({
+        const imgObj = await resolveEditorialArticleImage({
           title,
           category,
           imagePrompt: title
         });
+        resolvedImage = imgObj?.imageUrl || imgObj;
       } catch (imgErr) {
         logger.warn('Failed to resolve dynamic editorial image:', imgErr.message);
       }
@@ -681,7 +685,7 @@ exports.triggerTelegramPostHttp = onRequest(
       category,
       author: 'TrendingTech Bot',
       slug: req.body?.slug || 'welcome-telegram',
-      featuredImage: resolvedImage || 'https://images.unsplash.com/photo-1677442136019-21780efad99a?w=1400&auto=format&fit=crop&q=85',
+      featuredImage: (typeof resolvedImage === 'object' ? resolvedImage?.imageUrl : resolvedImage) || 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1400&auto=format&fit=crop&q=85',
       readingTimeMinutes: 2
     };
 

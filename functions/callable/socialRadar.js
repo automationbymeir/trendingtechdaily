@@ -19,11 +19,11 @@ exports.runSocialRadarScan = onCall(
       throw new HttpsError('permission-denied', 'Admin authentication required');
     }
 
-    const isHe = request.data?.isHebrew !== false;
+    const forceLang = request.data?.isHebrew === true ? true : (request.data?.isHebrew === false ? false : null);
     const customChannel = request.data?.channel || null;
 
     try {
-      const result = await runSocialRadarPipeline(isHe, customChannel);
+      const result = await runSocialRadarPipeline(forceLang, customChannel);
       return { success: true, result };
     } catch (err) {
       logger.error('runSocialRadarScan error:', err);
@@ -43,11 +43,16 @@ exports.triggerSocialRadarHttp = onRequest(
       return res.status(403).json({ error: 'Unauthorized: Invalid admin key' });
     }
 
-    const isHe = req.body?.isHebrew !== 'false' && req.query.isHebrew !== 'false';
+    let forceLang = null;
+    if (req.body?.isHebrew === 'true' || req.query.isHebrew === 'true' || req.body?.isHebrew === true) {
+      forceLang = true;
+    } else if (req.body?.isHebrew === 'false' || req.query.isHebrew === 'false' || req.body?.isHebrew === false) {
+      forceLang = false;
+    }
     const channel = req.body?.channel || req.query.channel || null;
 
     try {
-      const result = await runSocialRadarPipeline(isHe, channel);
+      const result = await runSocialRadarPipeline(forceLang, channel);
       return res.json({ success: true, result });
     } catch (err) {
       logger.error('triggerSocialRadarHttp error:', err);
@@ -62,8 +67,7 @@ exports.triggerSocialRadarHttp = onRequest(
 exports.scheduledSocialRadar = onSchedule(
   { schedule: '0 9,15 * * *', timeZone: 'UTC', region: 'us-central1', memory: '512MiB', timeoutSeconds: 120 },
   async () => {
-    logger.info('[Social Radar] Running scheduled community radar scan...');
-    await runSocialRadarPipeline(true);
-    await runSocialRadarPipeline(false);
+    logger.info('[Social Radar] Running scheduled community radar scan for English and Hebrew...');
+    await runSocialRadarPipeline(false); // Global English platforms
   }
 );

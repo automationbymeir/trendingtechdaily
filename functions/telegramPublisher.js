@@ -223,6 +223,7 @@ CRITICAL RULES FOR RELEVANCE & UNIQUENESS:
         );
 
         let raw = (typeof result.text === 'function' ? result.text() : result.text) || '';
+        raw = raw.replace(/```json/g, '').replace(/```/g, '').trim();
         const parsed = JSON.parse(raw);
         if (parsed.question && Array.isArray(parsed.options) && parsed.options.length >= 2) {
           return {
@@ -243,6 +244,10 @@ CRITICAL RULES FOR RELEVANCE & UNIQUENESS:
  * Send interactive Telegram poll
  */
 async function sendTelegramPoll(channelTarget, pollData, botToken = TELEGRAM_BOT_TOKEN) {
+  if (!pollData || !pollData.question || !Array.isArray(pollData.options) || pollData.options.length < 2) {
+    return { skipped: true, reason: 'No poll data available' };
+  }
+
   const apiBase = `https://api.telegram.org/bot${botToken}`;
   try {
     const payload = {

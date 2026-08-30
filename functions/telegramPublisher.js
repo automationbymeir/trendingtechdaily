@@ -191,7 +191,7 @@ async function generateInteractivePoll(article, isHe) {
     const { GoogleGenAI } = getGeminiSDK();
     if (loaded && GoogleGenAI) {
       const genAI = new GoogleGenAI({
-        project: process.env.GCLOUD_PROJECT || 'trendingtech-daily',
+        project: process.env.GCLOUD_PROJECT || 'automationbymeir',
         location: process.env.GCLOUD_LOCATION || 'us-central1'
       });
       const prompt = `You are an expert tech journalist and community engagement editor for TrendingTech Daily.
@@ -217,30 +217,90 @@ CRITICAL RULES FOR RELEVANCE & UNIQUENESS:
   "options": ["Specific option 1", "Specific option 2", "Specific option 3", "Specific option 4"]
 }`;
 
-        const result = await genAI.models.generateContent(
-          buildGenerateContentRequest(prompt, {
-            model: 'gemini-1.5-flash',
-            safetySettings: getSafetySettings(),
-            generationConfig: { responseMimeType: 'application/json' }
-          })
-        );
+      const result = await genAI.models.generateContent(
+        buildGenerateContentRequest(prompt, {
+          model: 'gemini-1.5-flash',
+          safetySettings: getSafetySettings(),
+          generationConfig: { responseMimeType: 'application/json' }
+        })
+      );
 
-        let raw = (typeof result.text === 'function' ? result.text() : result.text) || '';
-        raw = raw.replace(/```json/g, '').replace(/```/g, '').trim();
-        const parsed = JSON.parse(raw);
-        if (parsed.question && Array.isArray(parsed.options) && parsed.options.length >= 2) {
-          return {
-            question: parsed.question.slice(0, 255),
-            options: parsed.options.slice(0, 4).map(o => String(o).slice(0, 85))
-          };
-        }
+      let raw = (typeof result.text === 'function' ? result.text() : result.text) || '';
+      raw = raw.replace(/```json/g, '').replace(/```/g, '').trim();
+      const parsed = JSON.parse(raw);
+      if (parsed.question && Array.isArray(parsed.options) && parsed.options.length >= 2) {
+        return {
+          question: parsed.question.slice(0, 255),
+          options: parsed.options.slice(0, 4).map(o => String(o).slice(0, 85))
+        };
       }
-    } catch (err) {
-      logger.warn('[Telegram Poll] Gemini bespoke poll error:', err.message);
     }
-
-    return null; // Return null so we never send generic placeholder polls
+  } catch (err) {
+    logger.warn('[Telegram Poll] Gemini bespoke poll error:', err.message);
   }
+
+  // Domain-specific smart fallback if AI call fails
+  const shortTitle = title.slice(0, 100);
+  const catLower = category.toLowerCase();
+
+  if (catLower.includes('chip') || catLower.includes('computing') || catLower.includes('שבב') || catLower.includes('חומרה')) {
+    return isHe ? {
+      question: `מה עמדתכם לגבי ההשלכות הטכנולוגיות של ${shortTitle}?`,
+      options: [
+        '⚡ קפיצת ביצועים משמעותית לארכיטקטורה',
+        '🔍 ממתינים למבחני ביצועים (Benchmarks) עצמאיים',
+        '💰 שיקולי עלות/תועלת ו-TCO יכריעו את האימוץ',
+        '🛑 פתרונות הדור הנוכחי מספקים לצרכים הקיימים'
+      ]
+    } : {
+      question: `What is your take on the hardware implications of ${shortTitle}?`,
+      options: [
+        '⚡ Major architectural performance breakthrough',
+        '🔍 Awaiting independent benchmark metrics',
+        '💰 Cost-efficiency and TCO will decide adoption',
+        '🛑 Current generation hardware remains sufficient'
+      ]
+    };
+  }
+
+  if (catLower.includes('ai') || catLower.includes('בינה') || catLower.includes('agent')) {
+    return isHe ? {
+      question: `איך המהלך סביב ${shortTitle} ישפיע על סביבת העבודה שלכם?`,
+      options: [
+        '🤖 בוחנים אינטגרציה מיידית ב-Pipeline',
+        '⚖️ אתגרי אבטחה, פרטיות ודיוק עדיין מהווים חסם',
+        '📈 יגביר את התחרות מול המודלים המובילים בשוק',
+        '💡 נמתין לתוצאות מעשיות מהקהילה'
+      ]
+    } : {
+      question: `How will the development around ${shortTitle} impact your workflow?`,
+      options: [
+        '🤖 Evaluating immediate pipeline integration',
+        '⚖️ Security, privacy and reliability remain key hurdles',
+        '📈 Increases competition among frontier models',
+        '💡 Waiting for community validation and benchmarks'
+      ]
+    };
+  }
+
+  return isHe ? {
+    question: `כיצד אתם מעריכים את ההשפעה של ${shortTitle}?`,
+    options: [
+      '🚀 מהלך אסטרטגי חיובי לתעשייה',
+      '📋 דורש התאמות תשתית ופיתוח בסביבות העבודה',
+      '🔍 מוקדם לקבוע - עוקבים אחר היישום בשטח',
+      '🛡️ מעורר שאלות לגבי תקינה ורגולציה'
+    ]
+  } : {
+    question: `How do you assess the industry impact of ${shortTitle}?`,
+    options: [
+      '🚀 Strategic positive shift for the ecosystem',
+      '📋 Requires infrastructure and workflow adjustments',
+      '🔍 Too early to tell - tracking real-world implementation',
+      '🛡️ Raises key governance and standardization questions'
+    ]
+  };
+}
 
 /**
  * Send interactive Telegram poll

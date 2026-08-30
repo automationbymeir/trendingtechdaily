@@ -43,12 +43,14 @@ async function getRadarConfig() {
 }
 
 /**
- * Fetch latest tech discussions from Hacker News & Reddit across multiple vibrant tech categories
+ * Fetch latest tech discussions from Hacker News & Reddit strictly within the last 48 hours
  */
 async function fetchTrendingDiscussions() {
   const discussions = [];
+  const nowInSec = Math.floor(Date.now() / 1000);
+  const maxAgeSec = 48 * 3600; // Strictly within 48 hours
 
-  // 1. Fetch Hacker News Top Stories & Ask HN
+  // 1. Fetch Hacker News (Top & Ask stories)
   try {
     const [topRes, askRes] = await Promise.all([
       fetch('https://hacker-news.firebaseio.com/v0/topstories.json', { timeout: 8000 }),
@@ -58,14 +60,14 @@ async function fetchTrendingDiscussions() {
     let topIds = [];
     if (topRes && topRes.ok) {
       const ids = await topRes.json();
-      topIds = topIds.concat((ids || []).slice(0, 15));
+      topIds = topIds.concat((ids || []).slice(0, 20));
     }
     if (askRes && askRes.ok) {
       const ids = await askRes.json();
-      topIds = topIds.concat((ids || []).slice(0, 10));
+      topIds = topIds.concat((ids || []).slice(0, 15));
     }
 
-    const uniqueIds = Array.from(new Set(topIds)).slice(0, 20);
+    const uniqueIds = Array.from(new Set(topIds)).slice(0, 30);
     const itemPromises = uniqueIds.map(id => 
       fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`, { timeout: 5000 })
         .then(r => r.ok ? r.json() : null)
@@ -73,8 +75,13 @@ async function fetchTrendingDiscussions() {
     );
 
     const items = await Promise.all(itemPromises);
+    const yearRegex = /\((19\d\d|200\d|201\d|202[0-4])\)/; // Ignore old historical re-posts like (2018), (2022)
+
     items.filter(Boolean).forEach(item => {
-      if (item.title && (item.score >= 10 || item.descendants >= 3)) {
+      const isFresh = item.time && (nowInSec - item.time) <= maxAgeSec;
+      const isOldYear = yearRegex.test(item.title || '');
+
+      if (isFresh && !isOldYear && item.title && (item.score >= 10 || item.descendants >= 3)) {
         discussions.push({
           id: `hn-${item.id}`,
           platform: 'Hacker News',
@@ -84,7 +91,8 @@ async function fetchTrendingDiscussions() {
           score: item.score || 0,
           commentsCount: item.descendants || 0,
           author: item.by || 'HN User',
-          text: item.text || item.title
+          text: item.text || item.title,
+          createdAt: item.time
         });
       }
     });
@@ -92,11 +100,11 @@ async function fetchTrendingDiscussions() {
     logger.warn('[Social Radar] Hacker News fetch error:', err.message);
   }
 
-  // 2. Fetch Reddit Tech, AI, Hardware, and Dev discussions
+  // 2. Fetch Reddit Tech, AI, Hardware, Singularity, Dev discussions
   try {
-    const subreddits = 'artificial+hardware+technology+singularity+MachineLearning+programming+stocks';
-    const redditRes = await fetch(`https://www.reddit.com/r/${subreddits}/hot.json?limit=25`, {
-      headers: { 'User-Agent': 'TrendingTechDaily-Radar/2.0' },
+    const subreddits = 'artificial+hardware+technology+singularity+MachineLearning+webdev+programming';
+    const redditRes = await fetch(`https://www.reddit.com/r/${subreddits}/hot.json?limit=30`, {
+      headers: { 'User-Agent': 'TrendingTechDaily-Radar/3.0' },
       timeout: 8000
     });
     if (redditRes.ok) {
@@ -104,7 +112,8 @@ async function fetchTrendingDiscussions() {
       const posts = data?.data?.children || [];
       posts.forEach(p => {
         const post = p.data;
-        if (post && !post.stickied && post.title) {
+        const isFresh = post && post.created_utc && (nowInSec - post.created_utc) <= maxAgeSec;
+        if (post && !post.stickied && isFresh && post.title && post.num_comments >= 3) {
           discussions.push({
             id: `reddit-${post.id}`,
             platform: `Reddit (r/${post.subreddit})`,
@@ -114,7 +123,8 @@ async function fetchTrendingDiscussions() {
             score: post.score || 0,
             commentsCount: post.num_comments || 0,
             author: post.author || 'Redditor',
-            text: post.selftext ? post.selftext.slice(0, 400) : post.title
+            text: post.selftext ? post.selftext.slice(0, 500) : post.title,
+            createdAt: post.created_utc
           });
         }
       });
@@ -126,63 +136,16 @@ async function fetchTrendingDiscussions() {
   return discussions;
 }
 
-// Tech entity mapping for cross-lingual English-Hebrew matching
-const TECH_ENTITY_MAP = {
-  'nvidia': ['nvidia', 'אנבידיה', 'gpu', 'dlss', 'שבב', 'כרטיס מסך', 'rtx'],
-  'dlss': ['dlss', 'nvidia', 'אנבידיה', 'rendering', 'רנדור', 'frames'],
-  'ai': ['ai', 'בינה מלאכותית', 'llm', 'model', 'מודל', 'gpt', 'claude', 'gemini', 'openai', 'anthropic'],
-  'anthropic': ['anthropic', 'אנתרופיק', 'claude', 'קלוד', 'safety', 'בטיחות'],
-  'claude': ['claude', 'קלוד', 'anthropic', 'אנתרופיק', 'ai'],
-  'apple': ['apple', 'אפל', 'iphone', 'mac', 'services', 'streaming', 'מנוי'],
-  'gta': ['gta', 'rockstar', 'רוקסטאר', 'gaming', 'משחק', 'גיימינג', 'take-two'],
-  'rockstar': ['rockstar', 'רוקסטאר', 'gta', 'gaming', 'גיימינג'],
-  'google': ['google', 'גוגל', 'gemini', 'search', 'חיפוש', 'overviews'],
-  'space': ['space', 'חלל', 'rocket', 'טילים', 'שיגור', 'spacex', 'nasa', 'faa'],
-  'cyber': ['cyber', 'סייבר', 'security', 'אבטחה', 'vulnerability', 'חולשה', 'hack'],
-  'chips': ['chips', 'שבבים', 'semiconductor', 'סמיקונדקטור', 'hardware', 'חומרה', 'tsmc', 'intel']
-};
-
 /**
- * Tokenize and match keywords between discussion and articles (bilingual aware)
- */
-function calculateMatchScore(discTitle, discText, article) {
-  const query = `${discTitle} ${discText}`.toLowerCase();
-  const target = `${article.title} ${article.excerpt || ''} ${article.category || ''} ${(article.tags || []).join(' ')}`.toLowerCase();
-
-  let score = 0;
-
-  // 1. Check entity clusters
-  for (const [entity, keywords] of Object.entries(TECH_ENTITY_MAP)) {
-    const queryHasEntity = keywords.some(k => query.includes(k));
-    const targetHasEntity = keywords.some(k => target.includes(k));
-    if (queryHasEntity && targetHasEntity) {
-      score += 0.45; // High weight for entity match
-    }
-  }
-
-  // 2. Word overlap
-  const stopWords = new Set(['the', 'and', 'for', 'with', 'that', 'this', 'from', 'have', 'what', 'about', 'your', 'just', 'more', 'how', 'why', 'של', 'על', 'עם', 'את', 'זה', 'כל', 'רק']);
-  const words = query.split(/[\s,.:;!?"'()\[\]{}]+/).filter(w => w.length > 3 && !stopWords.has(w));
-  let matchedWords = 0;
-  words.forEach(w => {
-    if (target.includes(w)) matchedWords++;
-  });
-
-  if (words.length > 0) {
-    score += (matchedWords / Math.min(words.length, 6)) * 0.55;
-  }
-
-  return score;
-}
-
-/**
- * Match trending discussions against Firestore articles (bilingual aware)
+ * High-Precision Semantic Matching with Gemini AI
+ * Evaluates whether a discussion directly covers the same technological breakthrough,
+ * framework, tool, company news, or debate as an article.
  */
 async function findDiscussionMatches(discussions, forceLanguage = null) {
-  // Fetch both English and Hebrew recent articles
+  // 1. Fetch latest published articles from Firestore
   const [enSnap, heSnap] = await Promise.all([
-    db.collection('articles').where('published', '==', true).orderBy('createdAt', 'desc').limit(30).get(),
-    db.collection('he_articles').where('published', '==', true).orderBy('createdAt', 'desc').limit(30).get().catch(() => ({ empty: true, forEach: () => {} }))
+    db.collection('articles').where('published', '==', true).orderBy('createdAt', 'desc').limit(25).get(),
+    db.collection('he_articles').where('published', '==', true).orderBy('createdAt', 'desc').limit(25).get().catch(() => ({ empty: true, forEach: () => {} }))
   ]);
 
   const enArticles = [];
@@ -191,39 +154,88 @@ async function findDiscussionMatches(discussions, forceLanguage = null) {
   const heArticles = [];
   if (!heSnap.empty) heSnap.forEach(doc => heArticles.push({ id: doc.id, isHe: true, ...doc.data() }));
 
+  if (enArticles.length === 0 && heArticles.length === 0) return [];
+
   const matchedResults = [];
 
-  for (const disc of discussions) {
-    // English platforms (Hacker News, Reddit) ALWAYS match to English articles and generate English replies
-    const isDiscHe = forceLanguage !== null ? forceLanguage : (disc.platform.toLowerCase().includes('israel') || disc.platform.toLowerCase().includes('hebrew'));
-    const candidateArticles = isDiscHe ? heArticles : enArticles;
+  // Try to use Gemini for strict semantic matching
+  const loaded = await loadGeminiSDK();
+  const genAI = loaded ? getGeminiSDK() : null;
 
-    let bestArticle = null;
-    let highestScore = 0;
+  if (genAI && discussions.length > 0) {
+    for (const disc of discussions.slice(0, 15)) {
+      const isDiscHe = forceLanguage !== null ? forceLanguage : (disc.platform.toLowerCase().includes('israel') || disc.platform.toLowerCase().includes('hebrew'));
+      const candidatePool = (isDiscHe ? heArticles : enArticles).slice(0, 15);
 
-    for (const art of candidateArticles) {
-      const score = calculateMatchScore(disc.title, disc.text, art);
-      if (score > highestScore && score >= 0.35) {
-        highestScore = score;
-        bestArticle = art;
+      if (candidatePool.length === 0) continue;
+
+      const articlesListStr = candidatePool.map((a, idx) => 
+        `[${idx}] Title: "${a.title}" | Tags: ${(a.tags || []).join(', ')} | Summary: "${(a.excerpt || a.description || '').slice(0, 150)}"`
+      ).join('\n');
+
+      const matchPrompt = `You are a strict technical news classifier evaluating relevance for a tech news platform.
+Online Discussion:
+- Platform: ${disc.platform}
+- Title: "${disc.title}"
+- Content/Question: "${disc.text}"
+
+Candidate Published Articles:
+${articlesListStr}
+
+TASK:
+Determine if ANY candidate article above is DIRECTLY and GENUINELY RELEVANT to the exact technical topic, product, tool, model, or company news discussed in this discussion.
+
+CRITICAL RULES:
+1. Only return a match if there is a TIGHT, AUTHENTIC topical connection (e.g. both discussing the same GPU architecture, specific AI model, specific framework, cybersecurity incident, or tech company event).
+2. If the connection is vague, coincidental, or only shares generic words like "computer", "world", "water", "online", DO NOT MATCH. Return {"isMatch": false}.
+3. Quality over quantity: It is completely normal and preferred to return {"isMatch": false} if no published article matches today's discussion.
+
+Respond with ONLY valid JSON:
+{
+  "isMatch": true/false,
+  "matchedIndex": 0,
+  "confidenceScore": 0.0 to 1.0,
+  "reasoning": "brief explanation of direct connection"
+}`;
+
+      try {
+        const result = await genAI.models.generateContent(
+          buildGenerateContentRequest(matchPrompt, {
+            model: 'gemini-1.5-flash',
+            safetySettings: getSafetySettings(),
+            generationConfig: { responseMimeType: 'application/json' }
+          })
+        );
+
+        const rawText = (typeof result.text === 'function' ? result.text() : result.text) || '{}';
+        const parsed = JSON.parse(rawText);
+
+        if (parsed.isMatch === true && parsed.confidenceScore >= 0.80 && parsed.matchedIndex !== undefined) {
+          const matchedArticle = candidatePool[parsed.matchedIndex];
+          if (matchedArticle) {
+            matchedResults.push({
+              discussion: disc,
+              matchedArticle: matchedArticle,
+              isHeResponse: isDiscHe,
+              matchScore: parsed.confidenceScore,
+              reasoning: parsed.reasoning
+            });
+          }
+        }
+      } catch (err) {
+        logger.warn('[Social Radar] Gemini match evaluation error:', err.message);
       }
-    }
 
-    if (bestArticle) {
-      matchedResults.push({
-        discussion: disc,
-        matchedArticle: bestArticle,
-        isHeResponse: isDiscHe,
-        matchScore: highestScore
-      });
+      if (matchedResults.length >= 3) break; // Maximum 3 high-value opportunities per scan
     }
   }
 
-  return matchedResults.slice(0, 4); // Return top 4 highest-confidence opportunities
+  return matchedResults;
 }
 
 /**
- * Generate Value-First Expert Response with Gemini AI
+ * Generate Tailored, Bespoke Expert Response with Gemini AI
+ * Addresses the exact question/nuance of the discussion without boilerplate templates.
  */
 async function generateExpertCommunityResponse(discussion, article, isHe = false) {
   const slug = article.slug || article.id;
@@ -236,26 +248,32 @@ async function generateExpertCommunityResponse(discussion, article, isHe = false
     if (loaded) {
       const genAI = getGeminiSDK();
       if (genAI) {
-        const prompt = `You are a distinguished senior technology researcher & engineer writing an authoritative, highly respectful, value-first response to an online tech discussion on ${discussion.platform}.
+        const prompt = `You are a distinguished, hands-on senior software engineer and researcher answering an authentic technical discussion on ${discussion.platform}.
 
 Discussion Title: "${discussion.title}"
-Discussion Context: "${discussion.text}"
+Discussion Context / OP Question: "${discussion.text}"
 
-Relevant Deep-Dive Article from TrendingTech Daily:
+Relevant Tech Article Details from TrendingTech Daily:
 Title: "${article.title}"
-Summary: "${article.excerpt || article.description || ''}"
-URL: "${articleUrl}"
+Key Analysis / Data: "${article.excerpt || article.description || article.content || ''}"
+Article URL: "${articleUrl}"
 
-Rules for the response:
-1. Language: ${isHe ? 'HEBREW' : 'ENGLISH (Must be 100% natural, fluent American English)'}.
-2. Provide GENUINE TECHNICAL VALUE: Directly answer the question or analyze the architectural trade-offs in 2 clear, insightful paragraphs.
-3. Tone: Highly professional, objective, collegial, and non-promotional.
-4. Natural Citation: At the very end of the second paragraph, naturally mention the source:
+STRICT WRITING GUIDELINES:
+1. LANGUAGE: ${isHe ? 'HEBREW (Natural, native Israeli tech tone)' : 'ENGLISH (Fluent, conversational, authentic Silicon Valley engineer tone)'}.
+2. SPECIFICITY: Speak DIRECTLY to the OP's specific question, premise, or trade-off. Mention concrete technical mechanics, libraries, APIs, or architectural factors.
+3. FORBIDDEN BOILERPLATE: NEVER start with phrases like:
+   - "This is an insightful point..."
+   - "When examining the architectural trade-offs..."
+   - "Great question..."
+   - "An insightful angle on this..."
+   Start directly with the core insight or practical take.
+4. LENGTH: Exactly 2 tight, high-density paragraphs.
+5. NATURAL CITATION: Conclude the 2nd paragraph with a natural, value-additive citation pointing to the article URL:
    ${isHe 
-     ? `(הרחבה טכנית ומבחני בנצ'מרק מלאים פורסמו בניתוח המקיף ב-TrendingTech Daily: ${articleUrl})` 
-     : `(For a detailed architectural breakdown and benchmark metrics, see the deep-dive analysis on TrendingTech Daily: ${articleUrl})`}
+     ? `(הרחבנו על כך עם נתוני בנצ'מרק וניתוח מעמיק ב-TrendingTech Daily: ${articleUrl})` 
+     : `(We did a full technical breakdown with benchmark data on TrendingTech Daily if you want to explore the details: ${articleUrl})`}
 
-Output ONLY the plain text response without code blocks or meta notes.`;
+Output ONLY the final comment text without greetings or markdown code fences.`;
 
         const result = await genAI.models.generateContent(
           buildGenerateContentRequest(prompt, {
@@ -269,14 +287,14 @@ Output ONLY the plain text response without code blocks or meta notes.`;
       }
     }
   } catch (err) {
-    logger.warn('[Social Radar] Gemini expert answer error:', err.message);
+    logger.warn('[Social Radar] Gemini custom response generation error:', err.message);
   }
 
-  // Fallback template
+  // Ultra-clean fallback
   if (isHe) {
-    return `נקודה מעניינת מאוד לדיון. בניתוח הארכיטקטורה של הנושא הזה עולים מספר היבטים קריטיים של ביצועים ושיהוי מערכתי.\n\nהרחבה וניתוח מעמיק בנושא פורסמו במאמר ב-TrendingTech Daily: ${articleUrl}`;
+    return `האתגר המרכזי כאן נובע מצוואר הבקבוק בשכבת הביצועים ושיהוי הרשת.\n\nהרחבה ונתונים טכניים נוספים פורסמו בניתוח ב-TrendingTech Daily: ${articleUrl}`;
   } else {
-    return `An insightful angle on this development. When examining the architectural trade-offs, compute efficiency and latency scaling remain the core constraints.\n\nA full breakdown is available on TrendingTech Daily: ${articleUrl}`;
+    return `The core constraint here comes down to compute scheduling and latency bottlenecks in the pipeline.\n\nA full breakdown with benchmark details is on TrendingTech Daily: ${articleUrl}`;
   }
 }
 
@@ -284,38 +302,42 @@ Output ONLY the plain text response without code blocks or meta notes.`;
  * Dispatch Social Radar Alert to Admin Telegram Channel / Chat
  */
 async function sendRadarAlertToTelegram(opportunity, expertResponse, isHeUI = true, targetChannel = DEFAULT_ADMIN_CHAT_ID) {
-  const { discussion, matchedArticle, isHeResponse } = opportunity;
+  const { discussion, matchedArticle, isHeResponse, reasoning } = opportunity;
   const isHeArt = matchedArticle.isHe === true || isHeResponse === true;
   const slug = matchedArticle.slug || matchedArticle.id;
   const articleUrl = isHeArt 
     ? `${SITE_BASE_URL}/he/article.html?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(matchedArticle.id)}`
     : `${SITE_BASE_URL}/article.html?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(matchedArticle.id)}`;
 
+  const langTag = isHeResponse ? 'עברית' : 'English';
+
   const alertText = isHeUI 
-    ? `🎯 <b>Social Radar — הזדמנות אינטראקציה חדשה</b>\n\n` +
-      `📍 <b>פלטפורמה:</b> ${discussion.platform} (English)\n` +
+    ? `🎯 <b>Social Radar — הזדמנות אינטראקציה ממוקדת</b>\n\n` +
+      `📍 <b>פלטפורמה:</b> ${discussion.platform} (${langTag})\n` +
       `💬 <b>דיון חם:</b> <i>${discussion.title}</i>\n` +
-      `🔥 <b>תגובות / ציון:</b> ${discussion.commentsCount} תגובות · ${discussion.score} נקודות\n\n` +
-      `📰 <b>כתבה תואמת (English Dispatch):</b> <a href="${articleUrl}">${matchedArticle.title}</a>\n\n` +
-      `💡 <b>טיוטת תגובה באנגלית להעתקה והדבקה בדיון:</b>\n` +
+      `🔥 <b>תגובות / ציון:</b> ${discussion.commentsCount} תגובות · ${discussion.score} נקודות\n` +
+      (reasoning ? `🔍 <b>התאמה סמנטית:</b> ${reasoning}\n\n` : `\n`) +
+      `📰 <b>כתבה תואמת באתר:</b> <a href="${articleUrl}">${matchedArticle.title}</a>\n\n` +
+      `💡 <b>טיוטת תגובה מותאמת אישית (${langTag}) להעתקה:</b>\n` +
       `<blockquote>${expertResponse}</blockquote>\n\n` +
-      `⚡ לחצו על הכפתור למטה למעבר ישיר לדיון כדי להדביק את התגובה:`
-    : `🎯 <b>Social Radar — Community Engagement Opportunity</b>\n\n` +
+      `⚡ לחצו להלן כדי לעבור ישירות לדיון ולהדביק את התגובה:`
+    : `🎯 <b>Social Radar — High-Relevance Discussion Opportunity</b>\n\n` +
       `📍 <b>Platform:</b> ${discussion.platform}\n` +
       `💬 <b>Discussion:</b> <i>${discussion.title}</i>\n` +
-      `🔥 <b>Engagement:</b> ${discussion.commentsCount} comments · ${discussion.score} score\n\n` +
+      `🔥 <b>Engagement:</b> ${discussion.commentsCount} comments · ${discussion.score} score\n` +
+      (reasoning ? `🔍 <b>Match:</b> ${reasoning}\n\n` : `\n`) +
       `📰 <b>Matched Dispatch:</b> <a href="${articleUrl}">${matchedArticle.title}</a>\n\n` +
-      `💡 <b>Ready-to-Paste AI Expert Response (English):</b>\n` +
+      `💡 <b>Bespoke AI Response Draft:</b>\n` +
       `<blockquote>${expertResponse}</blockquote>\n\n` +
       `⚡ Click below to navigate directly to discussion:`;
 
   const replyMarkup = {
     inline_keyboard: [
       [
-        { text: '🔗 Open Discussion & Paste Reply', url: discussion.discussionUrl }
+        { text: isHeResponse ? '🔗 פתח את הדיון המקורי' : '🔗 Open Discussion & Reply', url: discussion.discussionUrl }
       ],
       [
-        { text: '🌐 View English Article on Site', url: articleUrl }
+        { text: isHeArt ? '🌐 פתח כתבה באתר' : '🌐 View Article on Site', url: articleUrl }
       ]
     ]
   };
@@ -347,10 +369,10 @@ async function runSocialRadarPipeline(forceLanguage = null, customChannel = null
   logger.info(`[Social Radar] Starting discussion scan pipeline targeting ${targetChannel}...`);
 
   const discussions = await fetchTrendingDiscussions();
-  logger.info(`[Social Radar] Fetched ${discussions.length} active discussions`);
+  logger.info(`[Social Radar] Fetched ${discussions.length} fresh active discussions`);
 
   const matches = await findDiscussionMatches(discussions, forceLanguage);
-  logger.info(`[Social Radar] Found ${matches.length} high-confidence matches with site articles`);
+  logger.info(`[Social Radar] Found ${matches.length} high-confidence semantic matches`);
 
   const alertsSent = [];
 
@@ -363,6 +385,8 @@ async function runSocialRadarPipeline(forceLanguage = null, customChannel = null
       articleTitle: match.matchedArticle.title,
       platform: match.discussion.platform,
       isHeResponse: isHeResp,
+      matchScore: match.matchScore,
+      reasoning: match.reasoning,
       success: alertRes.success
     });
   }

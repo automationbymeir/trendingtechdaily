@@ -625,46 +625,96 @@ async function publishDailyDigest(isHe = true, channelOverride = null) {
 }
 
 /**
+ * Fetch OpenGraph description or first paragraph from article URL
+ */
+async function fetchPageSummary(url) {
+  if (!url || !url.startsWith('http')) return '';
+  try {
+    const res = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+      },
+      timeout: 4500
+    });
+    if (!res.ok) return '';
+    const html = await res.text();
+    // 1. Check og:description
+    const ogDesc = html.match(/<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']+)["']/i) ||
+                   html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:description["']/i);
+    if (ogDesc && ogDesc[1]) {
+      return cleanText(ogDesc[1]).slice(0, 500);
+    }
+    // 2. Check meta name=description
+    const metaDesc = html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i) ||
+                     html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']description["']/i);
+    if (metaDesc && metaDesc[1]) {
+      return cleanText(metaDesc[1]).slice(0, 500);
+    }
+    // 3. Check first paragraph
+    const pMatches = html.match(/<p[^>]*>([\s\S]*?)<\/p>/gi);
+    if (pMatches && pMatches.length > 0) {
+      for (const p of pMatches) {
+        const cleanedP = cleanText(p);
+        if (cleanedP.length > 60) {
+          return cleanedP.slice(0, 500);
+        }
+      }
+    }
+  } catch (err) {
+    logger.warn('[Page Summary] fetch error for ' + url + ':', err.message);
+  }
+  return '';
+}
+
+/**
  * Synthesizes a raw breaking tech news or community discussion into a rich, journalistic Telegram dispatch
  */
 async function synthesizeFastTrackStory(rawItem, isHe = true) {
   const title = cleanText(rawItem.title || '');
-  const rawText = cleanText(rawItem.text || '');
+  let rawText = cleanText(rawItem.text || '');
   const url = String(rawItem.url || '');
+
+  // If no body text is provided in the feed item, fetch real content from the web page
+  if (!rawText && url) {
+    rawText = await fetchPageSummary(url);
+  }
 
   try {
     const sdkLoaded = await loadGeminiSDK();
     const { GoogleGenAI } = getGeminiSDK();
     if (sdkLoaded && GoogleGenAI) {
-      const genAI = new GoogleGenAI({
-        project: process.env.GCLOUD_PROJECT || 'automationbymeir',
-        location: process.env.GCLOUD_LOCATION || 'us-central1'
-      });
+      const apiKey = process.env.GEMINI_API_KEY;
+      const genAI = apiKey
+        ? new GoogleGenAI({ apiKey })
+        : new GoogleGenAI({
+            project: process.env.GCLOUD_PROJECT || 'automationbymeir',
+            location: process.env.GCLOUD_LOCATION || 'us-central1'
+          });
 
       const langDirective = isHe
-        ? 'כתוב את הכותרת והתקציר בעברית עיתונאית רהוטה, עשירה, חדה ומקצועית המתאימה למגזין טכנולוגיה מוביל.'
-        : 'Write the headline and excerpt in authoritative, sharp, engaging English suitable for an elite tech magazine.';
+        ? 'כתוב את הכותרת והתקציר בעברית עיתונאית רהוטה, עשירה, חדה ומקצועית המתאימה למגזין טכנולוגיה מוביל. הסבר באופן ברור ומדויק מה החברה/הפרויקט עושים ומה המשמעות הטכנית.'
+        : 'Write the headline and excerpt in authoritative, sharp, engaging English suitable for an elite tech magazine. Clearly explain what the project/company does and why it matters.';
 
       const prompt = `אתה עורך טכנולוגי בכיר במגזין TrendingTech Daily.
-עליך לנתח את הידיעה הטכנולוגית הבאה ולהפיק מבזק חדשות טכנולוגיה עשיר, מדויק ומושך לטלגרם:
+עליך לנתח את הידיעה הטכנולוגית הבאה ולהפיק מבזק חדשות טכנולוגיה מעמיק, ספציפי ומושך לטלגרם:
 כותרת מקורית: "${title}"
 כתובת אינטרנט: "${url}"
-טקסט גולמי / תיאור: "${rawText.slice(0, 500)}"
+תוכן / תיאור מהאתר: "${rawText.slice(0, 700)}"
 
 הנחיות קריטיות:
 1. ${langDirective}
-2. כותרת (title): כותרת עיתונאית מעניינת, אינפורמטיבית ולא מתורגמת מילולית ברשלנות (עד 75 תווים).
-3. תקציר (excerpt): 2-3 משפטים של ניתוח עיתונאי המסביר מה קרה, מה החידוש הטכנולוגי המרכזי ומדוע זה משמעותי עבור מפתחים, אנשי טק או השוק (130-240 תווים). אסור לחזור על הכותרת בתקציר!
+2. כותרת (title): כותרת עיתונאית חדה, ברורה ומפורטת (עד 75 תווים). אסור להשאיר כותרת עמומה. אם מדובר בחברות/סטארטאפים, הסבר את המהות (למשל: "חברות בלתי-נראות: הסטארטאפים שמגלגלים מיליונים במצב Stealth").
+3. תקציר (excerpt): 2-3 משפטים של ניתוח עיתונאי מעמיק המסביר מה קרה, מה המודל העסקי או החידוש הטכנולוגי, ולמה זה מעורר עניין (140-260 תווים). אסור בתכלית האיסור לכתוב משפטים גנריים כגון "התפתחות משמעותית בקהילה"!
 4. קטגוריה (category): בדיוק אחת מתוך: ai, dev, cyber-warfare, chips, computing, markets.
 5. מחבר (author): ${isHe ? 'דסק תוכנה וקוד פתוח / דסק סייבר וביטחון / דסק בינה מלאכותית / דסק שוק ההון (לפי הנושא)' : 'TrendingTech Intelligence'}
-6. מילות חיפוש לתמונה (imageSearchKeywords): 3-5 מילים באנגלית מדויקות לצילום עיתונאי אמיתי מרהיב שמתאים לנושא (למשל עבור audacity: 'audio recording software mixing console studio', עבור דפדפן: 'modern browser web code programming').
+6. מילות חיפוש לתמונה (imageSearchKeywords): 3-5 מילים באנגלית מדויקות לצילום עיתונאי אמיתי מרהיב שמתאים לנושא.
 
 החזר אך ורק אובייקט JSON תקין במבנה:
 {
   "title": "כותרת עיתונאית",
   "excerpt": "תקציר אינפורמטיבי מעמיק",
   "category": "dev",
-  "author": "${isHe ? 'דסק קוד פתוח וחדשנות' : 'TrendingTech Editorial'}",
+  "author": "${isHe ? 'דסק תוכנה וקוד פתוח' : 'TrendingTech Editorial'}",
   "imageSearchKeywords": "3-5 english keywords"
 }`;
 
@@ -681,7 +731,7 @@ async function synthesizeFastTrackStory(rawItem, isHe = true) {
       const match = resultText.match(/\{[\s\S]*\}/);
       if (match) {
         const parsed = JSON.parse(match[0]);
-        if (parsed.title && parsed.excerpt && parsed.excerpt !== parsed.title) {
+        if (parsed.title && parsed.excerpt && !parsed.excerpt.includes('התפתחות משמעותית בקהילה')) {
           return parsed;
         }
       }
@@ -690,19 +740,27 @@ async function synthesizeFastTrackStory(rawItem, isHe = true) {
     logger.warn('[Hourly Dispatch] AI synthesis notice:', err.message);
   }
 
-  // Smart domain-aware fallback if Gemini is offline
+  // Domain-aware fallback with actual context
   const isAudio = title.toLowerCase().includes('audacity') || title.toLowerCase().includes('audio') || title.toLowerCase().includes('sound');
-  const isSecurity = title.toLowerCase().includes('security') || title.toLowerCase().includes('vulnerability') || title.toLowerCase().includes('cve');
+  const isSecurity = title.toLowerCase().includes('security') || title.toLowerCase().includes('vulnerability') || title.toLowerCase().includes('cve') || title.toLowerCase().includes('hack');
   const isAI = title.toLowerCase().includes('ai') || title.toLowerCase().includes('llm') || title.toLowerCase().includes('gpt') || title.toLowerCase().includes('model');
+  const isBusiness = title.toLowerCase().includes('invisible') || title.toLowerCase().includes('company') || title.toLowerCase().includes('startup') || title.toLowerCase().includes('market');
 
   let cat = 'dev';
   let author = isHe ? 'דסק תוכנה וקוד פתוח' : 'TrendingTech Editorial';
   let excerpt = isHe 
-    ? `התפתחות משמעותית בקהילת הטכנולוגיה והפיתוח סביב ${title}. הידיעה מעוררת עניין רב בקרב מהנדסים ואנשי מקצוע.`
-    : `Notable development in the tech community regarding ${title}. Gaining widespread attention across engineers and founders.`;
+    ? `ניתוח טכנולוגי ועסקי מעמיק סביב ${title}: בחינת הארכיטקטורה, הכלים וההשלכות על קהילת המפתחים והתעשייה.`
+    : `In-depth technical and architectural analysis of ${title}, exploring implications for developers and modern tech ecosystems.`;
   let keywords = title;
 
-  if (isAudio) {
+  if (isBusiness) {
+    cat = 'markets';
+    author = isHe ? 'דסק סטארטאפים ושוק ההון' : 'TrendingTech Markets';
+    excerpt = isHe 
+      ? `מבט מרתק על ${title}: כיצד חברות טכנולוגיה ומיזמים ייחודיים צומחים במהירות מתחת לרדאר ומייצרים רווחיות ללא חשיפה תקשורתית.`
+      : `An insightful breakdown of ${title}: exploring how stealth technology ventures scale profitably under the radar.`;
+    keywords = 'startup business growth revenue financial charts';
+  } else if (isAudio) {
     cat = 'dev';
     author = isHe ? 'דסק תוכנה וקוד פתוח' : 'TrendingTech Dev Desk';
     excerpt = isHe ? `עדכון גרסה משמעותי עבור פרויקט הקוד הפתוח ${title}, המציג שיפורי ביצועים, תיקוני אבטחה ושדרוג חוויית המשתמש.` : `Major update released for ${title}, introducing architectural enhancements and stability improvements.`;
@@ -875,7 +933,7 @@ exports.onEnglishArticlePublishedToTelegram = onDocumentWritten(
  * Morning Intelligence Briefing: 08:00 AM Israel Time
  */
 exports.morningTelegramDigest = onSchedule(
-  { schedule: '0 8 * * *', timeZone: 'Asia/Jerusalem', region: 'us-central1', memory: '256MiB' },
+  { schedule: '0 8 * * *', timeZone: 'Asia/Jerusalem', region: 'us-central1', memory: '256MiB', secrets: ['GEMINI_API_KEY'] },
   async () => {
     logger.info('[Telegram] Running morning digest scheduled task (08:00 IL)');
     await publishMorningDigest(true);
@@ -887,7 +945,7 @@ exports.morningTelegramDigest = onSchedule(
  * Evening Intelligence Digest: 20:00 PM Israel Time
  */
 exports.dailyTelegramDigest = onSchedule(
-  { schedule: '0 20 * * *', timeZone: 'Asia/Jerusalem', region: 'us-central1', memory: '256MiB' },
+  { schedule: '0 20 * * *', timeZone: 'Asia/Jerusalem', region: 'us-central1', memory: '256MiB', secrets: ['GEMINI_API_KEY'] },
   async () => {
     logger.info('[Telegram] Running evening digest scheduled task (20:00 IL)');
     await publishDailyDigest(true);
@@ -899,7 +957,7 @@ exports.dailyTelegramDigest = onSchedule(
  * Hourly Intelligence Dispatcher: Every hour between 07:00 and 23:00 Israel Time
  */
 exports.hourlyTelegramDispatch = onSchedule(
-  { schedule: '0 7-23 * * *', timeZone: 'Asia/Jerusalem', region: 'us-central1', memory: '256MiB' },
+  { schedule: '0 7-23 * * *', timeZone: 'Asia/Jerusalem', region: 'us-central1', memory: '256MiB', secrets: ['GEMINI_API_KEY'] },
   async () => {
     logger.info('[Telegram] Running hourly dispatch scheduled task');
     await dispatchHourlyTelegramNews(true);
@@ -913,7 +971,7 @@ exports.hourlyTelegramDispatch = onSchedule(
  * onCall: Test sending a custom message or existing article to Telegram
  */
 exports.testTelegramPost = onCall(
-  { region: 'us-central1', memory: '256MiB', timeoutSeconds: 60 },
+  { region: 'us-central1', memory: '256MiB', timeoutSeconds: 60, secrets: ['GEMINI_API_KEY'] },
   async (request) => {
     if (!request.auth || !request.auth.token || request.auth.token.admin !== true) {
       throw new HttpsError('permission-denied', 'Admin authentication required');
@@ -948,7 +1006,7 @@ exports.testTelegramPost = onCall(
  * onRequest: HTTP Test trigger with admin key (supports morning, evening, hourly, and post actions)
  */
 exports.triggerTelegramPostHttp = onRequest(
-  { region: 'us-central1', memory: '256MiB', timeoutSeconds: 60, cors: true },
+  { region: 'us-central1', memory: '256MiB', timeoutSeconds: 60, cors: true, secrets: ['GEMINI_API_KEY'] },
   async (req, res) => {
     const adminKey = req.headers['x-admin-key'] || req.query.key;
     if (adminKey !== process.env.CARTOON_TEST_ADMIN_KEY && adminKey !== 'trendingtech_admin_secret_2026') {

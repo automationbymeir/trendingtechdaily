@@ -15,6 +15,9 @@ const CURATED_TECH_EDITORIAL_IMAGES = {
   'chips': 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1400&auto=format&fit=crop&q=85',
   'semiconductor': 'https://images.unsplash.com/photo-1555680202-c86f0e12f086?w=1400&auto=format&fit=crop&q=85',
   'cybersecurity': 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1400&auto=format&fit=crop&q=85',
+  'cyber-warfare': 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1400&auto=format&fit=crop&q=85',
+  'iran-tech': 'https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=1400&auto=format&fit=crop&q=85',
+  'defense-tech': 'https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=1400&auto=format&fit=crop&q=85',
   'dev': 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1400&auto=format&fit=crop&q=85',
   'computing': 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1400&auto=format&fit=crop&q=85',
   'markets': 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1400&auto=format&fit=crop&q=85',
@@ -32,6 +35,12 @@ const CURATED_TECH_EDITORIAL_IMAGES = {
 function extractPrecisionKeywords(topic = '', imagePrompt = '', category = '') {
   const combined = `${topic} ${imagePrompt} ${category}`.toLowerCase();
 
+  if (combined.includes('iran') || combined.includes('muddywater') || combined.includes('handala') || combined.includes('charming kitten') || combined.includes('איראן') || combined.includes('tehran')) {
+    return 'cyber warfare military defense cyber security hacker digital surveillance';
+  }
+  if (combined.includes('drone') || combined.includes('uav') || combined.includes('electronic warfare') || combined.includes('jamming') || combined.includes('gps spoofing') || combined.includes('satellite')) {
+    return 'satellite radar electronic warfare communications technology';
+  }
   if (combined.includes('nvidia') || combined.includes('blackwell') || combined.includes('gpu') || combined.includes('geforce')) {
     return 'nvidia gpu processor semiconductor';
   }

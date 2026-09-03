@@ -105,7 +105,9 @@ const socialRadarCallables = require('./callable/socialRadar');
 
 exports.onHebrewArticlePublishedToTelegram = telegramPublisher.onHebrewArticlePublishedToTelegram;
 exports.onEnglishArticlePublishedToTelegram = telegramPublisher.onEnglishArticlePublishedToTelegram;
+exports.morningTelegramDigest = telegramPublisher.morningTelegramDigest;
 exports.dailyTelegramDigest = telegramPublisher.dailyTelegramDigest;
+exports.hourlyTelegramDispatch = telegramPublisher.hourlyTelegramDispatch;
 exports.testTelegramPost = telegramPublisher.testTelegramPost;
 exports.triggerTelegramPostHttp = telegramPublisher.triggerTelegramPostHttp;
 

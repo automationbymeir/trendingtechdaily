@@ -67,6 +67,9 @@ async function getTelegramConfig() {
  */
 function getCategoryMeta(category, isHe) {
   const cat = String(category || '').toLowerCase();
+  if (cat.includes('iran') || cat.includes('איראן') || cat.includes('warfare') || cat.includes('defense') || cat.includes('לוחמ')) {
+    return { emoji: '🚨', tags: isHe ? '#סייבר #איראן #מלחמת_סייבר #מודיעין #טכנולוגיה' : '#CyberWarfare #Iran #DefenseTech #Intelligence #Tech' };
+  }
   if (cat.includes('ai') || cat.includes('בינה')) {
     return { emoji: '🤖', tags: isHe ? '#בינה_מלאכותית #AI #טק' : '#AI #ArtificialIntelligence #Tech' };
   }
@@ -80,7 +83,7 @@ function getCategoryMeta(category, isHe) {
     return { emoji: '📈', tags: isHe ? '#שוק_ההון #מניות #וול_סטריט' : '#Markets #Stocks #WallStreet' };
   }
   if (cat.includes('security') || cat.includes('סייבר') || cat.includes('cyber')) {
-    return { emoji: '🛡️', tags: isHe ? '#סייבר #אבטחת_מידע' : '#Cybersecurity #Infosec #Security' };
+    return { emoji: '🛡️', tags: isHe ? '#סייבר #אבטחת_מידע #סייבר_ישראל' : '#Cybersecurity #Infosec #Security' };
   }
   if (cat.includes('agent') || cat.includes('סוכנ')) {
     return { emoji: '🧠', tags: isHe ? '#סוכנים_אוטונומיים #AI_Agents' : '#AutonomousAgents #AIAgents' };
@@ -112,7 +115,7 @@ function escapeHtml(str) {
 }
 
 /**
- * Format article into rich Telegram caption
+ * Format article into rich, high-engagement Telegram caption with hooks
  */
 function formatTelegramCaption(article, isHe) {
   const { emoji, tags } = getCategoryMeta(article.category, isHe);
@@ -128,12 +131,23 @@ function formatTelegramCaption(article, isHe) {
   const excerpt = escapeHtml(rawExcerpt);
 
   const author = escapeHtml(article.author || (isHe ? 'מערכת TrendingTech Daily' : 'TrendingTech Daily'));
-  const readingTime = article.readingTimeMinutes || 4;
+  const readingTime = article.readingTimeMinutes || 3;
+
+  const isCyberOrIran = (article.category || '').toLowerCase().includes('iran') || 
+                        (article.category || '').toLowerCase().includes('warfare') ||
+                        (article.title || '').includes('איראן') ||
+                        (article.title || '').toLowerCase().includes('cyber');
+
+  const hookPrefix = isCyberOrIran 
+    ? (isHe ? '🚨 <b>מבזק סייבר וביטחון טכנולוגי</b>' : '🚨 <b>Cyber & Defense Tech Alert</b>') 
+    : '';
 
   if (isHe) {
-    return `${emoji} <b>${title}</b>\n\n${excerpt}\n\n✍️ <i>מאת: ${author} · ⏱️ ${readingTime} דק' קריאה</i>\n\n${tags}\n📢 @TrendingTechDaily_HE`;
+    const header = hookPrefix ? `${hookPrefix}\n\n${emoji} <b>${title}</b>` : `${emoji} <b>${title}</b>`;
+    return `${header}\n\n${excerpt}\n\n✍️ <i>מאת: ${author} · ⏱️ ${readingTime} דק' קריאה</i>\n\n${tags}\n📢 @TrendingTechDaily_HE`;
   } else {
-    return `${emoji} <b>${title}</b>\n\n${excerpt}\n\n✍️ <i>By ${author} · ⏱️ ${readingTime} min read</i>\n\n${tags}\n📢 @TrendingTechDaily_EN`;
+    const header = hookPrefix ? `${hookPrefix}\n\n${emoji} <b>${title}</b>` : `${emoji} <b>${title}</b>`;
+    return `${header}\n\n${excerpt}\n\n✍️ <i>By ${author} · ⏱️ ${readingTime} min read</i>\n\n${tags}\n📢 @TrendingTechDaily_EN`;
   }
 }
 
@@ -488,14 +502,14 @@ async function publishArticleToTelegram(docRef, articleData, isHe) {
 }
 
 /**
- * Compile and broadcast Daily Intelligence Digest to Telegram
+ * Compile and broadcast Morning Intelligence Briefing to Telegram (08:00 Israel time)
  */
-async function publishDailyDigest(isHe = true) {
+async function publishMorningDigest(isHe = true, channelOverride = null) {
   const config = await getTelegramConfig();
   if (!config.enabled) return { skipped: true };
 
   const colName = isHe ? 'he_articles' : 'articles';
-  const targetChannel = isHe ? config.hebrewChannel : config.englishChannel;
+  const targetChannel = channelOverride || (isHe ? config.hebrewChannel : config.englishChannel);
   const snap = await db.collection(colName)
     .where('published', '==', true)
     .orderBy('createdAt', 'desc')
@@ -511,8 +525,8 @@ async function publishDailyDigest(isHe = true) {
   const dateFormatted = now.toLocaleDateString(isHe ? 'he-IL' : 'en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
   let digestText = isHe 
-    ? `🌙 <b>מבזק ערב יומי — TrendingTech Daily</b>\n📅 <i>${dateFormatted}</i>\n\nריכזנו עבורכם את 4 הידיעות הטכנולוגיות המרכזיות של היום:\n\n`
-    : `🌙 <b>Evening Intelligence Digest — TrendingTech Daily</b>\n📅 <i>${dateFormatted}</i>\n\nTop tech developments and research breakdowns from today:\n\n`;
+    ? `☀️ <b>כותרות הבוקר — TrendingTech Daily</b>\n📅 <i>${dateFormatted}</i>\n\nבוקר טוב! ריכזנו עבורכם את 4 הכותרות הטכנולוגיות, הסייבר ונעילת השווקים של הבוקר:\n\n`
+    : `☀️ <b>Morning Intelligence Briefing — TrendingTech Daily</b>\n📅 <i>${dateFormatted}</i>\n\nGood morning! Top technology, AI, and cybersecurity developments to start your day:\n\n`;
 
   articles.forEach((art, idx) => {
     const numEmoji = ['1️⃣', '2️⃣', '3️⃣', '4️⃣'][idx] || '🔹';
@@ -521,7 +535,70 @@ async function publishDailyDigest(isHe = true) {
       ? `${SITE_BASE_URL}/he/article.html?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(art.id)}`
       : `${SITE_BASE_URL}/article.html?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(art.id)}`;
     
-    digestText += `${numEmoji} <a href="${artUrl}"><b>${escapeHtml(art.title)}</b></a>\n${escapeHtml(cleanText(art.excerpt || '').slice(0, 100))}...\n\n`;
+    digestText += `${numEmoji} <a href="${artUrl}"><b>${escapeHtml(art.title)}</b></a>\n${escapeHtml(cleanText(art.excerpt || '').slice(0, 105))}...\n\n`;
+  });
+
+  digestText += isHe 
+    ? `🌐 לכל הכתבות והניתוחים בזמן אמת: <a href="${SITE_BASE_URL}/he/">TrendingTech Daily</a>\n📢 שתפו את הערוץ: @TrendingTechDaily_HE`
+    : `🌐 Real-time technology intelligence: <a href="${SITE_BASE_URL}">TrendingTech Daily</a>\n📢 Share our channel: @TrendingTechDaily_EN`;
+
+  const apiBase = `https://api.telegram.org/bot${config.botToken}`;
+  const res = await fetch(`${apiBase}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: targetChannel,
+      text: digestText,
+      parse_mode: 'HTML',
+      disable_web_page_preview: false,
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: isHe ? '🚀 פתח מגזין מלא' : '🚀 Open Full Magazine', url: isHe ? `${SITE_BASE_URL}/he/` : SITE_BASE_URL }]
+        ]
+      }
+    }),
+    timeout: 15000
+  });
+
+  const data = await res.json();
+  return { success: data.ok, messageId: data.result?.message_id };
+}
+
+/**
+ * Compile and broadcast Daily Evening Intelligence Digest to Telegram (20:00 Israel time)
+ */
+async function publishDailyDigest(isHe = true, channelOverride = null) {
+  const config = await getTelegramConfig();
+  if (!config.enabled) return { skipped: true };
+
+  const colName = isHe ? 'he_articles' : 'articles';
+  const targetChannel = channelOverride || (isHe ? config.hebrewChannel : config.englishChannel);
+  const snap = await db.collection(colName)
+    .where('published', '==', true)
+    .orderBy('createdAt', 'desc')
+    .limit(4)
+    .get();
+
+  if (snap.empty) return { skipped: true, reason: 'No articles found' };
+
+  const articles = [];
+  snap.forEach(doc => articles.push({ id: doc.id, ...doc.data() }));
+
+  const now = new Date();
+  const dateFormatted = now.toLocaleDateString(isHe ? 'he-IL' : 'en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+
+  let digestText = isHe 
+    ? `🌙 <b>מבזק ערב יומי — TrendingTech Daily</b>\n📅 <i>${dateFormatted}</i>\n\nערב טוב! ריכזנו עבורכם את 4 הידיעות הטכנולוגיות והסייבר המרכזיות של היום:\n\n`
+    : `🌙 <b>Evening Intelligence Digest — TrendingTech Daily</b>\n📅 <i>${dateFormatted}</i>\n\nGood evening! Top tech developments and research breakdowns from today:\n\n`;
+
+  articles.forEach((art, idx) => {
+    const numEmoji = ['1️⃣', '2️⃣', '3️⃣', '4️⃣'][idx] || '🔹';
+    const slug = art.slug || art.id;
+    const artUrl = isHe 
+      ? `${SITE_BASE_URL}/he/article.html?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(art.id)}`
+      : `${SITE_BASE_URL}/article.html?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(art.id)}`;
+    
+    digestText += `${numEmoji} <a href="${artUrl}"><b>${escapeHtml(art.title)}</b></a>\n${escapeHtml(cleanText(art.excerpt || '').slice(0, 105))}...\n\n`;
   });
 
   digestText += isHe 
@@ -548,6 +625,97 @@ async function publishDailyDigest(isHe = true) {
 
   const data = await res.json();
   return { success: data.ok, messageId: data.result?.message_id };
+}
+
+/**
+ * Hourly Telegram Intelligence Dispatcher
+ * Checks for unposted published articles in Firestore, or fast-tracks top tech/cyber breaking stories
+ */
+async function dispatchHourlyTelegramNews(isHe = true, channelOverride = null) {
+  const config = await getTelegramConfig();
+  if (!config.enabled) return { skipped: true, reason: 'Telegram disabled in config' };
+
+  const targetChannel = channelOverride || (isHe ? config.hebrewChannel : config.englishChannel);
+  const colName = isHe ? 'he_articles' : 'articles';
+
+  // 1. Check for any unpublished-to-telegram article in Firestore
+  try {
+    const unpostedSnap = await db.collection(colName)
+      .where('published', '==', true)
+      .orderBy('createdAt', 'desc')
+      .limit(5)
+      .get();
+
+    for (const doc of unpostedSnap.docs) {
+      const data = doc.data();
+      if (!data.telegramPosted) {
+        logger.info(`[Hourly Dispatch] Posting unposted Firestore article: ${doc.id}`);
+        return await publishArticleToTelegram(doc.ref, data, isHe);
+      }
+    }
+  } catch (err) {
+    logger.warn('[Hourly Dispatch] Unposted query notice:', err.message);
+  }
+
+  // 2. Fast-Track breaking news fetch (Hacker News / Lobsters) with strict deduplication
+  try {
+    const hnRes = await fetch('https://hacker-news.firebaseio.com/v0/topstories.json', { timeout: 6000 });
+    if (hnRes.ok) {
+      const ids = (await hnRes.json()).slice(0, 15);
+      for (const id of ids) {
+        const itemRes = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`, { timeout: 4000 });
+        if (!itemRes.ok) continue;
+        const item = await itemRes.json();
+        if (item && item.title && (item.score >= 25 || item.descendants >= 8)) {
+          const dispatchKey = `hn-${item.id}`;
+          const dispatchRef = db.collection('telegram_dispatches').doc(dispatchKey);
+          const existsSnap = await dispatchRef.get();
+          if (!existsSnap.exists) {
+            // Resolve image
+            let resolvedImage = null;
+            try {
+              const imgObj = await resolveEditorialArticleImage({
+                title: item.title,
+                category: 'computing',
+                imagePrompt: item.title
+              });
+              resolvedImage = imgObj?.imageUrl || imgObj;
+            } catch (imgErr) {
+              logger.warn('[Hourly Dispatch] Image resolution note:', imgErr.message);
+            }
+
+            const dispatchArticle = {
+              id: dispatchKey,
+              title: item.title,
+              excerpt: item.text ? cleanText(item.text).slice(0, 220) : item.title,
+              category: 'computing',
+              author: item.by || 'Tech Community',
+              slug: `dispatch-${item.id}`,
+              featuredImage: (typeof resolvedImage === 'object' ? resolvedImage?.imageUrl : resolvedImage) || 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1400&auto=format&fit=crop&q=85',
+              readingTimeMinutes: 2
+            };
+
+            const postRes = await postToTelegramApi(targetChannel, dispatchArticle, isHe, config.botToken);
+            
+            // Mark in deduplication collection
+            await dispatchRef.set({
+              dispatchedAt: admin.firestore.FieldValue.serverTimestamp(),
+              title: item.title,
+              url: item.url || `https://news.ycombinator.com/item?id=${item.id}`,
+              channel: targetChannel,
+              messageId: postRes.messageId || null
+            });
+
+            return { success: true, channel: targetChannel, type: 'fast-track-dispatch', messageId: postRes.messageId };
+          }
+        }
+      }
+    }
+  } catch (err) {
+    logger.warn('[Hourly Dispatch] Fast-track news fetch error:', err.message);
+  }
+
+  return { skipped: true, reason: 'No new unique dispatch needed this hour' };
 }
 
 // ── Firestore Triggers for Real-Time Telegram Broadcast ──────────────────────
@@ -595,13 +763,41 @@ exports.onEnglishArticlePublishedToTelegram = onDocumentWritten(
   }
 );
 
-// ── Scheduled Daily Intelligence Digest (Daily at 20:00 IL time) ────────────
-exports.dailyTelegramDigest = onSchedule(
-  { schedule: '0 17 * * *', timeZone: 'UTC', region: 'us-central1', memory: '256MiB' },
+// ── Scheduled Schedulers (Asia/Jerusalem Timezone) ───────────────────────────
+
+/**
+ * Morning Intelligence Briefing: 08:00 AM Israel Time
+ */
+exports.morningTelegramDigest = onSchedule(
+  { schedule: '0 8 * * *', timeZone: 'Asia/Jerusalem', region: 'us-central1', memory: '256MiB' },
   async () => {
-    logger.info('[Telegram] Running daily digest scheduled task');
+    logger.info('[Telegram] Running morning digest scheduled task (08:00 IL)');
+    await publishMorningDigest(true);
+    await publishMorningDigest(false);
+  }
+);
+
+/**
+ * Evening Intelligence Digest: 20:00 PM Israel Time
+ */
+exports.dailyTelegramDigest = onSchedule(
+  { schedule: '0 20 * * *', timeZone: 'Asia/Jerusalem', region: 'us-central1', memory: '256MiB' },
+  async () => {
+    logger.info('[Telegram] Running evening digest scheduled task (20:00 IL)');
     await publishDailyDigest(true);
     await publishDailyDigest(false);
+  }
+);
+
+/**
+ * Hourly Intelligence Dispatcher: Every hour between 07:00 and 23:00 Israel Time
+ */
+exports.hourlyTelegramDispatch = onSchedule(
+  { schedule: '0 7-23 * * *', timeZone: 'Asia/Jerusalem', region: 'us-central1', memory: '256MiB' },
+  async () => {
+    logger.info('[Telegram] Running hourly dispatch scheduled task');
+    await dispatchHourlyTelegramNews(true);
+    await dispatchHourlyTelegramNews(false);
   }
 );
 
@@ -618,7 +814,7 @@ exports.testTelegramPost = onCall(
     }
 
     const data = request.data || {};
-    const channel = data.channel || DEFAULT_HEBREW_CHANNEL;
+    const channel = data.channel || DEFAULT_ADMIN_CHAT_ID;
     const isHe = data.isHebrew !== false;
 
     const testArticle = {
@@ -628,7 +824,7 @@ exports.testTelegramPost = onCall(
       category: data.category || 'ai',
       author: 'TrendingTech Automated Engine',
       slug: data.slug || 'telegram-integration-live',
-      featuredImage: data.featuredImage || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1080&auto=format&fit=crop&q=80',
+      featuredImage: data.featuredImage || 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1400&auto=format&fit=crop&q=85',
       readingTimeMinutes: 3
     };
 
@@ -643,7 +839,7 @@ exports.testTelegramPost = onCall(
 );
 
 /**
- * onRequest: HTTP Test trigger with admin key
+ * onRequest: HTTP Test trigger with admin key (supports morning, evening, hourly, and post actions)
  */
 exports.triggerTelegramPostHttp = onRequest(
   { region: 'us-central1', memory: '256MiB', timeoutSeconds: 60, cors: true },
@@ -653,17 +849,27 @@ exports.triggerTelegramPostHttp = onRequest(
       return res.status(403).json({ error: 'Unauthorized: Invalid admin key' });
     }
 
-    const channel = req.body?.channel || req.query.channel || DEFAULT_HEBREW_CHANNEL;
+    const channel = req.body?.channel || req.query.channel || DEFAULT_ADMIN_CHAT_ID;
     const isHe = req.body?.isHebrew !== 'false' && req.query.isHebrew !== 'false';
     const action = req.body?.action || req.query?.action || 'post';
 
-    if (action === 'digest') {
-      const digestRes = await publishDailyDigest(isHe);
-      return res.json({ success: true, digestRes });
+    if (action === 'morning-digest') {
+      const digestRes = await publishMorningDigest(isHe, channel);
+      return res.json({ success: true, action, digestRes });
     }
 
-    const title = req.body?.title || (isHe ? '🚀 שידור ראשון: ערוץ הטלגרם של TrendingTech Daily פעיל!' : '🚀 First Broadcast: TrendingTech Daily Telegram Channel is LIVE!');
-    const category = req.body?.category || 'ai';
+    if (action === 'digest' || action === 'evening-digest') {
+      const digestRes = await publishDailyDigest(isHe, channel);
+      return res.json({ success: true, action, digestRes });
+    }
+
+    if (action === 'hourly-dispatch') {
+      const hourlyRes = await dispatchHourlyTelegramNews(isHe, channel);
+      return res.json({ success: true, action, hourlyRes });
+    }
+
+    const title = req.body?.title || (isHe ? '🚨 מבזק סייבר וביטחון: התקפת סייבר מתוחכמת על תשתיות תקשורת' : '🚨 Cyber & Defense Tech Alert: Advanced Infrastructure Attack Detected');
+    const category = req.body?.category || 'cyber-warfare';
     let resolvedImage = req.body?.featuredImage || req.body?.imageUrl;
     if (!resolvedImage) {
       try {
@@ -681,18 +887,21 @@ exports.triggerTelegramPostHttp = onRequest(
     const testArticle = {
       id: req.body?.articleId || 'test-article-http',
       title,
-      excerpt: req.body?.excerpt || (isHe ? 'ברוכים הבאים לערוץ הרשמי! כאן תקבלו בזמן אמת ניתוחים מעמיקים, עדכוני בינה מלאכותית, שבבים, שוק ההון ומערכות עיצוב ישירות מהמגזין.' : 'Welcome to our official Telegram channel! Get real-time AI updates, semiconductor breakthroughs, market watch, and design systems analysis.'),
+      excerpt: req.body?.excerpt || (isHe ? 'ניתוח מעמיק של דפוסי התקיפה האחרונים של קבוצות סייבר במזרח התיכון, כלי תקיפה מבוססי AI, ושיטות ההגנה של מערכי הסייבר הישראליים.' : 'In-depth intelligence breakdown of Middle East cyber warfare campaigns, AI-assisted intrusion vectors, and enterprise defense countermeasures.'),
       category,
-      author: 'TrendingTech Bot',
-      slug: req.body?.slug || 'welcome-telegram',
-      featuredImage: (typeof resolvedImage === 'object' ? resolvedImage?.imageUrl : resolvedImage) || 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1400&auto=format&fit=crop&q=85',
-      readingTimeMinutes: 2
+      author: 'TrendingTech Intelligence',
+      slug: req.body?.slug || 'cyber-intel-briefing',
+      featuredImage: (typeof resolvedImage === 'object' ? resolvedImage?.imageUrl : resolvedImage) || 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1400&auto=format&fit=crop&q=85',
+      readingTimeMinutes: 3
     };
 
     try {
       const result = await postToTelegramApi(channel, testArticle, isHe, TELEGRAM_BOT_TOKEN);
       const pollData = await generateInteractivePoll(testArticle, isHe);
-      const pollRes = await sendTelegramPoll(channel, pollData, TELEGRAM_BOT_TOKEN);
+      let pollRes = null;
+      if (pollData && pollData.question) {
+        pollRes = await sendTelegramPoll(channel, pollData, TELEGRAM_BOT_TOKEN);
+      }
       return res.json({ success: true, channel, result, pollRes });
     } catch (err) {
       logger.error('triggerTelegramPostHttp error:', err);
@@ -701,7 +910,9 @@ exports.triggerTelegramPostHttp = onRequest(
   }
 );
 
+exports.publishMorningDigest = publishMorningDigest;
 exports.publishDailyDigest = publishDailyDigest;
+exports.dispatchHourlyTelegramNews = dispatchHourlyTelegramNews;
 exports.generateInteractivePoll = generateInteractivePoll;
 exports.sendTelegramPoll = sendTelegramPoll;
 exports.postToTelegramApi = postToTelegramApi;

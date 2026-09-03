@@ -67,19 +67,28 @@ function parseArticleJson(rawText) {
 }
 
 // ---------------------------------------------------------------------------
-// Collect topics for the batch
+// Collect diverse topics for the batch including Iran Cyber Warfare, AI, Chips, and Dev
 // ---------------------------------------------------------------------------
 async function collectTopics(newsApiKey, count) {
   const topics = [];
-
-  // Half from Grok (if available), half from NewsAPI headlines
   const { suggestArticleTopic } = require('./callable/ai');
+
+  const topicPrompts = [
+    'Middle East cyber warfare, Iranian hacker groups (MuddyWater, Charming Kitten, Handala), defense tech, drone electronic warfare or satellite GPS jamming',
+    'Frontier AI models, autonomous agents, Claude Anthropic, OpenAI, DeepSeek, Gemini, LLM software engineering',
+    'Semiconductor chip industry, NVIDIA Blackwell GPUs, TSMC fabrication, quantum computing, AI compute clusters',
+    'Global cybersecurity incidents, infrastructure hacking, critical data encryption, enterprise security',
+    'Tech market financial movements, Wall Street tech stocks, AI venture capital, major acquisitions'
+  ];
+
   for (let i = 0; i < count; i++) {
+    const selectedPrompt = topicPrompts[i % topicPrompts.length];
+
     try {
       if (i % 2 === 0) {
         const suggestion = await suggestArticleTopic({
           auth: { uid: 'batch-scheduler' },
-          data: { prompt: 'technology news, tech guides, company overviews, or stock market updates' },
+          data: { prompt: selectedPrompt },
         });
         if (suggestion && suggestion.topic) {
           topics.push(suggestion.topic);
@@ -90,14 +99,17 @@ async function collectTopics(newsApiKey, count) {
       logger.warn('collectTopics: Grok suggestion failed, falling back to NewsAPI', err.message);
     }
 
-    // Fallback: NewsAPI headline
+    // Fallback: NewsAPI headline with query rotation
     try {
       const fetch = require('node-fetch');
+      const isCyber = i % 3 === 0;
+      const queryParam = isCyber ? 'q=cyber+OR+iran+OR+defense' : 'category=technology';
       const res = await fetch(
-        `https://newsapi.org/v2/top-headlines?category=technology&language=en&pageSize=1&apiKey=${newsApiKey}`
+        `https://newsapi.org/v2/top-headlines?${queryParam}&language=en&pageSize=5&apiKey=${newsApiKey}`
       );
       const data = await res.json();
-      const headline = data?.articles?.[0]?.title || `latest technology news ${i}`;
+      const article = data?.articles?.[i % (data.articles?.length || 1)];
+      const headline = article?.title || `latest technology news ${i}`;
       topics.push(headline);
     } catch (err) {
       logger.error('collectTopics: NewsAPI fallback failed', err.message);

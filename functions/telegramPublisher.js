@@ -680,7 +680,7 @@ async function generateAndSaveFullArticle(topicInfo, isHe = true) {
   const genAI = apiKey
     ? new GoogleGenAI({ apiKey })
     : new GoogleGenAI({
-        project: process.env.GCLOUD_PROJECT || 'automationbymeir',
+        project: process.env.GCLOUD_PROJECT || process.env.PROJECT_ID || 'trendingtech-daily',
         location: process.env.GCLOUD_LOCATION || 'us-central1'
       });
 
@@ -694,7 +694,7 @@ async function generateAndSaveFullArticle(topicInfo, isHe = true) {
 
   let prompt = '';
   if (isHe) {
-    prompt = `אתה כתב ועורך טכנולוגי בכיר במגזין הטכנולוגיה והסייבר המוביל TrendingTech Daily.
+    prompt = `אתה כתב ועורך טכנולוגי בכיר במגזין הטכנולוגיה והסייבר המוביל TrendingTech Daily (בעברית).
 עליך לכתוב כתבה עיתונאית מלאה, מעמיקה, סוחפת ומקצועית ביותר שתתפרסם באתר בעברית.
 נושא הידיעה / כותרת: "${rawTitle}"
 רקע / מקור מהאינטרנט: "${rawText.slice(0, 800)}" ${rawUrl}
@@ -754,14 +754,15 @@ Return ONLY a valid JSON object:
   const result = await genAI.models.generateContent(
     buildGenerateContentRequest(prompt, {
       model: 'gemini-1.5-flash',
-      safetySettings: getSafetySettings(),
-      generationConfig: { responseMimeType: 'application/json' }
+      safetySettings: getSafetySettings()
     })
   );
 
   let raw = (typeof result.text === 'function' ? result.text() : result.text) || '';
   raw = raw.replace(/```json/g, '').replace(/```/g, '').trim();
-  const parsed = JSON.parse(raw);
+  const match = raw.match(/\{[\s\S]*\}/);
+  if (!match) throw new Error('Failed to parse JSON from AI article generation');
+  const parsed = JSON.parse(match[0]);
 
   let featuredImage = 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1400&auto=format&fit=crop&q=85';
   try {

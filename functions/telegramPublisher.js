@@ -443,7 +443,7 @@ async function postToTelegramApi(channelTarget, article, isHe, botToken = TELEGR
 /**
  * Master dispatcher for publishing an article and poll to Telegram
  */
-async function publishArticleToTelegram(docRef, articleData, isHe) {
+async function publishArticleToTelegram(docRef, articleData, isHe, channelOverride = null) {
   if (!articleData) return { skipped: true, reason: 'No article data' };
 
   // Only published articles
@@ -452,7 +452,7 @@ async function publishArticleToTelegram(docRef, articleData, isHe) {
   }
 
   // Deduplication check
-  if (articleData.telegramPosted === true) {
+  if (articleData.telegramPosted === true && !channelOverride) {
     return { skipped: true, reason: 'Already posted to Telegram' };
   }
 
@@ -461,7 +461,7 @@ async function publishArticleToTelegram(docRef, articleData, isHe) {
     return { skipped: true, reason: 'Telegram publishing disabled in config' };
   }
 
-  const targetChannel = isHe ? config.hebrewChannel : config.englishChannel;
+  const targetChannel = channelOverride || (isHe ? config.hebrewChannel : config.englishChannel);
 
   try {
     const result = await postToTelegramApi(targetChannel, { id: docRef.id, ...articleData }, isHe, config.botToken);
@@ -667,128 +667,144 @@ async function fetchPageSummary(url) {
 }
 
 /**
- * Synthesizes a raw breaking tech news or community discussion into a rich, journalistic Telegram dispatch
+ * Generates and saves a complete, high-quality, full-length article directly to Firestore (he_articles or articles)
  */
-async function synthesizeFastTrackStory(rawItem, isHe = true) {
-  const title = cleanText(rawItem.title || '');
-  let rawText = cleanText(rawItem.text || '');
-  const url = String(rawItem.url || '');
-
-  // If no body text is provided in the feed item, fetch real content from the web page
-  if (!rawText && url) {
-    rawText = await fetchPageSummary(url);
+async function generateAndSaveFullArticle(topicInfo, isHe = true) {
+  const sdkLoaded = await loadGeminiSDK();
+  const { GoogleGenAI } = getGeminiSDK();
+  if (!sdkLoaded || !GoogleGenAI) {
+    throw new Error('Gemini SDK unavailable');
   }
 
-  try {
-    const sdkLoaded = await loadGeminiSDK();
-    const { GoogleGenAI } = getGeminiSDK();
-    if (sdkLoaded && GoogleGenAI) {
-      const apiKey = process.env.GEMINI_API_KEY;
-      const genAI = apiKey
-        ? new GoogleGenAI({ apiKey })
-        : new GoogleGenAI({
-            project: process.env.GCLOUD_PROJECT || 'automationbymeir',
-            location: process.env.GCLOUD_LOCATION || 'us-central1'
-          });
+  const apiKey = process.env.GEMINI_API_KEY;
+  const genAI = apiKey
+    ? new GoogleGenAI({ apiKey })
+    : new GoogleGenAI({
+        project: process.env.GCLOUD_PROJECT || 'automationbymeir',
+        location: process.env.GCLOUD_LOCATION || 'us-central1'
+      });
 
-      const langDirective = isHe
-        ? 'כתוב את הכותרת והתקציר בעברית עיתונאית רהוטה, עשירה, חדה ומקצועית המתאימה למגזין טכנולוגיה מוביל. הסבר באופן ברור ומדויק מה החברה/הפרויקט עושים ומה המשמעות הטכנית.'
-        : 'Write the headline and excerpt in authoritative, sharp, engaging English suitable for an elite tech magazine. Clearly explain what the project/company does and why it matters.';
+  const rawTitle = typeof topicInfo === 'string' ? topicInfo : (topicInfo.title || '');
+  let rawText = typeof topicInfo === 'object' ? (topicInfo.text || topicInfo.description || '') : '';
+  const rawUrl = typeof topicInfo === 'object' ? (topicInfo.url || '') : '';
 
-      const prompt = `אתה עורך טכנולוגי בכיר במגזין TrendingTech Daily.
-עליך לנתח את הידיעה הטכנולוגית הבאה ולהפיק מבזק חדשות טכנולוגיה מעמיק, ספציפי ומושך לטלגרם:
-כותרת מקורית: "${title}"
-כתובת אינטרנט: "${url}"
-תוכן / תיאור מהאתר: "${rawText.slice(0, 700)}"
+  if (!rawText && rawUrl) {
+    rawText = await fetchPageSummary(rawUrl);
+  }
 
-הנחיות קריטיות:
-1. ${langDirective}
-2. כותרת (title): כותרת עיתונאית חדה, ברורה ומפורטת (עד 75 תווים). אסור להשאיר כותרת עמומה. אם מדובר בחברות/סטארטאפים, הסבר את המהות (למשל: "חברות בלתי-נראות: הסטארטאפים שמגלגלים מיליונים במצב Stealth").
-3. תקציר (excerpt): 2-3 משפטים של ניתוח עיתונאי מעמיק המסביר מה קרה, מה המודל העסקי או החידוש הטכנולוגי, ולמה זה מעורר עניין (140-260 תווים). אסור בתכלית האיסור לכתוב משפטים גנריים כגון "התפתחות משמעותית בקהילה"!
-4. קטגוריה (category): בדיוק אחת מתוך: ai, dev, cyber-warfare, chips, computing, markets.
-5. מחבר (author): ${isHe ? 'דסק תוכנה וקוד פתוח / דסק סייבר וביטחון / דסק בינה מלאכותית / דסק שוק ההון (לפי הנושא)' : 'TrendingTech Intelligence'}
-6. מילות חיפוש לתמונה (imageSearchKeywords): 3-5 מילים באנגלית מדויקות לצילום עיתונאי אמיתי מרהיב שמתאים לנושא.
+  let prompt = '';
+  if (isHe) {
+    prompt = `אתה כתב ועורך טכנולוגי בכיר במגזין הטכנולוגיה והסייבר המוביל TrendingTech Daily.
+עליך לכתוב כתבה עיתונאית מלאה, מעמיקה, סוחפת ומקצועית ביותר שתתפרסם באתר בעברית.
+נושא הידיעה / כותרת: "${rawTitle}"
+רקע / מקור מהאינטרנט: "${rawText.slice(0, 800)}" ${rawUrl}
 
-החזר אך ורק אובייקט JSON תקין במבנה:
+דרישות קריטיות:
+1. כותרת (title): כותרת עיתונאית חדה, ברורה, מושכת ומדויקת בעברית (עד 75 תווים).
+2. סלאג (slug): סלאג באנגלית באותיות קטנות עם מקפים בלבד (למשל: cyber-threat-satellite-networks או open-source-audio-tools).
+3. תקציר (excerpt): תקציר אינפורמטיבי וממצה בן 2-3 משפטים המסביר את עיקרי הכתבה והמשמעויות (130-220 תווים). אסור להשתמש במשפטי מילוי גנריים כגון "התפתחות משמעותית בקהילה".
+4. גוף הכתבה (content): כתבה עיתונאית מלאה, עשירה ומעמיקה בת 400-600 מילים המחולקת לפסקאות HTML עם תגיות <p>. כלול רקע, ניתוח טכני של הארכיטקטורה או המוצר, השלכות על השוק ותובנות מומחים.
+5. קטגוריה (category): בדיוק אחת מתוך: ai, dev, cyber-warfare, chips, computing, markets.
+6. תגיות (tags): מערך של 4-6 תגיות בעברית (למשל: ["סייבר", "מודיעין", "טכנולוגיה", "אבטחת_מידע"]).
+7. מחבר (author): שם הדסק המתאים (למשל: "דסק סייבר וביטחון", "דסק תוכנה וקוד פתוח", "דסק בינה מלאכותית", "דסק שוק ההון").
+8. מילות חיפוש לתמונה (imagePrompt): 3-5 מילים באנגלית מדויקות עבור Unsplash.
+
+החזר אך ורק אובייקט JSON תקין במבנה הבא:
 {
-  "title": "כותרת עיתונאית",
-  "excerpt": "תקציר אינפורמטיבי מעמיק",
+  "title": "כותרת הכתבה",
+  "slug": "english-slug",
+  "excerpt": "תקציר איכותי ומפורט",
+  "content": "<p>פסקה ראשונה...</p><p>פסקה שנייה...</p>",
   "category": "dev",
-  "author": "${isHe ? 'דסק תוכנה וקוד פתוח' : 'TrendingTech Editorial'}",
-  "imageSearchKeywords": "3-5 english keywords"
+  "tags": ["תגית1", "תגית2"],
+  "author": "דסק תוכנה וקוד פתוח",
+  "imagePrompt": "audio studio mixing console software",
+  "readingTimeMinutes": 3
 }`;
+  } else {
+    prompt = `You are a senior technology and cybersecurity editor at TrendingTech Daily.
+Write a full-length, in-depth, highly engaging news analysis article to be published on the magazine.
+Topic / Headline: "${rawTitle}"
+Context / Source: "${rawText.slice(0, 800)}" ${rawUrl}
 
-      const result = await genAI.models.generateContent(
-        buildGenerateContentRequest(prompt, {
-          model: 'gemini-1.5-flash',
-          safetySettings: getSafetySettings(),
-          generationConfig: { responseMimeType: 'application/json' }
-        })
-      );
+Requirements:
+1. Title: Authoritative, punchy, engaging headline (max 75 chars).
+2. Slug: Lowercase hyphenated english slug.
+3. Excerpt: Informative 2-3 sentence overview (130-220 chars).
+4. Content: Full in-depth 450-600 word article in HTML with <p> tags, including background, technical architecture, industry impact, and analysis.
+5. Category: Exactly one of: ai, dev, cyber-warfare, chips, computing, markets.
+6. Tags: Array of 4-6 relevant tags.
+7. Author: Editorial desk (e.g., "TrendingTech Cyber Desk", "TrendingTech AI Intelligence").
+8. imagePrompt: 3-5 precise english photography keywords for Unsplash.
 
-      let resultText = (typeof result.text === 'function' ? result.text() : result.text) || '';
-      resultText = resultText.replace(/```json\s*/g, '').replace(/```/g, '').trim();
-      const match = resultText.match(/\{[\s\S]*\}/);
-      if (match) {
-        const parsed = JSON.parse(match[0]);
-        if (parsed.title && parsed.excerpt && !parsed.excerpt.includes('התפתחות משמעותית בקהילה')) {
-          return parsed;
-        }
-      }
-    }
+Return ONLY a valid JSON object:
+{
+  "title": "string",
+  "slug": "string",
+  "excerpt": "string",
+  "content": "string",
+  "category": "string",
+  "tags": ["string"],
+  "author": "string",
+  "imagePrompt": "string",
+  "readingTimeMinutes": 3
+}`;
+  }
+
+  const result = await genAI.models.generateContent(
+    buildGenerateContentRequest(prompt, {
+      model: 'gemini-1.5-flash',
+      safetySettings: getSafetySettings(),
+      generationConfig: { responseMimeType: 'application/json' }
+    })
+  );
+
+  let raw = (typeof result.text === 'function' ? result.text() : result.text) || '';
+  raw = raw.replace(/```json/g, '').replace(/```/g, '').trim();
+  const parsed = JSON.parse(raw);
+
+  let featuredImage = 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1400&auto=format&fit=crop&q=85';
+  try {
+    const imgObj = await resolveEditorialArticleImage({
+      title: parsed.title,
+      category: parsed.category,
+      imagePrompt: parsed.imagePrompt || parsed.title
+    });
+    featuredImage = (typeof imgObj === 'object' ? imgObj?.imageUrl : imgObj) || featuredImage;
   } catch (err) {
-    logger.warn('[Hourly Dispatch] AI synthesis notice:', err.message);
+    logger.warn('Image resolution error:', err.message);
   }
 
-  // Domain-aware fallback with actual context
-  const isAudio = title.toLowerCase().includes('audacity') || title.toLowerCase().includes('audio') || title.toLowerCase().includes('sound');
-  const isSecurity = title.toLowerCase().includes('security') || title.toLowerCase().includes('vulnerability') || title.toLowerCase().includes('cve') || title.toLowerCase().includes('hack');
-  const isAI = title.toLowerCase().includes('ai') || title.toLowerCase().includes('llm') || title.toLowerCase().includes('gpt') || title.toLowerCase().includes('model');
-  const isBusiness = title.toLowerCase().includes('invisible') || title.toLowerCase().includes('company') || title.toLowerCase().includes('startup') || title.toLowerCase().includes('market');
-
-  let cat = 'dev';
-  let author = isHe ? 'דסק תוכנה וקוד פתוח' : 'TrendingTech Editorial';
-  let excerpt = isHe 
-    ? `ניתוח טכנולוגי ועסקי מעמיק סביב ${title}: בחינת הארכיטקטורה, הכלים וההשלכות על קהילת המפתחים והתעשייה.`
-    : `In-depth technical and architectural analysis of ${title}, exploring implications for developers and modern tech ecosystems.`;
-  let keywords = title;
-
-  if (isBusiness) {
-    cat = 'markets';
-    author = isHe ? 'דסק סטארטאפים ושוק ההון' : 'TrendingTech Markets';
-    excerpt = isHe 
-      ? `מבט מרתק על ${title}: כיצד חברות טכנולוגיה ומיזמים ייחודיים צומחים במהירות מתחת לרדאר ומייצרים רווחיות ללא חשיפה תקשורתית.`
-      : `An insightful breakdown of ${title}: exploring how stealth technology ventures scale profitably under the radar.`;
-    keywords = 'startup business growth revenue financial charts';
-  } else if (isAudio) {
-    cat = 'dev';
-    author = isHe ? 'דסק תוכנה וקוד פתוח' : 'TrendingTech Dev Desk';
-    excerpt = isHe ? `עדכון גרסה משמעותי עבור פרויקט הקוד הפתוח ${title}, המציג שיפורי ביצועים, תיקוני אבטחה ושדרוג חוויית המשתמש.` : `Major update released for ${title}, introducing architectural enhancements and stability improvements.`;
-    keywords = 'audio waveform recording console software';
-  } else if (isSecurity) {
-    cat = 'cyber-warfare';
-    author = isHe ? 'דסק סייבר וביטחון מידע' : 'TrendingTech Security Desk';
-    excerpt = isHe ? `דיווח אבטחה וסייבר חדש: זוהו וקטורי פגיעות ועדכוני אבטחה קריטיים סביב ${title}. מומלץ למנהלי מערכות להתעדכן.` : `Critical security report: vulnerability vectors identified for ${title}.`;
-    keywords = 'cybersecurity code encryption security';
-  } else if (isAI) {
-    cat = 'ai';
-    author = isHe ? 'דסק בינה מלאכותית' : 'TrendingTech AI Desk';
-    excerpt = isHe ? `פריצת דרך ומחקר חדש בתחום ה-AI: חשיפה של ${title} וההשלכות על עולם המודלים והאינטגרציה.` : `AI research breakdown: release of ${title} and its implications for modern generative systems.`;
-    keywords = 'artificial intelligence neural network glowing';
-  }
-
-  return {
-    title,
-    excerpt,
-    category: cat,
-    author,
-    imageSearchKeywords: keywords
+  const articlePayload = {
+    title: parsed.title,
+    slug: parsed.slug || `story-${Date.now()}`,
+    excerpt: parsed.excerpt,
+    content: parsed.content,
+    category: parsed.category || 'ai',
+    tags: Array.isArray(parsed.tags) ? parsed.tags : [parsed.category || 'טכנולוגיה'],
+    author: parsed.author || (isHe ? 'דסק טכנולוגיה וסייבר' : 'TrendingTech Editorial'),
+    featuredImage,
+    imageAltText: parsed.title,
+    readingTimeMinutes: parsed.readingTimeMinutes || 3,
+    language: isHe ? 'he' : 'en',
+    published: true,
+    views: 0,
+    likes: 0,
+    telegramPosted: false,
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    updatedAt: admin.firestore.FieldValue.serverTimestamp()
   };
+
+  const colName = isHe ? 'he_articles' : 'articles';
+  const newDocRef = await db.collection(colName).add(articlePayload);
+  logger.info(`[Full Article Generator] Saved full article to ${colName}/${newDocRef.id}: ${parsed.title}`);
+
+  return { id: newDocRef.id, ref: newDocRef, ...articlePayload };
 }
 
 /**
  * Hourly Telegram Intelligence Dispatcher
- * Checks for unposted published articles in Firestore, or fast-tracks top tech/cyber breaking stories
+ * Checks for unposted published articles in Firestore, or generates a full fresh article on TrendingTech Daily and broadcasts it
  */
 async function dispatchHourlyTelegramNews(isHe = true, channelOverride = null) {
   const config = await getTelegramConfig();
@@ -809,14 +825,14 @@ async function dispatchHourlyTelegramNews(isHe = true, channelOverride = null) {
       const data = doc.data();
       if (!data.telegramPosted) {
         logger.info(`[Hourly Dispatch] Posting unposted Firestore article: ${doc.id}`);
-        return await publishArticleToTelegram(doc.ref, data, isHe);
+        return await publishArticleToTelegram(doc.ref, data, isHe, channelOverride);
       }
     }
   } catch (err) {
     logger.warn('[Hourly Dispatch] Unposted query notice:', err.message);
   }
 
-  // 2. Fast-Track breaking news fetch (Hacker News / Lobsters) with AI synthesis and strict deduplication
+  // 2. Generate a full, complete new article on TrendingTech Daily and broadcast
   try {
     const hnRes = await fetch('https://hacker-news.firebaseio.com/v0/topstories.json', { timeout: 6000 });
     if (hnRes.ok) {
@@ -825,58 +841,41 @@ async function dispatchHourlyTelegramNews(isHe = true, channelOverride = null) {
         const itemRes = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`, { timeout: 4000 });
         if (!itemRes.ok) continue;
         const item = await itemRes.json();
-        if (item && item.title && (item.score >= 20 || item.descendants >= 5)) {
+        if (item && item.title && (item.score >= 15 || item.descendants >= 3)) {
           const dispatchKey = `hn-${item.id}`;
           const dispatchRef = db.collection('telegram_dispatches').doc(dispatchKey);
           const existsSnap = await dispatchRef.get();
           if (!existsSnap.exists) {
-            // Synthesize story with Gemini AI for rich journalistic Hebrew / English copy
-            const synthesized = await synthesizeFastTrackStory(item, isHe);
+            // Generate full article directly into Firestore
+            const fullArticle = await generateAndSaveFullArticle(item, isHe);
 
-            // Resolve authentic editorial image matched to the synthesized keywords
-            let resolvedImage = null;
-            try {
-              const imgObj = await resolveEditorialArticleImage({
-                title: synthesized.title || item.title,
-                category: synthesized.category || 'dev',
-                imagePrompt: synthesized.imageSearchKeywords || item.title
-              });
-              resolvedImage = imgObj?.imageUrl || imgObj;
-            } catch (imgErr) {
-              logger.warn('[Hourly Dispatch] Image resolution note:', imgErr.message);
-            }
+            // Broadcast to Telegram
+            const postRes = await publishArticleToTelegram(fullArticle.ref, fullArticle, isHe, channelOverride);
 
-            const dispatchArticle = {
-              id: dispatchKey,
-              title: synthesized.title,
-              excerpt: synthesized.excerpt,
-              category: synthesized.category,
-              author: synthesized.author,
-              url: item.url || `https://news.ycombinator.com/item?id=${item.id}`,
-              slug: `dispatch-${item.id}`,
-              featuredImage: (typeof resolvedImage === 'object' ? resolvedImage?.imageUrl : resolvedImage) || 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1400&auto=format&fit=crop&q=85',
-              readingTimeMinutes: 2
-            };
-
-            const postRes = await postToTelegramApi(targetChannel, dispatchArticle, isHe, config.botToken);
-            
             // Mark in deduplication collection
             await dispatchRef.set({
               dispatchedAt: admin.firestore.FieldValue.serverTimestamp(),
-              title: synthesized.title,
-              originalTitle: item.title,
-              url: dispatchArticle.url,
+              title: fullArticle.title,
+              articleId: fullArticle.id,
+              slug: fullArticle.slug,
               channel: targetChannel,
-              messageId: postRes.messageId || null
+              messageId: postRes?.messageId || null
             });
 
-            return { success: true, channel: targetChannel, type: 'fast-track-dispatch', messageId: postRes.messageId };
+            return {
+              success: true,
+              channel: targetChannel,
+              type: 'full-article-dispatch',
+              articleId: fullArticle.id,
+              slug: fullArticle.slug,
+              messageId: postRes?.messageId
+            };
           }
         }
       }
     }
   } catch (err) {
-    logger.warn('[Hourly Dispatch] Fast-track news fetch error:', err.message);
+    logger.warn('[Hourly Dispatch] Full article dispatch error:', err.message);
   }
 
   return { skipped: true, reason: 'No new unique dispatch needed this hour' };

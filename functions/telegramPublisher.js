@@ -356,14 +356,11 @@ async function sendTelegramPoll(channelTarget, pollData, botToken = TELEGRAM_BOT
   }
 }
 
-/**
- * Post single article payload to Telegram Bot API with enhanced interactive buttons
- */
 async function postToTelegramApi(channelTarget, article, isHe, botToken = TELEGRAM_BOT_TOKEN) {
   const slug = article.slug || article.id;
-  const articleUrl = isHe 
+  const articleUrl = article.url || article.externalUrl || (isHe 
     ? `${SITE_BASE_URL}/he/article.html?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(article.id || '')}`
-    : `${SITE_BASE_URL}/article.html?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(article.id || '')}`;
+    : `${SITE_BASE_URL}/article.html?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(article.id || '')}`);
 
   const caption = formatTelegramCaption(article, isHe);
   const readBtnText = isHe ? '🌐 לקריאת הכתבה המלאה' : '🌐 Read Full Article';
@@ -628,6 +625,110 @@ async function publishDailyDigest(isHe = true, channelOverride = null) {
 }
 
 /**
+ * Synthesizes a raw breaking tech news or community discussion into a rich, journalistic Telegram dispatch
+ */
+async function synthesizeFastTrackStory(rawItem, isHe = true) {
+  const title = cleanText(rawItem.title || '');
+  const rawText = cleanText(rawItem.text || '');
+  const url = String(rawItem.url || '');
+
+  try {
+    const sdkLoaded = await loadGeminiSDK();
+    const { GoogleGenAI } = getGeminiSDK();
+    if (sdkLoaded && GoogleGenAI) {
+      const genAI = new GoogleGenAI({
+        project: process.env.GCLOUD_PROJECT || 'automationbymeir',
+        location: process.env.GCLOUD_LOCATION || 'us-central1'
+      });
+
+      const langDirective = isHe
+        ? 'כתוב את הכותרת והתקציר בעברית עיתונאית רהוטה, עשירה, חדה ומקצועית המתאימה למגזין טכנולוגיה מוביל.'
+        : 'Write the headline and excerpt in authoritative, sharp, engaging English suitable for an elite tech magazine.';
+
+      const prompt = `אתה עורך טכנולוגי בכיר במגזין TrendingTech Daily.
+עליך לנתח את הידיעה הטכנולוגית הבאה ולהפיק מבזק חדשות טכנולוגיה עשיר, מדויק ומושך לטלגרם:
+כותרת מקורית: "${title}"
+כתובת אינטרנט: "${url}"
+טקסט גולמי / תיאור: "${rawText.slice(0, 500)}"
+
+הנחיות קריטיות:
+1. ${langDirective}
+2. כותרת (title): כותרת עיתונאית מעניינת, אינפורמטיבית ולא מתורגמת מילולית ברשלנות (עד 75 תווים).
+3. תקציר (excerpt): 2-3 משפטים של ניתוח עיתונאי המסביר מה קרה, מה החידוש הטכנולוגי המרכזי ומדוע זה משמעותי עבור מפתחים, אנשי טק או השוק (130-240 תווים). אסור לחזור על הכותרת בתקציר!
+4. קטגוריה (category): בדיוק אחת מתוך: ai, dev, cyber-warfare, chips, computing, markets.
+5. מחבר (author): ${isHe ? 'דסק תוכנה וקוד פתוח / דסק סייבר וביטחון / דסק בינה מלאכותית / דסק שוק ההון (לפי הנושא)' : 'TrendingTech Intelligence'}
+6. מילות חיפוש לתמונה (imageSearchKeywords): 3-5 מילים באנגלית מדויקות לצילום עיתונאי אמיתי מרהיב שמתאים לנושא (למשל עבור audacity: 'audio recording software mixing console studio', עבור דפדפן: 'modern browser web code programming').
+
+החזר אך ורק אובייקט JSON תקין במבנה:
+{
+  "title": "כותרת עיתונאית",
+  "excerpt": "תקציר אינפורמטיבי מעמיק",
+  "category": "dev",
+  "author": "${isHe ? 'דסק קוד פתוח וחדשנות' : 'TrendingTech Editorial'}",
+  "imageSearchKeywords": "3-5 english keywords"
+}`;
+
+      const result = await genAI.models.generateContent(
+        buildGenerateContentRequest(prompt, {
+          model: 'gemini-1.5-flash',
+          safetySettings: getSafetySettings(),
+          generationConfig: { responseMimeType: 'application/json' }
+        })
+      );
+
+      let resultText = (typeof result.text === 'function' ? result.text() : result.text) || '';
+      resultText = resultText.replace(/```json\s*/g, '').replace(/```/g, '').trim();
+      const match = resultText.match(/\{[\s\S]*\}/);
+      if (match) {
+        const parsed = JSON.parse(match[0]);
+        if (parsed.title && parsed.excerpt && parsed.excerpt !== parsed.title) {
+          return parsed;
+        }
+      }
+    }
+  } catch (err) {
+    logger.warn('[Hourly Dispatch] AI synthesis notice:', err.message);
+  }
+
+  // Smart domain-aware fallback if Gemini is offline
+  const isAudio = title.toLowerCase().includes('audacity') || title.toLowerCase().includes('audio') || title.toLowerCase().includes('sound');
+  const isSecurity = title.toLowerCase().includes('security') || title.toLowerCase().includes('vulnerability') || title.toLowerCase().includes('cve');
+  const isAI = title.toLowerCase().includes('ai') || title.toLowerCase().includes('llm') || title.toLowerCase().includes('gpt') || title.toLowerCase().includes('model');
+
+  let cat = 'dev';
+  let author = isHe ? 'דסק תוכנה וקוד פתוח' : 'TrendingTech Editorial';
+  let excerpt = isHe 
+    ? `התפתחות משמעותית בקהילת הטכנולוגיה והפיתוח סביב ${title}. הידיעה מעוררת עניין רב בקרב מהנדסים ואנשי מקצוע.`
+    : `Notable development in the tech community regarding ${title}. Gaining widespread attention across engineers and founders.`;
+  let keywords = title;
+
+  if (isAudio) {
+    cat = 'dev';
+    author = isHe ? 'דסק תוכנה וקוד פתוח' : 'TrendingTech Dev Desk';
+    excerpt = isHe ? `עדכון גרסה משמעותי עבור פרויקט הקוד הפתוח ${title}, המציג שיפורי ביצועים, תיקוני אבטחה ושדרוג חוויית המשתמש.` : `Major update released for ${title}, introducing architectural enhancements and stability improvements.`;
+    keywords = 'audio waveform recording console software';
+  } else if (isSecurity) {
+    cat = 'cyber-warfare';
+    author = isHe ? 'דסק סייבר וביטחון מידע' : 'TrendingTech Security Desk';
+    excerpt = isHe ? `דיווח אבטחה וסייבר חדש: זוהו וקטורי פגיעות ועדכוני אבטחה קריטיים סביב ${title}. מומלץ למנהלי מערכות להתעדכן.` : `Critical security report: vulnerability vectors identified for ${title}.`;
+    keywords = 'cybersecurity code encryption security';
+  } else if (isAI) {
+    cat = 'ai';
+    author = isHe ? 'דסק בינה מלאכותית' : 'TrendingTech AI Desk';
+    excerpt = isHe ? `פריצת דרך ומחקר חדש בתחום ה-AI: חשיפה של ${title} וההשלכות על עולם המודלים והאינטגרציה.` : `AI research breakdown: release of ${title} and its implications for modern generative systems.`;
+    keywords = 'artificial intelligence neural network glowing';
+  }
+
+  return {
+    title,
+    excerpt,
+    category: cat,
+    author,
+    imageSearchKeywords: keywords
+  };
+}
+
+/**
  * Hourly Telegram Intelligence Dispatcher
  * Checks for unposted published articles in Firestore, or fast-tracks top tech/cyber breaking stories
  */
@@ -657,7 +758,7 @@ async function dispatchHourlyTelegramNews(isHe = true, channelOverride = null) {
     logger.warn('[Hourly Dispatch] Unposted query notice:', err.message);
   }
 
-  // 2. Fast-Track breaking news fetch (Hacker News / Lobsters) with strict deduplication
+  // 2. Fast-Track breaking news fetch (Hacker News / Lobsters) with AI synthesis and strict deduplication
   try {
     const hnRes = await fetch('https://hacker-news.firebaseio.com/v0/topstories.json', { timeout: 6000 });
     if (hnRes.ok) {
@@ -666,18 +767,21 @@ async function dispatchHourlyTelegramNews(isHe = true, channelOverride = null) {
         const itemRes = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`, { timeout: 4000 });
         if (!itemRes.ok) continue;
         const item = await itemRes.json();
-        if (item && item.title && (item.score >= 25 || item.descendants >= 8)) {
+        if (item && item.title && (item.score >= 20 || item.descendants >= 5)) {
           const dispatchKey = `hn-${item.id}`;
           const dispatchRef = db.collection('telegram_dispatches').doc(dispatchKey);
           const existsSnap = await dispatchRef.get();
           if (!existsSnap.exists) {
-            // Resolve image
+            // Synthesize story with Gemini AI for rich journalistic Hebrew / English copy
+            const synthesized = await synthesizeFastTrackStory(item, isHe);
+
+            // Resolve authentic editorial image matched to the synthesized keywords
             let resolvedImage = null;
             try {
               const imgObj = await resolveEditorialArticleImage({
-                title: item.title,
-                category: 'computing',
-                imagePrompt: item.title
+                title: synthesized.title || item.title,
+                category: synthesized.category || 'dev',
+                imagePrompt: synthesized.imageSearchKeywords || item.title
               });
               resolvedImage = imgObj?.imageUrl || imgObj;
             } catch (imgErr) {
@@ -686,12 +790,13 @@ async function dispatchHourlyTelegramNews(isHe = true, channelOverride = null) {
 
             const dispatchArticle = {
               id: dispatchKey,
-              title: item.title,
-              excerpt: item.text ? cleanText(item.text).slice(0, 220) : item.title,
-              category: 'computing',
-              author: item.by || 'Tech Community',
+              title: synthesized.title,
+              excerpt: synthesized.excerpt,
+              category: synthesized.category,
+              author: synthesized.author,
+              url: item.url || `https://news.ycombinator.com/item?id=${item.id}`,
               slug: `dispatch-${item.id}`,
-              featuredImage: (typeof resolvedImage === 'object' ? resolvedImage?.imageUrl : resolvedImage) || 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1400&auto=format&fit=crop&q=85',
+              featuredImage: (typeof resolvedImage === 'object' ? resolvedImage?.imageUrl : resolvedImage) || 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1400&auto=format&fit=crop&q=85',
               readingTimeMinutes: 2
             };
 
@@ -700,8 +805,9 @@ async function dispatchHourlyTelegramNews(isHe = true, channelOverride = null) {
             // Mark in deduplication collection
             await dispatchRef.set({
               dispatchedAt: admin.firestore.FieldValue.serverTimestamp(),
-              title: item.title,
-              url: item.url || `https://news.ycombinator.com/item?id=${item.id}`,
+              title: synthesized.title,
+              originalTitle: item.title,
+              url: dispatchArticle.url,
               channel: targetChannel,
               messageId: postRes.messageId || null
             });

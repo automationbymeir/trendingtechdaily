@@ -836,16 +836,16 @@ async function dispatchHourlyTelegramNews(isHe = true, channelOverride = null) {
   try {
     const hnRes = await fetch('https://hacker-news.firebaseio.com/v0/topstories.json', { timeout: 6000 });
     if (hnRes.ok) {
-      const ids = (await hnRes.json()).slice(0, 15);
+      const ids = (await hnRes.json()).slice(0, 35);
       for (const id of ids) {
         const itemRes = await fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`, { timeout: 4000 });
         if (!itemRes.ok) continue;
         const item = await itemRes.json();
-        if (item && item.title && (item.score >= 15 || item.descendants >= 3)) {
+        if (item && item.title && (item.score >= 12 || item.descendants >= 2)) {
           const dispatchKey = `hn-${item.id}`;
           const dispatchRef = db.collection('telegram_dispatches').doc(dispatchKey);
           const existsSnap = await dispatchRef.get();
-          if (!existsSnap.exists) {
+          if (!existsSnap.exists || channelOverride) {
             // Generate full article directly into Firestore
             const fullArticle = await generateAndSaveFullArticle(item, isHe);
 
@@ -853,14 +853,16 @@ async function dispatchHourlyTelegramNews(isHe = true, channelOverride = null) {
             const postRes = await publishArticleToTelegram(fullArticle.ref, fullArticle, isHe, channelOverride);
 
             // Mark in deduplication collection
-            await dispatchRef.set({
-              dispatchedAt: admin.firestore.FieldValue.serverTimestamp(),
-              title: fullArticle.title,
-              articleId: fullArticle.id,
-              slug: fullArticle.slug,
-              channel: targetChannel,
-              messageId: postRes?.messageId || null
-            });
+            if (!channelOverride) {
+              await dispatchRef.set({
+                dispatchedAt: admin.firestore.FieldValue.serverTimestamp(),
+                title: fullArticle.title,
+                articleId: fullArticle.id,
+                slug: fullArticle.slug,
+                channel: targetChannel,
+                messageId: postRes?.messageId || null
+              });
+            }
 
             return {
               success: true,
@@ -874,6 +876,32 @@ async function dispatchHourlyTelegramNews(isHe = true, channelOverride = null) {
         }
       }
     }
+
+    // 3. Fallback to rich rotating intelligence topic if feed items are already dispatched
+    const rotationTopics = isHe ? [
+      'חשיפת מערך הסייבר: קבוצות תקיפה איראניות משלבות כלי בינה מלאכותית לשיבוש אותות לוויין ותקשורת מוצפנת',
+      'ארכיטקטורת סוכנים אוטונומיים: המעבר ממודלי שפה סטטיים למערכות AI המבצעות משימות פיתוח מקצה לקצה',
+      'מרוץ השבבים העולמי: פיתוחי מעבדי הדור הבא של NVIDIA ומרכזי נתונים עתירי ביצועים',
+      'מהפכת הכלים למפתחים: כלי קוד פתוח חדשים המשנים את ניהול שרשרת האספקה ואבטחת תוכנה'
+    ] : [
+      'Cyber warfare intelligence: Middle East threat actors deploy AI-assisted intrusion vectors targeting satellite communication',
+      'Autonomous AI agent architectures: the transition from static LLMs to full-stack self-improving developer systems',
+      'Global semiconductor race: next-generation AI accelerators and high-density compute infrastructure',
+      'Open source developer tooling: modern approaches to software supply chain defense and performance engineering'
+    ];
+
+    const randomTopic = rotationTopics[Math.floor(Math.random() * rotationTopics.length)];
+    const fullArticle = await generateAndSaveFullArticle(randomTopic, isHe);
+    const postRes = await publishArticleToTelegram(fullArticle.ref, fullArticle, isHe, channelOverride);
+
+    return {
+      success: true,
+      channel: targetChannel,
+      type: 'full-article-rotation',
+      articleId: fullArticle.id,
+      slug: fullArticle.slug,
+      messageId: postRes?.messageId
+    };
   } catch (err) {
     logger.warn('[Hourly Dispatch] Full article dispatch error:', err.message);
   }

@@ -667,6 +667,30 @@ async function fetchPageSummary(url) {
 }
 
 /**
+ * Invokes Gemini with graceful multi-model fallback (gemini-2.5-flash -> gemini-2.0-flash -> gemini-1.5-flash)
+ */
+async function callGeminiPrompt(genAI, prompt) {
+  const models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+  let lastErr = null;
+  for (const model of models) {
+    try {
+      const result = await genAI.models.generateContent(
+        buildGenerateContentRequest(prompt, {
+          model,
+          safetySettings: getSafetySettings()
+        })
+      );
+      const raw = (typeof result.text === 'function' ? result.text() : result.text) || '';
+      if (raw) return raw;
+    } catch (err) {
+      lastErr = err;
+      logger.warn(`Model ${model} attempt notice: ${err.message}`);
+    }
+  }
+  throw lastErr || new Error('All Gemini models failed');
+}
+
+/**
  * Generates and saves a complete, high-quality, full-length article directly to Firestore (he_articles or articles)
  */
 async function generateAndSaveFullArticle(topicInfo, isHe = true) {
@@ -751,14 +775,7 @@ Return ONLY a valid JSON object:
 }`;
   }
 
-  const result = await genAI.models.generateContent(
-    buildGenerateContentRequest(prompt, {
-      model: 'gemini-1.5-flash',
-      safetySettings: getSafetySettings()
-    })
-  );
-
-  let raw = (typeof result.text === 'function' ? result.text() : result.text) || '';
+  let raw = await callGeminiPrompt(genAI, prompt);
   raw = raw.replace(/```json/g, '').replace(/```/g, '').trim();
   const match = raw.match(/\{[\s\S]*\}/);
   if (!match) throw new Error('Failed to parse JSON from AI article generation');

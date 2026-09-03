@@ -451,6 +451,50 @@ function renderSingleSocialEmbed(item, isHe) {
     `;
   }
 
+  if (platform === 'youtube' || platform === 'video') {
+    let videoId = '';
+    if (link.includes('v=')) {
+      videoId = link.split('v=')[1]?.split('&')[0];
+    } else if (link.includes('youtu.be/')) {
+      videoId = link.split('youtu.be/')[1]?.split('?')[0];
+    }
+    const thumbUrl = mediaUrl || (videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=800&auto=format&fit=crop&q=80');
+
+    return `
+      <div class="article-social-quote quote-youtube my-4">
+        <div class="social-quote-header">
+          <div class="social-quote-avatar-wrapper">
+            <div class="social-quote-avatar d-flex align-items-center justify-content-center fw-bold" style="background:#ff0000; color:#fff; font-size:1.1rem;">
+              <i class="bi bi-youtube"></i>
+            </div>
+            <div class="social-quote-author-info">
+              <span class="social-quote-name">${author}</span>
+              <span class="social-quote-handle">${context || (isHe ? 'ערוץ וידאו רשמי' : 'Official Channel')}</span>
+            </div>
+          </div>
+          <i class="bi bi-youtube social-quote-platform-icon text-danger"></i>
+        </div>
+        <div class="social-quote-body">
+          ${quote}
+        </div>
+        <div class="social-quote-video-wrapper">
+          <a href="${link}" target="_blank" rel="noopener noreferrer" style="display:block; position:relative;">
+            <img src="${thumbUrl}" alt="${author}" class="social-quote-video-thumb" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=800&auto=format&fit=crop&q=80'">
+            <div class="social-quote-play-overlay">
+              <i class="bi bi-play-fill"></i>
+            </div>
+          </a>
+        </div>
+        <div class="social-quote-footer">
+          <span class="text-muted small">${isHe ? 'ניתוח והדגמת וידאו' : 'Video Analysis & Keynote'}</span>
+          <a href="${link}" target="_blank" rel="noopener noreferrer" class="social-quote-btn">
+            <i class="bi bi-youtube"></i> <span>${isHe ? 'צפה ב-YouTube' : 'Watch on YouTube'}</span>
+          </a>
+        </div>
+      </div>
+    `;
+  }
+
   if (platform === 'linkedin') {
     return `
       <div class="article-social-quote quote-linkedin my-4">

@@ -1246,6 +1246,140 @@ ins.adsbygoogle[data-ad-status="unfilled"],
   text-decoration: none;
 }
 
+/* 4. YouTube Authentic Card Design */
+.article-social-quote.quote-youtube {
+  background-color: #0f0f0f;
+  border: 1px solid rgba(255, 0, 0, 0.35);
+  padding: 16px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  transition: all var(--transition-fast);
+}
+
+.article-social-quote.quote-youtube:hover {
+  border-color: #ff0000;
+  box-shadow: 0 8px 30px rgba(255, 0, 0, 0.15);
+}
+
+.quote-youtube .social-quote-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.quote-youtube .social-quote-avatar-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.quote-youtube .social-quote-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.quote-youtube .social-quote-author-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.quote-youtube .social-quote-name {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.quote-youtube .social-quote-handle {
+  font-size: 0.85rem;
+  color: #aaaaaa;
+}
+
+.quote-youtube .social-quote-platform-icon {
+  color: #ff0000;
+  font-size: 1.45rem;
+}
+
+.quote-youtube .social-quote-body {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #e2e8f0;
+  margin-bottom: 12px;
+}
+
+.quote-youtube .social-quote-video-wrapper {
+  position: relative;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.quote-youtube .social-quote-video-thumb {
+  width: 100%;
+  max-height: 340px;
+  object-fit: cover;
+  display: block;
+}
+
+.quote-youtube .social-quote-play-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 56px;
+  height: 56px;
+  background: rgba(255, 0, 0, 0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
+  transition: all var(--transition-fast);
+}
+
+.quote-youtube:hover .social-quote-play-overlay {
+  transform: translate(-50%, -50%) scale(1.1);
+  background: #ff0000;
+}
+
+.quote-youtube .social-quote-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.825rem;
+  color: #aaaaaa;
+}
+
+.quote-youtube .social-quote-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  background: rgba(255, 0, 0, 0.15);
+  border: 1px solid #ff0000;
+  border-radius: 9999px;
+  color: #ff4e4e;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.quote-youtube .social-quote-btn:hover {
+  background: #ff0000;
+  color: #ffffff;
+}
+
 /* Sources & Citations Box */
 .article-sources-card {
   background: var(--bg-surface, #12151E);

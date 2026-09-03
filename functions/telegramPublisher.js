@@ -668,45 +668,75 @@ async function publishDailyDigest(isHe = true, channelOverride = null) {
 }
 
 /**
- * Fetch OpenGraph description or first paragraph from article URL
+ * Fetch OpenGraph details, image, description, and media links from article URL
  */
-async function fetchPageSummary(url) {
-  if (!url || !url.startsWith('http')) return '';
+async function fetchPageDetails(url) {
+  if (!url || !url.startsWith('http')) {
+    return { summary: '', sourceImageUrl: '', videoUrl: '', publisherTitle: '' };
+  }
   try {
     const res = await fetch(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
       },
-      timeout: 4500
+      timeout: 5000
     });
-    if (!res.ok) return '';
+    if (!res.ok) return { summary: '', sourceImageUrl: '', videoUrl: '', publisherTitle: '' };
     const html = await res.text();
-    // 1. Check og:description
+
+    // 1. Extract source image (og:image / twitter:image)
+    let sourceImageUrl = '';
+    const ogImg = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i) ||
+                  html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i) ||
+                  html.match(/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i) ||
+                  html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i) ||
+                  html.match(/<meta[^>]+name=["']twitter:image:src["'][^>]+content=["']([^"']+)["']/i) ||
+                  html.match(/<link[^>]+rel=["']image_src["'][^>]+href=["']([^"']+)["']/i);
+    if (ogImg && ogImg[1] && ogImg[1].startsWith('http')) {
+      sourceImageUrl = ogImg[1];
+    }
+
+    // 2. Extract summary description
+    let summary = '';
     const ogDesc = html.match(/<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']+)["']/i) ||
-                   html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:description["']/i);
+                   html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:description["']/i) ||
+                   html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i) ||
+                   html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']description["']/i);
     if (ogDesc && ogDesc[1]) {
-      return cleanText(ogDesc[1]).slice(0, 500);
-    }
-    // 2. Check meta name=description
-    const metaDesc = html.match(/<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i) ||
-                     html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']description["']/i);
-    if (metaDesc && metaDesc[1]) {
-      return cleanText(metaDesc[1]).slice(0, 500);
-    }
-    // 3. Check first paragraph
-    const pMatches = html.match(/<p[^>]*>([\s\S]*?)<\/p>/gi);
-    if (pMatches && pMatches.length > 0) {
-      for (const p of pMatches) {
-        const cleanedP = cleanText(p);
-        if (cleanedP.length > 60) {
-          return cleanedP.slice(0, 500);
+      summary = cleanText(ogDesc[1]).slice(0, 600);
+    } else {
+      const pMatches = html.match(/<p[^>]*>([\s\S]*?)<\/p>/gi);
+      if (pMatches && pMatches.length > 0) {
+        for (const p of pMatches) {
+          const cleanedP = cleanText(p);
+          if (cleanedP.length > 60) {
+            summary = cleanedP.slice(0, 600);
+            break;
+          }
         }
       }
     }
+
+    // 3. Extract title
+    let publisherTitle = '';
+    const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i) ||
+                       html.match(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i);
+    if (titleMatch && titleMatch[1]) {
+      publisherTitle = cleanText(titleMatch[1]);
+    }
+
+    // 4. Extract video link if present
+    let videoUrl = '';
+    const ytMatch = html.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/i);
+    if (ytMatch) {
+      videoUrl = `https://www.youtube.com/watch?v=${ytMatch[1]}`;
+    }
+
+    return { summary, sourceImageUrl, videoUrl, publisherTitle };
   } catch (err) {
-    logger.warn('[Page Summary] fetch error for ' + url + ':', err.message);
+    logger.warn('[Page Details] fetch error for ' + url + ':', err.message);
+    return { summary: '', sourceImageUrl: '', videoUrl: '', publisherTitle: '' };
   }
-  return '';
 }
 
 /**
@@ -755,8 +785,12 @@ async function generateAndSaveFullArticle(topicInfo, isHe = true) {
   let rawText = typeof topicInfo === 'object' ? (topicInfo.text || topicInfo.description || '') : '';
   const rawUrl = typeof topicInfo === 'object' ? (topicInfo.url || '') : '';
 
-  if (!rawText && rawUrl) {
-    rawText = await fetchPageSummary(rawUrl);
+  let pageDetails = { summary: '', sourceImageUrl: '', videoUrl: '', publisherTitle: '' };
+  if (rawUrl) {
+    pageDetails = await fetchPageDetails(rawUrl);
+    if (!rawText && pageDetails.summary) {
+      rawText = pageDetails.summary;
+    }
   }
 
   let prompt = '';
@@ -764,17 +798,22 @@ async function generateAndSaveFullArticle(topicInfo, isHe = true) {
     prompt = `אתה כתב ועורך טכנולוגי בכיר במגזין הטכנולוגיה והסייבר המוביל TrendingTech Daily (בעברית).
 עליך לכתוב כתבה עיתונאית מלאה, מעמיקה, סוחפת ומקצועית ביותר שתתפרסם באתר בעברית.
 נושא הידיעה / כותרת: "${rawTitle}"
-רקע / מקור מהאינטרנט: "${rawText.slice(0, 800)}" ${rawUrl}
+רקע / מקור מהאינטרנט: "${rawText.slice(0, 900)}" כתובת מקור: ${rawUrl}
 
 דרישות קריטיות:
 1. כותרת (title): כותרת עיתונאית חדה, ברורה, מושכת ומדויקת בעברית (עד 75 תווים).
-2. סלאג (slug): סלאג באנגלית באותיות קטנות עם מקפים בלבד (למשל: cyber-threat-satellite-networks או open-source-audio-tools).
+2. סלאג (slug): סלאג באנגלית באותיות קטנות עם מקפים בלבד (למשל: polars-dataframe-performance-release או gemini-frontier-cyber-defense).
 3. תקציר (excerpt): תקציר אינפורמטיבי וממצה בן 2-3 משפטים המסביר את עיקרי הכתבה והמשמעויות (130-220 תווים). אסור להשתמש במשפטי מילוי גנריים כגון "התפתחות משמעותית בקהילה".
-4. גוף הכתבה (content): כתבה עיתונאית מלאה, עשירה ומעמיקה בת 400-600 מילים המחולקת לפסקאות HTML עם תגיות <p>. כלול רקע, ניתוח טכני של הארכיטקטורה או המוצר, השלכות על השוק ותובנות מומחים.
+4. גוף הכתבה (content): כתבה עיתונאית מלאה, עשירה ומעמיקה בת 450-650 מילים המחולקת לפסקאות HTML עם תגיות <p>. כלול רקע, ניתוח טכני של הארכיטקטורה או המוצר, השלכות על השוק ותובנות מומחים. שלב קישורים פנימיים וחיצוניים מקצועיים בתגיות <a href="..." target="_blank" rel="noopener noreferrer">...</a>.
 5. קטגוריה (category): בדיוק אחת מתוך: ai, dev, cyber-warfare, chips, computing, markets.
-6. תגיות (tags): מערך של 4-6 תגיות בעברית (למשל: ["סייבר", "מודיעין", "טכנולוגיה", "אבטחת_מידע"]).
+6. תגיות (tags): מערך של 4-6 תגיות בעברית (למשל: ["קוד_פתוח", "ביצועים", "פיתוח_תוכנה", "טכנולוגיה"]).
 7. מחבר (author): שם הדסק המתאים (למשל: "דסק סייבר וביטחון", "דסק תוכנה וקוד פתוח", "דסק בינה מלאכותית", "דסק שוק ההון").
-8. מילות חיפוש לתמונה (imagePrompt): 3-5 מילים באנגלית מדויקות עבור Unsplash.
+8. מילות חיפוש לתמונה (imagePrompt): 3-5 מילים באנגלית מדויקות ללא זכויות יוצרים עבור Unsplash / Wikimedia (למשל: "audio recording studio mixing console software").
+9. אזכורים חברתיים וציטוטים (socialMentions): מערך של 1-2 פריטים אותנטיים בעיצוב X (Twitter) או YouTube:
+   - עבור X: {"platform": "X", "author": "שם הדובר או המפתח", "handle": "@handle", "quote": "ציטוט טכני ישיר או תגובה מהקהילה על ההכרזה", "link": "https://x.com/handle", "context": "הצהרה רשמית / תגובה מקהילת המפתחים"}
+   - עבור YouTube (אם יש סרטון/סקירה רלוונטית): {"platform": "YouTube", "author": "ערוץ הסקירה הרשמי", "quote": "סקירה מעמיקה וניתוח וידאו של הארכיטקטורה והביצועים", "link": "${pageDetails.videoUrl || 'https://www.youtube.com'}", "context": "ניתוח והדגמת וידאו"}
+10. מקורות וסימוכין (sources): מערך של 2-3 מקורות עמוקים ישירים:
+   [{"title": "הודעת שחרור רשמית ותיעוד טכני", "url": "${rawUrl || 'https://github.com'}", "publisher": "מקור רשמי"}]
 
 החזר אך ורק אובייקט JSON תקין במבנה הבא:
 {
@@ -786,23 +825,27 @@ async function generateAndSaveFullArticle(topicInfo, isHe = true) {
   "tags": ["תגית1", "תגית2"],
   "author": "דסק תוכנה וקוד פתוח",
   "imagePrompt": "audio studio mixing console software",
-  "readingTimeMinutes": 3
+  "sources": [{"title": "Official Announcement", "url": "https://...", "publisher": "Official"}],
+  "socialMentions": [{"platform": "X", "author": "Tech Lead", "handle": "@lead", "quote": "Statement...", "link": "https://x.com/lead", "context": "Official Tweet"}],
+  "readingTimeMinutes": 4
 }`;
   } else {
     prompt = `You are a senior technology and cybersecurity editor at TrendingTech Daily.
 Write a full-length, in-depth, highly engaging news analysis article to be published on the magazine.
 Topic / Headline: "${rawTitle}"
-Context / Source: "${rawText.slice(0, 800)}" ${rawUrl}
+Context / Source: "${rawText.slice(0, 900)}" Source URL: ${rawUrl}
 
 Requirements:
 1. Title: Authoritative, punchy, engaging headline (max 75 chars).
 2. Slug: Lowercase hyphenated english slug.
 3. Excerpt: Informative 2-3 sentence overview (130-220 chars).
-4. Content: Full in-depth 450-600 word article in HTML with <p> tags, including background, technical architecture, industry impact, and analysis.
+4. Content: Full in-depth 450-650 word article in HTML with <p> tags and inline citations <a href="..." target="_blank" rel="noopener noreferrer">...</a>.
 5. Category: Exactly one of: ai, dev, cyber-warfare, chips, computing, markets.
 6. Tags: Array of 4-6 relevant tags.
 7. Author: Editorial desk (e.g., "TrendingTech Cyber Desk", "TrendingTech AI Intelligence").
-8. imagePrompt: 3-5 precise english photography keywords for Unsplash.
+8. imagePrompt: 3-5 precise english photography keywords for royalty-free matching.
+9. socialMentions: Array of 1-2 authentic X (Twitter) or YouTube quotes/discussion cards.
+10. sources: Array of 2-3 direct deep reference links.
 
 Return ONLY a valid JSON object:
 {
@@ -814,7 +857,9 @@ Return ONLY a valid JSON object:
   "tags": ["string"],
   "author": "string",
   "imagePrompt": "string",
-  "readingTimeMinutes": 3
+  "sources": [{"title": "string", "url": "string", "publisher": "string"}],
+  "socialMentions": [{"platform": "X", "author": "string", "handle": "@handle", "quote": "string", "link": "https://x.com/...", "context": "string"}],
+  "readingTimeMinutes": 4
 }`;
   }
 
@@ -824,11 +869,13 @@ Return ONLY a valid JSON object:
   if (!match) throw new Error('Failed to parse JSON from AI article generation');
   const parsed = JSON.parse(match[0]);
 
+  // High-precision royalty-free image resolution: prioritizes page og:image, then precision Unsplash/curated pool
   let featuredImage = 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1400&auto=format&fit=crop&q=85';
   try {
     const imgObj = await resolveEditorialArticleImage({
-      title: parsed.title,
+      topic: parsed.title,
       category: parsed.category,
+      sourceImageUrl: pageDetails.sourceImageUrl || '',
       imagePrompt: parsed.imagePrompt || parsed.title
     });
     featuredImage = (typeof imgObj === 'object' ? imgObj?.imageUrl : imgObj) || featuredImage;
@@ -846,7 +893,9 @@ Return ONLY a valid JSON object:
     author: parsed.author || (isHe ? 'דסק טכנולוגיה וסייבר' : 'TrendingTech Editorial'),
     featuredImage,
     imageAltText: parsed.title,
-    readingTimeMinutes: parsed.readingTimeMinutes || 3,
+    sources: Array.isArray(parsed.sources) ? parsed.sources : [],
+    socialMentions: Array.isArray(parsed.socialMentions) ? parsed.socialMentions : [],
+    readingTimeMinutes: parsed.readingTimeMinutes || 4,
     language: isHe ? 'he' : 'en',
     published: true,
     views: 0,
@@ -858,7 +907,7 @@ Return ONLY a valid JSON object:
 
   const colName = isHe ? 'he_articles' : 'articles';
   const newDocRef = await db.collection(colName).add(articlePayload);
-  logger.info(`[Full Article Generator] Saved full article to ${colName}/${newDocRef.id}: ${parsed.title}`);
+  logger.info(`[Full Article Generator] Saved full article with rich embeds to ${colName}/${newDocRef.id}: ${parsed.title}`);
 
   return { id: newDocRef.id, ref: newDocRef, ...articlePayload };
 }

@@ -169,6 +169,28 @@ function extractPrecisionKeywords(topic = '', imagePrompt = '', category = '') {
     return 'software developer code matrix dual monitor programming';
   }
 
+  if (combined.includes('audacity') || combined.includes('audio') || combined.includes('waveform') || combined.includes('sound')) {
+    return 'audio sound wave waveform recording mixing studio';
+  }
+  if (combined.includes('polars') || combined.includes('dataframe') || combined.includes('pandas') || combined.includes('duckdb')) {
+    return 'data science big data analytics code terminal';
+  }
+  if (combined.includes('gemini') || combined.includes('deepmind') || combined.includes('google ai')) {
+    return 'google artificial intelligence deep learning glowing neural';
+  }
+  if (combined.includes('perplexity') || combined.includes('search engine') || combined.includes('rag')) {
+    return 'artificial intelligence neural network search data';
+  }
+  if (combined.includes('cloudflare') || combined.includes('ddos') || combined.includes('cdn')) {
+    return 'cloud computing server rack datacenter optical fiber';
+  }
+  if (combined.includes('linux') || combined.includes('kernel') || combined.includes('open source')) {
+    return 'linux code developer programming terminal matrix';
+  }
+  if (combined.includes('rust') || combined.includes('python') || combined.includes('typescript') || combined.includes('compiler')) {
+    return 'software developer code monitor programming rust';
+  }
+
   const clean = topic
     .replace(/[^\w\s]/gi, ' ')
     .split(/\s+/)

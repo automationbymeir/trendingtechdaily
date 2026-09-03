@@ -7,19 +7,19 @@
 const fetch = require('node-fetch');
 const { logger } = require('../config');
 
-// Curated verified high-resolution editorial tech imagery pools (10+ distinct images per category)
+// Curated verified high-resolution editorial tech imagery pools (100% authentic tech photos)
 const CURATED_TECH_EDITORIAL_POOLS = {
   'ai': [
     'https://images.unsplash.com/photo-1677442136019-21780efad99a?w=1400&auto=format&fit=crop&q=85',
-    'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1400&auto=format&fit=crop&q=85',
     'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1400&auto=format&fit=crop&q=85',
     'https://images.unsplash.com/photo-1676299081847-824916de030a?w=1400&auto=format&fit=crop&q=85',
     'https://images.unsplash.com/photo-1675271591211-126ad94e495d?w=1400&auto=format&fit=crop&q=85',
     'https://images.unsplash.com/photo-1680795456508-360e2060c239?w=1400&auto=format&fit=crop&q=85',
     'https://images.unsplash.com/photo-1674027444485-cec3da58eef4?w=1400&auto=format&fit=crop&q=85',
-    'https://images.unsplash.com/photo-1682687220063-4742bd7fd538?w=1400&auto=format&fit=crop&q=85',
-    'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=1400&auto=format&fit=crop&q=85',
-    'https://images.unsplash.com/photo-1617791160505-6f00504e3519?w=1400&auto=format&fit=crop&q=85'
+    'https://images.unsplash.com/photo-1617791160505-6f00504e3519?w=1400&auto=format&fit=crop&q=85',
+    'https://images.unsplash.com/photo-1633419461186-7d40a38105ec?w=1400&auto=format&fit=crop&q=85',
+    'https://images.unsplash.com/photo-1618172193763-c511deb635ca?w=1400&auto=format&fit=crop&q=85',
+    'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1400&auto=format&fit=crop&q=85'
   ],
   'cyber-warfare': [
     'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1400&auto=format&fit=crop&q=85',

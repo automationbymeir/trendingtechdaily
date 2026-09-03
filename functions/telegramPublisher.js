@@ -379,65 +379,87 @@ async function postToTelegramApi(channelTarget, article, isHe, botToken = TELEGR
     ]
   };
 
+  // Guarantee an authentic, high-resolution editorial photo (never undefined/null)
   let imageUrl = article.featuredImage || article.imageUrl;
   if (imageUrl && typeof imageUrl === 'object') {
     imageUrl = imageUrl.imageUrl || imageUrl.url || null;
   }
-  const apiBase = `https://api.telegram.org/bot${botToken}`;
-
-  // 1. Try sending with photo if featuredImage is present
-  if (typeof imageUrl === 'string' && (imageUrl.startsWith('http://') || imageUrl.startsWith('https://'))) {
+  if (!imageUrl || typeof imageUrl !== 'string' || !imageUrl.startsWith('http')) {
     try {
-      const photoPayload = {
-        chat_id: channelTarget,
-        photo: imageUrl,
-        caption: caption,
-        parse_mode: 'HTML',
-        reply_markup: replyMarkup
-      };
-
-      const res = await fetch(`${apiBase}/sendPhoto`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(photoPayload),
-        timeout: 15000
+      const resolved = await resolveEditorialArticleImage({
+        topic: article.title || 'Technology',
+        category: article.category || 'ai',
+        imagePrompt: article.title
       });
-
-      const data = await res.json();
-      if (data.ok) {
-        logger.info(`[Telegram] Successfully sent photo post to ${channelTarget}:`, data.result?.message_id);
-        return { success: true, messageId: data.result?.message_id, type: 'photo' };
-      } else {
-        logger.warn(`[Telegram] sendPhoto error (${data.description}), falling back to sendMessage...`);
-      }
-    } catch (err) {
-      logger.warn('[Telegram] sendPhoto failed with exception, falling back to sendMessage:', err.message);
+      imageUrl = (typeof resolved === 'object' ? resolved.imageUrl : resolved);
+    } catch (e) {
+      imageUrl = 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1400&auto=format&fit=crop&q=85';
     }
   }
 
-  // 2. Fallback: send rich text message
-  const msgPayload = {
-    chat_id: channelTarget,
-    text: caption,
-    parse_mode: 'HTML',
-    reply_markup: replyMarkup,
-    disable_web_page_preview: false
-  };
+  const apiBase = `https://api.telegram.org/bot${botToken}`;
 
-  const textRes = await fetch(`${apiBase}/sendMessage`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(msgPayload),
-    timeout: 15000
-  });
+  // 1. Primary Photo Send
+  try {
+    const photoPayload = {
+      chat_id: channelTarget,
+      photo: imageUrl,
+      caption: caption,
+      parse_mode: 'HTML',
+      reply_markup: replyMarkup
+    };
 
-  const textData = await textRes.json();
-  if (textData.ok) {
-    logger.info(`[Telegram] Successfully sent text post to ${channelTarget}:`, textData.result?.message_id);
-    return { success: true, messageId: textData.result?.message_id, type: 'text' };
+    const res = await fetch(`${apiBase}/sendPhoto`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(photoPayload),
+      timeout: 15000
+    });
+
+    const data = await res.json();
+    if (data.ok) {
+      logger.info(`[Telegram] Successfully sent photo post to ${channelTarget}:`, data.result?.message_id);
+      return { success: true, messageId: data.result?.message_id, type: 'photo' };
+    } else {
+      logger.warn(`[Telegram] sendPhoto error (${data.description}), retrying with guaranteed fresh pool photo...`);
+    }
+  } catch (err) {
+    logger.warn('[Telegram] sendPhoto failed with exception, retrying with guaranteed fresh pool photo:', err.message);
   }
 
-  throw new Error(`Telegram API Error: ${textData.description || 'Unknown error'}`);
+  // 2. Retry with Guaranteed Curated Pool Photo (Ensure every post ALWAYS has a photo)
+  try {
+    const fallbackObj = await resolveEditorialArticleImage({
+      topic: `${article.title || 'tech'} backup ${Date.now()}`,
+      category: article.category || 'ai'
+    });
+    const fallbackUrl = (typeof fallbackObj === 'object' ? fallbackObj.imageUrl : fallbackObj) || 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1400&auto=format&fit=crop&q=85';
+
+    const retryPayload = {
+      chat_id: channelTarget,
+      photo: fallbackUrl,
+      caption: caption,
+      parse_mode: 'HTML',
+      reply_markup: replyMarkup
+    };
+
+    const retryRes = await fetch(`${apiBase}/sendPhoto`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(retryPayload),
+      timeout: 15000
+    });
+
+    const retryData = await retryRes.json();
+    if (retryData.ok) {
+      logger.info(`[Telegram] Successfully sent photo post with fresh fallback photo to ${channelTarget}:`, retryData.result?.message_id);
+      return { success: true, messageId: retryData.result?.message_id, type: 'photo' };
+    }
+  } catch (retryErr) {
+    logger.error('[Telegram] Secondary photo send also failed:', retryErr.message);
+  }
+
+  throw new Error('Telegram photo send failed');
 }
 
 /**
@@ -451,9 +473,19 @@ async function publishArticleToTelegram(docRef, articleData, isHe, channelOverri
     return { skipped: true, reason: 'Article not published' };
   }
 
-  // Deduplication check
+  // Deduplication check 1: Article document level
   if (articleData.telegramPosted === true && !channelOverride) {
     return { skipped: true, reason: 'Already posted to Telegram' };
+  }
+
+  // Deduplication check 2: Title & content fingerprint
+  const titleKey = cleanText(articleData.title || '').toLowerCase().replace(/[^\w\u0590-\u05FF]/g, '').slice(0, 45);
+  if (!channelOverride && titleKey) {
+    const titleDispatchDoc = await db.collection('telegram_dispatches').doc(`title-${titleKey}`).get();
+    if (titleDispatchDoc.exists) {
+      logger.info(`[Telegram Deduplication] Title "${articleData.title}" was already dispatched.`);
+      return { skipped: true, reason: 'Duplicate article title already posted' };
+    }
   }
 
   const config = await getTelegramConfig();
@@ -482,7 +514,7 @@ async function publishArticleToTelegram(docRef, articleData, isHe, channelOverri
       }
     }
 
-    // Mark as posted in Firestore
+    // Mark as posted in Firestore doc
     await docRef.update({
       telegramPosted: true,
       telegramPostTime: admin.firestore.FieldValue.serverTimestamp(),
@@ -490,6 +522,17 @@ async function publishArticleToTelegram(docRef, articleData, isHe, channelOverri
       telegramMessageId: result.messageId || null,
       telegramPollId: pollResult?.pollId || null
     });
+
+    // Save in deduplication registry
+    if (!channelOverride && titleKey) {
+      await db.collection('telegram_dispatches').doc(`title-${titleKey}`).set({
+        articleId: docRef.id,
+        title: articleData.title,
+        channel: targetChannel,
+        messageId: result.messageId || null,
+        dispatchedAt: admin.firestore.FieldValue.serverTimestamp()
+      });
+    }
 
     return { success: true, channel: targetChannel, messageId: result.messageId, pollId: pollResult?.pollId };
   } catch (err) {

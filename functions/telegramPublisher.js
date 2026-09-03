@@ -1055,7 +1055,13 @@ exports.triggerTelegramPostHttp = onRequest(
       return res.json({ success: true, action, digestRes });
     }
 
-    if (action === 'hourly-dispatch') {
+    if (action === 'hourly-dispatch' || action === 'generate-and-post') {
+      if (req.body?.force || req.query?.force) {
+        const topic = req.body?.topic || req.query?.topic || 'חשיפת מערך הסייבר: קבוצות תקיפה איראניות משלבות כלי בינה מלאכותית לשיבוש אותות לוויין';
+        const fullArticle = await generateAndSaveFullArticle(topic, isHe);
+        const postRes = await publishArticleToTelegram(fullArticle.ref, fullArticle, isHe, channel);
+        return res.json({ success: true, action, type: 'forced-full-article', articleId: fullArticle.id, slug: fullArticle.slug, postRes });
+      }
       const hourlyRes = await dispatchHourlyTelegramNews(isHe, channel);
       return res.json({ success: true, action, hourlyRes });
     }

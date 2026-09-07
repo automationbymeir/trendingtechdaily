@@ -104,8 +104,62 @@ function renderContent(tiptap) {
   try { return renderNode(tiptap); } catch { return ""; }
 }
 
-// ---- Page template (mirrors the static site shell) ----
-function page({ title, description, canonical, ogImage, jsonLd, body }) {
+// ---- Page template (matches trendingtechdaily.com design: real site chrome + design tokens) ----
+const FALLBACK_NAV = `<header class="site-header" id="site-header"><div class="container nav-main-bar"><a class="brand-logo" href="/">TrendingTech<span>Daily</span></a><ul class="nav-links"><li><a class="nav-link" href="/">Home</a></li><li><a class="nav-link" href="/blog">Blog</a></li></ul></div></header>`;
+
+async function chrome() {
+  return cached("chrome", 60 * 60 * 1000, async () => {
+    try {
+      const [nav, footer] = await Promise.all([
+        fetch(`${SITE}/nav.html?v=20260820_he5`).then((r) => (r.ok ? r.text() : "")),
+        fetch(`${SITE}/footer.html?v=20260820_he5`).then((r) => (r.ok ? r.text() : "")),
+      ]);
+      return { nav: nav || FALLBACK_NAV, footer };
+    } catch {
+      return { nav: FALLBACK_NAV, footer: "" };
+    }
+  });
+}
+
+const BLOG_CSS = `
+    main.blog-wrap { max-width: 860px; margin: 0 auto; padding: 48px 16px 80px; min-height: 60vh; }
+    .blog-index h1 { font-family: var(--font-display); font-size: 3rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.02em; color: var(--text-primary); margin-bottom: 8px; }
+    .sub { color: var(--text-muted); font-family: var(--font-mono); font-size: 0.8rem; margin-bottom: 40px; }
+    .cards { display: grid; gap: 24px; }
+    .card { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; transition: border-color var(--transition-fast); }
+    .card:hover { border-color: var(--accent-red); }
+    .card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; }
+    .card .pad { padding: 20px 22px 24px; }
+    .card h2 { margin: 0 0 8px; font-family: var(--font-heading); font-size: 1.6rem; font-weight: 700; }
+    .card h2 a { color: var(--text-primary); text-decoration: none; }
+    .card h2 a:hover { color: var(--accent-red); }
+    .meta { color: var(--text-faint); font-family: var(--font-mono); font-size: 0.75rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+    .card p { color: var(--text-secondary); margin: 0; line-height: 1.55; font-size: 0.95rem; }
+    article h1 { font-family: var(--font-display); font-size: 2.6rem; font-weight: 800; line-height: 1.1; color: var(--text-primary); margin-bottom: 8px; }
+    article img.hero { width: 100%; border-radius: var(--radius-lg); margin: 24px 0; }
+    article .content { font-family: var(--font-serif); line-height: 1.85; color: var(--text-secondary); font-size: 1.05rem; }
+    article .content p { margin: 0 0 1.3rem; }
+    article .content h2 { font-family: var(--font-heading); color: var(--text-primary); font-size: 1.9rem; margin: 2.5rem 0 1rem; text-transform: uppercase; }
+    article .content h3 { font-family: var(--font-heading); color: var(--text-primary); font-size: 1.5rem; margin: 2rem 0 0.75rem; }
+    article .content a { color: var(--accent-red); }
+    article .content ul, article .content ol { margin: 0 0 1.3rem; padding-inline-start: 1.5rem; }
+    article .content li { margin-bottom: 0.5rem; }
+    article .content blockquote { border-inline-start: 3px solid var(--accent-red); margin: 1.6rem 0; padding: 0.4rem 1.2rem; color: var(--text-muted); font-style: italic; }
+    article .content pre { background: var(--bg-surface); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md); overflow-x: auto; }
+    article .content code { font-family: var(--font-mono); background: var(--bg-surface-hover); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+    article .content pre code { padding: 0; background: none; }
+    article .content figure { margin: 2rem 0; }
+    article .content figure img { width: 100%; border-radius: var(--radius-md); }
+    .faq { margin-top: 48px; }
+    .faq h2 { font-family: var(--font-heading); color: var(--text-primary); text-transform: uppercase; }
+    .faq details { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 12px; }
+    .faq summary { cursor: pointer; font-weight: 600; color: var(--text-primary); }
+    .faq details p { color: var(--text-secondary); margin: 10px 0 0; }
+    .empty { color: var(--text-muted); background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: var(--radius-lg); padding: 48px 24px; text-align: center; }
+`;
+
+async function page({ title, description, canonical, ogImage, jsonLd, body }) {
+  const { nav, footer } = await chrome();
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -121,57 +175,20 @@ function page({ title, description, canonical, ogImage, jsonLd, body }) {
   <meta property="og:url" content="${esc(canonical)}">
   ${ogImage ? `<meta property="og:image" content="${esc(ogImage)}">` : ""}
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" type="image/svg+xml" href="/logos/favicon.svg">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&family=Lora:ital,wght@0,500;0,600;1,400&family=Rubik:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="/styles.css?v=20260820_2">
   ${jsonLd ? `<script type="application/ld+json">${jsonLd}</script>` : ""}
-  <style>
-    body { font-family: 'Inter', Helvetica, Arial, sans-serif; background: #090A0E; margin: 0; padding: 16px; color: #fff; }
-    a { color: #E63946; }
-    nav { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
-    nav > ul { list-style: none; display: flex; gap: 24px; flex-wrap: wrap; padding: 0; }
-    nav a { color: #fff; text-decoration: none; font-weight: 500; }
-    nav a:hover { color: #E63946; }
-    main { max-width: 860px; margin: 0 auto; padding: 24px 16px 64px; }
-    .blog-index h1 { font-size: 2.4rem; margin-bottom: 8px; }
-    .sub { color: #b9b9c0; margin-bottom: 40px; }
-    .cards { display: grid; gap: 24px; }
-    .card { background: #111319; border: 1px solid #1B1E29; border-radius: 14px; overflow: hidden; }
-    .card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; }
-    .card .pad { padding: 20px 22px 24px; }
-    .card h2 { margin: 0 0 8px; font-size: 1.35rem; }
-    .card h2 a { color: #fff; text-decoration: none; }
-    .card h2 a:hover { color: #E63946; }
-    .meta { color: #8f8f98; font-size: 0.85rem; margin-bottom: 10px; }
-    .card p { color: #c9c9d1; margin: 0; line-height: 1.55; }
-    article h1 { font-size: 2.2rem; line-height: 1.2; margin-bottom: 8px; }
-    article img.hero { width: 100%; border-radius: 14px; margin: 24px 0; }
-    article .content { line-height: 1.75; color: #e6e6ea; font-size: 1.05rem; }
-    article .content h2 { margin-top: 40px; }
-    article .content h3 { margin-top: 32px; }
-    article .content pre { background: #141416; border: 1px solid #1B1E29; padding: 16px; border-radius: 10px; overflow-x: auto; }
-    article .content code { background: #141416; padding: 2px 6px; border-radius: 6px; }
-    article .content pre code { padding: 0; background: none; }
-    article .content blockquote { border-inline-start: 3px solid #E63946; margin: 24px 0; padding: 4px 20px; color: #c9c9d1; }
-    .faq { margin-top: 48px; }
-    .faq details { background: #111319; border: 1px solid #1B1E29; border-radius: 10px; padding: 14px 18px; margin-bottom: 12px; }
-    .faq summary { cursor: pointer; font-weight: 600; }
-    .empty { color: #b9b9c0; background: #111319; border: 1px dashed #1B1E29; border-radius: 14px; padding: 48px 24px; text-align: center; }
-  </style>
+  <style>${BLOG_CSS}</style>
 </head>
 <body>
-  <nav>
-    <ul>
-      <li><a href="/"><strong>TrendingTechDaily</strong></a></li>
-      <li><a href="/ai-tools">AI Tools</a></li>
-      <li><a href="/podcasts">Podcasts</a></li>
-      <li><a href="/newsletter">Newsletter</a></li>
-      <li><a href="/blog">Blog</a></li>
-      <li><a href="/about">About</a></li>
-    </ul>
-  </nav>
-  <main>${body}</main>
+${nav}
+<main class="container blog-wrap">${body}</main>
+${footer}
 </body>
 </html>`;
 }
@@ -259,7 +276,7 @@ async function serveBlog(req, res) {
     res.redirect(302, "/blog");
   } catch (e) {
     console.error("blog render failed", e);
-    res.status(200).send(page({
+    res.status(200).send(await page({
       title: "Blog | TrendingTechDaily",
       description: "AI and tech analysis from TrendingTechDaily.",
       canonical: `${SITE}/blog`,

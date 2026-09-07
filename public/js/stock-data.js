@@ -1,3 +1,10 @@
+// HTML-escape helper for values interpolated into innerHTML (XSS hardening)
+function escapeHtmlSd(str) {
+  return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+
 /**
  * stock-data.js
  * ---------------------------------------------------------------------------
@@ -236,7 +243,7 @@
       card.innerHTML = `
         <div>
           <div class="stock-card-top">
-            <span class="stock-card-symbol">${symbol} · ${data.name || symbol}</span>
+            <span class="stock-card-symbol">${escapeHtmlSd(symbol)} · ${escapeHtmlSd(data.name) || escapeHtmlSd(symbol)}</span>
             <span class="badge ${badgeClass}">${badgeText}</span>
           </div>
           <div class="stock-card-price">$${formatPrice(data.c)}</div>
@@ -272,13 +279,13 @@
       tr.dataset.symbol = symbol;
       tr.style.cursor = 'pointer';
       tr.innerHTML = `
-        <td><span class="stock-ticker-sym">${symbol}</span></td>
-        <td>${data.name || symbol}</td>
+        <td><span class="stock-ticker-sym">${escapeHtmlSd(symbol)}</span></td>
+        <td>${escapeHtmlSd(data.name) || escapeHtmlSd(symbol)}</td>
         <td><span class="stock-price-val">$${formatPrice(data.c)}</span></td>
         <td><span class="${isPos ? 'stock-up' : 'stock-down'} fw-bold">${isPos ? '+' : ''}${data.dp.toFixed(2)}%</span></td>
         <td>${volFormatted}</td>
         <td>
-          <button type="button" class="btn btn-outline btn-sm" data-action="analyze" data-symbol="${symbol}">
+          <button type="button" class="btn btn-outline btn-sm" data-action="analyze" data-symbol="${escapeHtmlSd(symbol)}">
             Analyze &amp; Chart
           </button>
         </td>

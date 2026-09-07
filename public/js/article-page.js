@@ -401,9 +401,9 @@ function renderArticle(article, isHe) {
 function renderSingleSocialEmbed(item, isHe) {
   if (!item) return '';
   const platform = (item.platform || 'X').toLowerCase();
-  const author = item.author || (isHe ? 'מומחה טכנולוגיה' : 'Tech Analyst');
-  const handle = item.handle || '@techdispatch';
-  const quote = item.quote || '';
+  const author = escapeHtmlAp(item.author) || (isHe ? 'מומחה טכנולוגיה' : 'Tech Analyst');
+  const handle = escapeHtmlAp(item.handle) || '@techdispatch';
+  const quote = escapeHtmlAp(item.quote);
   let link = item.link || item.url || '';
   if (platform === 'x' || platform === 'twitter') {
     const cleanHandle = (handle || '').replace('@', '').trim();
@@ -419,9 +419,9 @@ function renderSingleSocialEmbed(item, isHe) {
       link = 'https://www.linkedin.com';
     }
   }
-  const context = item.context || '';
-  const avatar = item.avatar || item.avatarUrl || '';
-  const mediaUrl = item.mediaUrl || item.image || '';
+  const context = escapeHtmlAp(item.context);
+  const avatar = escapeHtmlAp(item.avatar || item.avatarUrl);
+  const mediaUrl = escapeHtmlAp(item.mediaUrl || item.image);
 
   if (platform === 'github') {
     const repoMatch = link.match(/github\.com\/([^\/]+\/[^\/]+)/);
@@ -619,7 +619,65 @@ function renderSourcesBox(sources, isHe, article) {
 }
 
 // Format raw text or markdown into styled paragraphs and subheadings with safe ad slots and in-article social embeds
+
+// DOMPurify-style allowlist sanitizer for article HTML from Firestore (stored-XSS hardening).
+// Keeps standard formatting tags, drops scripts/iframes/handlers and unsafe URL schemes.
+function sanitizeArticleHtml(html) {
+  var ALLOWED_TAGS = { p:1, div:1, span:1, h1:1, h2:1, h3:1, h4:1, h5:1, h6:1, ul:1, ol:1, li:1,
+    strong:1, em:1, b:1, i:1, u:1, s:1, a:1, blockquote:1, q:1, cite:1, code:1, pre:1,
+    img:1, figure:1, figcaption:1, table:1, thead:1, tbody:1, tfoot:1, tr:1, td:1, th:1,
+    hr:1, br:1, small:1, mark:1, sub:1, sup:1, dl:1, dt:1, dd:1, caption:1 };
+  var DROP_WITH_CONTENT = { script:1, style:1, iframe:1, object:1, embed:1, form:1, input:1,
+    button:1, select:1, textarea:1, link:1, meta:1, svg:1, math:1, video:1, audio:1, source:1,
+    noscript:1, template:1, frame:1, frameset:1, applet:1, base:1 };
+  var GLOBAL_ATTRS = { 'class':1, title:1, dir:1, lang:1 };
+  var TAG_ATTRS = {
+    a: { href:1, target:1, rel:1, title:1 },
+    img: { src:1, alt:1, width:1, height:1, loading:1 },
+    td: { colspan:1, rowspan:1 }, th: { colspan:1, rowspan:1, scope:1 }, ol: { start:1, type:1 }
+  };
+  function safeUrl(v) {
+    if (!v) return false;
+    var t = String(v).replace(/[\s\u0000-\u001F]+/g, '').toLowerCase();
+    return /^(https?:|mailto:|tel:|\/|#|\.)/.test(t);
+  }
+  function scrubNode(node) {
+    if (node.nodeType !== 1) return;
+    var tag = node.tagName.toLowerCase();
+    if (DROP_WITH_CONTENT[tag]) { node.remove(); return; }
+    if (!ALLOWED_TAGS[tag]) {
+      // unwrap: keep children, drop the unknown tag
+      var parent = node.parentNode;
+      while (node.firstChild) parent.insertBefore(node.firstChild, node);
+      parent.removeChild(node);
+      return;
+    }
+    var allowed = Object.assign({}, GLOBAL_ATTRS, TAG_ATTRS[tag] || {});
+    Array.prototype.slice.call(node.attributes).forEach(function (attr) {
+      var name = attr.name.toLowerCase();
+      var val = attr.value || '';
+      if (name.indexOf('on') === 0) { node.removeAttribute(attr.name); return; }
+      if (name === 'style') {
+        if (/expression|javascript:|vbscript:|behavior\s*:/i.test(val)) node.removeAttribute(attr.name);
+        return; // inline styles allowed for article formatting
+      }
+      if (!allowed[name]) { node.removeAttribute(attr.name); return; }
+      if ((name === 'href' || name === 'src') && !safeUrl(val)) node.removeAttribute(attr.name);
+    });
+    if (tag === 'a' && node.getAttribute('target') === '_blank') node.setAttribute('rel', 'noopener noreferrer');
+  }
+  var doc = new DOMParser().parseFromString('<div id="sanitize-root">' + html + '</div>', 'text/html');
+  var root = doc.getElementById('sanitize-root');
+  var walker = doc.createTreeWalker(root, 1 /* ELEMENT_NODE */);
+  var el;
+  var toScrub = [];
+  while ((el = walker.nextNode())) toScrub.push(el);
+  toScrub.forEach(scrubNode);
+  return root.innerHTML;
+}
+
 function formatArticleBody(content, isHe, socialMentions = []) {
+  content = sanitizeArticleHtml(String(content || ''));
   if (!content) {
     return `<p>${isHe ? 'תוכן הכתבה בטעינה...' : 'Article content loading...'}</p>`;
   }

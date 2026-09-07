@@ -1,3 +1,10 @@
+// HTML-escape helper for values interpolated into innerHTML (XSS hardening)
+function escapeHtmlGt(str) {
+  return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+
 // github-trending.js
 // This script fetches trending GitHub repositories created within the last week
 // and displays them in the sidebar section. It uses GitHub's search API to
@@ -42,12 +49,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const li = document.createElement('li');
         li.classList.add('list-group-item');
         // Build inner HTML with repository link, description and star count
-        const description = repo.description ? repo.description.substring(0, 80) : '';
+        const description = repo.description ? escapeHtmlGt(repo.description.substring(0, 80)) : '';
         li.innerHTML = `
           <div class="d-flex justify-content-between align-items-start">
             <div class="flex-grow-1 me-2 repo-info">
-              <a href="${repo.html_url}" target="_blank" rel="noopener" class="fw-semibold repo-name">
-                ${repo.full_name}
+              <a href="${escapeHtmlGt(repo.html_url)}" target="_blank" rel="noopener" class="fw-semibold repo-name">
+                ${escapeHtmlGt(repo.full_name)}
               </a>
               <p class="small mb-0 text-muted repo-description">${description}</p>
             </div>

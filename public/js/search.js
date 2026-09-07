@@ -1,3 +1,10 @@
+// HTML-escape helper for values interpolated into innerHTML (XSS hardening)
+function escapeHtmlS(str) {
+  return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+
 // js/search.js — Resilient Full-Text Search Engine for TrendingTech Daily (Figma Tech News Design System)
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -230,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <i class="bi bi-file-earmark-x" style="font-size: 3rem; color: var(--accent-red);"></i>
           <h3 class="mt-3" style="font-size:1.25rem; font-weight:700; color:var(--text-main);">${isHe ? 'לא נמצאו תוצאות' : 'No Results Found'}</h3>
           <p class="text-muted" style="font-size:0.9rem; max-width:450px; margin:0 auto;">
-            ${isHe ? `לא נמצאו כתבות התואמות לחיפוש "${query}". נסו מילות מפתח אחרות או בדקו את הנושאים החמים.` : `No articles found matching "${query}". Try different keywords or browse trending topics.`}
+            ${isHe ? `לא נמצאו כתבות התואמות לחיפוש "${escapeHtmlS(query)}". נסו מילות מפתח אחרות או בדקו את הנושאים החמים.` : `No articles found matching "${escapeHtmlS(query)}". Try different keywords or browse trending topics.`}
           </p>
         </div>
       `;
@@ -246,11 +253,11 @@ document.addEventListener('DOMContentLoaded', () => {
     articles.forEach(article => {
       const slug = article.slug || article.id;
       const artId = article.id || '';
-      const link = typeof getArticleCleanUrl === 'function' ? getArticleCleanUrl(article, isHe) : `${articleBaseUrl}?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(artId)}`;
-      const title = article.title || (isHe ? 'ללא כותרת' : 'Untitled Article');
-      const excerpt = article.excerpt || (article.content ? article.content.replace(/<[^>]+>/g, ' ').slice(0, 160) + '...' : '');
+      const link = escapeHtmlS(typeof getArticleCleanUrl === 'function' ? getArticleCleanUrl(article, isHe) : `${articleBaseUrl}?slug=${encodeURIComponent(slug)}&id=${encodeURIComponent(artId)}`);
+      const title = escapeHtmlS(article.title) || (isHe ? 'ללא כותרת' : 'Untitled Article');
+      const excerpt = escapeHtmlS(article.excerpt || (article.content ? article.content.replace(/<[^>]+>/g, ' ').slice(0, 160) + '...' : ''));
       const image = article.featuredImage || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80';
-      const category = article.category || (isHe ? 'טכנולוגיה' : 'Technology');
+      const category = escapeHtmlS(article.category) || (isHe ? 'טכנולוגיה' : 'Technology');
 
       const dateStr = article.createdAt?.toDate 
         ? article.createdAt.toDate().toLocaleDateString(isHe ? 'he-IL' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' })
@@ -320,7 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentVal = categoryFilter.value;
     let html = `<option value="">${isHe ? 'כל הקטגוריות' : 'All Categories'}</option>`;
     categories.forEach(cat => {
-      html += `<option value="${cat}" ${cat === currentVal ? 'selected' : ''}>${cat.charAt(0).toUpperCase() + cat.slice(1)}</option>`;
+      html += `<option value="${escapeHtmlS(cat)}" ${cat === currentVal ? 'selected' : ''}>${escapeHtmlS(cat.charAt(0).toUpperCase() + cat.slice(1))}</option>`;
     });
     categoryFilter.innerHTML = html;
   }

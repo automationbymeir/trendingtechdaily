@@ -536,6 +536,13 @@ async function loadCategoryArticles(categorySlug, taxonomyItem) {
   }
 }
 
+// HTML-escape helper for values interpolated into innerHTML (XSS hardening)
+function escapeHtmlCat(str) {
+  return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+
 // Render dynamic article cards matching Figma Tech News tokens
 function renderArticlesGrid(container, articles, isHe, taxonomyItem) {
   if (!articles || articles.length === 0) {
@@ -545,15 +552,15 @@ function renderArticlesGrid(container, articles, isHe, taxonomyItem) {
 
   let html = '<div class="row g-4">';
   articles.forEach(art => {
-    const title = art.title || (isHe ? 'ללא כותרת' : 'Untitled');
-    const excerpt = art.excerpt || art.summary || (isHe ? 'קרא עוד על מחקר והתפתחויות טכנולוגיות...' : 'Read full technology analysis and architectural breakdown...');
-    const author = art.author || (isHe ? 'מערכת האתר' : 'TrendingTech Editorial');
+    const title = escapeHtmlCat(art.title || (isHe ? 'ללא כותרת' : 'Untitled'));
+    const excerpt = escapeHtmlCat(art.excerpt || art.summary || (isHe ? 'קרא עוד על מחקר והתפתחויות טכנולוגיות...' : 'Read full technology analysis and architectural breakdown...'));
+    const author = escapeHtmlCat(art.author || (isHe ? 'מערכת האתר' : 'TrendingTech Editorial'));
     const readingTime = art.readingTimeMinutes || Math.max(3, Math.ceil((art.content || '').length / 1000)) || 5;
     const date = art.createdAt?.toDate ? art.createdAt.toDate().toLocaleDateString(isHe ? 'he-IL' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '2026';
-    const image = art.featuredImage || 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&auto=format&fit=crop&q=80';
-    const link = getArticleCleanUrl(art, isHe);
+    const image = escapeHtmlCat(art.featuredImage) || 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&auto=format&fit=crop&q=80';
+    const link = escapeHtmlCat(getArticleCleanUrl(art, isHe));
     const badgeClass = taxonomyItem?.tagClass || 'badge-ai';
-    const categoryLabel = resolveCategoryDisplayName(art.category, isHe, art);
+    const categoryLabel = escapeHtmlCat(resolveCategoryDisplayName(art.category, isHe, art));
 
     html += `
       <div class="col-12 col-md-6 mb-3">

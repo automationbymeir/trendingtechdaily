@@ -55,6 +55,10 @@ exports.fetchNewsManually = onRequest({ secrets: ["NEWS_API_KEY"], region: 'us-c
 
 exports.serveSitemap = onRequest({ region: 'us-central1' }, serveSitemap);
 
+// Opinly-powered blog (SSR) - key lives in Google Cloud Secret Manager, never in code
+const { serveBlog } = require('./http/blog');
+exports.serveBlog = onRequest({ secrets: ["OPINLY_API_KEY"], region: 'us-central1', timeoutSeconds: 30, memory: '256MiB' }, serveBlog);
+
 exports.yahooFinanceHistory = onRequest({ cors: true }, legacyProxies.yahooFinanceHistory);
 exports.yahooFinance = onRequest({ cors: true }, legacyProxies.yahooFinance);
 

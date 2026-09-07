@@ -9,90 +9,483 @@
       "**/node_modules/**"
     ],
     "headers": [
-      { "source": "**/*.js", "headers": [{ "key": "Content-Type", "value": "application/javascript" }] },
-      { "source": "**/*.css", "headers": [{ "key": "Content-Type", "value": "text/css" }] },
-      { "source": "**/*.html", "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600" }] },
-      { "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|ico)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }] }
+      {
+        "source": "**/*.js",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "application/javascript"
+          }
+        ]
+      },
+      {
+        "source": "**/*.css",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "text/css"
+          }
+        ]
+      },
+      {
+        "source": "**/*.html",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=3600"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|ico)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=86400"
+          }
+        ]
+      }
     ],
     "redirects": [
-      { "source": "/about.html", "destination": "/about", "type": 301 },
-      { "source": "/privacy.html", "destination": "/privacy", "type": 301 },
-      { "source": "/terms.html", "destination": "/terms", "type": 301 },
-      { "source": "/login.html", "destination": "/login", "type": 301 },
-      { "source": "/signup.html", "destination": "/signup", "type": 301 },
-      { "source": "/stock-data.html", "destination": "/stock-data", "type": 301 },
-      { "source": "/podcasts.html", "destination": "/podcasts", "type": 301 },
-      { "source": "/links.html", "destination": "/links", "type": 301 },
-      { "source": "/newsletter.html", "destination": "/newsletter", "type": 301 },
-      { "source": "/forgot-password.html", "destination": "/forgot-password", "type": 301 },
-      { "source": "/he/login.html", "destination": "/he/login", "type": 301 },
-      { "source": "/he/signup.html", "destination": "/he/signup", "type": 301 },
-      { "source": "/he/profile.html", "destination": "/he/profile", "type": 301 },
-      { "source": "/he/links.html", "destination": "/he/links", "type": 301 },
-      { "source": "/he/newsletter.html", "destination": "/he/newsletter", "type": 301 },
-      { "source": "/article.html", "destination": "/article", "type": 301 },
-      { "source": "/he/article.html", "destination": "/he/article", "type": 301 }
+      {
+        "source": "/about.html",
+        "destination": "/about",
+        "type": 301
+      },
+      {
+        "source": "/privacy.html",
+        "destination": "/privacy",
+        "type": 301
+      },
+      {
+        "source": "/terms.html",
+        "destination": "/terms",
+        "type": 301
+      },
+      {
+        "source": "/login.html",
+        "destination": "/login",
+        "type": 301
+      },
+      {
+        "source": "/signup.html",
+        "destination": "/signup",
+        "type": 301
+      },
+      {
+        "source": "/stock-data.html",
+        "destination": "/stock-data",
+        "type": 301
+      },
+      {
+        "source": "/podcasts.html",
+        "destination": "/podcasts",
+        "type": 301
+      },
+      {
+        "source": "/links.html",
+        "destination": "/links",
+        "type": 301
+      },
+      {
+        "source": "/newsletter.html",
+        "destination": "/newsletter",
+        "type": 301
+      },
+      {
+        "source": "/forgot-password.html",
+        "destination": "/forgot-password",
+        "type": 301
+      },
+      {
+        "source": "/he/login.html",
+        "destination": "/he/login",
+        "type": 301
+      },
+      {
+        "source": "/he/signup.html",
+        "destination": "/he/signup",
+        "type": 301
+      },
+      {
+        "source": "/he/profile.html",
+        "destination": "/he/profile",
+        "type": 301
+      },
+      {
+        "source": "/he/links.html",
+        "destination": "/he/links",
+        "type": 301
+      },
+      {
+        "source": "/he/newsletter.html",
+        "destination": "/he/newsletter",
+        "type": 301
+      },
+      {
+        "source": "/article.html",
+        "destination": "/article",
+        "type": 301
+      },
+      {
+        "source": "/he/article.html",
+        "destination": "/he/article",
+        "type": 301
+      }
     ],
     "rewrites": [
-      { "source": "/admin/components/components/email/**", "destination": "/admin/components/email/**" },
-      { "source": "/unsubscribeNewsletter", "function": "unsubscribeNewsletter" },
-      { "source": "/sitemap.xml", "run": { "serviceId": "servesitemap", "region": "us-central1" } },
-      { "source": "/api/**", "run": { "serviceId": "api", "region": "us-central1" } },
-      { "source": "/category", "run": { "serviceId": "handlearticlerouting", "region": "us-central1" } },
-      { "source": "/category.html", "run": { "serviceId": "handlearticlerouting", "region": "us-central1" } },
-      { "source": "/he/category", "run": { "serviceId": "handlehebrewrouting", "region": "us-central1" } },
-      { "source": "/he/category.html", "run": { "serviceId": "handlehebrewrouting", "region": "us-central1" } },
-      { "source": "/article.html", "run": { "serviceId": "handlelegacyredirects", "region": "us-central1" } },
-      { "source": "/admin", "destination": "/admin/index.html" },
-      { "source": "/admin/**", "destination": "/admin/index.html" },
-      { "source": "/about", "destination": "/about.html" },
-      { "source": "/privacy", "destination": "/privacy.html" },
-      { "source": "/terms", "destination": "/terms.html" },
-      { "source": "/login", "destination": "/login.html" },
-      { "source": "/signup", "destination": "/signup.html" },
-      { "source": "/stock-data", "destination": "/stock-data.html" },
-      { "source": "/podcasts", "destination": "/podcasts.html" },
-      { "source": "/links", "destination": "/links.html" },
-      { "source": "/newsletter", "destination": "/newsletter.html" },
-      { "source": "/forgot-password", "destination": "/forgot-password.html" },
-      { "source": "/", "run": { "serviceId": "handleenhomepage", "region": "us-central1" } },
-      { "source": "/he", "run": { "serviceId": "handlehehomepage", "region": "us-central1" } },
-      { "source": "/he/login", "destination": "/he/login.html" },
-      { "source": "/he/signup", "destination": "/he/signup.html" },
-      { "source": "/he/profile", "destination": "/he/profile.html" },
-      { "source": "/he/links", "destination": "/he/links.html" },
-      { "source": "/he/newsletter", "destination": "/he/newsletter.html" },
-      { "source": "/he/search", "destination": "/he/search.html" },
-      { "source": "/he/shuk-hon", "destination": "/he/shuk-hon.html" },
-      { "source": "/he/about", "destination": "/he/about.html" },
-      { "source": "/he/privacy", "destination": "/he/privacy.html" },
-      { "source": "/he/terms", "destination": "/he/terms.html" },
-      { "source": "/he/podcasts", "destination": "/he/podcasts.html" },
-      { "source": "/article", "run": { "serviceId": "handlearticlerouting", "region": "us-central1" } },
-      { "source": "/article/:article", "run": { "serviceId": "handlearticlerouting", "region": "us-central1" } },
-      { "source": "/he/article", "run": { "serviceId": "handlehebrewrouting", "region": "us-central1" } },
-      { "source": "/he/article/:article", "run": { "serviceId": "handlehebrewrouting", "region": "us-central1" } },
-      { "source": "/he/article.html", "run": { "serviceId": "handlelegacyredirects", "region": "us-central1" } },
-      { "source": "/he/compare/:slug", "run": { "serviceId": "handlehecomparison", "region": "us-central1" } },
-      { "source": "/he/compare", "run": { "serviceId": "handlehecomparison", "region": "us-central1" } },
-      { "source": "/compare/:slug", "run": { "serviceId": "handlecomparison", "region": "us-central1" } },
-      { "source": "/compare", "run": { "serviceId": "handlecomparison", "region": "us-central1" } },
-      { "source": "/ai-tools/glossary", "run": { "serviceId": "aitoolsglossary", "region": "us-central1" } },
-      { "source": "/ai-tools/guide", "run": { "serviceId": "aitoolsguide", "region": "us-central1" } },
-      { "source": "/he/ai-tools/glossary", "run": { "serviceId": "heaitoolsglossary", "region": "us-central1" } },
-      { "source": "/he/ai-tools/guide", "run": { "serviceId": "heaitoolsguide", "region": "us-central1" } },
-      { "source": "/he/ai-tools/:slug", "run": { "serviceId": "heaitooldetail", "region": "us-central1" } },
-      { "source": "/he/ai-tools", "run": { "serviceId": "heaitoolslanding", "region": "us-central1" } },
-      { "source": "/ai-tools/:slug", "run": { "serviceId": "aitooldetail", "region": "us-central1" } },
-      { "source": "/ai-tools", "run": { "serviceId": "aitoolslanding", "region": "us-central1" } },
-      { "source": "/he/design-systems/:slug", "run": { "serviceId": "hedesignsystemdetail", "region": "us-central1" } },
-      { "source": "/he/design-systems", "run": { "serviceId": "hedesignsystemslanding", "region": "us-central1" } },
-      { "source": "/design-systems/:slug", "run": { "serviceId": "designsystemdetail", "region": "us-central1" } },
-      { "source": "/design-systems", "run": { "serviceId": "designsystemslanding", "region": "us-central1" } },
-      { "source": "/he/:category/:article", "run": { "serviceId": "handlehebrewrouting", "region": "us-central1" } },
-      { "source": "/he/:category", "run": { "serviceId": "handlehebrewrouting", "region": "us-central1" } },
-      { "source": "/:category/:article", "run": { "serviceId": "handlearticlerouting", "region": "us-central1" } },
-      { "source": "/:category", "run": { "serviceId": "handlearticlerouting", "region": "us-central1" } }
+      {
+        "source": "/admin/components/components/email/**",
+        "destination": "/admin/components/email/**"
+      },
+      {
+        "source": "/unsubscribeNewsletter",
+        "function": "unsubscribeNewsletter"
+      },
+      {
+        "source": "/sitemap.xml",
+        "run": {
+          "serviceId": "servesitemap",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/api/**",
+        "run": {
+          "serviceId": "api",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/category",
+        "run": {
+          "serviceId": "handlearticlerouting",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/category.html",
+        "run": {
+          "serviceId": "handlearticlerouting",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/he/category",
+        "run": {
+          "serviceId": "handlehebrewrouting",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/he/category.html",
+        "run": {
+          "serviceId": "handlehebrewrouting",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/article.html",
+        "run": {
+          "serviceId": "handlelegacyredirects",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/admin",
+        "destination": "/admin/index.html"
+      },
+      {
+        "source": "/admin/**",
+        "destination": "/admin/index.html"
+      },
+      {
+        "source": "/about",
+        "destination": "/about.html"
+      },
+      {
+        "source": "/privacy",
+        "destination": "/privacy.html"
+      },
+      {
+        "source": "/terms",
+        "destination": "/terms.html"
+      },
+      {
+        "source": "/login",
+        "destination": "/login.html"
+      },
+      {
+        "source": "/signup",
+        "destination": "/signup.html"
+      },
+      {
+        "source": "/stock-data",
+        "destination": "/stock-data.html"
+      },
+      {
+        "source": "/podcasts",
+        "destination": "/podcasts.html"
+      },
+      {
+        "source": "/links",
+        "destination": "/links.html"
+      },
+      {
+        "source": "/newsletter",
+        "destination": "/newsletter.html"
+      },
+      {
+        "source": "/forgot-password",
+        "destination": "/forgot-password.html"
+      },
+      {
+        "source": "/",
+        "run": {
+          "serviceId": "handleenhomepage",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/he",
+        "run": {
+          "serviceId": "handlehehomepage",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/he/login",
+        "destination": "/he/login.html"
+      },
+      {
+        "source": "/he/signup",
+        "destination": "/he/signup.html"
+      },
+      {
+        "source": "/he/profile",
+        "destination": "/he/profile.html"
+      },
+      {
+        "source": "/he/links",
+        "destination": "/he/links.html"
+      },
+      {
+        "source": "/he/newsletter",
+        "destination": "/he/newsletter.html"
+      },
+      {
+        "source": "/he/search",
+        "destination": "/he/search.html"
+      },
+      {
+        "source": "/he/shuk-hon",
+        "destination": "/he/shuk-hon.html"
+      },
+      {
+        "source": "/he/about",
+        "destination": "/he/about.html"
+      },
+      {
+        "source": "/he/privacy",
+        "destination": "/he/privacy.html"
+      },
+      {
+        "source": "/he/terms",
+        "destination": "/he/terms.html"
+      },
+      {
+        "source": "/he/podcasts",
+        "destination": "/he/podcasts.html"
+      },
+      {
+        "source": "/article",
+        "run": {
+          "serviceId": "handlearticlerouting",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/article/:article",
+        "run": {
+          "serviceId": "handlearticlerouting",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/he/article",
+        "run": {
+          "serviceId": "handlehebrewrouting",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/he/article/:article",
+        "run": {
+          "serviceId": "handlehebrewrouting",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/he/article.html",
+        "run": {
+          "serviceId": "handlelegacyredirects",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/he/compare/:slug",
+        "run": {
+          "serviceId": "handlehecomparison",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/he/compare",
+        "run": {
+          "serviceId": "handlehecomparison",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/compare/:slug",
+        "run": {
+          "serviceId": "handlecomparison",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/compare",
+        "run": {
+          "serviceId": "handlecomparison",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/ai-tools/glossary",
+        "run": {
+          "serviceId": "aitoolsglossary",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/ai-tools/guide",
+        "run": {
+          "serviceId": "aitoolsguide",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/he/ai-tools/glossary",
+        "run": {
+          "serviceId": "heaitoolsglossary",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/he/ai-tools/guide",
+        "run": {
+          "serviceId": "heaitoolsguide",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/he/ai-tools/:slug",
+        "run": {
+          "serviceId": "heaitooldetail",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/he/ai-tools",
+        "run": {
+          "serviceId": "heaitoolslanding",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/ai-tools/:slug",
+        "run": {
+          "serviceId": "aitooldetail",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/ai-tools",
+        "run": {
+          "serviceId": "aitoolslanding",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/he/design-systems/:slug",
+        "run": {
+          "serviceId": "hedesignsystemdetail",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/he/design-systems",
+        "run": {
+          "serviceId": "hedesignsystemslanding",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/design-systems/:slug",
+        "run": {
+          "serviceId": "designsystemdetail",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/design-systems",
+        "run": {
+          "serviceId": "designsystemslanding",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/blog",
+        "run": {
+          "serviceId": "serveblog",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/blog/**",
+        "run": {
+          "serviceId": "serveblog",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/he/:category/:article",
+        "run": {
+          "serviceId": "handlehebrewrouting",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/he/:category",
+        "run": {
+          "serviceId": "handlehebrewrouting",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/:category/:article",
+        "run": {
+          "serviceId": "handlearticlerouting",
+          "region": "us-central1"
+        }
+      },
+      {
+        "source": "/:category",
+        "run": {
+          "serviceId": "handlearticlerouting",
+          "region": "us-central1"
+        }
+      }
     ]
   },
   "functions": [

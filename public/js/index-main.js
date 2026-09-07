@@ -1,3 +1,10 @@
+// HTML-escape helper for values interpolated into innerHTML (XSS hardening)
+function escapeHtmlIdx(str) {
+  return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+
 // public/js/index-main.js - Real-Time Homepage Intelligence & Breaking News Engine
 
 // Helper function to safely extract properties
@@ -290,8 +297,8 @@ function updateBreakingNewsTicker(articles, isHe) {
 
   const topNews = articles.slice(0, 3);
   const flashItemsHtml = topNews.map((art, idx) => {
-    const title = art.title || (isHe ? 'מבזק חדשות טכנולוגיה' : 'Breaking Tech Dispatch');
-    const link = getArticleCleanUrl(art, isHe);
+    const title = escapeHtmlIdx(art.title) || (isHe ? 'מבזק חדשות טכנולוגיה' : 'Breaking Tech Dispatch');
+    const link = escapeHtmlIdx(getArticleCleanUrl(art, isHe));
     const badgeText = idx === 0 ? (isHe ? 'מבזק חם' : 'BREAKING') : (isHe ? 'עדכון' : 'FLASH');
     return `
       <span class="ticker-item" style="cursor:pointer;" onclick="window.location.href='${link}'">
@@ -318,13 +325,13 @@ function renderLeadHeroFeature(article, isHe) {
   const container = document.getElementById('featured-article-container');
   if (!container || !article) return;
 
-  const title = article.title || (isHe ? 'מבזק טכנולוגיה מוביל' : 'Breaking Tech Intelligence');
-  const excerpt = article.excerpt || article.summary || (isHe ? 'קרא עוד על מחקר והתפתחויות טכנולוגיות...' : 'Inside the latest architectural shifts shaping technology...');
-  const author = article.author || (isHe ? 'מערכת האתר' : 'Julianne Reyes');
+  const title = escapeHtmlIdx(article.title) || (isHe ? 'מבזק טכנולוגיה מוביל' : 'Breaking Tech Intelligence');
+  const excerpt = escapeHtmlIdx(article.excerpt || article.summary) || (isHe ? 'קרא עוד על מחקר והתפתחויות טכנולוגיות...' : 'Inside the latest architectural shifts shaping technology...');
+  const author = escapeHtmlIdx(article.author) || (isHe ? 'מערכת האתר' : 'Julianne Reyes');
   const readingTime = article.readingTimeMinutes || 6;
-  const image = article.featuredImage || 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&auto=format&fit=crop&q=80';
-  const link = getArticleCleanUrl(article, isHe);
-  const cat = resolveCategoryDisplayName(article.category, isHe, article);
+  const image = escapeHtmlIdx(article.featuredImage) || 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&auto=format&fit=crop&q=80';
+  const link = escapeHtmlIdx(getArticleCleanUrl(article, isHe));
+  const cat = escapeHtmlIdx(resolveCategoryDisplayName(article.category, isHe, article));
   const badgeClass = getCategoryBadgeClass(article.category);
 
   container.innerHTML = `
@@ -364,10 +371,10 @@ function renderTrendingTop4(articles, isHe) {
 
   articles.slice(0, 4).forEach((art, index) => {
     const num = numbers[index] || `0${index + 1}`;
-    const title = art.title || (isHe ? 'ידיעה טכנולוגית חמה' : 'Breaking Tech Dispatch');
-    const author = art.author || (isHe ? 'מערכת האתר' : 'Staff');
-    const link = getArticleCleanUrl(art, isHe);
-    const cat = resolveCategoryDisplayName(art.category, isHe, art);
+    const title = escapeHtmlIdx(art.title) || (isHe ? 'ידיעה טכנולוגית חמה' : 'Breaking Tech Dispatch');
+    const author = escapeHtmlIdx(art.author) || (isHe ? 'מערכת האתר' : 'Staff');
+    const link = escapeHtmlIdx(getArticleCleanUrl(art, isHe));
+    const cat = escapeHtmlIdx(resolveCategoryDisplayName(art.category, isHe, art));
     const badgeClass = getCategoryBadgeClass(art.category);
 
     html += `
@@ -403,12 +410,12 @@ function renderSecondaryDispatches(articles, isHe) {
 
   let html = '';
   articles.slice(0, 3).forEach((art, index) => {
-    const title = art.title || (isHe ? 'ניתוח מעמיק' : 'Deep Technical Analysis');
-    const excerpt = art.excerpt || art.summary || (isHe ? 'קרא עוד על מחקר והתפתחויות טכנולוגיות...' : 'Read full technology analysis and architectural breakdown...');
-    const author = art.author || (isHe ? 'מערכת האתר' : 'TrendingTech');
-    const image = art.featuredImage || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80';
-    const link = getArticleCleanUrl(art, isHe);
-    const cat = resolveCategoryDisplayName(art.category, isHe, art);
+    const title = escapeHtmlIdx(art.title) || (isHe ? 'ניתוח מעמיק' : 'Deep Technical Analysis');
+    const excerpt = escapeHtmlIdx(art.excerpt || art.summary) || (isHe ? 'קרא עוד על מחקר והתפתחויות טכנולוגיות...' : 'Read full technology analysis and architectural breakdown...');
+    const author = escapeHtmlIdx(art.author) || (isHe ? 'מערכת האתר' : 'TrendingTech');
+    const image = escapeHtmlIdx(art.featuredImage) || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80';
+    const link = escapeHtmlIdx(getArticleCleanUrl(art, isHe));
+    const cat = escapeHtmlIdx(resolveCategoryDisplayName(art.category, isHe, art));
     const badgeClass = getCategoryBadgeClass(art.category);
     const pill = pillVariants[index % pillVariants.length];
 
@@ -445,14 +452,14 @@ function renderLatestNewsStream(articles, isHe) {
 
   let html = '';
   articles.slice(0, 8).forEach(art => {
-    const title = art.title || (isHe ? 'ללא כותרת' : 'Untitled');
-    const excerpt = art.excerpt || art.summary || (isHe ? 'קרא עוד על מחקר והתפתחויות טכנולוגיות...' : 'Read full technology analysis and architectural breakdown...');
-    const author = art.author || (isHe ? 'מערכת האתר' : 'Staff');
+    const title = escapeHtmlIdx(art.title) || (isHe ? 'ללא כותרת' : 'Untitled');
+    const excerpt = escapeHtmlIdx(art.excerpt || art.summary) || (isHe ? 'קרא עוד על מחקר והתפתחויות טכנולוגיות...' : 'Read full technology analysis and architectural breakdown...');
+    const author = escapeHtmlIdx(art.author) || (isHe ? 'מערכת האתר' : 'Staff');
     const readingTime = art.readingTimeMinutes || 5;
     const date = art.createdAt?.toDate ? art.createdAt.toDate().toLocaleDateString(isHe ? 'he-IL' : 'en-US', { month: 'short', day: 'numeric' }) : 'Today';
-    const image = art.featuredImage || 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop&q=80';
-    const link = getArticleCleanUrl(art, isHe);
-    const cat = resolveCategoryDisplayName(art.category, isHe, art);
+    const image = escapeHtmlIdx(art.featuredImage) || 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop&q=80';
+    const link = escapeHtmlIdx(getArticleCleanUrl(art, isHe));
+    const cat = escapeHtmlIdx(resolveCategoryDisplayName(art.category, isHe, art));
     const badgeClass = getCategoryBadgeClass(art.category);
 
     html += `
@@ -524,7 +531,7 @@ function loadAutonomousAgentsSpotlight(isHe) {
 
   let html = '<div class="row g-4">';
   spotlightData.forEach(item => {
-    const link = getArticleCleanUrl(item, isHe);
+    const link = escapeHtmlIdx(getArticleCleanUrl(item, isHe));
     html += `
       <div class="col-12 col-md-6">
         <div class="dispatch-card" style="background:var(--bg-surface-elevated); border-color:var(--accent-red);">

@@ -42,7 +42,7 @@ async function opinlyFetch(path) {
 function imageUrl(file) {
   if (!file || !file.fileKey) return null;
   if (/^https:\/\//i.test(file.fileKey)) return file.fileKey;
-  const ns = process.env.OPINLY_CDN_NAMESPACE || "TTD_NS_PLACEHOLDER";
+  const ns = process.env.OPINLY_CDN_NAMESPACE || "UPZtmIIpQ04ubSiTOKTJp";
   return ns ? `https://cdn.opinly.ai/${ns}/${file.fileKey}` : null;
 }
 

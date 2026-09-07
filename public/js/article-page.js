@@ -1,3 +1,10 @@
+// HTML-escape helper for values interpolated into innerHTML (XSS hardening)
+function escapeHtmlAp(str) {
+  return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+
 // public/js/article-page.js - Complete Article Engine for TrendingTech Daily
 
 // Helper functions
@@ -290,14 +297,14 @@ function renderArticle(article, isHe) {
   const articleContainer = document.getElementById('article-container');
   if (!articleContainer) return;
 
-  const title = article.title || (isHe ? 'ללא כותרת' : 'Untitled Article');
+  const title = escapeHtmlAp(article.title) || (isHe ? 'ללא כותרת' : 'Untitled Article');
   const date = article.createdAt?.toDate ? article.createdAt.toDate().toLocaleDateString(isHe ? 'he-IL' : 'en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : 'August 2026';
   const author = article.author || (isHe ? 'מערכת TrendingTech' : 'TrendingTech Staff');
   const readingTime = article.readingTimeMinutes || Math.max(3, Math.ceil((article.content || '').length / 1000)) || 5;
   const categoryName = resolveCategoryDisplayName(article.category, isHe, article);
   const categorySlug = (typeof article.category === 'string' && !/^[A-Za-z0-9_-]{16,}$/.test(article.category)) ? article.category.toLowerCase() : 'ai';
   const categoryUrl = isHe ? `/he/category.html?slug=${encodeURIComponent(categorySlug)}` : `/category.html?slug=${encodeURIComponent(categorySlug)}`;
-  const image = article.featuredImage || 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&auto=format&fit=crop&q=80';
+  const image = escapeHtmlAp(article.featuredImage) || 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1200&auto=format&fit=crop&q=80';
 
   const html = `
     <article class="article-content-wrapper">
@@ -341,7 +348,7 @@ function renderArticle(article, isHe) {
       </div>
 
       <!-- Standfirst / Excerpt -->
-      ${article.excerpt ? `<p class="article-standfirst fs-5 fw-bold mb-4 pb-3 border-bottom" style="color:var(--text-main); line-height:1.6; border-color:var(--border-color) !important;">${article.excerpt}</p>` : ''}
+      ${article.excerpt ? `<p class="article-standfirst fs-5 fw-bold mb-4 pb-3 border-bottom" style="color:var(--text-main); line-height:1.6; border-color:var(--border-color) !important;">${escapeHtmlAp(article.excerpt)}</p>` : ''}
 
       <!-- Main Body Content with In-Article Social Embeds & Ads -->
       <div class="article-body-content mb-4" style="font-size:1.125rem; line-height:1.8; color:var(--text-main);">
@@ -583,9 +590,9 @@ function renderSourcesBox(sources, isHe, article) {
 
   let listHtml = '';
   list.forEach(src => {
-    const title = src.title || (isHe ? 'מקור ראשוני ומסמך תיעוד' : 'Primary Research & Documentation');
-    const url = src.url || '#';
-    const publisher = src.publisher || src.domain || (isHe ? 'מקור רשמי' : 'Official Source');
+    const title = escapeHtmlAp(src.title) || (isHe ? 'מקור ראשוני ומסמך תיעוד' : 'Primary Research & Documentation');
+    const url = escapeHtmlAp(src.url) || '#';
+    const publisher = escapeHtmlAp(src.publisher || src.domain) || (isHe ? 'מקור רשמי' : 'Official Source');
     listHtml += `
       <li class="article-source-item">
         <a href="${url}" target="_blank" rel="noopener noreferrer" class="article-source-link">
@@ -736,7 +743,7 @@ function renderTags(tags, isHe) {
   if (!Array.isArray(tags) || tags.length === 0) {
     return `<span class="badge badge-ai">#Tech</span><span class="badge badge-dev">#AI</span>`;
   }
-  return tags.map(t => `<span class="badge badge-ai">#${t}</span>`).join(' ');
+  return tags.map(t => `<span class="badge badge-ai">#${escapeHtmlAp(t)}</span>`).join(' ');
 }
 
 // Update title, meta tags, and open graph
@@ -977,9 +984,9 @@ async function loadRelatedArticles(category, currentArticleId, isHe) {
     snap.forEach(doc => {
       if (doc.id === currentArticleId || count >= 3) return;
       const d = doc.data();
-      const title = d.title || (isHe ? 'כתבה קשורה' : 'Related Article');
+      const title = escapeHtmlAp(d.title) || (isHe ? 'כתבה קשורה' : 'Related Article');
       const author = d.author || (isHe ? 'מערכת האתר' : 'TrendingTech');
-      const image = d.featuredImage || 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&auto=format&fit=crop&q=80';
+      const image = escapeHtmlAp(d.featuredImage) || 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&auto=format&fit=crop&q=80';
       const link = getArticleCleanUrl({ id: doc.id, slug: d.slug, category: d.category }, isHe);
       const cat = resolveCategoryDisplayName(d.category, isHe, d);
       count++;
@@ -1035,7 +1042,7 @@ async function loadSidebarTrending(isHe) {
     let html = '';
     snap.forEach((doc, idx) => {
       const d = doc.data();
-      const title = d.title || (isHe ? 'ידיעה טכנולוגית' : 'Tech Story');
+      const title = escapeHtmlAp(d.title) || (isHe ? 'ידיעה טכנולוגית' : 'Tech Story');
       const link = getArticleCleanUrl({ id: doc.id, slug: d.slug, category: d.category }, isHe);
       const num = `0${idx + 1}`;
 

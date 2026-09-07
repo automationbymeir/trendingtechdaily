@@ -1,3 +1,10 @@
+// HTML-escape helper for values interpolated into innerHTML (XSS hardening)
+function escapeHtmlSt(str) {
+  return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+
 // js/stories.js — Interactive Video Stories & Reels Engine with Real-Time Updates for TrendingTech Daily
 
 let storiesData = [];
@@ -106,10 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       card.innerHTML = `
         <div class="story-avatar">
-          <img src="${story.thumbnail || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=160&auto=format&fit=crop&q=80'}" alt="${story.title}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=160&auto=format&fit=crop&q=80'" />
-          ${story.badge ? `<span class="story-badge">${story.badge}</span>` : ''}
+          <img src="${escapeHtmlSt(story.thumbnail) || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=160&auto=format&fit=crop&q=80'}" alt="${escapeHtmlSt(story.title)}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=160&auto=format&fit=crop&q=80'" />
+          ${story.badge ? `<span class="story-badge">${escapeHtmlSt(story.badge)}</span>` : ''}
         </div>
-        <span class="story-title">${story.title}</span>
+        <span class="story-title">${escapeHtmlSt(story.title)}</span>
       `;
 
       card.addEventListener('click', (e) => {

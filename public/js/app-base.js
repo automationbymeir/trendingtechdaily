@@ -1,3 +1,14 @@
+// Opinly Analytics Pixel
+try {
+  var opinly = document.createElement('script');
+  opinly.async = true;
+  opinly.src = 'https://static.opinly.ai/p.js';
+  opinly.setAttribute('data-key', 'pk-vxhMuIv6Ste6FIbae3BxdQt8K2YagUwUelNIJw-');
+  document.head.appendChild(opinly);
+} catch (e) {
+  console.warn('Opinly pixel error', e);
+}
+
 // public/js/app-base.js - Base Application Infrastructure for TrendingTech Daily
 
 let currentUser = null;

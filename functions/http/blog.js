@@ -189,6 +189,7 @@ const BLOG_CSS = `
     article .content table { border-collapse: collapse; width: 100%; margin: 2rem 0; font-size: 0.95rem; }
     article .content th, article .content td { border: 1px solid var(--border-color); padding: 10px 14px; text-align: start; }
     article .content th { background: var(--bg-surface); font-family: var(--font-heading); color: var(--text-primary); text-transform: none; }
+    article .content th p, article .content td p { margin: 0; }
     .empty { color: var(--text-muted); background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: var(--radius-lg); padding: 48px 24px; text-align: center; }
 `;
 

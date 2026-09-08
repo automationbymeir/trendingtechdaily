@@ -90,6 +90,10 @@ function renderNode(node) {
     case "blockquote": return `<blockquote>${kids}</blockquote>`;
     case "codeBlock": return `<pre><code>${kids}</code></pre>`;
     case "horizontalRule": return "<hr>";
+    case "table": return `<table>${kids}</table>`;
+    case "tableRow": return `<tr>${kids}</tr>`;
+    case "tableCell": return `<td>${kids}</td>`;
+    case "tableHeader": return `<th>${kids}</th>`;
     case "image": {
       const src = safeUrl((node.attrs && node.attrs.src) || imageUrl(node.attrs) || "");
       if (!src) return "";
@@ -182,6 +186,9 @@ const BLOG_CSS = `
     .faq details { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 18px; margin-bottom: 12px; }
     .faq summary { cursor: pointer; font-weight: 600; color: var(--text-primary); }
     .faq details p { color: var(--text-secondary); margin: 10px 0 0; }
+    article .content table { border-collapse: collapse; width: 100%; margin: 2rem 0; font-size: 0.95rem; }
+    article .content th, article .content td { border: 1px solid var(--border-color); padding: 10px 14px; text-align: start; }
+    article .content th { background: var(--bg-surface); font-family: var(--font-heading); color: var(--text-primary); text-transform: none; }
     .empty { color: var(--text-muted); background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: var(--radius-lg); padding: 48px 24px; text-align: center; }
 `;
 

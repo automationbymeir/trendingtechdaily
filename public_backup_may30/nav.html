@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Navigation</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand" href="/">TrendingTech Daily</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/podcasts.html">Podcasts</a>
+          </li>
+          <li id="category-nav-placeholder"></li>
+          <li class="nav-item" id="auth-login-link">
+            <a class="nav-link" href="/login.html">Login</a>
+          </li>
+          <li class="nav-item" id="auth-signup-link">
+            <a class="nav-link" href="/signup.html">Sign Up</a>
+          </li>
+          <li class="nav-item dropdown" id="auth-profile-menu">
+            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <img id="user-profile-pic-nav" src="/img/default-avatar.png" alt="User" style="width: 25px; height: 25px; border-radius: 50%; margin-right: 8px; background-color: #eee;">
+              <span id="user-display-name-nav">Profile</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+              <li><a class="dropdown-item" href="/profile.html">My Profile</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><button class="dropdown-item" type="button" id="auth-logout-btn">Logout</button></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</body>
+</html>

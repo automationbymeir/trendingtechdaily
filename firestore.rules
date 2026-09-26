@@ -1,0 +1,146 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper Functions
+    function isAdmin() {
+      return request.auth != null && request.auth.token.admin == true;
+    }
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Articles Collection
+    match /articles/{articleId} {
+      // Allow reading published articles (or any by admin)
+      allow get: if resource.data.published == true || isAdmin();
+      // Allow public list/query (client should filter for published articles)
+      allow list: if true;
+      // Allow only admins to write
+      allow write: if isAdmin();
+
+      // Comments subcollection within an article
+      match /comments/{commentId} {
+        allow read, list: if true; // Anyone can read and list comments for an article
+        allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid; // User must own the comment they create
+        allow update, delete: if (isOwner(resource.data.userId) || isAdmin()); // Owner or admin can modify/delete
+      }
+    }
+
+    // Sections Collection
+    match /sections/{sectionId} {
+      // Allow reading active sections (or any by admin)
+      allow get: if resource.data.active == true || isAdmin();
+      // Allow public list/query (client should filter for active sections)
+      allow list: if true;
+      // Allow only admins to write
+      allow write: if isAdmin();
+    }
+
+    // Settings Collection - Anyone can read, only admins can write
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Users Collection
+    match /users/{userId} {
+      allow read, write: if isAdmin(); // Admin full access
+      // Allow user to read AND update their own profile data
+      allow get, update: if isOwner(userId);
+      // Allow user creation (e.g., during signup)
+      allow create: if isOwner(userId);
+      // Deny public list/delete unless admin
+      allow list, delete: if false;
+
+      // Subcollections within User Profile
+      match /savedArticles/{docId} {
+        allow read, write, delete: if isOwner(userId); // User manages own saved items
+      }
+      match /readHistory/{docId} {
+        allow read, write, delete: if isOwner(userId); // User manages own history
+      }
+    }
+
+    // Comments Collection Group (This rule will apply to comments NOT under /articles/{articleId}/comments)
+    // Or if a more specific rule (like the one above for article comments) doesn't match.
+    match /{path=**}/comments/{commentId} {
+      // Allow users to LIST comments WHERE the userId field matches their own UID (for profile page)
+      allow list: if isSignedIn() && request.auth.uid == resource.data.userId;
+      // Allow reading individual comments publicly (e.g., on article page) - This is now handled more specifically above for article comments
+      allow get: if true;
+      // Allow creating comments if signed in and userId matches
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      // Allow owner or admin to update/delete
+      allow update, delete: if isOwner(resource.data.userId) || isAdmin();
+    }
+
+    // Cache Collection - Admin only
+    match /cache/{cacheId} {
+      allow read, write: if isAdmin();
+    }
+
+    // News & Stocks Collections (Populated by background fetch)
+    match /news/{newsId} {
+      allow read: if true; // Public read/list
+      allow write: if isAdmin(); // Or function identity with appropriate IAM
+    }
+    match /stocks/{stockId} {
+      allow read: if true; // Public read/list
+      allow write: if isAdmin(); // Or function identity with appropriate IAM
+    }
+
+    // Email Marketing Collections - Admin Only
+    match /templates/{templateId} {
+      allow read, write: if isAdmin();
+    }
+    
+    match /campaigns/{campaignId} {
+      allow read, write: if isAdmin();
+    }
+    
+    match /subscribers/{subscriberId} {
+      allow read, write: if isAdmin();
+    }
+    
+    match /lists/{listId} {
+      allow read, write: if isAdmin();
+      
+      match /members/{memberId} {
+        allow read, write: if isAdmin();
+      }
+    }
+    
+    match /workflows/{workflowId} {
+      allow read, write: if isAdmin();
+      
+      match /executions/{executionId} {
+        allow read, write: if isAdmin();
+        
+        match /steps/{stepId} {
+          allow read, write: if isAdmin();
+        }
+      }
+    }
+    
+    match /tracking/{trackingId} {
+      allow read, write: if isAdmin(); // Consider if some tracking (like pixel) needs broader write access
+    }
+    
+    match /scheduledTasks/{taskId} {
+      allow read, write: if isAdmin();
+    }
+    
+    match /emailTasks/{taskId} {
+      allow read, write: if isAdmin();
+    }
+    
+    // Collection Group queries for 'members' (if needed for admin-level cross-list queries)
+    match /{path=**}/members/{memberId} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

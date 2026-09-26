@@ -1,0 +1,10 @@
+/* ==========================================================================
+   TRENDINGTECHDAILY — HEBREW (RTL) MASTER STYLESHEET
+   Unified with main design system via CSS Logical Properties
+   ========================================================================== */
+
+@import url('/styles.css?v=20260820_2');
+
+html[dir="rtl"] body {
+  font-family: 'Rubik', 'Inter', system-ui, -apple-system, sans-serif;
+}

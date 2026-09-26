@@ -1,0 +1,31 @@
+# robots.txt for TrendingTech Daily
+
+User-agent: *
+Allow: /
+Allow: /ai/
+Allow: /startups/
+Allow: /cybersecurity/
+Allow: /blockchain/
+Allow: /tech/
+Allow: /market/
+Allow: /about
+Allow: /privacy
+Allow: /terms
+Allow: /contact
+Allow: /sitemap.xml
+
+# Disallow admin and internal pages
+Disallow: /admin/
+Disallow: /admin-test.html
+Disallow: /check-admin.html
+Disallow: /makeadmin.html
+Disallow: /directadmin.html
+Disallow: /login.html
+Disallow: /signup.html
+Disallow: /profile.html
+
+# Legacy URLs (to be removed after migration)
+Allow: /article/
+
+# Sitemap
+Sitemap: https://trendingtechdaily.com/sitemap.xml 

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TrendingTech – Admin Login</title>
+
+  <!-- Bootstrap (just for styling) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Firebase v9 compat builds -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
+</head>
+<body class="bg-light">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-md-6 mx-auto">
+        <div class="card shadow-sm">
+          <div class="card-header bg-primary text-white">
+            <h3 class="mb-0 text-center">Admin Login</h3>
+          </div>
+
+          <div class="card-body">
+            <div id="status" class="alert alert-info mb-4">Checking login status…</div>
+
+            <!-- Email / Password form -->
+            <form id="loginForm" style="display:none">
+              <div class="mb-3">
+                <label class="form-label" for="email">Email</label>
+                <input class="form-control" id="email" type="email" required />
+              </div>
+              <div class="mb-3">
+                <label class="form-label" for="password">Password</label>
+                <input class="form-control" id="password" type="password" required />
+              </div>
+              <button class="btn btn-primary w-100" type="submit">Login</button>
+            </form>
+
+            <!-- Actions shown *after* sign‑in -->
+            <div id="actions" style="display:none">
+              <button id="makeAdminBtn" class="btn btn-success w-100 mb-3" disabled>
+                Make Me Admin
+              </button>
+              <button id="dashboardBtn" class="btn btn-outline-primary w-100">
+                Go to Dashboard
+              </button>
+              <button id="logoutBtn" class="btn btn-link w-100 mt-2">Logout</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ------------------------------------------------------------------
+       1. Firebase initialisation
+    ------------------------------------------------------------------ */
+    const firebaseConfig = {
+      apiKey:            "AIzaSyAMMvOPS6fczzI_2CTOcc_NlGGFO4qDydg",
+      authDomain:        "trendingtech-daily.firebaseapp.com",
+      projectId:         "trendingtech-daily",
+      storageBucket:     "trendingtech-daily.appspot.com",
+      messagingSenderId: "343812872871",
+      appId:             "1:343812872871:web:5bd68bd7d6140d83551982"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth      = firebase.auth();
+    const functions = firebase.app().functions("us-central1");   // ← region
+
+    /* ------------------------------------------------------------------
+       2. DOM helpers
+    ------------------------------------------------------------------ */
+    const statusEl       = document.getElementById("status");
+    const loginForm      = document.getElementById("loginForm");
+    const actionsDiv     = document.getElementById("actions");
+    const makeAdminBtn   = document.getElementById("makeAdminBtn");
+    const dashboardBtn   = document.getElementById("dashboardBtn");
+    const logoutBtn      = document.getElementById("logoutBtn");
+
+    function showStatus(msg, type = "info") {
+      statusEl.className = `alert alert-${type} mb-4`;
+      statusEl.textContent = msg;
+    }
+
+    function uiSignedOut() {
+      showStatus("Please log in", "info");
+      loginForm.reset();
+      loginForm.style.display = "";
+      actionsDiv.style.display = "none";
+    }
+
+    function uiSignedIn(user) {
+      showStatus(`Logged in as ${user.email}`, "success");
+      loginForm.style.display = "none";
+      actionsDiv.style.display = "";
+      makeAdminBtn.disabled = false;
+    }
+
+    /* ------------------------------------------------------------------
+       3. Auth state observer
+    ------------------------------------------------------------------ */
+    auth.onAuthStateChanged(async (user) => {
+      if (!user) return uiSignedOut();
+
+      // force‑refresh to get the latest custom claims
+      await user.getIdToken(true);
+      const { claims } = await user.getIdTokenResult();
+
+      uiSignedIn(user);
+
+      if (claims.admin) {
+        makeAdminBtn.disabled = true;
+        makeAdminBtn.textContent = "You are already an admin";
+      }
+    });
+
+    /* ------------------------------------------------------------------
+       4. Email / Password login form
+    ------------------------------------------------------------------ */
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email    = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      try {
+        showStatus("Signing in…");
+        await auth.signInWithEmailAndPassword(email, password);
+      } catch (err) {
+        console.error(err);
+        showStatus(err.message, "danger");
+      }
+    });
+
+    /* ------------------------------------------------------------------
+       5. Make‑Me‑Admin button
+    ------------------------------------------------------------------ */
+    makeAdminBtn.addEventListener("click", async () => {
+      const user = auth.currentUser;
+      if (!user) {
+        showStatus("You must sign in first.", "warning");
+        return;
+      }
+
+      makeAdminBtn.disabled = true;
+      showStatus("Calling createAdmin…");
+
+      try {
+        await functions.httpsCallable("createAdmin")();   // no payload
+        await user.getIdToken(true);                      // refresh claim
+
+        showStatus("🎉 You are now an admin!", "success");
+        makeAdminBtn.textContent = "You are now an admin";
+      } catch (err) {
+        console.error(err);
+        showStatus(err.message, "danger");
+        makeAdminBtn.disabled = false;
+      }
+    });
+
+    /* ------------------------------------------------------------------
+       6. Other buttons
+    ------------------------------------------------------------------ */
+    dashboardBtn.onclick = () => (location.href = "/admin/index.html");
+    logoutBtn.onclick    = () => auth.signOut();
+  </script>
+</body>
+</html>

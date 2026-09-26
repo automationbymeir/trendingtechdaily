@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article Preview - TrendingTech Daily</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa; /* Light gray background */
+            padding-top: 80px; /* Add padding to avoid overlap with fixed header */
+            padding-bottom: 20px;
+        }
+
+        .preview-header {
+            background-color: #343a40; /* Dark background for header */
+            color: white;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed; /* Make header fixed */
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1030; /* Ensure header is above content */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .article-container {
+            background-color: white;
+            border-radius: 8px; /* Slightly more rounded corners */
+            box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.08); /* Softer shadow */
+            padding: 25px 40px; /* Adjust padding */
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .article-title {
+            font-size: 2.4rem; /* Slightly smaller title */
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 1.3;
+            color: #212529; /* Darker title color */
+        }
+
+        .article-meta {
+            color: #6c757d; /* Bootstrap's standard muted text color */
+            margin-bottom: 25px;
+            font-size: 0.85rem; /* Smaller meta text */
+            border-bottom: 1px solid #dee2e6; /* Separator line */
+            padding-bottom: 10px;
+        }
+
+        .article-featured-image {
+            width: 100%;
+            max-height: 450px; /* Adjust max height if needed */
+            object-fit: cover; /* Ensure image covers the area well */
+            border-radius: 5px;
+            margin-bottom: 25px;
+            display: block; /* Ensure image behaves as block */
+        }
+
+        /* Target content coming from Quill specifically */
+        .article-content .ql-editor {
+             font-size: 1.05rem; /* Standard text size */
+             line-height: 1.7;
+             color: #343a40; /* Slightly darker text */
+             padding: 0; /* Remove default Quill padding */
+             overflow-wrap: break-word; /* Prevent long words from breaking layout */
+        }
+
+         /* Ensure images within Quill content are responsive */
+        .article-content .ql-editor img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            margin: 15px 0; /* Add vertical spacing around images */
+            display: block; /* Center images if needed via margin auto */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Style other Quill elements for better reading */
+         .article-content .ql-editor h1,
+         .article-content .ql-editor h2,
+         .article-content .ql-editor h3 {
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+            font-weight: 600;
+         }
+         .article-content .ql-editor p {
+            margin-bottom: 1em;
+         }
+         .article-content .ql-editor ul,
+         .article-content .ql-editor ol {
+             padding-left: 1.5em;
+             margin-bottom: 1em;
+         }
+          .article-content .ql-editor blockquote {
+            border-left: 4px solid #ccc;
+            margin-bottom: 1em;
+            padding-left: 1em;
+            color: #6c757d;
+            font-style: italic;
+         }
+          .article-content .ql-editor pre.ql-syntax {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 1em;
+            overflow-x: auto; /* Allow horizontal scrolling for code */
+            font-size: 0.9em;
+         }
+
+        /* Hide Quill toolbar if it somehow appears */
+        .ql-toolbar {
+            display: none !important;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="preview-header">
+        <span><strong>Article Preview</strong></span>
+        <div>
+            <span class="badge bg-warning text-dark me-2">PREVIEW MODE - NOT SAVED</span>
+            <button class="btn btn-sm btn-light" onclick="window.close()">Close Preview</button>
+        </div>
+    </div>
+
+    <div class="article-container">
+        <h1 class="article-title" id="article-title">Loading preview...</h1>
+
+        <div class="article-meta">
+            <span>Preview generated on: <strong id="preview-date">--</strong></span>
+            </div>
+
+        <div id="featured-image-container" class="mb-4">
+            </div>
+
+        <div class="article-content">
+            <div id="article-content-display" class="ql-snow"> <div class="ql-editor"> <p>Loading content...</p>
+                 </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load preview data from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- CORRECTED KEY ---
+            const previewDataJSON = localStorage.getItem('articlePreviewData');
+            let previewData = null;
+
+            if (previewDataJSON) {
+                try {
+                    previewData = JSON.parse(previewDataJSON);
+                } catch (error) {
+                     console.error("Error parsing preview data from localStorage:", error);
+                     previewData = null; // Ensure previewData is null if parsing fails
+                }
+            }
+
+
+            const titleElement = document.getElementById('article-title');
+            const contentDisplayElement = document.querySelector('#article-content-display .ql-editor'); // Target the inner div
+            const dateElement = document.getElementById('preview-date');
+            const imgContainer = document.getElementById('featured-image-container');
+
+            if (!previewData) {
+                if(titleElement) titleElement.textContent = 'No Preview Data Found';
+                if(contentDisplayElement) contentDisplayElement.innerHTML = '<p class="text-danger">Could not load preview data. Please generate a preview again from the editor.</p>';
+                 if(dateElement) dateElement.textContent = 'N/A';
+                 if(imgContainer) imgContainer.innerHTML = ''; // Clear any potential placeholder
+                console.warn("localStorage key 'articlePreviewData' not found or data is invalid.");
+                return; // Stop execution if no valid data
+            }
+
+            // --- Populate the page ---
+
+            // Set the title
+            if(titleElement) {
+                titleElement.textContent = previewData.title || 'Untitled Preview'; // Fallback title
+                document.title = `Preview: ${previewData.title || 'Article'} - TrendingTech Daily`;
+            }
+
+            // Set the date
+            if(dateElement && previewData.previewTimestamp) {
+                 try {
+                    const previewDate = new Date(previewData.previewTimestamp);
+                    // Format date nicely
+                    dateElement.textContent = previewDate.toLocaleDateString(undefined, {
+                        year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+                    });
+                 } catch(e) {
+                    dateElement.textContent = 'Invalid Date'; // Handle invalid date format
+                 }
+            } else if (dateElement) {
+                 dateElement.textContent = 'Date N/A';
+            }
+
+
+            // Set the featured image if available
+            if (imgContainer && previewData.featuredImage) {
+                 // Basic validation for URL (optional)
+                 if (previewData.featuredImage.startsWith('http:') || previewData.featuredImage.startsWith('https:')) {
+                    imgContainer.innerHTML = `<img src="${previewData.featuredImage}" alt="Featured image for ${previewData.title || 'article'}" class="article-featured-image">`;
+                 } else {
+                     console.warn("Featured image URL might be invalid:", previewData.featuredImage);
+                     imgContainer.innerHTML = '<p class="text-muted text-center"><i>Invalid image URL provided</i></p>';
+                 }
+            } else if (imgContainer) {
+                 imgContainer.innerHTML = ''; // Ensure container is empty if no image
+            }
+
+
+            // Set the content (IMPORTANT: use the .ql-editor inner div)
+            if(contentDisplayElement && previewData.content) {
+                contentDisplayElement.innerHTML = previewData.content; // Place Quill's HTML content here
+            } else if (contentDisplayElement) {
+                 contentDisplayElement.innerHTML = '<p class="text-muted"><i>No content provided for preview.</i></p>';
+            }
+
+            // Optional: Clean up localStorage after loading?
+            // localStorage.removeItem('articlePreviewData'); // Uncomment if you want preview data to be one-time use
+        });
+        // Add this to your article.html page in a new script tag before the closing </body> tag
+
+// Function to handle loading external scripts needed for embeds
+function loadEmbedScripts() {
+    // Check if the article content contains certain embed signatures
+    const articleBody = document.querySelector('.article-body-content');
+    if (!articleBody) return;
+    
+    const articleHtml = articleBody.innerHTML;
+    
+    // Helper function to load a script if it's not already loaded
+    function loadScriptIfNeeded(src, id) {
+        if (!document.getElementById(id)) {
+            const script = document.createElement('script');
+            script.src = src;
+            script.id = id;
+            script.async = true;
+            script.charset = 'utf-8';
+            document.body.appendChild(script);
+            console.log(`Loaded embed script: ${id}`);
+        }
+    }
+    
+    // Check for Twitter/X embeds
+    if (articleHtml.includes('twitter-tweet') || articleHtml.includes('platform.twitter.com')) {
+        loadScriptIfNeeded('https://platform.twitter.com/widgets.js', 'twitter-embed-script');
+    }
+    
+    // Check for Instagram embeds
+    if (articleHtml.includes('instagram-media') || articleHtml.includes('platform.instagram.com')) {
+        loadScriptIfNeeded('https://www.instagram.com/embed.js', 'instagram-embed-script');
+    }
+    
+    // Add more embed script loaders as needed
+    
+    // Example: Load TikTok embed script if needed
+    if (articleHtml.includes('tiktok-embed') || articleHtml.includes('tiktok.com')) {
+        loadScriptIfNeeded('https://www.tiktok.com/embed.js', 'tiktok-embed-script');
+    }
+}
+
+// Add custom styles for embeds to ensure they're responsive
+function addEmbedStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+    /* Responsive container for embedded content */
+    .embedded-content-container {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0;
+        width: 100%;
+        overflow: hidden;
+    }
+    
+    /* Make iframes responsive */
+    .article-body-content iframe {
+        max-width: 100%;
+    }
+    
+    /* Specific styles for YouTube embeds */
+    .article-body-content iframe[src*="youtube.com"],
+    .article-body-content iframe[src*="youtu.be"] {
+        aspect-ratio: 16/9;
+        width: 100%;
+        height: auto;
+        max-width: 560px;
+    }
+    
+    /* Twitter embeds */
+    .twitter-tweet {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    /* Instagram embeds */
+    .instagram-media {
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+    
+    /* Add more custom embed styles as needed */
+    `;
+    document.head.appendChild(style);
+}
+
+// Initialize embed handling
+document.addEventListener('DOMContentLoaded', function() {
+    // Add the custom embed styles
+    addEmbedStyles();
+    
+    // Load necessary embed scripts when article is displayed
+    // We wrap this in a setTimeout to ensure the page has fully rendered
+    setTimeout(loadEmbedScripts, 1000);
+    
+    // Optional: add a resize listener to handle responsive embeds
+    window.addEventListener('resize', function() {
+        // If Twitter widget exists, trigger a resize
+        if (window.twttr && window.twttr.widgets) {
+            window.twttr.widgets.load();
+        }
+        
+        // Instagram typically handles its own resizing
+    });
+});
+
+// Optional: If the article is loaded dynamically, you might need to trigger this after the article content is inserted
+// Add this function call in your loadArticle function after setting articleContainer.innerHTML
+function initializeEmbeds() {
+    loadEmbedScripts();
+    
+    // Give embedded tweets time to load, then try to render them
+    setTimeout(function() {
+        if (window.twttr && window.twttr.widgets) {
+            window.twttr.widgets.load();
+        }
+        // Similar for other embed platforms that have JS APIs
+    }, 1500);
+}
+
+// Add this at the end of your loadArticle function in article.html
+// After: articleContainer.innerHTML = articleHTML;
+// Add: initializeEmbeds();
+    </script>
+</body>
+</html>

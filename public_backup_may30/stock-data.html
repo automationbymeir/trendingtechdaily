@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stock Market Data - TrendingTech Daily</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Sans:wght@400;600&family=Fira+Code&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="css/ai-agent.css">
+    <link rel="stylesheet" href="css/stock-styles.css">
+    
+</head>
+<body>
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <nav class="navbar navbar-expand-lg navbar-custom">
+      <div class="container">
+        <a class="navbar-brand" href="/">TrendingTech Daily</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarMain">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+            <li class="nav-item"><a class="nav-link active" href="/stock-data.html">Stocks</a></li>
+            <!-- -->
+            <li class="nav-item" id="auth-login-link" style="display: none;"><a class="nav-link" href="/login.html">Login</a></li>
+            <li class="nav-item" id="auth-signup-link" style="display: none;"><a class="nav-link" href="/signup.html">Sign Up</a></li>
+            <li class="nav-item dropdown" id="auth-profile-menu" style="display: none;">
+                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img id="user-profile-pic-nav" src="/img/default-avatar.png" alt="User" style="width: 25px; height: 25px; border-radius: 50%; margin-right: 8px;">
+                    <span id="user-display-name-nav">Profile</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                    <li><a class="dropdown-item" href="/profile.html">My Profile</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><button class="dropdown-item" type="button" id="auth-logout-btn">Logout</button></li>
+                </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container mt-5 mb-5">
+        <section id="search-section">
+            <div class="container">
+                <h2>Search Stocks</h2>
+                <div class="search-container">
+                    <input type="text" id="stock-search" placeholder="Enter stock symbol (e.g., AAPL)">
+                    <button id="search-btn">Search</button>
+                </div>
+            </div>
+        </section>
+
+       <!-- Replace your existing premarket section with this collapsible drawer -->
+<section id="premarket-drawer" class="mb-4">
+    <div class="container">
+      <button class="premarket-toggle-btn collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#premarketContent" aria-expanded="false" aria-controls="premarketContent">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h2 class="mb-0">Premarket Data</h2>
+            <p class="text-muted mb-0 small">Click to view premarket trading activity</p>
+          </div>
+          <div class="toggle-icon">
+            <i class="bi bi-chevron-down"></i>
+          </div>
+        </div>
+      </button>
+      
+      <div class="collapse" id="premarketContent">
+        <div class="premarket-content-wrapper">
+          <div class="loader" id="premarket-loader"></div>
+          <div class="error-message" id="premarket-error"></div>
+          <div class="stock-container" id="premarket-data">
+            <!-- Premarket stock data will be inserted here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+        <section id="market">
+            <div class="container">
+                <h2>Market Data</h2>
+                <div class="loader" id="market-loader"></div>
+                <div class="error-message" id="market-error"></div>
+                <div class="stock-container" id="market-data">
+                    <!-- Market stock data will be inserted here -->
+                </div>
+            </div>
+        </section>
+
+        <section id="watchlist">
+            <div class="container">
+                <h2>Your Watchlist</h2>
+                <div id="watchlist-stocks">
+                    <!-- Watchlist will be inserted here -->
+                </div>
+                <p class="info-text">Add stocks to your watchlist by clicking the star icon next to any stock.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+             <div class="row">
+                 <div class="col-md-3 mb-4 mb-md-0">
+                     <h5 id="footer-site-title">TrendingTech Daily</h5>
+                     <p id="footer-description" class="small text-muted">Stay informed...</p>
+                 </div>
+                 <div class="col-md-3 mb-4 mb-md-0">
+                     <h5>Quick Links</h5>
+                     <ul class="footer-links">
+                         <li><a href="/">Home</a></li>
+                         <li><a href="/about.html">About Us</a></li>
+                         <li><a href="/privacy.html">Privacy Policy</a></li>
+                         <li><a href="/terms.html">Terms of Service</a></li>
+                     </ul>
+                 </div>
+                 <div class="col-md-3 mb-4 mb-md-0">
+                     <h5>Categories</h5>
+                     <ul class="footer-links" id="footer-categories-list">
+                         <li class="text-muted small fst-italic">Loading...</li>
+                     </ul>
+                 </div>
+                 <div class="col-md-3">
+                     <h5>Contact Us</h5>
+                     <p class="small">
+                         <i class="bi bi-envelope-fill me-1"></i><span id="contact-email">loading...</span><br>
+                         <i class="bi bi-geo-alt-fill me-1"></i><span id="contact-address">loading...</span>
+                     </p>
+                     <div id="footer-social-links" class="mt-2"></div>
+                 </div>
+             </div>
+             <div class="copyright">&copy; <span id="footer-text">2025 TrendingTech Daily. All rights reserved.</span></div>
+         </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyAMMvOPS6fczzI_2CTOcc_NlGGFO4qDydg",
+            authDomain: "trendingtech-daily.firebaseapp.com",
+            projectId: "trendingtech-daily",
+            storageBucket: "trendingtech-daily.firebasestorage.app",
+            messagingSenderId: "343812872871",
+            appId: "1:343812872871:web:5bd68bd7d6140d83551982"
+        };
+
+        // Global Firebase variables
+        let db, auth;
+
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            auth = firebase.auth();
+            console.log("Firebase Initialized Successfully.");
+
+            // --- Auth State Listener (for Navbar UI) ---
+            auth.onAuthStateChanged(user => {
+                const loginLink = document.getElementById('auth-login-link');
+                const signupLink = document.getElementById('auth-signup-link');
+                const profileMenu = document.getElementById('auth-profile-menu');
+                const profilePicNav = document.getElementById('user-profile-pic-nav');
+                const displayNameNav = document.getElementById('user-display-name-nav');
+                const logoutBtn = document.getElementById('auth-logout-btn');
+
+                if (user) {
+                    if (loginLink) loginLink.style.display = 'none';
+                    if (signupLink) signupLink.style.display = 'none';
+                    if (profileMenu) profileMenu.style.display = 'list-item';
+                    if (profilePicNav) profilePicNav.src = user.photoURL || 'img/default-avatar.png';
+                    if (displayNameNav) displayNameNav.textContent = user.displayName || user.email?.split('@')[0] || 'User';
+                    if (logoutBtn) {
+                        const newLogoutBtn = logoutBtn.cloneNode(true);
+                        logoutBtn.parentNode?.replaceChild(newLogoutBtn, logoutBtn);
+                        newLogoutBtn.addEventListener('click', () => {
+                            auth.signOut().catch(error => { console.error("Sign out error", error); alert('Error signing out.'); });
+                        });
+                    }
+                } else {
+                    if (loginLink) loginLink.style.display = 'list-item';
+                    if (signupLink) signupLink.style.display = 'list-item';
+                    if (profileMenu) profileMenu.style.display = 'none';
+                }
+            });
+        } catch (error) {
+             console.error("FATAL: Firebase initialization failed on Stock Data page:", error);
+             document.body.innerHTML = '<div class="alert alert-danger m-5">App initialization failed.</div>';
+        }
+    </script>
+    <script src="js/stock-data.js"></script>
+    <script src="js/app-base.js"></script>
+    <script src="js/ai-agent.js" defer></script>
+    
+
+    <!-- Add this HTML at the end of your stock-data.html page, before the closing body tag -->
+<!-- Stock Detail Modal -->
+<div class="modal fade" id="stockDetailModal" tabindex="-1" aria-labelledby="stockDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="stockDetailModalLabel">Stock Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Header Section with Basic Info -->
+          <div class="stock-detail-header">
+            <div class="d-flex align-items-center mb-2">
+              <img id="detail-logo" src="" alt="Company Logo" class="me-3 detail-logo">
+              <div>
+                <h3 id="detail-symbol" class="mb-0"></h3>
+                <p id="detail-name" class="text-muted mb-0"></p>
+              </div>
+              <button id="detail-watchlist-btn" class="btn ms-auto" data-symbol="">
+                <i class="bi"></i>
+                <span></span>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Price Section -->
+          <div class="stock-detail-price mb-3">
+            <div class="row align-items-end">
+              <div class="col-md-6">
+                <h1 id="detail-price" class="display-5 mb-0"></h1>
+                <div id="detail-change" class="fs-4"></div>
+              </div>
+              <div class="col-md-6 text-md-end">
+                <p class="text-muted mb-0">Market <span id="detail-market-status">Open</span></p>
+                <p class="text-muted mb-0">Last updated: <span id="detail-last-updated"></span></p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Key Statistics -->
+          <div class="stock-detail-stats mb-4">
+            <h5>Key Statistics</h5>
+            <div class="row">
+              <div class="col-6 col-md-3 mb-3">
+                <div class="stat-item">
+                  <div class="stat-label">Previous Close</div>
+                  <div class="stat-value" id="detail-prev-close">-</div>
+                </div>
+              </div>
+              <div class="col-6 col-md-3 mb-3">
+                <div class="stat-item">
+                  <div class="stat-label">Open</div>
+                  <div class="stat-value" id="detail-open">-</div>
+                </div>
+              </div>
+              <div class="col-6 col-md-3 mb-3">
+                <div class="stat-item">
+                  <div class="stat-label">Day's Range</div>
+                  <div class="stat-value" id="detail-range">-</div>
+                </div>
+              </div>
+              <div class="col-6 col-md-3 mb-3">
+                <div class="stat-item">
+                  <div class="stat-label">Volume</div>
+                  <div class="stat-value" id="detail-volume">-</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Mini Chart Placeholder -->
+          <div class="stock-chart-container mb-4">
+            <div class="chart-placeholder text-center py-4" id="stock-chart">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading chart...</span>
+              </div>
+              <p class="text-muted mt-2">Loading price chart...</p>
+            </div>
+          </div>
+          
+          <!-- Company Information -->
+          <div class="stock-detail-company mb-3">
+            <h5>About <span id="detail-about-name"></span></h5>
+            <p id="detail-description" class="text-muted">Loading company information...</p>
+          </div>
+          
+          <!-- Loading Indicator -->
+          <div id="detail-loading" class="text-center" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="text-muted mt-2">Loading additional data...</p>
+          </div>
+          
+          <!-- Error Message -->
+          <div id="detail-error" class="alert alert-danger" style="display: none;"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <a id="detail-external-link" href="#" target="_blank" class="btn btn-primary">View on Yahoo Finance</a>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- AI Agent Container - Complete Structure -->
+<div class="ai-agent-container" id="aiAgentContainer">
+  <button class="ai-agent-button" id="aiAgentButton" aria-label="AI Tech News Assistant">
+    <div class="ai-agent-pulse"></div>
+    <svg class="ai-agent-icon" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+    </svg>
+  </button>
+  
+  <div class="ai-agent-chat" id="aiAgentChat">
+    <div class="ai-chat-header">
+      <h3>
+        <span class="ai-status-indicator"></span>
+        AI Tech News Agent
+      </h3>
+      <button class="ai-chat-close" id="aiChatClose" aria-label="Close chat">
+        <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        </svg>
+      </button>
+    </div>
+    <div class="ai-chat-content">
+      <div class="ai-chat-messages" id="aiChatMessages">
+        <div class="ai-message bot">
+          <div class="ai-message-bubble">
+            Hello! I can help you analyze stock trends or explain market concepts. How can I assist you today?
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ai-chat-input">
+      <div class="ai-quick-actions">
+        <button class="ai-quick-action" data-action="What's trending today?">What's trending?</button>
+        <button class="ai-quick-action" data-action="Analyze AAPL">Analyze AAPL</button>
+        <button class="ai-quick-action" data-action="Explain P/E ratio">Explain P/E ratio</button>
+      </div>
+      <form class="ai-input-form" id="aiInputForm">
+        <input type="text" class="ai-input-field" id="aiInputField" placeholder="Ask me anything..." autocomplete="off">
+        <button type="submit" class="ai-send-button" id="aiSendButton" disabled>
+          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          </svg>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+</body>
+</html>

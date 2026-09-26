@@ -1,0 +1,17 @@
+/* Styles for Trending GitHub Repositories in sidebar */
+#trending-github-list .list-group-item {
+  overflow: hidden;
+}
+
+#trending-github-list .repo-info {
+  min-width: 0; /* allow flex item to shrink so text wraps */
+}
+
+#trending-github-list .repo-name {
+  display: block; /* take full width for wrapping */
+  overflow-wrap: anywhere;
+}
+
+#trending-github-list .repo-description {
+  overflow-wrap: anywhere;
+}

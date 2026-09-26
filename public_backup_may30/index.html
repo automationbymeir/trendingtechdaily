@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TrendingTech Daily - Latest Tech News and Trends</title>
+  <meta name="description" content="Stay ahead with TrendingTech Daily - your premier source for breaking tech news, in-depth analysis, AI developments, startup insights, and expert reviews. Get daily updates on technology trends, innovations, and digital transformation.">
+  <meta name="keywords" content="tech news, technology trends, AI news, startup news, tech reviews, digital innovation, breaking tech news, technology analysis">
+  <meta name="author" content="TrendingTech Daily">
+  <meta property="og:title" content="TrendingTech Daily - Latest Tech News and Trends">
+  <meta property="og:description" content="Your premier source for breaking tech news, AI developments, startup insights, and expert technology analysis. Stay informed with daily updates.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://trendingtechdaily.com/">
+  <meta property="og:image" content="https://trendingtechdaily.com/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="TrendingTech Daily - Latest Tech News and Trends">
+  <meta name="twitter:description" content="Breaking tech news, AI developments, startup insights, and expert analysis. Stay ahead with daily technology updates.">
+  <meta name="robots" content="index, follow">
+  
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+  <link rel="canonical" href="https://trendingtechdaily.com/" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=IBM+Plex+Sans:wght@400;600&family=Fira+Code&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="css/ai-agent.css">
+  <link rel="stylesheet" href="css/popup.css" />
+  <link rel="stylesheet" href="css/sidebar-podcasts.css" />
+
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8142734137865758"
+    crossorigin="anonymous"></script>
+  <link rel="icon" href="/favicon.ico" sizes="any"> 
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml"> 
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "TrendingTech Daily",
+    "description": "Your premier source for breaking tech news, AI developments, startup insights, and expert technology analysis",
+    "url": "https://trendingtechdaily.com/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://trendingtechdaily.com/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+</head>
+<body>
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- Navbar Placeholder -->
+  <div id="navbar-placeholder"></div>
+  
+  <!-- Hero Section with H1 -->
+  <header class="hero-section">
+    <div class="container">
+      <h1 class="visually-hidden">TrendingTech Daily - Latest Technology News, AI Updates, and Tech Trends</h1>
+    </div>
+  </header>
+  
+  <!-- Welcome Popup -->
+  <div id="welcome-popup-overlay" class="welcome-popup-overlay">
+    <div class="welcome-popup">
+      <div class="welcome-popup-header">
+        <button class="popup-close-btn" id="popup-close-btn" type="button" aria-label="Close popup">
+          <i class="bi bi-x"></i>
+        </button>
+        <div class="welcome-icon">
+          <i class="bi bi-hand-thumbs-up"></i>
+        </div>
+        <h2>Welcome to TrendingTech Daily!</h2>
+        <p>Join our community and unlock exclusive features to enhance your tech news experience.</p>
+      </div>
+      
+      <div class="welcome-popup-body">
+        <div class="benefits-grid">
+          <div class="benefit-card">
+            <div class="benefit-icon">
+              <i class="bi bi-bookmark-heart"></i>
+            </div>
+            <h3>Save Articles</h3>
+            <p>Bookmark articles for later reading and build your personal tech knowledge library.</p>
+          </div>
+          
+          <div class="benefit-card">
+            <div class="benefit-icon">
+              <i class="bi bi-eye-fill"></i>
+            </div>
+            <h3>Track Reading</h3>
+            <p>Keep track of articles you've read and discover personalized recommendations.</p>
+          </div>
+          
+          <div class="benefit-card">
+            <div class="benefit-icon">
+              <i class="bi bi-chat-dots"></i>
+            </div>
+            <h3>Join Discussions</h3>
+            <p>Leave comments, engage with other tech enthusiasts, and share your insights.</p>
+          </div>
+          
+          <div class="benefit-card">
+            <div class="benefit-icon">
+              <i class="bi bi-graph-up"></i>
+            </div>
+            <h3>Stock Wishlist</h3>
+            <p>Create a personalized watchlist to track your favorite tech stocks and investments.</p>
+          </div>
+        </div>
+        
+        <div class="popup-actions">
+          <a href="/signup.html" class="popup-btn popup-btn-primary">
+            <i class="bi bi-person-plus"></i>
+            Create Free Account
+          </a>
+          <button class="popup-btn popup-btn-secondary" id="popup-maybe-later">
+            Maybe Later
+          </button>
+        </div>
+      </div>
+      
+      <div class="popup-footer">
+        <p>Already have an account? <a href="/login.html">Sign in here</a></p>
+      </div>
+    </div>
+  </div>
+
+  <section class="container mb-5" id="featured-article-container">
+    <div class="spinner-container text-center py-5">
+      <div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>
+      <p>Loading featured article...</p>
+    </div>
+  </section>
+  
+  <section class="container mt-5 mb-4 video-recommendations">
+    <h2 class="section-title">Recommended Videos</h2>
+    <div id="video-loader" class="spinner-container text-center py-4">
+         <div class="spinner-border text-secondary spinner-border-sm" role="status"></div>
+         <p class="text-muted small mt-2">Loading videos...</p>
+    </div>
+    <div id="video-recommendations-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+    </div>
+
+    <div id="show-more-videos-container" class="text-center mt-4" style="display: none;">
+      <button id="show-more-videos-btn" class="btn btn-outline-secondary btn-sm">Show More Videos</button>
+      <button id="show-less-videos-btn" class="btn btn-outline-secondary btn-sm" style="display: none;">Show Less Videos</button>
+    </div>
+  </section>
+  
+  <main class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <h2 class="section-title">Latest Articles</h2>
+        <div id="articles-container">
+          <div class="spinner-container text-center py-5"><div class="spinner-border" role="status"></div><p>Loading articles...</p></div>
+        </div>
+        <hr class="section-divider my-5">
+        <div id="api-articles-container">
+           <div class="spinner-container text-center py-5" id="api-loading-initial"><div class="spinner-border" role="status"></div><p>Loading news feeds...</p></div>
+        </div>
+      </div>
+      <aside class="col-lg-4">
+        <div class="sidebar-section mb-5">
+          <h3>Trending Topics</h3>
+          <ul class="trending-topics-list" id="categories-list">
+            <div class="spinner-container py-2 text-center"><div class="spinner-border spinner-border-sm" role="status"></div></div>
+          </ul>
+        </div>
+        <div class="sidebar-section mb-5">
+          <div class="section-header d-flex justify-content-between align-items-center mb-3">
+            <h3>Recommended Podcasts</h3>
+            <a href="/podcasts.html" class="btn btn-outline-primary btn-sm">
+              <i class="bi bi-headphones me-1"></i>View All
+            </a>
+          </div>
+          <div id="sidebar-podcasts-container">
+            <div id="sidebar-podcasts-loader" class="text-center py-3">
+              <div class="spinner-border spinner-border-sm text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <p class="small text-muted mt-2">Loading podcasts...</p>
+            </div>
+            <div id="sidebar-podcasts-error" class="alert alert-warning small d-none" role="alert">
+              Could not load podcasts.
+            </div>
+            <div id="sidebar-podcasts-list"></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="footer">
+      <div class="container">
+          <div class="row">
+              <div class="col-md-3 mb-4 mb-md-0">
+                <h4 id="footer-site-title">TrendingTech Daily</h4>
+                <p id="footer-description" class="small text-muted">Your premier source for breaking tech news, AI developments, and technology trends. Stay informed with daily updates on innovation and digital transformation.</p>
+              </div>
+              <div class="col-md-3 mb-4 mb-md-0">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                  <li><a href="/">Home</a></li>
+                  <li><a href="/about.html">About Us</a></li>
+                  <li><a href="/privacy.html">Privacy Policy</a></li>
+                  <li><a href="/terms.html">Terms of Service</a></li>
+                </ul>
+              </div>
+              <div class="col-md-3 mb-4 mb-md-0">
+                <h4>Categories</h4>
+                <ul class="footer-links" id="footer-categories-list">
+                  <li class="text-muted small fst-italic">Coming soon</li>
+                </ul>
+              </div>
+              <div class="col-md-3">
+                <h4>Contact Us</h4>
+                <p class="small">
+                  <i class="bi bi-envelope-fill me-1"></i><span id="contact-email">contact@trendingtechdaily.com</span><br>
+                  <i class="bi bi-geo-alt-fill me-1"></i><span id="contact-address">Coming soon</span>
+                </p>
+                <div id="footer-social-links" class="mt-2"></div>
+              </div>
+          </div>
+          <div class="copyright">
+            <span id="footer-text">© 2025 TrendingTech Daily. All rights reserved.</span>
+          </div>
+      </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/app-base.js"></script>
+  <script src="js/category-helper.js"></script>
+  <script src="js/index-main.js"></script>
+  <script src="js/index-features.js"></script>
+  <script src="js/ai-agent.js" defer></script>
+  
+  <!-- SINGLE AI-AGENT CONTAINER -->
+  <div class="ai-agent-container" id="aiAgentContainer">
+    <button class="ai-agent-button" id="aiAgentButton" aria-label="AI Tech News Assistant">
+      <div class="ai-agent-pulse"></div>
+      <svg class="ai-agent-icon" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+      </svg>
+    </button>
+    <div class="ai-agent-chat" id="aiAgentChat">
+      <div class="ai-chat-header">
+        <h3>
+          <span class="ai-status-indicator"></span>
+          AI Tech News Agent
+        </h3>
+        <button class="ai-chat-close" id="aiChatClose" aria-label="Close chat">
+          <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+          </svg>
+        </button>
+      </div>
+      <div class="ai-chat-content">
+        <div class="ai-chat-messages" id="aiChatMessages">
+          <div class="ai-message bot">
+            <div class="ai-message-bubble">
+              Hello! I'm your AI assistant for TrendingTech Daily. I can help you find articles, explain tech concepts, or discuss the latest tech news. How can I assist you today?
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ai-chat-input">
+        <div class="ai-quick-actions">
+          <button class="ai-quick-action" data-action="What's trending today?">What's trending?</button>
+          <button class="ai-quick-action" data-action="Explain this article">Explain article</button>
+          <button class="ai-quick-action" data-action="Find AI news">AI news</button>
+        </div>
+        <form class="ai-input-form" id="aiInputForm">
+          <input type="text" class="ai-input-field" id="aiInputField" placeholder="Ask me anything..." autocomplete="off">
+          <button type="submit" class="ai-send-button" id="aiSendButton" disabled>
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <!-- BANNER POINTER (positioned at bottom) -->
+  <div class="ai-agent-banner-pointer" id="aiAgentBannerPointer">
+    <div class="ai-agent-banner">
+      <button class="dismiss-btn" id="aiAgentBannerDismiss" aria-label="Dismiss banner">
+        <i class="bi bi-x"></i>
+      </button>
+      <div class="banner-content">
+        <div class="banner-title">
+          <h2>AI Tech Assistant</h2>
+        </div>
+        <p class="subtitle">Your personal guide to the latest in tech.</p>
+      </div>
+      <div class="banner-arrow-container">
+        <div class="banner-arrow"></div>
+      </div>
+    </div>
+  </div>
+  <script src="/debug-script.js"></script>
+
+</body>
+</html>

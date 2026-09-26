@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-mode="dark">
+<head>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
+  <!-- End Google Tag Manager -->
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design Systems Decoded — Palettes, Philosophies & Architectural Analysis | TrendingTech Daily</title>
+  <meta name="description" content="The complete decoded library of design systems — NewsKit, Material 3, Apple HIG, Carbon, Polaris, Fluent and more. Palettes, philosophies, and architectural verdicts."/>
+  <link rel="canonical" href="https://www.trendingtechdaily.com/design-systems"/>
+  <link rel="alternate" hreflang="en" href="https://www.trendingtechdaily.com/design-systems"/>
+  <link rel="alternate" hreflang="he" href="https://www.trendingtechdaily.com/he/design-systems"/>
+  <link rel="alternate" hreflang="x-default" href="https://www.trendingtechdaily.com/design-systems"/>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Master Unified Stylesheet -->
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/css/design-systems.css">
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- Firebase App & Services -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8142734137865758" crossorigin="anonymous"></script>
+</head>
+<body class="ds-page">
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+
+  <!-- Navbar Placeholder -->
+  <div id="navbar-placeholder"></div>
+
+  <!-- ── Hero ─────────────────────────────────────────────────── -->
+  <header class="ds-hero text-center">
+    <div class="container">
+      <div class="ds-poweredby">
+        <i class="bi bi-palette-fill" style="color:var(--accent-red);"></i>
+        <span>Design Architecture Catalog · <strong>TrendingTech Daily</strong></span>
+      </div>
+      <h1>Design Systems<span class="ds-slash">/</span>Decoded</h1>
+      <p class="ds-sub">Palettes, token architectures, component libraries &amp; architectural verdicts on every design system shaping the digital landscape.</p>
+      
+      <div class="ds-searchbar">
+        <i class="bi bi-search"></i>
+        <input id="ds-search" type="search" placeholder="Search design systems, companies, tokens (e.g. NewsKit, Carbon, Polaris)..." aria-label="Search design systems">
+      </div>
+      
+      <div class="ds-cta-row">
+        <a class="ds-chip-big" href="/ai-tools-guide.html"><i class="bi bi-book"></i> Design Guide</a>
+        <a class="ds-chip-big" href="/ai-tools-glossary.html"><i class="bi bi-journal-bookmark"></i> Tokens Glossary</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container my-4 my-md-5">
+
+    <!-- ── Trending Strip ──────────────────────────────────────── -->
+    <section class="ds-trending" aria-label="Trending this week">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 style="font-family: var(--font-display); font-size:1.35rem; font-weight:800; text-transform:uppercase; margin-bottom:0;">
+          <i class="bi bi-fire text-warning me-1"></i> Most Explored Design Systems
+        </h2>
+      </div>
+      <div id="ds-trending-track" class="ds-trending-track"></div>
+    </section>
+
+    <!-- ── Category Buckets ───────────────────────────────────── -->
+    <section class="ds-buckets" id="ds-buckets"></section>
+
+    <!-- ── Layout: Sidebar + Grid ─────────────────────────────── -->
+    <section class="ds-layout">
+      <aside class="ds-sidebar" aria-label="Filters">
+        <h4>System Type</h4>
+        <label><input type="radio" name="ds-type" value="" checked> All Types</label>
+        <label><input type="radio" name="ds-type" value="big-tech"> Big Tech Standard</label>
+        <label><input type="radio" name="ds-type" value="open-source"> Open Source Community</label>
+        <label><input type="radio" name="ds-type" value="modern"> Modern Scale-up</label>
+        <label><input type="radio" name="ds-type" value="government"> Government & Public</label>
+        <label><input type="radio" name="ds-type" value="enterprise"> Enterprise Scale</label>
+
+        <h4>Capabilities</h4>
+        <label><input type="checkbox" name="ds-capability" value="hasComponents"> React / Vue Library</label>
+        <label><input type="checkbox" name="ds-capability" value="hasFigma"> Figma UI Kit & Tokens</label>
+        <label><input type="checkbox" name="ds-capability" value="hasOpenSource"> Open Source Code</label>
+        <label><input type="checkbox" name="ds-capability" value="hasVoiceTone"> Voice & Content Tone</label>
+
+        <h4>Best For</h4>
+        <div class="ds-chips">
+          <span class="ds-chip" data-bestfor="enterprise">Enterprise</span>
+          <span class="ds-chip" data-bestfor="startups">Startups</span>
+          <span class="ds-chip" data-bestfor="mobile">Mobile Apps</span>
+          <span class="ds-chip" data-bestfor="data-heavy">Data Heavy</span>
+        </div>
+      </aside>
+
+      <div>
+        <div id="ds-grid" class="ds-grid"></div>
+        <div id="ds-empty" class="text-center py-5" style="display:none;">
+          <i class="bi bi-palette" style="font-size:3rem; color:var(--text-faint);"></i>
+          <h3 class="mt-3" style="font-size:1.25rem;">No design systems found</h3>
+          <p class="text-muted">Try clearing some filter tags.</p>
+        </div>
+        <div id="ds-loading" class="text-center py-4" style="display:none;">
+          <div class="spinner-border text-danger" role="status"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Persistent Audio Dock -->
+  <div class="podcast-dock" role="region" aria-label="Audio Player">
+    <div class="container dock-inner">
+      <div class="dock-track-info">
+        <div class="dock-art"><i class="bi bi-mic-fill"></i></div>
+        <div class="dock-meta">
+          <div class="dock-title">Lex Fridman Podcast #419 — Sam Altman: OpenAI, GPT-5 &amp; AGI</div>
+          <div class="dock-sub">Lex Fridman &amp; Sam Altman · 2 hr 18 min</div>
+        </div>
+      </div>
+      <div class="dock-controls">
+        <div class="dock-progress"><div class="dock-progress-bar" style="width:35%;"></div></div>
+        <a href="https://open.spotify.com/episode/5dKfZ1i9u9H9Gk5W0f1cQY" target="_blank" rel="noopener" class="dock-play-btn" aria-label="Play on Spotify"><i class="bi bi-play-fill"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script src="/js/config.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/nav-loader.js"></script>
+  <script src="/js/app-base.js"></script>
+  <script src="/js/design-systems.js"></script>
+</body>
+</html>

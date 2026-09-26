@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Status Test</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+</head>
+<body style="font-family: Arial; margin: 40px;">
+  <h1>Admin Status Test</h1>
+  <pre id="status" style="background: #f0f0f0; padding: 20px; border-radius: 5px;">Checking login status...</pre>
+  <button id="refresh" style="padding: 10px; margin-top: 20px;">Refresh Token</button>
+  <button id="logout" style="padding: 10px; margin-top: 20px; margin-left: 10px;">Logout</button>
+
+  <script>
+    // Initialize Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyAMMvOPS6fczzI_2CTOcc_NlGGFO4qDydg",
+      authDomain: "trendingtech-daily.firebaseapp.com",
+      projectId: "trendingtech-daily",
+      storageBucket: "trendingtech-daily.appspot.com",
+      messagingSenderId: "343812872871",
+      appId: "1:343812872871:web:5bd68bd7d6140d83551982"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    
+    // Check login status
+    function checkStatus() {
+      const statusElement = document.getElementById('status');
+      
+      firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          statusElement.textContent = 'User is logged in:\n';
+          statusElement.textContent += `Email: ${user.email}\n`;
+          statusElement.textContent += `UID: ${user.uid}\n\n`;
+          statusElement.textContent += 'Checking admin status...\n';
+          
+          user.getIdTokenResult(true)
+            .then(function(idTokenResult) {
+              statusElement.textContent += 'Token claims:\n';
+              statusElement.textContent += JSON.stringify(idTokenResult.claims, null, 2);
+            })
+            .catch(function(error) {
+              statusElement.textContent += `Error getting token: ${error.message}`;
+            });
+        } else {
+          statusElement.textContent = 'No user is logged in. Please login first.';
+        }
+      });
+    }
+    
+    // Refresh token
+    document.getElementById('refresh').addEventListener('click', function() {
+      const statusElement = document.getElementById('status');
+      statusElement.textContent = 'Refreshing token...';
+      
+      firebase.auth().currentUser.getIdToken(true)
+        .then(function() {
+          checkStatus();
+        })
+        .catch(function(error) {
+          statusElement.textContent = `Error refreshing token: ${error.message}`;
+        });
+    });
+    
+    // Logout
+    document.getElementById('logout').addEventListener('click', function() {
+      firebase.auth().signOut()
+        .then(function() {
+          document.getElementById('status').textContent = 'Logged out successfully.';
+        })
+        .catch(function(error) {
+          document.getElementById('status').textContent = `Error logging out: ${error.message}`;
+        });
+    });
+    
+    // Initialize
+    checkStatus();
+  </script>
+</body>
+</html>

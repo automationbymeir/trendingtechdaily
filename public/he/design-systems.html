@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl" data-mode="dark">
+<head>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
+  <!-- End Google Tag Manager -->
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>מערכות עיצוב מפוענחות — פלטות צבעים, ארכיטקטורת רכיבים וניתוח | TrendingTech Daily</title>
+  <meta name="description" content="ספריית מערכות העיצוב המלאה — NewsKit, Material 3, Carbon, Polaris, Fluent ועוד. פלטות צבעים, פילוסופיית עיצוב וניתוח מקצועי בעברית."/>
+  <link rel="canonical" href="https://www.trendingtechdaily.com/he/design-systems"/>
+  <link rel="alternate" hreflang="en" href="https://www.trendingtechdaily.com/design-systems"/>
+  <link rel="alternate" hreflang="he" href="https://www.trendingtechdaily.com/he/design-systems"/>
+  <link rel="alternate" hreflang="x-default" href="https://www.trendingtechdaily.com/design-systems"/>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Rubik:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Master Unified Stylesheet -->
+  <link rel="stylesheet" href="/he/styles.css">
+  <link rel="stylesheet" href="/css/design-systems.css">
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- Firebase App & Services -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8142734137865758" crossorigin="anonymous"></script>
+</head>
+<body class="ds-page">
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+
+  <!-- Navbar Placeholder -->
+  <div id="navbar-placeholder"></div>
+
+  <!-- ── Hero (Hebrew) ─────────────────────────────────────────── -->
+  <header class="ds-hero text-center">
+    <div class="container">
+      <div class="ds-poweredby">
+        <i class="bi bi-palette-fill" style="color:var(--accent-red);"></i>
+        <span>אינדקס מערכות עיצוב ארגוניות · <strong>TrendingTech Daily</strong></span>
+      </div>
+      <h1>מערכות עיצוב<span class="ds-slash">/</span>מפוענחות</h1>
+      <p class="ds-sub">פלטות צבעים, ארכיטקטורת Tokens, ספריות רכיבים וניתוח טכנולוגי של מערכות העיצוב המובילות בעולם.</p>
+      
+      <div class="ds-searchbar">
+        <i class="bi bi-search"></i>
+        <input id="ds-search" type="search" placeholder="חיפוש מערכות עיצוב, חברות, פלטות (למשל NewsKit, Carbon, Polaris)..." aria-label="חיפוש מערכות עיצוב">
+      </div>
+      
+      <div class="ds-cta-row">
+        <a class="ds-chip-big" href="/he/ai-tools-guide.html"><i class="bi bi-book"></i> מדריך מקצועי</a>
+        <a class="ds-chip-big" href="/he/ai-tools-glossary.html"><i class="bi bi-journal-bookmark"></i> מילון Tokens</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container my-4 my-md-5">
+
+    <!-- ── Trending Strip ──────────────────────────────────────── -->
+    <section class="ds-trending" aria-label="מערכות עיצוב פופולריות השבוע">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 style="font-family: var(--font-display); font-size:1.35rem; font-weight:800; text-transform:uppercase; margin-bottom:0;">
+          <i class="bi bi-fire text-warning ms-1"></i> מערכות העיצוב המבוקשות ביותר
+        </h2>
+      </div>
+      <div id="ds-trending-track" class="ds-trending-track"></div>
+    </section>
+
+    <!-- ── Category Buckets ───────────────────────────────────── -->
+    <section class="ds-buckets" id="ds-buckets"></section>
+
+    <!-- ── Layout: Sidebar + Grid ─────────────────────────────── -->
+    <section class="ds-layout">
+      <aside class="ds-sidebar" aria-label="סינון">
+        <h4>סוג המערכת</h4>
+        <label><input type="radio" name="ds-type" value="" checked> כל הסוגים</label>
+        <label><input type="radio" name="ds-type" value="big-tech"> ענקיות טכנולוגיה</label>
+        <label><input type="radio" name="ds-type" value="open-source"> קוד פתוח</label>
+        <label><input type="radio" name="ds-type" value="modern"> חברות צמיחה</label>
+        <label><input type="radio" name="ds-type" value="government"> מגזר ציבורי וממשל</label>
+        <label><input type="radio" name="ds-type" value="enterprise"> סקייל ארגוני</label>
+
+        <h4>יכולות המערכת</h4>
+        <label><input type="checkbox" name="ds-capability" value="hasComponents"> ספריית React / Vue</label>
+        <label><input type="checkbox" name="ds-capability" value="hasFigma"> קובצי Figma ו-Tokens</label>
+        <label><input type="checkbox" name="ds-capability" value="hasOpenSource"> קוד פתוח</label>
+        <label><input type="checkbox" name="ds-capability" value="hasVoiceTone"> הנחיות שפה ומיתוג</label>
+
+        <h4>מתאים במיוחד עבור</h4>
+        <div class="ds-chips">
+          <span class="ds-chip" data-bestfor="enterprise">ארגונים גדולים</span>
+          <span class="ds-chip" data-bestfor="startups">סטארטאפים</span>
+          <span class="ds-chip" data-bestfor="mobile">אפליקציות מובייל</span>
+          <span class="ds-chip" data-bestfor="data-heavy">מערכות דאטה</span>
+        </div>
+      </aside>
+
+      <div>
+        <div id="ds-grid" class="ds-grid"></div>
+        <div id="ds-empty" class="text-center py-5" style="display:none;">
+          <i class="bi bi-palette" style="font-size:3rem; color:var(--text-faint);"></i>
+          <h3 class="mt-3" style="font-size:1.25rem;">לא נמצאו מערכות עיצוב תואמות</h3>
+          <p class="text-muted">נסו להסיר חלק ממסנני החיפוש.</p>
+        </div>
+        <div id="ds-loading" class="text-center py-4" style="display:none;">
+          <div class="spinner-border text-danger" role="status"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Persistent Audio Dock -->
+  <div class="podcast-dock" role="region" aria-label="נגן פודקאסט">
+    <div class="container dock-inner">
+      <div class="dock-track-info">
+        <div class="dock-art"><i class="bi bi-mic-fill"></i></div>
+        <div class="dock-meta">
+          <div class="dock-title">הייטק בפקקים — עתיד הבינה המלאכותית בישראל ובעולם</div>
+          <div class="dock-sub">הייטק בפקקים עם אורי טוביאס · 48 דקות</div>
+        </div>
+      </div>
+      <div class="dock-controls">
+        <div class="dock-progress"><div class="dock-progress-bar" style="width:40%;"></div></div>
+        <a href="https://open.spotify.com/show/0zQn0c0lO1EwA9qV5Q4y0K" target="_blank" rel="noopener" class="dock-play-btn" aria-label="הפעל בספוטיפיי"><i class="bi bi-play-fill"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Placeholder -->
+  <div id="footer-placeholder"></div>
+
+  <!-- Scripts -->
+  <script src="/js/config.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/nav-loader.js?v=20260820_he5"></script>
+  <script src="/js/app-base.js?v=20260820_he5"></script>
+  <script src="/js/design-systems.js"></script>
+</body>
+</html>

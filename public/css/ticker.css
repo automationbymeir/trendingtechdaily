@@ -1,0 +1,108 @@
+/* ticker.css */
+.news-ticker-container {
+    display: flex;
+    align-items: center;
+    background: #0d1117;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding: 0 20px;
+    height: 45px;
+    font-family: inherit;
+    color: #fff;
+    overflow: hidden;
+}
+
+.news-ticker-container.container-boxed {
+    border-radius: 8px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(255,255,255,0.05);
+    padding: 0 15px;
+}
+
+.ticker-label {
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    color: #f44336;
+    white-space: nowrap;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+html[dir="rtl"] .ticker-label,
+.news-ticker-container[dir="rtl"] .ticker-label {
+    margin-left: 15px;
+}
+
+html[dir="ltr"] .ticker-label,
+.news-ticker-container[dir="ltr"] .ticker-label,
+.news-ticker-container:not([dir="rtl"]) .ticker-label {
+    margin-right: 15px;
+}
+
+.pulsing-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #f44336;
+    border-radius: 50%;
+    animation: pulse-red 1.5s infinite;
+}
+
+html[dir="rtl"] .pulsing-dot,
+.news-ticker-container[dir="rtl"] .pulsing-dot {
+    margin-left: 8px;
+}
+
+html[dir="ltr"] .pulsing-dot,
+.news-ticker-container[dir="ltr"] .pulsing-dot,
+.news-ticker-container:not([dir="rtl"]) .pulsing-dot {
+    margin-right: 8px;
+}
+
+@keyframes pulse-red {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(244, 67, 54, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(244, 67, 54, 0); }
+}
+
+.ticker-content {
+    flex: 1;
+    position: relative;
+    height: 100%;
+}
+
+.ticker-item {
+    position: absolute;
+    top: 50%;
+    transform: translateY(100%);
+    opacity: 0;
+    left: 0;
+    right: 0;
+    text-decoration: none;
+    color: #e0e0e0;
+    font-size: 0.95rem;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none;
+}
+
+.ticker-item:hover {
+    color: #2196f3;
+    text-decoration: underline;
+}
+
+.ticker-item.active {
+    transform: translateY(-50%);
+    opacity: 1;
+    z-index: 1;
+    pointer-events: auto;
+}
+
+.ticker-item.exit {
+    transform: translateY(-150%);
+    opacity: 0;
+    pointer-events: none;
+}

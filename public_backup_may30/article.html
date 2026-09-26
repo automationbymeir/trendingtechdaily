@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Add this right after <head> in your article.html -->
+<script>
+    // Client-side routing fix
+    (function() {
+        // Check if we're on the correct page
+        const path = window.location.pathname;
+        const validCategories = ['ai', 'tech', 'market', 'global', 'startups', 'business', 'cybersecurity', 'blockchain'];
+        
+        // Check if URL matches article pattern
+        const parts = path.split('/').filter(p => p);
+        if (parts.length === 2 && validCategories.includes(parts[0])) {
+            // We're on an article URL but not on article.html
+            if (!window.location.pathname.includes('article.html')) {
+                // Store the intended path and redirect to article.html
+                sessionStorage.setItem('articlePath', path);
+                window.location.href = '/article.html';
+            }
+        }
+        
+        // If we're on article.html, check if we need to load an article
+        if (window.location.pathname === '/article.html') {
+            const intendedPath = sessionStorage.getItem('articlePath');
+            if (intendedPath) {
+                // Clear the stored path
+                sessionStorage.removeItem('articlePath');
+                // Update the browser URL without reloading
+                window.history.replaceState({}, '', intendedPath);
+            }
+        }
+    })();
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article - TrendingTech Daily</title>
+    <meta name="robots" content="index, follow">
+    <meta name="description" content="Read the latest technology news, insights, and analysis on TrendingTech Daily. Stay informed about AI, startups, digital transformation, and more.">
+    <!-- Dynamic canonical URL will be set by JavaScript -->
+    <link rel="canonical" id="canonicalLink">
+    <meta property="og:type" content="article">
+    <meta property="og:title" id="ogTitle">
+    <meta property="og:description" id="ogDescription">
+    <meta property="og:url" id="ogUrl">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" id="twitterTitle">
+    <meta name="twitter:description" id="twitterDescription">
+    
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-M68CNVMQ');</script>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-functions-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+
+    <!-- Styles -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/css/ai-agent.css">
+    
+    <!-- AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8142734137865758" crossorigin="anonymous"></script>
+
+    <!-- Add this script in the head section -->
+    <script>
+    function updateMetaTags(articleData) {
+        const baseUrl = 'https://www.trendingtechdaily.com';
+        const articleUrl = `${baseUrl}/${articleData.category}/${articleData.slug}`;
+        
+        // Update canonical URL
+        document.getElementById('canonicalLink').href = articleUrl;
+        
+        // Update page title
+        document.title = `${articleData.title} - TrendingTech Daily`;
+        
+        // Update Open Graph tags
+        document.getElementById('ogTitle').content = articleData.title;
+        document.getElementById('ogDescription').content = articleData.description || 'Read the latest technology news and insights on TrendingTech Daily';
+        document.getElementById('ogUrl').content = articleUrl;
+        
+        // Update Twitter tags
+        document.getElementById('twitterTitle').content = articleData.title;
+        document.getElementById('twitterDescription').content = articleData.description || 'Read the latest technology news and insights on TrendingTech Daily';
+    }
+    </script>
+</head>
+<body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M68CNVMQ"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    
+    <!-- Navbar Placeholder -->
+    <div id="navbar-placeholder"></div>
+
+    <!-- Main Content -->
+    <div class="container mt-4 mb-5">
+        <div class="row">
+            <!-- Article Column -->
+            <div class="col-lg-8">
+                <!-- Article Container -->
+                <div id="article-container">
+                    <div class="spinner-container text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="text-muted mt-2">Loading article...</p>
+                    </div>
+                </div>
+
+                <!-- Related Articles -->
+                <div class="related-articles mt-5" id="related-articles-container" style="display: none;">
+                    <h3 class="section-title">Related Articles</h3>
+                    <div class="row g-3" id="related-articles-list"></div>
+                </div>
+                
+                <!-- Advertisement -->
+                <div class="ad-container my-4 text-center">
+                    <hr>
+                    <p class="text-muted small mb-2">Advertisement</p>
+                    <iframe src="https://www.fiverr.com/gig_widgets?id=U2FsdGVkX19Swkh+R4Km+WCOEHylAuvdb5hVh/hagr09NnGaLFnuFZFgo+VxZxgp+V7tsbus+6Qy9BTItznEyUzdaC211ywZboShwUMuZPoxmTBHjqj0+tmw79+OnPph+yE0rhMZgmDLJQFI4omAS4yBfTPa/htI8ZUD0lfviR1tIlZ5NnSu8TuEp00dg0cjveQgIbCgp+xijyNL1Ae8PHaMAeqBtB7yB8DG8NySd1zg63gPrw34oOaJf2fyY7vDZZm3nKtg8boiY/5eW0lzON5IuJ/YFhXOjpiPP9I+Mc+nlFLXETULNOgqvjAtL32jp8oKdfBrE/pLCj5J+iiKyf+kNf9ekO+IMm0T6LgFra1nr9Wzs3JSRGbunzuLD59cLjHFV1VcpGwrrJTigauNVhCilZKCZb9YYc8G/seAXMxatBUg2VVNWZ2vljS2nHmBwUD6uRZ91AgQ9aOLMPoNwg==&affiliate_id=1123441&strip_google_tagmanager=true" loading="lazy" data-with-title="true" class="fiverr_nga_frame" frameborder="0" height="500" width="100%" referrerpolicy="no-referrer-when-downgrade" data-mode="random_gigs" onload=" var frame = this; var script = document.createElement('script'); script.addEventListener('load', function() { window.FW_SDK.register(frame); }); script.setAttribute('src', 'https://www.fiverr.com/gig_widgets/sdk'); document.body.appendChild(script); " ></iframe>
+                    <hr class="mt-4">
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <aside class="col-lg-4">
+                <!-- Trending Articles -->
+                <div class="sidebar-section mb-4">
+                    <h4>Trending Articles</h4>
+                    <ul class="trending-topics-list" id="trending-articles-list">
+                        <li class="text-muted small">Loading...</li>
+                    </ul>
+                </div>
+
+                <!-- Categories -->
+                <div class="sidebar-section mb-4">
+                    <h4>Categories</h4>
+                    <ul class="trending-topics-list" id="categories-list">
+                        <li class="text-muted small">Loading...</li>
+                    </ul>
+                </div>
+
+                <!-- Sidebar Ad -->
+                <div class="ad-container text-center">
+                    <p class="text-muted mb-1 small">Advertisement</p>
+                    <div class="bg-light d-flex align-items-center justify-content-center" style="height: 250px; width: 100%;">
+                        <div></div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <h5 id="footer-site-title">TrendingTech Daily</h5>
+                    <p id="footer-description" class="small text-muted">Stay informed...</p>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <h5>Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/about.html">About Us</a></li>
+                        <li><a href="/privacy.html">Privacy Policy</a></li>
+                        <li><a href="/terms.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <h5>Categories</h5>
+                    <ul class="footer-links" id="footer-categories-list">
+                        <li class="text-muted small fst-italic">Loading...</li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Contact Us</h5>
+                    <p class="small">
+                        <i class="bi bi-envelope-fill me-1"></i><span id="contact-email">loading...</span><br>
+                        <i class="bi bi-geo-alt-fill me-1"></i><span id="contact-address">loading...</span>
+                    </p>
+                    <div id="footer-social-links" class="mt-2"></div>
+                </div>
+            </div>
+            <div class="copyright">&copy; <span id="footer-text">2025 TrendingTech Daily. All rights reserved.</span></div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/app-base.js"></script>
+    <script src="js/category-helper.js"></script>
+    <script src="/js/ai-agent.js" defer></script>
+
+    <!-- Page-specific Scripts -->
+    <script src="/js/article-page.js"></script>
+
+    <!-- AI Agent Container -->
+    <div class="ai-agent-container" id="aiAgentContainer">
+        <button class="ai-agent-button" id="aiAgentButton" aria-label="AI Tech News Assistant">
+            <div class="ai-agent-pulse"></div>
+            <svg class="ai-agent-icon" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+        </button>
+        
+        <div class="ai-agent-chat" id="aiAgentChat">
+            <div class="ai-chat-header">
+                <h3>
+                    <span class="ai-status-indicator"></span>
+                    AI Tech News Agent
+                </h3>
+                <button class="ai-chat-close" id="aiChatClose" aria-label="Close chat">
+                    <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="ai-chat-content">
+                <div class="ai-chat-messages" id="aiChatMessages">
+                    <div class="ai-message bot">
+                        <div class="ai-message-bubble">
+                            Hello! I'm your AI assistant for TrendingTech Daily. I can help you find articles, explain tech concepts, or discuss the latest tech news. How can I assist you today?
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ai-chat-input">
+                <div class="ai-quick-actions">
+                    <button class="ai-quick-action" data-action="What's trending today?">What's trending?</button>
+                    <button class="ai-quick-action" data-action="Explain this article">Explain article</button>
+                    <button class="ai-quick-action" data-action="Find AI news">AI news</button>
+                </div>
+                <form class="ai-input-form" id="aiInputForm">
+                    <input 
+                        type="text" 
+                        class="ai-input-field" 
+                        id="aiInputField" 
+                        placeholder="Ask me anything..."
+                        autocomplete="off"
+                    >
+                    <button type="submit" class="ai-send-button" id="aiSendButton" disabled>
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+        <!-- BANNER POINTER (positioned at bottom) -->
+  <div class="ai-agent-banner-pointer" id="aiAgentBannerPointer">
+    <div class="ai-agent-banner">
+      <button class="dismiss-btn" id="aiAgentBannerDismiss" aria-label="Dismiss banner">
+        <i class="bi bi-x"></i>
+      </button>
+      <div class="banner-content">
+        <div class="banner-title">
+          <h2>Summerize the article</h2>
+        </div>
+        <p class="subtitle">With our advanced AI assistant</p>
+      </div>
+      <div class="banner-arrow-container">
+        <div class="banner-arrow"></div>
+      </div>
+    </div>
+  </div>
+    </div>
+    <script src="/debug-script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - TrendingTech Daily</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Serif+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Simple module loader to help with component loading -->
+    <script>
+        // Simple module loader
+        window.loadModule = function(url) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.type = 'text/javascript';
+                script.src = url;
+                script.onload = () => resolve();
+                script.onerror = () => reject(new Error(`Failed to load module: ${url}`));
+                document.head.appendChild(script);
+            });
+        };
+    </script>
+    
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --accent-color: #f97316;
+            --text-color: #1f2937;
+            --bg-color: #f8fafc;
+        }
+        
+        body {
+            font-family: 'Source Serif Pro', Georgia, serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-weight: 700;
+        }
+        
+        .login-container {
+            max-width: 450px;
+            margin: 100px auto;
+        }
+        
+        .login-box {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #000;
+            padding-bottom: 15px;
+        }
+        
+        .login-header h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-weight: 900;
+            font-size: 2.2rem;
+            color: #000;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        
+        .btn-success {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        
+        .form-label {
+            font-weight: 600;
+        }
+        
+        .site-branding {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .site-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-weight: 900;
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .site-description {
+            font-style: italic;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container login-container">
+        <div class="site-branding">
+            <div class="site-title">TrendingTech Daily</div>
+            <div class="site-description">Admin Portal</div>
+        </div>
+        
+        <div class="login-box">
+            <div class="login-header">
+                <h2>Admin Login</h2>
+            </div>
+            
+            <div id="login-status" class="alert" style="display: none;"></div>
+            
+            <div id="login-form">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email address</label>
+                    <input type="email" class="form-control" id="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" required>
+                </div>
+                <button type="button" id="login-btn" class="btn btn-primary w-100">Login</button>
+            </div>
+            
+            <div id="admin-message" class="mt-4 text-center" style="display: none;">
+                <div class="alert alert-success">
+                    <p>Logged in as admin: <span id="user-email"></span></p>
+                    <button id="go-to-dashboard-btn" class="btn btn-success mt-2">Go to Dashboard</button>
+                    <button id="logout-btn" class="btn btn-outline-secondary mt-2">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAMMvOPS6fczzI_2CTOcc_NlGGFO4qDydg",
+            authDomain: "trendingtech-daily.firebaseapp.com",
+            projectId: "trendingtech-daily",
+            storageBucket: "trendingtech-daily.appspot.com",
+            messagingSenderId: "343812872871",
+            appId: "1:343812872871:web:5bd68bd7d6140d83551982"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        
+        // DOM elements
+        const loginForm = document.getElementById('login-form');
+        const loginStatus = document.getElementById('login-status');
+        const adminMessage = document.getElementById('admin-message');
+        const userEmailSpan = document.getElementById('user-email');
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const gotoDashboardBtn = document.getElementById('go-to-dashboard-btn');
+        
+        // Email component loader function - this will be used in dashboard.html
+        window.loadEmailComponent = function(componentName) {
+            // Show loading indicator in the target container
+            const container = document.getElementById('content-container');
+            if (container) {
+                container.innerHTML = `
+                    <div class="d-flex justify-content-center my-5">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Load the component script
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = `/admin/components/email/${componentName}.js`;
+            script.onload = function() {
+                // Initialize the component once loaded
+                const componentClass = `Email${componentName}`;
+                if (window[componentClass]) {
+                    const component = new window[componentClass]();
+                    component.render('content-container');
+                } else {
+                    console.error(`Component class ${componentClass} not found`);
+                    if (container) {
+                        container.innerHTML = `
+                            <div class="alert alert-danger">
+                                Failed to load ${componentName} component. Class not found.
+                            </div>
+                        `;
+                    }
+                }
+            };
+            script.onerror = function() {
+                console.error(`Failed to load email ${componentName} component`);
+                if (container) {
+                    container.innerHTML = `
+                        <div class="alert alert-danger">
+                            Failed to load ${componentName} component. Check console for errors.
+                        </div>
+                    `;
+                }
+            };
+            
+            // Add the script to the document
+            document.head.appendChild(script);
+        };
+        
+        // Define global functions to load each component
+        window.loadEmailCampaigns = function() {
+            loadEmailComponent('Campaigns');
+        };
+        
+        window.loadEmailTemplates = function() {
+            loadEmailComponent('Templates');
+        };
+        
+        window.loadEmailSubscribers = function() {
+            loadEmailComponent('Subscribers');
+        };
+        
+        window.loadEmailWorkflows = function() {
+            loadEmailComponent('Workflows');
+        };
+        
+        window.loadEmailAnalytics = function() {
+            loadEmailComponent('Analytics');
+        };
+        
+        window.loadEmailDashboard = function() {
+            loadEmailComponent('Dashboard');
+        };
+        
+        // Check authentication state
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                // User is signed in
+                loginForm.style.display = 'none';
+                
+                // Check if user is admin
+                user.getIdTokenResult().then((idTokenResult) => {
+                    if (idTokenResult.claims.admin) {
+                        // User is admin
+                        userEmailSpan.textContent = user.email;
+                        adminMessage.style.display = 'block';
+                        loginStatus.style.display = 'none';
+                    } else {
+                        // User is not admin
+                        loginStatus.textContent = 'You do not have admin privileges.';
+                        loginStatus.className = 'alert alert-warning';
+                        loginStatus.style.display = 'block';
+                        setTimeout(() => {
+                            firebase.auth().signOut();
+                        }, 3000);
+                    }
+                });
+            } else {
+                // No user is signed in
+                loginForm.style.display = 'block';
+                adminMessage.style.display = 'none';
+                loginStatus.style.display = 'none';
+            }
+        });
+        
+        // Login button click handler
+        loginBtn.addEventListener('click', function() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                loginStatus.textContent = 'Please enter both email and password.';
+                loginStatus.className = 'alert alert-danger';
+                loginStatus.style.display = 'block';
+                return;
+            }
+            
+            loginStatus.textContent = 'Logging in...';
+            loginStatus.className = 'alert alert-info';
+            loginStatus.style.display = 'block';
+            
+            firebase.auth().signInWithEmailAndPassword(email, password)
+                .catch((error) => {
+                    console.error('Login error:', error);
+                    loginStatus.textContent = error.message;
+                    loginStatus.className = 'alert alert-danger';
+                });
+        });
+        
+        // Logout button click handler
+        logoutBtn.addEventListener('click', function() {
+            firebase.auth().signOut();
+        });
+        
+        // Go to dashboard button click handler
+        gotoDashboardBtn.addEventListener('click', function() {
+            window.location.href = '/admin/dashboard.html';
+        });
+        
+        // Handle Enter key in password field
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                loginBtn.click();
+            }
+        });
+    </script>
+    
+</body>
+</html>

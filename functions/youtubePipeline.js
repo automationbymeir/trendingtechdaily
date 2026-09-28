@@ -1,5 +1,5 @@
 const { onDocumentWritten } = require("firebase-functions/v2/firestore");
-const { renderMediaOnLambda, getRenderProgress } = require("@remotion/lambda/client");
+const { renderMediaOnLambda, getRenderProgress, renderStillOnLambda } = require("@remotion/lambda/client");
 const { logger } = require("./config");
 const { google } = require("googleapis");
 const fs = require("fs");
@@ -8,7 +8,19 @@ const fetch = require("node-fetch");
 const os = require("os");
 const { classifyArticleConcept } = require("./services/videoConcept");
 const { fetchClipsForConcept, buildAttribution } = require("./services/pexelsService");
-const { generateAndUploadAudio } = require("./services/elevenLabsService");
+
+// Human-friendly category label for the cover thumbnail.
+function prettyCat(c) {
+  const map = {
+    'ai-assistant': 'AI & Agents', 'autonomous-vehicle': 'Autonomy',
+    'robot-humanoid': 'Robotics', 'smartphone': 'Mobile', 'gaming': 'Gaming',
+    'crypto-finance': 'Crypto', 'cybersecurity': 'Security',
+    'social-media': 'Social', 'space': 'Space', 'gadget': 'Hardware',
+    'cloud-datacenter': 'Cloud', 'biotech-health': 'Biotech',
+    'electric-vehicle': 'EV', 'ar-vr': 'AR / VR', 'generic-tech': 'Tech',
+  };
+  return map[c] || 'Tech';
+}
 const { generateAndUploadHebrewAudio, generateAndUploadEnglishAudio } = require("./services/gcpTtsService");
 
 const SERVE_URL = "https://remotionlambda-useast1-di0xuqpokc.s3.us-east-1.amazonaws.com/sites/trending-tech-daily/index.html";
@@ -37,15 +49,21 @@ const setupAwsEnv = () => {
 
 // YouTube OAuth Setup
 const getYouTubeClient = async () => {
+  let secrets;
+  let tokens;
+
   const secretPath = path.join(__dirname, "youtube_client_secret.json");
   const tokenPath = path.join(__dirname, "youtube_tokens.json");
 
-  if (!fs.existsSync(secretPath) || !fs.existsSync(tokenPath)) {
-    throw new Error("YouTube API credentials not found. Ensure youtube_client_secret.json and youtube_tokens.json exist.");
+  if (fs.existsSync(secretPath) && fs.existsSync(tokenPath)) {
+    secrets = JSON.parse(fs.readFileSync(secretPath, 'utf8'));
+    tokens = JSON.parse(fs.readFileSync(tokenPath, 'utf8'));
+  } else if (process.env.YOUTUBE_CLIENT_SECRET_JSON && process.env.YOUTUBE_TOKENS_JSON) {
+    secrets = JSON.parse(process.env.YOUTUBE_CLIENT_SECRET_JSON);
+    tokens = JSON.parse(process.env.YOUTUBE_TOKENS_JSON);
+  } else {
+    throw new Error("YouTube API credentials not found. Ensure youtube_client_secret.json and youtube_tokens.json exist or Secret Manager secrets are configured.");
   }
-
-  const secrets = JSON.parse(fs.readFileSync(secretPath, 'utf8'));
-  const tokens = JSON.parse(fs.readFileSync(tokenPath, 'utf8'));
 
   const oauth2Client = new google.auth.OAuth2(
     secrets.web.client_id,
@@ -56,6 +74,105 @@ const getYouTubeClient = async () => {
   oauth2Client.setCredentials(tokens);
   return google.youtube({ version: 'v3', auth: oauth2Client });
 };
+
+/**
+ * Editorial Category Archetypes for Dynamic 4-Scene Matching
+ */
+const CATEGORY_ARCHETYPES = {
+  'cyber-warfare': {
+    domainName: 'CYBER DEFENSE & INTEL',
+    scene2Video: 'clip_ai_network.mp4',
+    scene2Badge: 'CYBERSECURITY TELEMETRY // SOC OPERATIONS',
+    scene4Media: 'datacenter_servers_visual_1788630934213.jpg',
+    scene4Badge: 'CRITICAL INFRASTRUCTURE DEFENSE'
+  },
+  'cybersecurity': {
+    domainName: 'CYBERSECURITY',
+    scene2Video: 'clip_ai_network.mp4',
+    scene2Badge: 'SECURITY PROTOCOLS // THREAT INTEL',
+    scene4Media: 'datacenter_servers_visual_1788630934213.jpg',
+    scene4Badge: 'GLOBAL THREAT RADAR'
+  },
+  'ai': {
+    domainName: 'ARTIFICIAL INTELLIGENCE',
+    scene2Video: 'clip_ai_network.mp4',
+    scene2Badge: 'NEURAL WEIGHT MATRIX // DEEP LEARNING',
+    scene4Media: 'datacenter_servers_visual_1788630934213.jpg',
+    scene4Badge: 'GLOBAL FRONTIER MODEL DEPLOYMENT'
+  },
+  'autonomous-agents': {
+    domainName: 'AUTONOMOUS AGENTS',
+    scene2Video: 'clip_ai_network.mp4',
+    scene2Badge: 'MULTI-AGENT EXECUTION LOOP',
+    scene4Media: 'datacenter_servers_visual_1788630934213.jpg',
+    scene4Badge: 'AUTONOMOUS SWARM INFRASTRUCTURE'
+  },
+  'dev': {
+    domainName: 'DEVELOPMENT & CLOUD',
+    scene2Video: 'clip_ai_network.mp4',
+    scene2Badge: 'CODE COMPILATION & ARCHITECTURE',
+    scene4Media: 'datacenter_servers_visual_1788630934213.jpg',
+    scene4Badge: 'PRODUCTION CLOUD CLUSTER'
+  },
+  'chips': {
+    domainName: 'SEMICONDUCTORS & HARDWARE',
+    scene2Video: 'clip_semiconductor.mp4',
+    scene2Badge: '3nm SILICON DIE & INTERCONNECT',
+    scene4Media: 'en_media.jpg',
+    scene4Badge: 'HIGH PERFORMANCE COMPUTE FABRIC'
+  },
+  'computing': {
+    domainName: 'SUPERCOMPUTING & SYSTEMS',
+    scene2Video: 'clip_semiconductor.mp4',
+    scene2Badge: 'SUPERCOMPUTING ACCELERATOR CLUSTER',
+    scene4Media: 'he_media.jpg',
+    scene4Badge: 'AI HYPERSCALER DATACENTER'
+  },
+  'markets': {
+    domainName: 'TECH MARKETS & FINTECH',
+    scene2Video: 'clip_ai_network.mp4',
+    scene2Badge: 'GLOBAL LIQUIDITY & MARKET TELEMETRY',
+    scene4Media: 'datacenter_servers_visual_1788630934213.jpg',
+    scene4Badge: 'FINANCIAL DATA INTELLIGENCE'
+  },
+  'mobile': {
+    domainName: 'MOBILE & DEVICES',
+    scene2Video: 'clip_semiconductor.mp4',
+    scene2Badge: 'HARDWARE CHASSIS & SOC INTEGRATION',
+    scene4Media: 'en_media.jpg',
+    scene4Badge: 'DEVICE HARDWARE ECOSYSTEM'
+  },
+  'robotics': {
+    domainName: 'ROBOTICS & AUTONOMOUS SYSTEMS',
+    scene2Video: 'clip_ai_network.mp4',
+    scene2Badge: 'SENSOR FUSION & SPATIAL PERCEPTION',
+    scene4Media: 'datacenter_servers_visual_1788630934213.jpg',
+    scene4Badge: 'EMBODIED AI DEPLOYMENT'
+  }
+};
+
+function resolveCategoryArchetype(article) {
+  const cat = (article.category || '').toLowerCase();
+  if (CATEGORY_ARCHETYPES[cat]) return CATEGORY_ARCHETYPES[cat];
+
+  const fullText = `${article.title || ''} ${article.summary || ''} ${article.excerpt || ''} ${cat}`.toLowerCase();
+  if (fullText.includes('cyber') || fullText.includes('סייבר') || fullText.includes('malware') || fullText.includes('התקפ') || fullText.includes('אבטח')) {
+    return CATEGORY_ARCHETYPES['cyber-warfare'];
+  }
+  if (fullText.includes('chip') || fullText.includes('שבב') || fullText.includes('nvidia') || fullText.includes('tpu') || fullText.includes('semiconductor')) {
+    return CATEGORY_ARCHETYPES['chips'];
+  }
+  if (fullText.includes('stock') || fullText.includes('מניה') || fullText.includes('שווי') || fullText.includes('valuation') || fullText.includes('revenue')) {
+    return CATEGORY_ARCHETYPES['markets'];
+  }
+  if (fullText.includes('robot') || fullText.includes('tesla') || fullText.includes('autonomous') || fullText.includes('fsd') || fullText.includes('רכב')) {
+    return CATEGORY_ARCHETYPES['robotics'];
+  }
+  if (fullText.includes('iphone') || fullText.includes('android') || fullText.includes('pixel') || fullText.includes('samsung') || fullText.includes('smartphone')) {
+    return CATEGORY_ARCHETYPES['mobile'];
+  }
+  return CATEGORY_ARCHETYPES['ai'];
+}
 
 const handleArticleVideoGeneration = async (event, language = 'en') => {
   const before = event.data.before;
@@ -70,25 +187,55 @@ const handleArticleVideoGeneration = async (event, language = 'en') => {
   // Only process published articles
   if (article.published === false) return;
 
-  // Only trigger if it just became published (or if it's newly created and published)
-  if (before.exists) {
-    const beforeArticle = before.data();
-    if (beforeArticle.published === true) {
-      logger.info("Article already published, skipping duplicate video generation");
-      return;
-    }
+  const beforeData = before.exists ? before.data() : {};
+  // Trigger ONLY if it just became published OR if generateVideo was just changed to true
+  const isNewlyPublished = !before.exists || (beforeData.published !== true && article.published === true);
+  const isExplicitRequest = beforeData.generateVideo !== true && article.generateVideo === true;
+
+  if (!isNewlyPublished && !isExplicitRequest) {
+    logger.info("Neither newly published nor a new explicit generateVideo request, skipping video generation");
+    return;
   }
 
-  // Skip if we already have a youtube video ID to prevent infinite loops
-  if (article.youtubeVideoId) {
-    logger.info("Article already has a youtubeVideoId, skipping");
+  // Skip if we already have a video rendered or published (unless explicitly requested)
+  if ((article.youtubeVideoId || article.videoUrl || article.instagramPostId) && !isExplicitRequest) {
+    logger.info("Article already has a video/post, skipping duplicate video generation");
     return;
+  }
+
+  // Immediately reset generateVideo to false to prevent downstream update() calls from re-triggering
+  if (article.generateVideo === true) {
+    try {
+      await after.ref.update({ generateVideo: false });
+    } catch (resetErr) {
+      logger.warn("Could not reset generateVideo flag:", resetErr.message);
+    }
   }
 
   const title = article.title || "Latest Tech News";
   const summary = article.excerpt || article.summary || "Catch up on the latest trends in technology.";
-  const imageUrl = article.featuredImage || "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1080&h=1920&fit=crop";
+  const imageUrl = article.featuredImage || article.imageUrl || "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1080&h=1920&fit=crop";
   const articleId = event.params ? event.params.articleId : after.id;
+
+  const db = after.ref.firestore;
+
+  // ── RATE LIMITING / THROTTLE: 3.5 Hours Between Automated Renders ─────
+  const throttleDocRef = db.doc(`system_state/video_throttle_${language}`);
+  if (!isExplicitRequest) {
+    try {
+      const throttleSnap = await throttleDocRef.get();
+      if (throttleSnap.exists) {
+        const lastRun = throttleSnap.data().lastRenderTimestamp || 0;
+        const elapsedHours = (Date.now() - lastRun) / (1000 * 60 * 60);
+        if (elapsedHours < 3.5) {
+          logger.info(`Video generation throttled for ${language}. Last render was ${elapsedHours.toFixed(2)}h ago (min 3.5h required). Skipping.`);
+          return;
+        }
+      }
+    } catch (thErr) {
+      logger.warn("Could not check video throttle status:", thErr.message);
+    }
+  }
 
   logger.info(`Triggered video generation for ${language} article: ${title}`);
   
@@ -101,9 +248,16 @@ const handleArticleVideoGeneration = async (event, language = 'en') => {
         const data = logDoc.data();
         const updatedAt = new Date(data.updatedAt || data.createdAt).getTime();
         const now = Date.now();
-        // If it's currently processing or already successful, and updated within the last 25 minutes, skip.
-        // We use 25 minutes because the max Cloud Function timeout is 20 minutes.
-        if (data.status !== "error" && (now - updatedAt) < 25 * 60 * 1000) {
+        // If an instance is actively generating, rendering, or uploading, NEVER start another concurrent job
+        const activeStatuses = ["generating", "rendering", "uploading"];
+        if (activeStatuses.includes(data.status) && (now - updatedAt) < 25 * 60 * 1000) {
+          logger.info(`Video generation already actively in progress (${data.status}) for ${articleId}. Skipping.`);
+          return false;
+        }
+
+        // If it already succeeded in the last 25 minutes, skip duplicates
+        if (data.status === "success" && (now - updatedAt) < 25 * 60 * 1000) {
+          logger.info(`Video generation already succeeded recently for ${articleId}. Skipping.`);
           return false;
         }
       }
@@ -112,6 +266,7 @@ const handleArticleVideoGeneration = async (event, language = 'en') => {
         articleId,
         title,
         language,
+        designSystem: "ViralTechReel",
         status: "generating",
         createdAt: logDoc.exists ? logDoc.data().createdAt : new Date().toISOString(),
         updatedAt: new Date().toISOString()
@@ -124,6 +279,14 @@ const handleArticleVideoGeneration = async (event, language = 'en') => {
       logger.info(`Video generation already in progress or completed recently for ${articleId}, skipping duplicate.`);
       return;
     }
+
+    // Update throttle timer
+    await throttleDocRef.set({
+      lastRenderTimestamp: Date.now(),
+      lastArticleId: articleId,
+      lastArticleTitle: title,
+      updatedAt: new Date().toISOString()
+    }, { merge: true });
 
     setupAwsEnv();
 
@@ -183,124 +346,153 @@ const handleArticleVideoGeneration = async (event, language = 'en') => {
       ? `https://www.trendingtechdaily.com/he/${categorySlug}/${slug}`
       : `https://www.trendingtechdaily.com/${categorySlug}/${slug}`;
 
-    // --- GENERATE AUDIO ---
-    // Both languages now use Google Cloud Chirp 3 HD by default (the
-    // ElevenLabs quota was exhausted and Chirp sounds great). ElevenLabs is
-    // kept as a best-effort fallback in case Google TTS itself fails for
-    // some reason.
-    let audioUrl = undefined;
+    // --- GENERATE MULTI-SCENE AUDIO & ASSETS FOR VIRAL TECH REEL ---
+    const isHe = language === 'he' || /[\u0590-\u05FF]/.test(title);
+    const archetype = resolveCategoryArchetype(article);
+
+    const sentences = (summary || title).replace(/\n+/g, ' ')
+      .split(/(?<=[.!?])\s+/)
+      .map(s => s.trim())
+      .filter(Boolean);
+
+    const scene1Script = title;
+    const scene2Script = sentences[0] || summary.slice(0, 140);
+    const scene3Script = sentences[1] || (isHe ? "ארכיטקטורה הנדסית מתקדמת שנחשפת עכשיו." : "Cutting-edge architectural specifications revealed.");
+    const scene4Script = isHe
+      ? "הדיווח המלא, הנתונים והמקורות מחכים לכם עכשיו באתר טרנדינג טק דיילי."
+      : "Read the full intelligence report and benchmark metrics on TrendingTechDaily.com.";
+
+    const ttsCall = isHe ? generateAndUploadHebrewAudio : generateAndUploadEnglishAudio;
+    logger.info(`Synthesizing Google Cloud Neural TTS voiceovers for 4 scenes...`);
+
+    let audioScene1 = null, audioScene2 = null, audioScene3 = null, audioScene4 = null;
     try {
-      const ttsText = `${title}... ${summary}`;
-      if (language === 'he') {
-        audioUrl = await generateAndUploadHebrewAudio(ttsText);
-      } else {
-        try {
-          audioUrl = await generateAndUploadEnglishAudio(ttsText);
-        } catch (gcpErr) {
-          logger.warn(`Google TTS (en) failed, trying ElevenLabs fallback: ${gcpErr.message}`);
-          audioUrl = await generateAndUploadAudio(ttsText);
-        }
-      }
-    } catch (audioErr) {
-      logger.warn(`Audio generation failed (continuing without audio): ${audioErr.message}`);
+      [audioScene1, audioScene2, audioScene3, audioScene4] = await Promise.all([
+        ttsCall(scene1Script).catch(e => { logger.warn("TTS Scene 1 error:", e.message); return null; }),
+        ttsCall(scene2Script).catch(e => { logger.warn("TTS Scene 2 error:", e.message); return null; }),
+        ttsCall(scene3Script).catch(e => { logger.warn("TTS Scene 3 error:", e.message); return null; }),
+        ttsCall(scene4Script).catch(e => { logger.warn("TTS Scene 4 error:", e.message); return null; }),
+      ]);
+    } catch (ttsErr) {
+      logger.warn(`Audio synthesis warning: ${ttsErr.message}`);
     }
 
-    // --- INITIALIZE RENDERS IN PARALLEL ---
-    const summaryRenderInitPromise = renderMediaOnLambda({
+    // Dynamic scene 2 B-roll clip if available from Pexels
+    const scene2Media = (bRollClips && bRollClips.length > 0 && bRollClips[0].url)
+      ? bRollClips[0].url
+      : archetype.scene2Video;
+
+    // ── BUILD 4-SCENE VIRAL REEL PROPS ──────────────────────────────
+    const scenes = [
+      // Scene 1: The Breaking Hook (Authentic Publisher Image)
+      {
+        videoSrc: imageUrl,
+        audioSrc: audioScene1 || (isHe ? "he_scene1.mp3" : "en_scene1.mp3"),
+        durationFrames: 190, // ~6.3s
+        headline: title,
+        subtext: scene1Script,
+        statBadge: isHe ? 'BREAKING // מבזק ראשוני' : 'BREAKING // TECH DISPATCH',
+        mediaBadge: isHe ? `מבזק רשמי // ${archetype.domainName}` : `OFFICIAL DISPATCH // ${archetype.domainName}`,
+        highlightWords: isHe ? ['חשיפה', 'חדש', 'בינה מלאכותית', 'סייבר', 'הודעה'] : ['Breaking', 'Revealed', 'Next-Gen', 'Official']
+      },
+      // Scene 2: Deep Technical Analysis (Domain-Matched B-Roll)
+      {
+        videoSrc: scene2Media,
+        audioSrc: audioScene2 || (isHe ? "he_scene2.mp3" : "en_scene2.mp3"),
+        durationFrames: 280, // ~9.3s
+        headline: isHe ? 'ניתוח טכנולוגי מעמיק' : 'Deep Technical Analysis',
+        subtext: scene2Script,
+        statBadge: isHe ? 'ANALYSIS // ממצאי הדוח' : 'ANALYSIS // CORE METRICS',
+        mediaBadge: archetype.scene2Badge,
+        highlightWords: isHe ? ['ביצועים', 'מערכת', 'פיתוח', 'נתונים'] : ['Architecture', 'System', 'Data', 'Security']
+      },
+      // Scene 3: The 3D Technical Schematic
+      {
+        videoSrc: 'real_google_tpu_v6e.png',
+        audioSrc: audioScene3 || (isHe ? "he_scene3.mp3" : "en_scene3.mp3"),
+        durationFrames: 280, // ~9.3s
+        headline: isHe ? 'ארכיטקטורה ופירוט הנדסי' : 'Architecture & Blueprint',
+        subtext: scene3Script,
+        statBadge: isHe ? 'BLUEPRINT // שרטוט טכנולוגי' : 'BLUEPRINT // 3D SCHEMATIC',
+        mediaBadge: isHe ? 'סכמה הנדסית // GEMINI OMNI 1.1' : 'SCHEMATIC BLUEPRINT // GEMINI OMNI 1.1',
+        highlightWords: isHe ? ['ארכיטקטורה', 'מבנה', 'טכנולוגיה'] : ['Blueprint', 'Logic', 'Network']
+      },
+      // Scene 4: Global Deployment & Call-to-Action
+      {
+        videoSrc: archetype.scene4Media,
+        audioSrc: audioScene4 || (isHe ? "he_scene4.mp3" : "en_scene4.mp3"),
+        durationFrames: 280, // ~9.3s
+        headline: isHe ? 'הדיווח המלא מחכה לכם באתר' : 'Read Full Intel On TrendingTech',
+        subtext: scene4Script,
+        statBadge: isHe ? 'TRENDING // כנסו לאתר' : 'TRENDING // READ FULL REPORT',
+        mediaBadge: archetype.scene4Badge,
+        highlightWords: isHe ? ['טרנדינג טק', 'באתר'] : ['TrendingTech', 'Report']
+      }
+    ];
+
+    const targetComposition = isHe ? "ViralReelHebrew" : "ViralReelEnglish";
+    const videoProps = {
+      title,
+      category: archetype.domainName,
+      language: isHe ? 'he' : 'en',
+      ambientAudioSrc: 'ambient_bed.mp3',
+      articleUrl,
+      scenes
+    };
+
+    logger.info(`Rendering Viral Reel on Remotion Lambda (${targetComposition})...`);
+
+    const renderInit = await renderMediaOnLambda({
       region: REGION,
       functionName: FUNCTION_NAME,
       serveUrl: SERVE_URL,
-      composition: "ArticleVideoV2",
-      inputProps: {
-        title: title.length > 120 ? title.substring(0, 117) + "..." : title,
-        summary: summary.length > 400 ? summary.substring(0, 397) + "..." : summary,
-        imageUrl,
-        articleUrl,
-        audioUrl,
-        clips: bRollClips.map(c => ({
-          url: c.url, durationSec: c.durationSec, width: c.width, height: c.height, photographer: c.photographer,
-        })),
-        category: concept.category,
-        useChatGptMockup: false,
-      },
+      composition: targetComposition,
+      inputProps: videoProps,
       codec: "h264",
       imageFormat: "jpeg",
       maxRetries: 2,
       privacy: "public",
-      framesPerLambda: 900,
+      framesPerLambda: 300,
     });
-
-    const highlightRenderInitPromise = renderMediaOnLambda({
-      region: REGION,
-      functionName: FUNCTION_NAME,
-      serveUrl: SERVE_URL,
-      composition: "ArticleHighlightVideo",
-      inputProps: {
-        title: title.length > 120 ? title.substring(0, 117) + "..." : title,
-        summary: summary.length > 400 ? summary.substring(0, 397) + "..." : summary,
-        imageUrl,
-        articleUrl,
-        audioUrl
-      },
-      codec: "h264",
-      imageFormat: "jpeg",
-      maxRetries: 2,
-      privacy: "public",
-      framesPerLambda: 900,
-    });
-
-    const [summaryRenderInit, highlightRenderInit] = await Promise.all([
-      summaryRenderInitPromise,
-      highlightRenderInitPromise
-    ]);
 
     await logRef.update({
-      renderId: summaryRenderInit.renderId,
-      highlightRenderId: highlightRenderInit.renderId,
-      status: "rendering videos",
+      renderId: renderInit.renderId,
+      status: "rendering",
       updatedAt: new Date().toISOString()
     });
 
-    const pollRender = async (renderInit, type) => {
-      let renderResult = null;
-      let attempts = 0;
-      while (!renderResult && attempts < 180) {
-        attempts++;
-        await new Promise((resolve) => setTimeout(resolve, 5000));
-        const progress = await getRenderProgress({
-          renderId: renderInit.renderId,
-          bucketName: renderInit.bucketName,
-          functionName: FUNCTION_NAME,
-          region: REGION,
-        });
+    // Poll until complete
+    let renderResult = null;
+    let attempts = 0;
+    while (!renderResult && attempts < 180) {
+      attempts++;
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      const progress = await getRenderProgress({
+        renderId: renderInit.renderId,
+        bucketName: renderInit.bucketName,
+        functionName: FUNCTION_NAME,
+        region: REGION,
+      });
 
-        if (progress.done) {
-          renderResult = progress;
-          break;
-        }
-        if (progress.fatalErrorEncountered) {
-          throw new Error(`${type} render failed: ${JSON.stringify(progress.errors)}`);
-        }
-        logger.info(`Rendering ${type}... ${Math.round(progress.overallProgress * 100)}% (Attempt ${attempts}/180)`);
+      if (progress.done) {
+        renderResult = progress;
+        break;
       }
-      if (!renderResult) {
-        throw new Error(`${type} render polling timed out after 15 minutes without completion.`);
+      if (progress.fatalErrorEncountered) {
+        throw new Error(`Remotion Lambda render failed: ${JSON.stringify(progress.errors)}`);
       }
-      return renderResult;
-    };
-
-    const [summaryResult, highlightResult] = await Promise.all([
-      pollRender(summaryRenderInit, "Summary"),
-      pollRender(highlightRenderInit, "Highlight")
-    ]);
-
-    const videoUrl = summaryResult.outputFile || summaryResult.outUrl || summaryResult?.outfits?.[0]?.url;
-    const highlightVideoUrl = highlightResult.outputFile || highlightResult.outUrl || highlightResult?.outfits?.[0]?.url;
-
-    if (!videoUrl || !highlightVideoUrl) {
-      throw new Error(`Render finished but a video URL was missing in response.`);
+      logger.info(`Rendering Viral Reel... ${Math.round(progress.overallProgress * 100)}% (Attempt ${attempts}/180)`);
     }
-    logger.info(`Renders finished! Summary URL: ${videoUrl}, Highlight URL: ${highlightVideoUrl}`);
+
+    if (!renderResult || !renderResult.outputFile) {
+      throw new Error(`Viral Reel render polling timed out or failed.`);
+    }
+
+    const videoUrl = renderResult.outputFile || renderResult.outUrl;
+    const highlightVideoUrl = videoUrl; // Used for stories and reels
+    const coverUrl = imageUrl;
+
+    logger.info(`Viral Reel Rendered Successfully! Video URL: ${videoUrl}`);
 
     await logRef.update({
       status: "uploading",
@@ -310,7 +502,7 @@ const handleArticleVideoGeneration = async (event, language = 'en') => {
     });
 
     // Download the video locally to /tmp
-    const localVideoPath = path.join(os.tmpdir(), `${summaryRenderInit.renderId}.mp4`);
+    const localVideoPath = path.join(os.tmpdir(), `${renderInit.renderId}.mp4`);
     logger.info(`Downloading video to ${localVideoPath}...`);
     
     const response = await fetch(videoUrl);
@@ -352,6 +544,23 @@ const handleArticleVideoGeneration = async (event, language = 'en') => {
       logger.info(`Video successfully uploaded to YouTube! Video ID: ${videoId}`);
       logger.info(`YouTube URL: ${youtubeUrl}`);
 
+      // Custom thumbnail (same Geist cover image as the IG cover).
+      // YouTube Shorts shows it in search results, channel page, and feeds.
+      if (coverUrl) {
+        try {
+          const coverRes = await fetch(coverUrl, { timeout: 30000 });
+          if (!coverRes.ok) throw new Error(`fetch ${coverRes.status}`);
+          const coverBuf = Buffer.from(await coverRes.arrayBuffer());
+          await youtube.thumbnails.set({
+            videoId,
+            media: { mimeType: 'image/png', body: require('stream').Readable.from(coverBuf) },
+          });
+          logger.info(`YouTube thumbnail set successfully for ${videoId}`);
+        } catch (thumbErr) {
+          logger.warn(`YouTube thumbnail set failed (video already public): ${thumbErr.message}`);
+        }
+      }
+
       // Update the Firestore document with the YouTube video ID
       await after.ref.update({
         youtubeVideoId: videoId,
@@ -375,7 +584,7 @@ const handleArticleVideoGeneration = async (event, language = 'en') => {
     try {
       const caption = `${title}\n\n${summary}\n\nRead more at: ${articleUrl}\n\n📩 Weekly Newsletter: https://www.trendingtechdaily.com/profile.html\n\n#TechNews #TrendingTechDaily`;
       
-      const uploadToInstagram = async (mediaType, videoUrlToUpload, captionText) => {
+      const uploadToInstagram = async (mediaType, videoUrlToUpload, captionText, coverUrlArg) => {
         logger.info(`Starting Instagram ${mediaType} Upload...`);
         const payload = {
           media_type: mediaType,
@@ -383,6 +592,11 @@ const handleArticleVideoGeneration = async (event, language = 'en') => {
           access_token: IG_ACCESS_TOKEN
         };
         if (captionText) payload.caption = captionText;
+        // IG Reels accept a custom `cover_url` (1080×1920 PNG). Stories
+        // ignore this field — covers are pulled from the video itself.
+        if (coverUrlArg && mediaType === 'REELS') {
+          payload.cover_url = coverUrlArg;
+        }
         
         const createContainerRes = await fetch(`https://graph.facebook.com/v20.0/${IG_USER_ID}/media`, {
           method: "POST",
@@ -417,12 +631,12 @@ const handleArticleVideoGeneration = async (event, language = 'en') => {
         return publishData.id;
       };
 
-      // Upload Reel
-      instagramPostId = await uploadToInstagram("REELS", videoUrl, caption);
+      // Upload Reel (with custom cover_url if available)
+      instagramPostId = await uploadToInstagram("REELS", videoUrl, caption, coverUrl);
       instagramUrl = `https://www.instagram.com/reel/${instagramPostId}/`;
       logger.info(`Successfully published Reel to Instagram! Post ID: ${instagramPostId}`);
 
-      // Upload Story
+      // Upload Story (cover_url not supported for Stories)
       instagramHighlightId = await uploadToInstagram("STORIES", highlightVideoUrl, null);
       instagramHighlightUrl = `https://www.instagram.com/stories/${IG_USER_ID}/${instagramHighlightId}/`;
       logger.info(`Successfully published Story to Instagram! Post ID: ${instagramHighlightId}`);
@@ -569,11 +783,11 @@ const handleArticleVideoGeneration = async (event, language = 'en') => {
 };
 
 exports.onEnglishArticlePublished = onDocumentWritten(
-  { document: "articles/{articleId}", region: "us-central1", timeoutSeconds: 540, memory: "1GiB", secrets: ["REMOTION_AWS_ACCESS_KEY_ID", "REMOTION_AWS_SECRET_ACCESS_KEY", "GEMINI_API_KEY", "PEXELS_API_KEY"] },
+  { document: "articles/{articleId}", region: "us-central1", timeoutSeconds: 540, memory: "1GiB", secrets: ["REMOTION_AWS_ACCESS_KEY_ID", "REMOTION_AWS_SECRET_ACCESS_KEY", "GEMINI_API_KEY", "PEXELS_API_KEY", "YOUTUBE_CLIENT_SECRET_JSON", "YOUTUBE_TOKENS_JSON", "DEEPDUB_API_KEY"] },
   (event) => handleArticleVideoGeneration(event, 'en')
 );
 
 exports.onHebrewArticlePublished = onDocumentWritten(
-  { document: "he_articles/{articleId}", region: "us-central1", timeoutSeconds: 540, memory: "1GiB", secrets: ["REMOTION_AWS_ACCESS_KEY_ID", "REMOTION_AWS_SECRET_ACCESS_KEY", "GEMINI_API_KEY", "PEXELS_API_KEY"] },
+  { document: "he_articles/{articleId}", region: "us-central1", timeoutSeconds: 540, memory: "1GiB", secrets: ["REMOTION_AWS_ACCESS_KEY_ID", "REMOTION_AWS_SECRET_ACCESS_KEY", "GEMINI_API_KEY", "PEXELS_API_KEY", "YOUTUBE_CLIENT_SECRET_JSON", "YOUTUBE_TOKENS_JSON", "DEEPDUB_API_KEY"] },
   (event) => handleArticleVideoGeneration(event, 'he')
 );

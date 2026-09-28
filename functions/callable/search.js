@@ -151,7 +151,7 @@ async function getSearchSuggestions(request) {
             throw new HttpsError("internal", "AI service not available");
         }
 
-        const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        const genAI = new GoogleGenAI({ project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' });
 
         // Create context from previous results
         const context = previousResults.length > 0 
@@ -177,7 +177,7 @@ async function getSearchSuggestions(request) {
 
         const result = await genAI.models.generateContent(
             buildGenerateContentRequest(prompt, {
-                model: "gemini-2.5-flash",
+                model: "gemini-3.8-flash",
                 safetySettings: getSafetySettings(),
             }),
         );
@@ -262,7 +262,7 @@ async function getGeminiInsights(query, results) {
             return null;
         }
 
-        const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        const genAI = new GoogleGenAI({ project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' });
 
         const resultsContext = results.slice(0, 5).map(r => `- ${r.title}: ${r.excerpt}`).join('\n');
 
@@ -280,7 +280,7 @@ async function getGeminiInsights(query, results) {
 
         const result = await genAI.models.generateContent(
             buildGenerateContentRequest(prompt, {
-                model: "gemini-2.5-flash",
+                model: "gemini-3.8-flash",
                 safetySettings: getSafetySettings(),
             }),
         );

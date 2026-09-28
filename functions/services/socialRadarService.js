@@ -256,7 +256,7 @@ Respond with ONLY valid JSON:
       try {
         const result = await genAI.models.generateContent(
           buildGenerateContentRequest(matchPrompt, {
-            model: 'gemini-1.5-flash',
+            model: 'gemini-3.8-flash',
             safetySettings: getSafetySettings(),
             generationConfig: { responseMimeType: 'application/json' }
           })
@@ -335,7 +335,7 @@ Output ONLY the final comment text without greetings or markdown code fences.`;
 
         const result = await genAI.models.generateContent(
           buildGenerateContentRequest(prompt, {
-            model: 'gemini-1.5-flash',
+            model: 'gemini-3.8-flash',
             safetySettings: getSafetySettings(),
           })
         );

@@ -10,7 +10,7 @@ const { db, logger } = require('../config');
 const { loadGeminiSDK, getGeminiSDK, getSafetySettings, buildGenerateContentRequest, getSafe } = require('../utils');
 const { resolveEditorialArticleImage } = require('./editorialImageService');
 
-const GEMINI_PRIMARY_MODEL = 'gemini-1.5-flash';
+const GEMINI_PRIMARY_MODEL = 'gemini-3.8-flash';
 
 // Verified authoritative domain repository with exact deep links and authentic avatars/media for tech topics
 function getTopicCitations(title = '', isHe = false) {

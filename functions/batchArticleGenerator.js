@@ -12,7 +12,7 @@ const { loadGeminiSDK, getSafetySettings, getSafe, getGeminiSDK } = require('./u
 const articlesAdmin = require('./admin/articles');
 const { resolveEditorialArticleImage } = require('./services/editorialImageService');
 
-const GEMINI_PRIMARY_MODEL = 'gemini-1.5-flash';
+const GEMINI_PRIMARY_MODEL = 'gemini-3.8-flash';
 const BATCH_JOBS_COLLECTION = 'batchJobs';
 const BATCH_SIZE = 24; // one article per hour of the day
 

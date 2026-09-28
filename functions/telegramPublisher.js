@@ -32,7 +32,9 @@ const TELEGRAM_API_BASE = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}`;
 
 const DEFAULT_HEBREW_CHANNEL = process.env.TELEGRAM_HEBREW_CHANNEL || '-1003974217518';
 const DEFAULT_ENGLISH_CHANNEL = process.env.TELEGRAM_ENGLISH_CHANNEL || '-1004492428380';
+const DEFAULT_ADMIN_CHAT_ID = process.env.TELEGRAM_ADMIN_CHAT_ID || '1041616345';
 const SITE_BASE_URL = 'https://trendingtechdaily.com';
+const VIDEO_THROTTLE_MS = 4 * 60 * 60 * 1000; // 4 hours cadence shield to prevent AWS Lambda rate limit
 
 /**
  * Fetch dynamic Telegram config from Firestore settings/telegram if exists
@@ -234,7 +236,7 @@ CRITICAL RULES FOR RELEVANCE & UNIQUENESS:
 
       const result = await genAI.models.generateContent(
         buildGenerateContentRequest(prompt, {
-          model: 'gemini-1.5-flash',
+          model: 'gemini-3.8-flash',
           safetySettings: getSafetySettings(),
           generationConfig: { responseMimeType: 'application/json' }
         })
@@ -524,12 +526,16 @@ async function publishArticleToTelegram(docRef, articleData, isHe, channelOverri
     });
 
     // Save in deduplication registry
-    if (!channelOverride && titleKey) {
+    if (titleKey) {
       await db.collection('telegram_dispatches').doc(`title-${titleKey}`).set({
+        type: 'article-broadcast',
         articleId: docRef.id,
         title: articleData.title,
+        slug: articleData.slug || docRef.id,
         channel: targetChannel,
         messageId: result.messageId || null,
+        pollId: pollResult?.pollId || null,
+        isHebrew: isHe,
         dispatchedAt: admin.firestore.FieldValue.serverTimestamp()
       });
     }
@@ -601,7 +607,25 @@ async function publishMorningDigest(isHe = true, channelOverride = null) {
   });
 
   const data = await res.json();
-  return { success: data.ok, messageId: data.result?.message_id };
+  const messageId = data.result?.message_id || null;
+
+  if (data.ok) {
+    try {
+      await db.collection('telegram_dispatches').add({
+        type: 'morning-digest',
+        title: isHe ? '☀️ כותרות הבוקר — TrendingTech Daily' : '☀️ Morning Intelligence Briefing',
+        channel: targetChannel,
+        messageId: messageId,
+        isHebrew: isHe,
+        articlesCount: articles.length,
+        dispatchedAt: admin.firestore.FieldValue.serverTimestamp()
+      });
+    } catch (logErr) {
+      logger.warn('[Telegram Dispatch Log] Error logging morning digest:', logErr.message);
+    }
+  }
+
+  return { success: data.ok, messageId };
 }
 
 /**
@@ -664,7 +688,25 @@ async function publishDailyDigest(isHe = true, channelOverride = null) {
   });
 
   const data = await res.json();
-  return { success: data.ok, messageId: data.result?.message_id };
+  const messageId = data.result?.message_id || null;
+
+  if (data.ok) {
+    try {
+      await db.collection('telegram_dispatches').add({
+        type: 'evening-digest',
+        title: isHe ? '🌙 מבזק ערב יומי — TrendingTech Daily' : '🌙 Evening Intelligence Digest',
+        channel: targetChannel,
+        messageId: messageId,
+        isHebrew: isHe,
+        articlesCount: articles.length,
+        dispatchedAt: admin.firestore.FieldValue.serverTimestamp()
+      });
+    } catch (logErr) {
+      logger.warn('[Telegram Dispatch Log] Error logging evening digest:', logErr.message);
+    }
+  }
+
+  return { success: data.ok, messageId };
 }
 
 /**
@@ -763,10 +805,10 @@ async function validateAndSanitizeUrl(url) {
 }
 
 /**
- * Invokes Gemini with graceful multi-model fallback (gemini-2.5-flash -> gemini-2.0-flash -> gemini-1.5-flash)
+ * Invokes Gemini with graceful multi-model fallback (gemini-3.8-flash -> gemini-3.5-flash)
  */
 async function callGeminiPrompt(genAI, prompt) {
-  const models = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+  const models = ['gemini-3.8-flash', 'gemini-3.5-flash'];
   let lastErr = null;
   for (const model of models) {
     try {
@@ -1021,6 +1063,27 @@ function resolveVerifiedProfile(handleOrName = '', textContext = '') {
     }
   }
 
+  // Check video throttle to ensure videos render only once every 4 hours max per language
+  let shouldGenerateVideo = false;
+  try {
+    const throttleDoc = await db.doc(`system_state/video_throttle_${isHe ? 'he' : 'en'}`).get();
+    const lastVideoRender = throttleDoc.data()?.lastVideoAt?.toMillis() || 0;
+    const elapsed = Date.now() - lastVideoRender;
+    if (elapsed >= VIDEO_THROTTLE_MS) {
+      shouldGenerateVideo = true;
+      await db.doc(`system_state/video_throttle_${isHe ? 'he' : 'en'}`).set({
+        lastVideoAt: admin.firestore.FieldValue.serverTimestamp(),
+        lastArticleTitle: parsed.title,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+      logger.info(`[Video Throttle] Permitting video generation for new article (${Math.round(elapsed / (1000 * 60))} mins since last video).`);
+    } else {
+      logger.info(`[Video Throttle] Skipping video generation on hourly dispatch (${Math.round(elapsed / (1000 * 60))} mins elapsed < 240 mins).`);
+    }
+  } catch (throttleErr) {
+    logger.warn('[Video Throttle] Throttle check warning:', throttleErr.message);
+  }
+
   const articlePayload = {
     title: parsed.title,
     slug: parsed.slug || `story-${Date.now()}`,
@@ -1039,6 +1102,7 @@ function resolveVerifiedProfile(handleOrName = '', textContext = '') {
     views: 0,
     likes: 0,
     telegramPosted: false,
+    generateVideo: shouldGenerateVideo,
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
     updatedAt: admin.firestore.FieldValue.serverTimestamp()
   };
@@ -1352,6 +1416,25 @@ exports.triggerTelegramPostHttp = onRequest(
       if (pollData && pollData.question) {
         pollRes = await sendTelegramPoll(channel, pollData, TELEGRAM_BOT_TOKEN);
       }
+
+      // Record dispatch in telegram_dispatches for admin real-time visibility
+      try {
+        await db.collection('telegram_dispatches').add({
+          type: 'manual-post',
+          title: testArticle.title,
+          excerpt: testArticle.excerpt,
+          articleId: testArticle.id,
+          slug: testArticle.slug,
+          channel: channel,
+          messageId: result?.messageId || null,
+          pollId: pollRes?.pollId || null,
+          isHebrew: isHe,
+          dispatchedAt: admin.firestore.FieldValue.serverTimestamp()
+        });
+      } catch (logErr) {
+        logger.warn('[Telegram Dispatch Log] Error logging manual post:', logErr.message);
+      }
+
       return res.json({ success: true, channel, result, pollRes });
     } catch (err) {
       logger.error('triggerTelegramPostHttp error:', err);

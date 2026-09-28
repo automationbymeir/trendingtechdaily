@@ -1,53 +1,10 @@
-// functions/callable/ai.js
-
 const { HttpsError } = require("firebase-functions/v2/https");
-const { logger, db, CONFIG, admin } = require('../config');
+const { logger, db, CONFIG } = require('../config');
 const { loadGeminiSDK, getSafetySettings, getSafe, getGeminiSDK, getStockMappingCacheDuration, buildGenerateContentRequest } = require('../utils');
 const fetch = require('node-fetch');
-const { fetchImageFromUnsplash } = require('../services/unsplashService');
+const { resolveEditorialArticleImage } = require('../services/editorialImageService');
 
-const GEMINI_MODELS = ["gemini-2.5-flash", "gemini-2.5-pro"];
-const GEMINI_MAX_RETRIES = 5;        // retries per model on 503
-const GEMINI_RETRY_DELAY_MS = 5000;  // 5 seconds between retries
-
-/**
- * Calls genAI.models.generateContent with automatic retry on 503/UNAVAILABLE.
- * Tries each model up to GEMINI_MAX_RETRIES times before moving to the next.
- * Skips 404-not-found models immediately.
- */
-async function generateContentWithRetry(genAI, structuredPrompt, safetySettings) {
-  let lastErr;
-  for (const model of GEMINI_MODELS) {
-    for (let attempt = 0; attempt < GEMINI_MAX_RETRIES; attempt++) {
-      try {
-        logger.info(`generateContentWithRetry: ${model} attempt ${attempt + 1}/${GEMINI_MAX_RETRIES}`);
-        const result = await genAI.models.generateContent(
-          buildGenerateContentRequest(structuredPrompt, { model, safetySettings }),
-        );
-        return result; // success
-      } catch (err) {
-        const msg = err.message || '';
-        const isOverloaded = msg.includes('503') || msg.includes('UNAVAILABLE') || msg.includes('overloaded');
-        const isModelGone   = msg.includes('404') || msg.includes('NOT_FOUND') ||
-                              msg.includes('no longer available') || msg.includes('deprecated');
-        lastErr = err;
-
-        if (isModelGone) {
-          logger.warn(`Gemini ${model} not available for this API key — skipping`);
-          break; // skip to next model immediately
-        } else if (isOverloaded) {
-          logger.warn(`Gemini ${model} overloaded (attempt ${attempt + 1}), waiting ${GEMINI_RETRY_DELAY_MS}ms…`);
-          await new Promise(r => setTimeout(r, GEMINI_RETRY_DELAY_MS));
-          // continue to next attempt
-        } else {
-          throw err; // unexpected error — surface it
-        }
-      }
-    }
-    logger.warn(`Gemini ${model} exhausted all retries, trying next model…`);
-  }
-  throw lastErr; // all models exhausted
-}
+const GEMINI_PRIMARY_MODEL = "gemini-3.8-flash";
 
 // --- Helper function to get fallback colors for SVG generation ---
 function getFallbackImagesForCategory(prompt = "") {
@@ -86,8 +43,7 @@ async function generateArticleContent(request) { // request contains { auth, dat
       throw new HttpsError("unauthenticated", "Authentication required.");
     }
     
-    const topic = request.data.prompt;
-    const availableCategories = request.data.availableCategories || null;
+    const topic = request.data.prompt; 
     if (!topic || typeof topic !== 'string' || topic.trim() === '') {
       throw new HttpsError("invalid-argument", "A non-empty 'prompt' (topic) string is required.");
     }
@@ -102,39 +58,47 @@ async function generateArticleContent(request) { // request contains { auth, dat
         throw new HttpsError("internal", "Core AI SDK (@google/genai) failed to load.");
       }
 
-      const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const genAI = new GoogleGenAI({ project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' });
 
       const structuredPrompt = `
-Write a professional tech/finance news article about "${topic}" in the style of Yahoo Finance or Bloomberg.
+Write an authoritative, high-impact tech/finance news article about "${topic}" in the style of Bloomberg, Reuters, or The Information.
 
 Requirements:
-- Write in a journalistic style with clear paragraphs.
-- Use factual, analytical tone without marketing language.
-- Include relevant data, trends, and market impact where applicable.
-- Structure with natural paragraphs (no bullet points or lists).
-- Mention specific companies or technologies when relevant.
-- Length: 400-600 words.
+- Write in a professional journalistic style with engaging, analytical paragraphs.
+- Include factual data, technical nuances, market trends, and industry implications.
+- Seamlessly integrate inline hyperlinks to authoritative sources (e.g. arXiv research papers, official corporate press releases, SEC filings, GitHub repositories, or Reuters/Bloomberg reports) using clean HTML anchor tags: <a href="URL" target="_blank" rel="noopener noreferrer">anchor text</a>.
+- Include 1-2 insightful quotes or social discussion mentions from industry leaders, engineers, or founders on X (Twitter), LinkedIn, or GitHub.
+- For all sources and social mentions, provide DIRECT DEEP LINKS (e.g. specific arXiv paper "https://arxiv.org/abs/...", specific blog post "https://.../blog/...", specific tweet/status "https://x.com/username/status/...", or specific GitHub release/PR "https://github.com/.../releases"). NEVER provide homepage or root domain links.
+- Length: 450-700 words.
 
 Output MUST be ONLY a raw JSON object with these exact keys:
 {
 "title": "string, max 70 chars, professional headline",
 "slug": "string, lowercase, hyphenated, based on title",
-"content": "string, HTML with <p>, <h3> (for subtitles), and <strong> tags (for emphasis), 400-600 words",
-"category": "string, lowercase, must be EXACTLY one of the available categories listed below",
+"content": "string, rich HTML with <p> tags and inline <a href='...'> source links, 450-700 words",
 "excerpt": "string, informative summary, max 160 chars",
 "tags": ["array", "of", "relevant", "tags"],
+"sources": [
+  { "title": "string, title of primary source or paper", "url": "string, specific canonical deep URL", "publisher": "string, e.g. arXiv, Reuters, OpenAI Blog, Bloomberg" }
+],
+"socialMentions": [
+  { "platform": "X", "author": "string, full name", "handle": "@handle", "quote": "string, key quote or insight", "link": "string, specific direct post URL https://x.com/.../status/...", "context": "string, e.g. Lead AI Researcher" }
+],
 "imagePrompt": "string, professional image description for article illustration, suitable for AI image generator",
-"mentionedCompanies": ["array", "of", "publicly traded company names mentioned (e.g., Apple, Microsoft)"],
+"mentionedCompanies": ["array", "of", "publicly traded company names mentioned (e.g., Apple, Microsoft, NVIDIA)"],
 "imageAltText": "string, descriptive alt text for the image, based on imagePrompt"
 }
-
-Available categories (you MUST pick the single most relevant one for the "category" field): ${availableCategories || 'ai, gadgets, startups, crypto, software, security, technology, world'}
 
 Generate the article about: "${topic}". Output ONLY the JSON object.
 `;
 
       logger.info("generateArticleContent: Sending structured prompt to Gemini...");
-      const result = await generateContentWithRetry(genAI, structuredPrompt, getSafetySettings());
+      const result = await genAI.models.generateContent(
+        buildGenerateContentRequest(structuredPrompt, {
+          model: GEMINI_PRIMARY_MODEL,
+          safetySettings: getSafetySettings(),
+        }),
+      );
       const rawTextResponse = (typeof result.text === "function" ? result.text() : result.text) || "";
       logger.info("generateArticleContent: Raw Gemini Response (first 500 chars):", rawTextResponse.substring(0, 500));
 
@@ -184,9 +148,10 @@ Generate the article about: "${topic}". Output ONLY the JSON object.
           title: getSafe(() => generatedJson.title),
           slug: getSafe(() => generatedJson.slug),
           content: getSafe(() => generatedJson.content),
-          category: getSafe(() => (generatedJson.category || '').toLowerCase().trim()),
           excerpt: getSafe(() => generatedJson.excerpt),
           tags: getSafe(() => generatedJson.tags, []),
+          sources: getSafe(() => generatedJson.sources, []),
+          socialMentions: getSafe(() => generatedJson.socialMentions, []),
           imagePrompt: getSafe(() => generatedJson.imagePrompt),
           imageAltText: getSafe(() => generatedJson.imageAltText, getSafe(() => generatedJson.title)),
           mentionedCompanies: getSafe(() => generatedJson.mentionedCompanies, [])
@@ -296,7 +261,7 @@ async function generateArticleImage(request) {
         throw new HttpsError("unauthenticated", "Authentication required.");
     }
     
-    const { prompt, articleTitle = '', articleSlug = '', style = 'tech_illustration' } = request.data;
+    const { prompt, articleTitle = '', style = 'tech_illustration' } = request.data;
     
     if (!prompt || typeof prompt !== 'string' || prompt.trim() === '') {
         throw new HttpsError("invalid-argument", "A non-empty 'prompt' string is required.");
@@ -310,147 +275,81 @@ async function generateArticleImage(request) {
     let message = '';
 
     try {
-        // Try Unsplash with a fallback chain of 3 queries before giving up.
-        // Unsplash needs short English keywords — 4-6 words max.
-        const unsplashKey = process.env.UNSPLASH_ACCESS_KEY;
-        if (unsplashKey) {
-            // Build a cascading list of candidate queries
-            const candidates = [];
-            // #1: slug-based (most specific, always English)
-            if (articleSlug && articleSlug.trim()) {
-                candidates.push(articleSlug.split('-').slice(0, 5)
-                    .map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '));
-            }
-            // #2: imagePrompt-based — skip if prompt contains Hebrew (Unsplash won't match Hebrew tokens).
-            const hasHebrew = /[\u0590-\u05FF]/.test(prompt + ' ' + articleTitle);
-            if (!hasHebrew && prompt && prompt.trim()) {
-                candidates.push(prompt.replace(/[^\w\s]/g, ' ').split(/\s+/)
-                    .filter(Boolean).slice(0, 5).join(' '));
-            }
-            // #3: category/topic keywords from prompt
-            const promptLower = (prompt + ' ' + articleTitle).toLowerCase();
-            const topicMap = [
-                { keys: ['ai', 'artificial intelligence', 'gpt', 'claude', 'gemini', 'llm', 'machine learning', 'בינה מלאכותית', 'ג\'מיני', 'קלוד', 'צאטGPT', 'צאט-ג\'יפיטי'], q: 'artificial intelligence computer' },
-                { keys: ['crypto', 'bitcoin', 'blockchain', 'ethereum', 'קריפטו', 'ביטקוין', 'בלוקצ\'יין'], q: 'cryptocurrency technology' },
-                { keys: ['security', 'hack', 'cyber', 'breach', 'malware', 'סייבר', 'פריצה', 'האקר', 'אבטחה'], q: 'cybersecurity hacker' },
-                { keys: ['startup', 'vc', 'venture', 'funding', 'סטארטאפ', 'סטארטפ', 'גיוס'], q: 'startup office team' },
-                { keys: ['stock', 'market', 'finance', 'trading', 'מניות', 'בורסה', 'מסחר'], q: 'stock market chart' },
-                { keys: ['phone', 'iphone', 'smartphone', 'android', 'אייפון', 'סמארטפון', 'אנדרואיד'], q: 'smartphone modern' },
-                { keys: ['laptop', 'computer', 'pc', 'macbook', 'מחשב', 'לפטופ', 'מקבוק'], q: 'modern laptop computer' },
-                { keys: ['gaming', 'game', 'console', 'xbox', 'playstation', 'גיימינג', 'משחקים', 'קונסולה'], q: 'gaming setup' },
-                { keys: ['car', 'ev', 'tesla', 'vehicle', 'auto', 'טסלה', 'רכב חשמלי', 'מכונית'], q: 'electric car technology' },
-                { keys: ['space', 'rocket', 'nasa', 'spacex', 'חלל', 'רקטה', 'נאסא'], q: 'space technology rocket' },
-                { keys: ['robot', 'automation', 'robotics', 'רובוט', 'אוטומציה'], q: 'robot technology' },
-                { keys: ['whatsapp', 'messaging', 'chat', 'social', 'וואטסאפ', 'הודעות', 'צ\'אט'], q: 'smartphone messaging app' },
-                { keys: ['apple', 'אפל'], q: 'apple store technology' },
-                { keys: ['google', 'גוגל'], q: 'google office technology' },
-                { keys: ['meta', 'facebook', 'instagram', 'מטא', 'פייסבוק', 'אינסטגרם'], q: 'social media technology' },
-                { keys: ['microsoft', 'windows', 'מיקרוסופט', 'חלונות'], q: 'microsoft office computer' },
-                { keys: ['chip', 'semiconductor', 'nvidia', 'שבב', 'מעבד', 'אנבידיה'], q: 'semiconductor chip technology' },
-            ];
-            for (const t of topicMap) {
-                if (t.keys.some(k => promptLower.includes(k))) { candidates.push(t.q); break; }
-            }
-            // #4: ultimate generic fallback — always returns something
-            candidates.push('technology abstract');
-            candidates.push('modern technology');
+        // High-precision editorial image resolution
+        const editorialImage = await resolveEditorialArticleImage({
+          topic: articleTitle || prompt,
+          imagePrompt: prompt,
+          category: 'tech'
+        }, process.env.UNSPLASH_ACCESS_KEY);
 
-            // Dedupe while preserving order
-            const seen = new Set();
-            const queries = candidates.map(q => (q || '').trim()).filter(q => {
-                if (!q || seen.has(q.toLowerCase())) return false;
-                seen.add(q.toLowerCase());
-                return true;
-            });
-
-            for (const q of queries) {
-                logger.info(`generateArticleImage: Unsplash query = "${q}"`);
-                const unsplashImage = await fetchImageFromUnsplash(q, unsplashKey);
-                if (unsplashImage && unsplashImage.imageUrl) {
-                    return {
-                        success: true,
-                        imageUrl: unsplashImage.imageUrl,
-                        imageAltText: unsplashImage.altText || imageAltText,
-                        source: 'unsplash',
-                        message: `Image fetched from Unsplash (query: "${q}")`
-                    };
-                }
-            }
-            logger.warn('generateArticleImage: all Unsplash queries failed, falling through to Gemini/SVG');
+        if (editorialImage && editorialImage.imageUrl) {
+            imageUrl = editorialImage.imageUrl;
+            imageAltText = editorialImage.altText || imageAltText;
+            source = editorialImage.source || 'editorial';
+            message = 'High-precision editorial image matched';
+            return { success: true, imageUrl, imageAltText, source, message };
         }
 
-        // Gemini real image generation
+        // Try to use Gemini to generate a base64 encoded SVG or simple image
         const sdkLoaded = await loadGeminiSDK();
         const { GoogleGenAI } = getGeminiSDK();
 
         if (!sdkLoaded || !GoogleGenAI) {
-            logger.error("GoogleGenAI SDK not loaded for image generation.");
-            throw new Error("Core AI SDK failed to load.");
+            logger.error("GoogleGenAI SDK not loaded.");
+            throw new HttpsError("internal", "Core AI SDK failed to load.");
         }
 
-        const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        const genAI = new GoogleGenAI({ project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' });
 
-        const imageGenPrompt = `Create a high-quality, photorealistic image for a professional tech news article about: "${prompt}".
-The image should be visually compelling, suitable for a news website header, no text or watermarks, clean professional composition, 16:9 aspect ratio.`;
+        // Ask Gemini to create an SVG image
+        const svgPrompt = `Create a simple SVG image for this article topic: "${prompt}".
+        
+Generate ONLY the SVG code with these requirements:
+- Size: 1200x600 pixels
+- Use abstract shapes and gradients
+- Tech/modern style with blue, purple, or green colors
+- No text in the image
+- Clean, professional appearance
 
-        logger.info('Attempting Gemini real image generation...');
+Output ONLY the SVG code starting with <svg and ending with </svg>. No explanation or other text.`;
 
         try {
-            const result = await genAI.models.generateContent({
-                model: 'gemini-2.0-flash-preview-image-generation',
-                contents: [{ role: 'user', parts: [{ text: imageGenPrompt }] }],
-                config: { responseModalities: ['IMAGE'] },
-            });
-
-            const parts = (result.candidates && result.candidates[0] && result.candidates[0].content && result.candidates[0].content.parts) || [];
-            let imageUploaded = false;
-
-            for (const part of parts) {
-                if (part.inlineData && part.inlineData.data) {
-                    const base64Data = part.inlineData.data;
-                    const mimeType = part.inlineData.mimeType || 'image/png';
-                    const ext = mimeType.split('/')[1] || 'png';
-
-                    // Upload to Firebase Storage
-                    const bucket = admin.storage().bucket();
-                    const filename = 'article-images/' + Date.now() + '-' + Math.random().toString(36).substr(2, 6) + '.' + ext;
-                    const file = bucket.file(filename);
-
-                    await file.save(Buffer.from(base64Data, 'base64'), {
-                        metadata: { contentType: mimeType },
-                    });
-                    await file.makePublic();
-
-                    imageUrl = 'https://storage.googleapis.com/' + bucket.name + '/' + filename;
-                    imageAltText = (articleTitle || prompt) + ' - Technology image';
-                    source = 'gemini-image';
-                    message = 'Generated real image using Gemini';
-                    logger.info('Gemini image generated and uploaded to Storage: ' + filename);
-                    imageUploaded = true;
-                    break;
-                }
-            }
-
-            if (imageUploaded) {
-                return { success: true, imageUrl, imageAltText, source, message };
+            const result = await genAI.models.generateContent(
+                buildGenerateContentRequest(svgPrompt, {
+                    model: GEMINI_PRIMARY_MODEL,
+                    safetySettings: getSafetySettings(),
+                }),
+            );
+            const responseText = (typeof result.text === "function" ? result.text() : result.text) || "";
+            
+            logger.info("Gemini SVG response received");
+            
+            // Extract SVG from response
+            const svgMatch = responseText.match(/<svg[\s\S]*?<\/svg>/i);
+            if (svgMatch) {
+                // Convert SVG to base64
+                const svgString = svgMatch[0];
+                const base64Svg = Buffer.from(svgString).toString('base64');
+                imageUrl = `data:image/svg+xml;base64,${base64Svg}`;
+                source = 'gemini-generated-svg';
+                message = 'Generated SVG image using Gemini';
+                logger.info("Successfully generated SVG image");
             } else {
-                logger.warn('Gemini image generation returned no image parts');
-                throw new Error('No image data in Gemini response');
+                logger.warn("No SVG found in Gemini response");
+                throw new Error("No SVG in response");
             }
-
-        } catch (geminiImageErr) {
-            logger.warn('Gemini image generation failed, falling back to gradient:', geminiImageErr.message);
-            // Fall through to gradient SVG fallback below
-        }
-
-        // Fallback: Generate a simple gradient image using canvas-like approach
-        logger.info("Using fallback gradient generation");
-
-        // Create a simple SVG gradient based on the topic
-        const colorPairs = getFallbackImagesForCategory(prompt);
-
-        // Generate SVG with gradient and pattern
-        const svg = `<svg width="1200" height="600" xmlns="http://www.w3.org/2000/svg">
+            
+        } catch (geminiError) {
+            logger.error("Gemini SVG generation error:", geminiError);
+            
+            // Fallback: Generate a simple gradient image using canvas-like approach
+            logger.info("Using fallback gradient generation");
+            
+            // Create a simple SVG gradient based on the topic
+            const colorPairs = getFallbackImagesForCategory(prompt);
+            
+            // Generate SVG with gradient and pattern
+            const svg = `<svg width="1200" height="600" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" style="stop-color:${colorPairs[0]};stop-opacity:1" />
@@ -467,11 +366,12 @@ The image should be visually compelling, suitable for a news website header, no 
   <rect x="100" y="250" width="200" height="100" fill="white" opacity="0.05" transform="rotate(45 200 300)" />
   <polygon points="600,100 700,300 500,300" fill="white" opacity="0.08" />
 </svg>`;
-
-        const base64Svg = Buffer.from(svg).toString('base64');
-        imageUrl = `data:image/svg+xml;base64,${base64Svg}`;
-        source = 'generated-gradient';
-        message = 'Generated gradient placeholder image';
+            
+            const base64Svg = Buffer.from(svg).toString('base64');
+            imageUrl = `data:image/svg+xml;base64,${base64Svg}`;
+            source = 'generated-gradient';
+            message = 'Generated gradient placeholder image';
+        }
         
     } catch (error) {
         logger.error("Image generation error:", error);
@@ -515,7 +415,7 @@ async function generateTopTenArticle(request) {
         const { GoogleGenAI } = getGeminiSDK();
         if (!sdkLoaded || !GoogleGenAI) throw new HttpsError("internal", "Core AI SDK failed to load.");
 
-        const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        const genAI = new GoogleGenAI({ project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' });
 
         const structuredPrompt = `Create a top ${count} list article about "${topic}" for a technology news website.
 
@@ -604,7 +504,7 @@ async function generateHowToArticle(request) {
         const { GoogleGenAI } = getGeminiSDK();
         if (!sdkLoaded || !GoogleGenAI) throw new HttpsError("internal", "Core AI SDK failed to load.");
 
-        const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        const genAI = new GoogleGenAI({ project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' });
 
         const structuredPrompt = `Create a step-by-step how-to article about "${topic}" for a technology news website.
 
@@ -693,7 +593,7 @@ async function readArticleAloud(request) {
         const { GoogleGenAI } = getGeminiSDK();
         if (!sdkLoaded || !GoogleGenAI) throw new HttpsError("internal", "Core AI SDK failed to load.");
 
-        const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+        const genAI = new GoogleGenAI({ project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' });
         const result = await genAI.models.generateContent(
             buildGenerateContentRequest(text, {
                 model: 'tts-1-hd',
@@ -720,5 +620,4 @@ module.exports = {
   generateHowToArticle,
   getStockDataForCompanies,
   readArticleAloud,
-  generateContentWithRetry,
 };

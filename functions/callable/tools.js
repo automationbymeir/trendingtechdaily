@@ -19,16 +19,16 @@ async function generateAIAgentResponse(request) {
       throw new HttpsError("internal", "Core AI SDK failed to load");
     }
 
-    const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+    const genAI = new GoogleGenAI({ project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' });
 
     // Tools definition
-    const tools = [{
+    const tools = {
       functionDeclarations: [
         { name: "searchWeb", description: "Search the web for current tech news and real-time information", parameters: { type: "object", properties: { query: { type: "string", description: "The search query" }, timeRange: { type: "string", enum: ["past_hour", "past_24h", "past_week"], description: "Time range for search" } }, required: ["query"] } },
         { name: "getFinnhubStockData", description: "Gets real-time stock quote data with optional technical analysis", parameters: { type: "object", properties: { symbols: { type: "array", items: { type: "string" }, description: "Stock ticker symbols" }, includeAnalysis: { type: "boolean", description: "Whether to include AI-powered analysis" } }, required: ["symbols"] } },
         // Add other tools like generateArticleImage if needed
       ],
-    }];
+    };
 
     const systemInstruction = `You are an advanced AI assistant for TrendingTech Daily with access to real-time web search and data analysis tools. When a user asks a question, first decide if you need a tool. If so, call the tool. If not, answer directly. Context: ${JSON.stringify(context, null, 2)}`;
     
@@ -59,7 +59,7 @@ async function generateAIAgentResponse(request) {
 
     const result = await genAI.models.generateContent(
       buildGenerateContentRequest({ contents: history }, {
-        model: "gemini-2.5-flash",
+        model: "gemini-3.8-flash",
         safetySettings: getSafetySettings(),
         tools,
       }),
@@ -140,12 +140,12 @@ async function getFinnhubStockData({ data }) {
         throw new HttpsError("internal", "Core AI SDK failed to load");
       }
 
-      const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+      const genAI = new GoogleGenAI({ project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' });
 
       const analysisPrompt = `Analyze the following stock data and provide a brief summary of market sentiment and key trends:\n\n${JSON.stringify(stockData, null, 2)}`;
       const analysisResult = await genAI.models.generateContent(
         buildGenerateContentRequest(analysisPrompt, {
-          model: "gemini-2.5-flash",
+          model: "gemini-3.8-flash",
         }),
       );
       const analysisText = (typeof analysisResult.text === "function" ? analysisResult.text() : analysisResult.text) || "";

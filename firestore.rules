@@ -4,13 +4,21 @@ service cloud.firestore {
 
     // Helper Functions
     function isAdmin() {
-      return request.auth != null && request.auth.token.admin == true;
+      return request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'meirho01@gmail.com'
+      );
     }
     function isSignedIn() {
       return request.auth != null;
     }
     function isOwner(userId) {
       return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Media Library metadata is accessible only to existing admins.
+    match /media/{mediaId} {
+      allow read, write: if isAdmin();
     }
 
     // Articles Collection
@@ -37,6 +45,12 @@ service cloud.firestore {
       // Allow public list/query (client should filter for active sections)
       allow list: if true;
       // Allow only admins to write
+      allow write: if isAdmin();
+    }
+
+    // Categories Collection (legacy / nav categories)
+    match /categories/{categoryId} {
+      allow get, list: if true;
       allow write: if isAdmin();
     }
 
@@ -76,6 +90,23 @@ service cloud.firestore {
       allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
       // Allow owner or admin to update/delete
       allow update, delete: if isOwner(resource.data.userId) || isAdmin();
+    }
+
+    // Hebrew Articles Collection
+    match /he_articles/{articleId} {
+      allow get, list: if true;
+      allow write: if isAdmin();
+    }
+
+    // Hebrew Sections Collection
+    match /he_sections/{sectionId} {
+      allow get, list: if true;
+      allow write: if isAdmin();
+    }
+
+    // Scheduler Logs - Admin only (written by Cloud Functions, read by admin UI)
+    match /schedulerLogs/{logId} {
+      allow read, write: if isAdmin();
     }
 
     // Cache Collection - Admin only
@@ -140,6 +171,83 @@ service cloud.firestore {
     
     // Collection Group queries for 'members' (if needed for admin-level cross-list queries)
     match /{path=**}/members/{memberId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Video Logs Collection - Admin Only (Authenticated Read)
+    match /video_logs/{logId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // Telegram Dispatches Collection - Admin Full Access, Public Read
+    match /telegram_dispatches/{dispatchId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // System State Collection (Throttle & Cadence shields)
+    match /system_state/{stateId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Stories Collection - Public Read, Admin Write
+    match /stories/{storyId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // AI Tools Directory - Public read of published, admin write
+    match /ai_tools/{toolId} {
+      allow get: if resource.data.published == true || isAdmin();
+      allow list: if true; // client should filter for published == true
+      allow write: if isAdmin();
+    }
+
+    // AI Tool Reviews - Public read of approved, authed users can create own, admin moderates
+    match /ai_tool_reviews/{reviewId} {
+      allow get: if resource.data.approved == true || isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow list: if true; // client should filter for approved == true
+      allow create: if isSignedIn()
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.rating is number
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5;
+      allow update, delete: if isAdmin();
+    }
+
+    // AI Tool Metrics History - Public read, admin write
+    match /ai_tool_metrics_history/{metricId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // AI Glossary - Public read, admin write
+    match /ai_glossary/{termId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Design Systems Decoded — public read of published, admin write
+    match /design_systems/{systemId} {
+      allow get: if resource.data.published == true || isAdmin();
+      allow list: if true; // client should filter for published == true
+      allow write: if isAdmin();
+    }
+
+    // Design Systems metrics history — public read, admin write
+    match /design_systems_metrics_history/{metricId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Design Systems carousel history — admin only
+    match /design_systems_carousel_history/{histId} {
+      allow read, write: if isAdmin();
+    }
+
+    // Design Systems reel history — admin only
+    match /design_systems_reel_history/{histId} {
       allow read, write: if isAdmin();
     }
   }

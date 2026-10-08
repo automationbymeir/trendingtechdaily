@@ -477,8 +477,13 @@ if (typeof window.articlesManagerInitialized === 'undefined') {
             }
             // Add custom HTML embed button
             setTimeout(() => {
-                const toolbar = document.querySelector('#editor-container .ql-toolbar');
-                if (toolbar) {
+                const toolbarModule = quillEditorInstance.getModule('toolbar');
+                const toolbar = toolbarModule && toolbarModule.container;
+                if (!toolbar) {
+                    console.warn('HTML embed control unavailable: editor toolbar not found.');
+                    return;
+                }
+                if (!toolbar.querySelector('.ql-embedHtml')) {
                     const customButtonContainer = document.createElement('span');
                     customButtonContainer.className = 'ql-formats custom-html-button-container';
                     const htmlButton = document.createElement('button');
@@ -486,6 +491,7 @@ if (typeof window.articlesManagerInitialized === 'undefined') {
                     htmlButton.className = 'ql-embedHtml';
                     htmlButton.innerHTML = '<i class="bi bi-code-slash"></i>';
                     htmlButton.title = 'Embed HTML Code';
+                    htmlButton.setAttribute('aria-label', 'Embed HTML Code');
                     customButtonContainer.appendChild(htmlButton);
                     toolbar.appendChild(customButtonContainer);
                     htmlButton.addEventListener('click', (e) => {

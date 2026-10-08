@@ -1,6 +1,6 @@
 /* mediaUploader.js – Handle image uploads */
 
-/* storageRef and db are global (declared once in admin.html) */
+/* db and storage are initialized by dashboard.html. */
 const mediaCollection = db.collection("media");
 
 function loadMediaUploader() {
@@ -107,7 +107,41 @@ function loadMediaUploader() {
   loadMediaItems();
 }
 
-function uploadMedia() {
+function mediaText(value) {
+  return String(value == null ? '' : value).replace(/[&<>"']/g, (char) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[char]));
+}
+
+function mediaUrl(value) {
+  try {
+    const url = new URL(String(value));
+    return url.protocol === 'https:' ? mediaText(url.href) : '';
+  } catch (_) {
+    return '';
+  }
+}
+
+function mediaStorageRoot() {
+  if (typeof storage === 'undefined' || !storage || typeof storage.ref !== 'function') {
+    throw new Error('Image storage is unavailable. Reload the page and try again.');
+  }
+  return storage.ref();
+}
+
+function mediaUploadStatus(message, isError = false) {
+  let status = document.getElementById('media-upload-status');
+  if (!status) {
+    status = document.createElement('p');
+    status.id = 'media-upload-status';
+    status.setAttribute('role', 'status');
+    document.getElementById('media-upload-form').prepend(status);
+  }
+  status.className = isError ? 'text-danger' : 'text-success';
+  status.textContent = message;
+}
+
+async function uploadMedia() {
   const title = document.getElementById('media-title').value;
   const description = document.getElementById('media-description').value;
   const fileInput = document.getElementById('media-file');
@@ -120,63 +154,60 @@ function uploadMedia() {
   
   const progressContainer = document.getElementById('upload-progress-container');
   const progressBar = document.getElementById('upload-progress-bar');
-  progressContainer.style.display = 'block';
-  
   const uploadButton = document.getElementById('submit-upload-btn');
-  uploadButton.disabled = true;
-  uploadButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Uploading...';
-  
-  const fileName = `${Date.now()}_${file.name}`;
-  const fileRef = storageRef.child(`media/${fileName}`);
-  
-  const uploadTask = fileRef.put(file);
-  
-  uploadTask.on('state_changed', 
-    (snapshot) => {
-      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      progressBar.style.width = progress + '%';
-      progressBar.textContent = Math.round(progress) + '%';
-    },
-    (error) => {
-      console.error('Upload error:', error);
-      alert('Error uploading file: ' + error.message);
-      progressContainer.style.display = 'none';
-      uploadButton.disabled = false;
-      uploadButton.innerHTML = 'Upload';
-    },
-    () => {
-      uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-        const mediaData = {
-          title: title,
-          description: description,
-          fileName: fileName,
-          fileType: file.type,
-          fileSize: file.size,
-          url: downloadURL,
-          uploadedAt: firebase.firestore.FieldValue.serverTimestamp()
-        };
-        
-        mediaCollection.add(mediaData)
-          .then(() => {
-            document.getElementById('media-upload-form').reset();
-            document.getElementById('upload-preview-container').style.display = 'none';
-            document.getElementById('upload-form-container').style.display = 'none';
-            progressContainer.style.display = 'none';
-            uploadButton.disabled = false;
-            uploadButton.innerHTML = 'Upload';
-            loadMediaItems();
-            alert('File uploaded successfully!');
-          })
-          .catch((error) => {
-            console.error('Firestore error:', error);
-            alert('Error saving media information: ' + error.message);
-            progressContainer.style.display = 'none';
-            uploadButton.disabled = false;
-            uploadButton.innerHTML = 'Upload';
-          });
-      });
+  let fileRef = null;
+  let uploaded = false;
+  let metadataSaved = false;
+  try {
+    // Validate the service before disabling the form.
+    const root = mediaStorageRoot();
+    if (!title.trim() || !file.type.startsWith('image/')) {
+      throw new Error('Enter a title and select an image file.');
     }
-  );
+    mediaUploadStatus('');
+    progressContainer.style.display = 'block';
+    uploadButton.disabled = true;
+    uploadButton.textContent = 'Uploading...';
+    // A unique name makes compensating deletion safe for this attempt only.
+    const uniqueName = `${Date.now()}_${crypto.randomUUID()}_${file.name}`;
+    fileRef = root.child(`media/${uniqueName}`);
+    const task = fileRef.put(file);
+    task.on('state_changed', (snapshot) => {
+      const percent = snapshot.totalBytes ? Math.round(snapshot.bytesTransferred / snapshot.totalBytes * 100) : 0;
+      progressBar.style.width = `${percent}%`;
+      progressBar.textContent = `${percent}%`;
+    });
+    const snapshot = await task;
+    uploaded = true;
+    const downloadURL = await snapshot.ref.getDownloadURL();
+    await mediaCollection.add({
+      title: title.trim(), description, fileName: uniqueName,
+      fileType: file.type, fileSize: file.size, url: downloadURL,
+      uploadedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    metadataSaved = true;
+    document.getElementById('media-upload-form').reset();
+    document.getElementById('upload-preview-container').style.display = 'none';
+    mediaUploadStatus('File uploaded successfully.');
+    loadMediaItems();
+  } catch (error) {
+    let cleanup = '';
+    if (uploaded && !metadataSaved && fileRef) {
+      try {
+        await fileRef.delete();
+        cleanup = ' The new image was removed because its metadata could not be saved.';
+      } catch (cleanupError) {
+        console.error('New media cleanup failed:', cleanupError);
+        cleanup = ' The image may remain in storage without a library entry. Do not retry until it is checked.';
+      }
+    }
+    console.error('Media upload failed:', error);
+    mediaUploadStatus(`Upload failed: ${error.message || 'Unknown error'}.${cleanup}`, true);
+  } finally {
+    progressContainer.style.display = 'none';
+    uploadButton.disabled = false;
+    uploadButton.textContent = 'Upload';
+  }
 }
 
 function loadMediaItems() {
@@ -210,29 +241,29 @@ function loadMediaItems() {
         const isImage = media.fileType && media.fileType.startsWith('image/');
         
         mediaHTML += `
-          <div class="col-md-4 col-lg-3 media-item" data-id="${doc.id}" data-title="${media.title.toLowerCase()}">
+          <div class="col-md-4 col-lg-3 media-item" data-id="${mediaText(doc.id)}" data-title="${mediaText(String(media.title || "").toLowerCase())}">
             <div class="card h-100">
               <div class="card-img-top" style="height: 150px; display: flex; align-items: center; justify-content: center; background-color: #f8f9fa;">
                 ${isImage ? `
-                  <img src="${media.url}" alt="${media.title}" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+                  <img src="${mediaUrl(media.url)}" alt="${mediaText(media.title)}" style="max-height: 100%; max-width: 100%; object-fit: contain;">
                 ` : `
                   <div class="text-center p-4">
                     <i class="bi bi-file-earmark fs-1"></i>
-                    <p class="mt-2 mb-0 small">${media.fileType || 'Unknown file type'}</p>
+                    <p class="mt-2 mb-0 small">${mediaText(media.fileType || 'Unknown file type')}</p>
                   </div>
                 `}
               </div>
               <div class="card-body">
-                <h6 class="card-title">${media.title}</h6>
-                ${media.description ? `<p class="card-text small text-muted">${media.description}</p>` : ''}
+                <h6 class="card-title">${mediaText(media.title)}</h6>
+                ${media.description ? `<p class="card-text small text-muted">${mediaText(media.description)}</p>` : ''}
               </div>
               <div class="card-footer d-flex justify-content-between align-items-center">
                 <small class="text-muted">Uploaded: ${date}</small>
                 <div>
-                  <button class="btn btn-sm btn-outline-primary copy-url-btn" data-url="${media.url}">
+                  <button class="btn btn-sm btn-outline-primary copy-url-btn" data-url="${mediaUrl(media.url)}">
                     <i class="bi bi-clipboard"></i>
                   </button>
-                  <button class="btn btn-sm btn-outline-danger delete-media-btn" data-id="${doc.id}">
+                  <button class="btn btn-sm btn-outline-danger delete-media-btn" data-id="${mediaText(doc.id)}">
                     <i class="bi bi-trash"></i>
                   </button>
                 </div>
@@ -312,10 +343,15 @@ function deleteMedia(mediaId) {
       
       const media = doc.data();
       const fileName = media.fileName;
-      const fileRef = storageRef.child(`media/${fileName}`);
+      if (!fileName || typeof fileName !== 'string' || fileName.includes('/')) {
+        throw new Error('Invalid media storage filename. Nothing was deleted.');
+      }
+      const fileRef = mediaStorageRoot().child(`media/${fileName}`);
       
       return fileRef.delete().then(() => {
-        return mediaCollection.doc(mediaId).delete();
+        return mediaCollection.doc(mediaId).delete().catch((error) => {
+          throw new Error(`Image removed from storage, but its library entry remains: ${error.message}`);
+        });
       });
     })
     .then(() => {

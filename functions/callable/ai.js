@@ -167,11 +167,63 @@ Generate the article about: "${topic}". Output ONLY the JSON object.
     }
 }
 
-// --- rephraseText (Placeholder - Implement your logic) ---
-async function rephraseText(request) { 
+// --- rephraseText (Gemini, with multi-model fallback) ---
+// Modes used by the admin editor (public/admin/components/articles.js):
+//   'title'                -> returns one improved headline (plain text)
+//   'content'              -> returns rephrased article HTML, structure/tags preserved
+//   'image_prompt_and_alt' -> `text` already contains a fully-specified prompt; passed through as-is
+async function rephraseText(request) {
     if (!request.auth) throw new HttpsError("unauthenticated", "Authentication required.");
-    // TODO: Implement your rephraseText logic using Gemini
-    return { rephrasedText: `Rephrased: ${request.data.text} (placeholder)` };
+    const text = (getSafe(() => request.data.text, '') || '').trim();
+    if (!text) throw new HttpsError("invalid-argument", "A non-empty 'text' string is required.");
+    const mode = (getSafe(() => request.data.mode, 'content') || 'content').trim();
+    const instructions = (getSafe(() => request.data.instructions, '') || '').trim();
+    logger.info(`rephraseText: mode="${mode}", text length=${text.length}, user=${request.auth.uid}`);
+
+    let prompt;
+    if (mode === 'image_prompt_and_alt') {
+        // Caller supplies the complete prompt, including strict output formatting.
+        prompt = text;
+    } else if (mode === 'title') {
+        prompt = `Rewrite the following tech-news headline into a single improved, engaging and professional headline. Keep it in the original language and under 70 characters. Respond ONLY with the new headline text - no quotes, no explanation.\n\nHeadline: ${text}` + (instructions ? `\n\nEditor instructions: ${instructions}` : '');
+    } else {
+        prompt = `Rephrase and improve the following article content. Preserve all facts, the original language, and the full HTML structure and tags (paragraphs, links, embeds). Return ONLY the rephrased HTML - no markdown code fences, no explanation.\n\nContent: ${text}` + (instructions ? `\n\nEditor instructions: ${instructions}` : '');
+    }
+
+    try {
+        const sdkLoaded = await loadGeminiSDK();
+        const { GoogleGenAI } = getGeminiSDK();
+        if (!sdkLoaded || !GoogleGenAI) {
+            throw new HttpsError("internal", "Core AI SDK (@google/genai) failed to load.");
+        }
+        const genAI = new GoogleGenAI({ project: process.env.GCLOUD_PROJECT || 'automationbymeir', location: process.env.GCLOUD_LOCATION || 'us-central1' });
+
+        const models = [GEMINI_PRIMARY_MODEL, "gemini-3.5-flash"];
+        let lastErr = null;
+        for (const model of models) {
+            try {
+                const result = await genAI.models.generateContent(
+                    buildGenerateContentRequest(prompt, {
+                        model,
+                        safetySettings: getSafetySettings(),
+                    }),
+                );
+                const out = ((typeof result.text === "function" ? result.text() : result.text) || '').trim();
+                if (out) {
+                    return { rephrasedText: out };
+                }
+                lastErr = new Error(`Model ${model} returned an empty response.`);
+            } catch (err) {
+                lastErr = err;
+                logger.warn(`rephraseText: model ${model} attempt failed: ${err.message}`);
+            }
+        }
+        throw lastErr || new Error("All Gemini models failed.");
+    } catch (error) {
+        logger.error("rephraseText error:", error);
+        if (error instanceof HttpsError) throw error;
+        throw new HttpsError("internal", error.message || "Rephrase failed.");
+    }
 }
 
 // --- suggestArticleTopic (Enhanced with better randomization) ---

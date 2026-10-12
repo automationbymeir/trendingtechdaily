@@ -1,5 +1,4 @@
 
-// const functions = require('firebase-functions'); // No longer needed for v2 scheduler
 const fetch = require("node-fetch"); // Ensure node-fetch@2 is in your package.json
 const { onSchedule } = require("firebase-functions/v2/scheduler"); // Import v2 scheduler
 

@@ -620,8 +620,8 @@ async function loadCategorySidebar(isHe) {
         let recHtml = '';
         snap.forEach(doc => {
           const d = doc.data();
-          const title = d.title || (isHe ? 'כתבה חדשה' : 'Recent Article');
-          const link = getArticleCleanUrl({ id: doc.id, slug: d.slug, category: d.category }, isHe);
+          const title = escapeHtmlCat(d.title || (isHe ? 'כתבה חדשה' : 'Recent Article'));
+          const link = escapeHtmlCat(getArticleCleanUrl({ id: doc.id, slug: d.slug, category: d.category }, isHe));
           recHtml += `
             <li class="mb-2 pb-2 border-bottom" style="border-color:var(--border-color) !important;">
               <a href="${link}" style="color:var(--text-main); font-size:0.9rem; font-weight:600; text-decoration:none; line-height:1.3; display:block;">
